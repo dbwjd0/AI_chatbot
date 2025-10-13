@@ -302,9 +302,7 @@ def _finalize_chat_interaction(request, user_message_text, response_json, histor
     bot_message_obj = ChatMessage.objects.create(user=user, message=bot_message_text, is_user=False)
     vector_service.upsert_message(collection, bot_message_obj)
     
-    # 호감도 업데이트
-    user_profile.affinity_score += 1
-    user_profile.save()
+
 
     # 사용자 속성 및 활동 추출 및 저장
     recent_history_for_extraction = history[:5]
