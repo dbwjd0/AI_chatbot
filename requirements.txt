@@ -1,0 +1,7 @@
+Django
+requests
+konlpy
+JPype1
+python-dotenv
+openai
+chromadb
