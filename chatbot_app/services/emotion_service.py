@@ -1,56 +1,76 @@
 import os
+import torch
+from transformers import pipeline
 
-def analyze_emotion(bot_message_text):
+class EmotionAnalyzer:
     """
-    Analyzes the bot's message to determine the character's emotion.
-    Initializes KoNLPy's Okt tagger within the function to ensure JAVA_HOME is set.
+    Hugging Face의 사전 훈련된 모델을 사용하여 감정 분석을 수행하는 클래스.
+    모델 로딩은 리소스가 많이 소모되므로, 클래스 인스턴스 생성 시 한 번만 수행됩니다.
     """
-    character_emotion = "default"
+    def __init__(self):
+        self.classifier = None
+        try:
+            self.classifier = pipeline("text-classification", model="dlckdfuf141/korean-emotion-kluebert-v2", top_k=None)
+            print("--- EmotionAnalyzer model loaded successfully. ---")
+        except Exception as e:
+            print(f"--- Failed to load EmotionAnalyzer model: {e} ---")
+
+    def analyze(self, text: str):
+        """
+        주어진 텍스트의 감정을 분석하고, 모든 감정 레이블과 점수를 반환합니다.
+        """
+        if not self.classifier or not isinstance(text, str) or not text.strip():
+            return []
+        
+        try:
+            emotion_scores = self.classifier(text)[0]
+            emotion_scores.sort(key=lambda x: x['score'], reverse=True)
+            return emotion_scores
+        except Exception as e:
+            print(f"--- Emotion analysis failed for text '{text}': {e} ---")
+            return []
+
+# Django 앱이 로드될 때 단 하나의 분석기 인스턴스만 생성하고 재사용합니다.
+emotion_analyzer_instance = EmotionAnalyzer()
+
+def analyze_emotion(bot_message_text: str) -> str:
+    """
+    AI의 메시지를 분석하여 모델이 예측한 최종 감정 라벨(문자열)을 그대로 반환합니다.
+    """
+    default_model_label = "중립"
+
     try:
-        # Import locally to ensure JAVA_HOME is set by the time this is called
-        from konlpy.tag import Okt
-        okt = Okt()
-        
-        morphs = okt.pos(bot_message_text, stem=True)
-        print(f"\n--- Emotion Analysis Debug ---")
-        print(f"Bot Message: {bot_message_text}")
-        print(f"Morphs: {morphs}")
-        
-        emotion_keywords = {
-            "joy": ["기쁨", "행복", "좋다", "신나다", "재미있다", "즐겁다", "ㅋㅋ", "ㅎㅎ", "웃다", "웃어", "웃으니", "웃는다", "미소"],
-            "sad": ["슬픔", "우울", "힘들다", "속상하다", "눈물", "ㅠㅠ", "ㅜㅜ", "시무룩"],
-            "angry": ["화나다", "짜증", "열받다", "분노", "나쁘다"],
-            "mischievous": ["장난", "메롱", "짓궂다"],
-            "love": ["사랑", "좋아하다", "고맙다", "감사하다", "좋아"]
-        }
-        
-        detected_word = None
-        for word, pos in morphs:
-            if pos in ['Noun', 'Adjective', 'Verb']:
-                for emotion, keywords in emotion_keywords.items():
-                    if word in keywords:
-                        character_emotion = emotion
-                        detected_word = word
-                        break
-            if character_emotion != "default":
-                break
-        
-        print(f"Detected Word: {detected_word}")
-        print(f"Detected Emotion (before mapping): {character_emotion}")
-        
-        # Map emotions to character states
-        if character_emotion == "joy":
-            character_emotion = "happy"
-        elif character_emotion == "love":
-            character_emotion = "mischievous"
-        # sad, angry, mischievous map directly
+        emotion_results = emotion_analyzer_instance.analyze(bot_message_text)
 
-        print(f"Final Emotion (after mapping): {character_emotion}")
-        print(f"--- End Debug ---")
+        if not emotion_results:
+            return default_model_label
+
+        # 1. 코드 내에 올바른 ID-라벨 맵을 직접 정의합니다.
+        ID_TO_LABEL_MAP = {
+            0: '공포', 1: '놀람', 2: '분노', 3: '슬픔', 4: '중립', 5: '행복', 6: '혐오'
+        }
+
+        # 2. 모델에서 가장 확률이 높은 결과의 숫자 ID를 가져옵니다.
+        top_emotion_result = emotion_results[0]
+        model_id = top_emotion_result['label']
+
+        # 3. 직접 정의한 맵을 사용해 숫자 ID를 실제 감정 이름으로 변환합니다.
+        final_model_label = default_model_label
+        try:
+            model_id_int = int(model_id)
+            final_model_label = ID_TO_LABEL_MAP.get(model_id_int, default_model_label)
+        except (ValueError, TypeError):
+            if isinstance(model_id, str) and model_id in ID_TO_LABEL_MAP.values():
+                 final_model_label = model_id
+
+        # 4. 최종 라벨을 그대로 반환합니다.
+        print(f"\n--- Emotion Analysis (Final) ---")
+        print(f"Message: {bot_message_text}")
+        print(f"Top Emotion ID: {model_id} -> Final Label: {final_model_label}")
+        print(f"---------------------------------")
+
+        return final_model_label
 
     except Exception as e:
-        print(f"--- KoNLPy/Emotion Analysis Error ---: {e}")
-        # In case of an error, we just return the default emotion
-        character_emotion = "default"
-        
-    return character_emotion
+        print(f"--- Emotion Service Error: {e} ---")
+        return default_model_label

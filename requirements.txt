@@ -5,3 +5,7 @@ JPype1
 python-dotenv
 openai
 chromadb
+
+# For Hugging Face transformer-based emotion analysis
+transformers
+torch

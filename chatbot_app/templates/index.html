@@ -41,13 +41,14 @@
         <script>
         const chatHistory = JSON.parse(document.getElementById('chat_messages_data').textContent);
         const STATIC_URLS = {
-            default: "{% static 'img/char_default.png' %}",
-            happy: "{% static 'img/char_happy.png' %}",
-            sad: "{% static 'img/char_sad.png' %}",
-            hungry: "{% static 'img/char_hungry.png' %}",
-            mischievous: "{% static 'img/char_mischievous.png' %}",
-            angry: "{% static 'img/char_angry.png' %}",
-            background: "{% static '픽셀p1.jpg' %}"
+            '행복': "{% static 'img/char_happy.png' %}",
+            '슬픔': "{% static 'img/char_sad.png' %}",
+            '분노': "{% static 'img/char_angry.png' %}",
+            '놀람': "{% static 'img/char_surprise.png' %}",      // 임시 이미지
+            '공포': "{% static 'img/char_fear.png' %}",     // 임시 이미지 
+            '혐오': "{% static 'img/char_disgust.png' %}",  // 임시 이미지      
+            '중립': "{% static 'img/char_default.png' %}",
+            'default': "{% static 'img/char_default.png' %}" // 기본값
         };
     </script>
     <script src="{% static 'script.js' %}"></script>

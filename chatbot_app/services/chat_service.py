@@ -270,7 +270,15 @@ def _prepare_llm_messages(final_system_prompt, history, user_message_text):
 def _call_openai_api(model_to_use, headers, messages):
     """OpenAI API를 호출하고 응답 JSON을 반환합니다."""
     print(f"--- Using Model: {model_to_use} ---")
-    data = { "model": model_to_use, "messages": messages, "temperature": 0.7, "top_p": 0.9, "response_format": {"type": "json_object"} }
+    data = { 
+        "model": model_to_use, 
+        "messages": messages, 
+        "temperature": 0.7, 
+        "top_p": 0.9, 
+        "frequency_penalty": 0.2, 
+        "presence_penalty": 0.1,
+        "response_format": {"type": "json_object"} 
+    }
     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=data)
     response.raise_for_status()
     return response.json()
@@ -294,9 +302,7 @@ def _finalize_chat_interaction(request, user_message_text, response_json, histor
     bot_message_obj = ChatMessage.objects.create(user=user, message=bot_message_text, is_user=False)
     vector_service.upsert_message(collection, bot_message_obj)
     
-    # 호감도 업데이트
-    user_profile.affinity_score += 1
-    user_profile.save()
+
 
     # 사용자 속성 및 활동 추출 및 저장
     recent_history_for_extraction = history[:5]
