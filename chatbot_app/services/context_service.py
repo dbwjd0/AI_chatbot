@@ -1,7 +1,6 @@
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Count, Q
-from konlpy.tag import Okt
 from ..models import UserActivity
 
 def get_activity_recommendation(user, user_message):
@@ -34,29 +33,37 @@ def get_activity_recommendation(user, user_message):
 def search_activities_for_context(user, user_message):
     """
     사용자 메시지의 키워드를 바탕으로 UserActivity를 검색하여 컨텍스트를 생성합니다.
+    KoNLPy 대신 간단한 문자열 분리 로직을 사용합니다.
     """
     try:
-        okt = Okt()
-        # 사용자 메시지에서 명사만 추출하여 검색 키워드로 사용
-        keywords = [word for word, pos in okt.pos(user_message, stem=True) if pos == 'Noun']
+        # 1. 사용자 메시지를 공백으로 분리하여 키워드 추출
+        # KoNLPy의 명사 추출 대신, 메시지를 분리하고 2글자 이상인 단어를 키워드로 사용합니다.
+        user_input_keywords = [k.strip() for k in user_message.split() if k.strip()]
+        
+        # 사용자 메시지 전체를 하나의 키워드로 추가하여 문맥 검색 정확도를 높입니다.
+        if user_message.strip():
+            user_input_keywords.append(user_message.strip())
+            
+        # 2. 2글자 이상인 유니크한 키워드만 사용 (노이즈 감소)
+        keywords = [k for k in set(user_input_keywords) if len(k) > 1]
         
         if not keywords:
             return ""
 
-        # Q 객체를 사용하여 여러 필드에서 OR 조건으로 검색
+        # 3. Q 객체를 사용하여 여러 필드에서 OR 조건으로 검색
         query = Q()
         for keyword in keywords:
             query |= Q(memo__icontains=keyword)
             query |= Q(place__icontains=keyword)
             query |= Q(companion__icontains=keyword)
 
-        # 현재 사용자의 기억만 대상으로 검색, 최근 순으로 3개까지
+        # 현재 사용자의 기억만 대상으로 검색, 최근 순으로 10개까지
         search_results = UserActivity.objects.filter(user=user).filter(query).order_by('-activity_date')[:10]
 
         if not search_results:
             return ""
 
-        # 검색 결과를 컨텍스트 문자열로 포맷
+        # 4. 검색 결과를 컨텍스트 문자열로 포맷
         result_strings = []
         for mem in search_results:
             base_string = ""
