@@ -1,0 +1,60 @@
+#room {
+    background-image: url('img/room_bg.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+
+#character {
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    width: 60px; /* Adjust size as needed */
+    height: 90px; /* Adjust size as needed */
+    background-image: url('img/char_default.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: left 0.1s linear, top 0.1s linear;
+}
+
+#computer {
+    position: absolute;
+    top: 40px;
+    right: 50px;
+    width: 80px; /* Adjust size */
+    height: 70px; /* Adjust size */
+    background-color: #555;
+    border: 5px solid #333;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#computer::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 60%;
+    background-color: #87CEEB; /* Screen color */
+    border-radius: 5px;
+}
+
+#fade-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 9999;
+    transition: opacity 0.2s ease-in-out;
+}
+
+#fade-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}

@@ -35,7 +35,7 @@ emotion_analyzer_instance = EmotionAnalyzer()
 
 def analyze_emotion(bot_message_text: str) -> str:
     """
-    AI의 메시지를 분석하여 모델이 예측한 최종 감정 라벨(문자열)을 그대로 반환합니다.
+    AI의 메시지를 분석하여 모델이 예측한 최종 감정 라벨(문자열)을 반환합니다.
     """
     default_model_label = "중립"
 
@@ -45,32 +45,26 @@ def analyze_emotion(bot_message_text: str) -> str:
         if not emotion_results:
             return default_model_label
 
-        # 1. 코드 내에 올바른 ID-라벨 맵을 직접 정의합니다.
         ID_TO_LABEL_MAP = {
             0: '공포', 1: '놀람', 2: '분노', 3: '슬픔', 4: '중립', 5: '행복', 6: '혐오'
         }
 
-        # 2. 모델에서 가장 확률이 높은 결과의 숫자 ID를 가져옵니다.
-        top_emotion_result = emotion_results[0]
-        model_id = top_emotion_result['label']
+        # 모델 결과에서 가장 확률이 높은 레이블(예: '3')을 가져옵니다.
+        top_label_str = emotion_results[0]['label']
+        
+        # 문자열 레이블을 정수로 변환합니다.
+        top_label_int = int(top_label_str)
 
-        # 3. 직접 정의한 맵을 사용해 숫자 ID를 실제 감정 이름으로 변환합니다.
-        final_model_label = default_model_label
-        try:
-            model_id_int = int(model_id)
-            final_model_label = ID_TO_LABEL_MAP.get(model_id_int, default_model_label)
-        except (ValueError, TypeError):
-            if isinstance(model_id, str) and model_id in ID_TO_LABEL_MAP.values():
-                 final_model_label = model_id
+        # 맵을 사용해 최종 감정 문자열을 찾습니다.
+        final_label = ID_TO_LABEL_MAP.get(top_label_int, default_model_label)
 
-        # 4. 최종 라벨을 그대로 반환합니다.
-        print(f"\n--- Emotion Analysis (Final) ---")
+        print(f"\n--- Emotion Analysis (Refactored) ---")
         print(f"Message: {bot_message_text}")
-        print(f"Top Emotion ID: {model_id} -> Final Label: {final_model_label}")
+        print(f"Top Emotion ID: {top_label_int} -> Final Label: {final_label}")
         print(f"---------------------------------")
 
-        return final_model_label
+        return final_label
 
-    except Exception as e:
-        print(f"--- Emotion Service Error: {e} ---")
+    except (ValueError, TypeError, IndexError) as e:
+        print(f"--- Emotion Service Error during processing: {e} ---")
         return default_model_label
