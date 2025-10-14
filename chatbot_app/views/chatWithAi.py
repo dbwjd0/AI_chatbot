@@ -14,6 +14,8 @@ def chat_response(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         user_message_text = data.get('message', '')
+        latitude = data.get('latitude')
+        longitude = data.get('longitude')
         
         bot_message_text = "죄송합니다. API 응답을 가져오는 데 실패했습니다."
         explanation = ""
@@ -22,7 +24,7 @@ def chat_response(request):
 
         try:
             # 1. 채팅 상호작용 (컨텍스트 생성, API 호출, 응답 처리, 기억 저장)
-            bot_message_text, explanation, bot_message_obj = chat_service.process_chat_interaction(request, user_message_text)
+            bot_message_text, explanation, bot_message_obj = chat_service.process_chat_interaction(request, user_message_text, latitude, longitude)
 
             # 2. 파인튜닝 데이터 로깅
             finetuning_service.anonymize_and_log_finetuning_data(request, user_message_text, bot_message_text)
