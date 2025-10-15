@@ -11,6 +11,7 @@
     <div class="container">
         <div style="position: absolute; top: 20px; right: 20px; color: #333; background-color: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 5px; z-index: 100;">
             <strong>{{ user.username }}</strong>님, 환영합니다.
+            <a href="{% url 'room' %}" style="color: #5E35B1; text-decoration: none; font-weight: bold; margin-right: 10px;">방으로 돌아가기</a>
             <a href="{% url 'ai_status' %}" style="color: #5E35B1; text-decoration: none; font-weight: bold; margin-right: 10px;">아이 상태</a>
             <a href="{% url 'logout' %}" style="color: #5E35B1; text-decoration: none; font-weight: bold; margin-left: 10px;">로그아웃</a>
         </div>
@@ -19,7 +20,7 @@
                 <img id="chatbot-character" src="{% static 'img/char_default.png' %}" alt="AI 비서">
             </div>
             <div class="chat-window">
-                <div id="chat-log" class="chat-log">
+                <div id="chat-log" class="chat-log" data-has-next-page="{{ has_next_page|yesno:'true,false' }}">
                     {% for message in chat_messages %}
                         <div class="message {% if message.is_user %}user-message{% else %}bot-message{% endif %}">
                             <p>{{ message.message }}</p>
@@ -45,6 +46,7 @@
         <script>
         const chatHistory = JSON.parse(document.getElementById('chat_messages_data').textContent);
         const STATIC_URLS = {
+            '생각': "{% static 'img/char_thinking.png' %}",
             '행복': "{% static 'img/char_happy.png' %}",
             '슬픔': "{% static 'img/char_sad.png' %}",
             '분노': "{% static 'img/char_angry.png' %}",

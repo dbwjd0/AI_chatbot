@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>초기 설정</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'setup.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="chatbot-container setup-container">
+            <div class="character-display">
+                <img src="{% static 'img/char_carrot_angry.png' %}" alt="AI 비서">
+            </div>
+            <div class="dialogue-frame">
+                <p id="question-text">{{ question }}</p>
+                <form method="post" id="setup-form">
+                    {% csrf_token %}
+                    <input type="text" name="answer" id="answer-input" autocomplete="off" required>
+                    <button type="submit">확인</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
