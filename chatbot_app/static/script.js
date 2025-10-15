@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatLog = document.getElementById('chat-log');
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
+    console.log("Found sendButton element:", sendButton); // 이 줄 추가
     const chatbotCharacter = document.getElementById('chatbot-character');
 
     let currentPage = 2;
@@ -100,7 +101,38 @@ document.addEventListener('DOMContentLoaded', function() {
         userInput.value = '';
         chatbotCharacter.src = STATIC_URLS['생각'] || STATIC_URLS.default; // 생각 중 이미지로 변경
 
+        const locationCheckbox = document.getElementById('location-checkbox');
+        console.log('sendMessage: Checkbox is checked:', locationCheckbox.checked);
+
+        if (locationCheckbox.checked) {
+            console.log('sendMessage: Attempting to get geolocation...');
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    console.log('sendMessage: Geolocation success!', position.coords);
+                    const { latitude, longitude } = position.coords;
+                    fetchChatResponse(message, latitude, longitude);
+                },
+                (error) => {
+                    console.error('sendMessage: Geolocation error:', error);
+                    fetchChatResponse(message, null, null);
+                }
+            );
+        } else {
+            console.log('sendMessage: Checkbox not checked, sending without location.');
+            fetchChatResponse(message, null, null);
+        }
+    }
+
+    async function fetchChatResponse(message, latitude, longitude) {
         try {
+            const payload = {
+                message: message,
+            };
+            if (latitude && longitude) {
+                payload.latitude = latitude;
+                payload.longitude = longitude;
+            }
+
             const response = await fetch('/chat_response/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
