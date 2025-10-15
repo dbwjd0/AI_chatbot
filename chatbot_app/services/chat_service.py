@@ -89,20 +89,18 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
     """사용자의 기억과 관련된 모든 컨텍스트를 종합하여 반환합니다."""
     # 0. 위치 컨텍스트
     location_context = ""
-    nearby_restaurants_context = ""
-    if latitude and longitude:
+    if latitude is not None and longitude is not None:
         print(f"--- [디버그] 위치 정보 수신: 위도={latitude}, 경도={longitude} ---")
         location_context = location_service.get_location_context(latitude, longitude)
         if location_context:
             print(f"--- [디버그] 현재 위치 컨텍스트: {location_context} ---")
-        
-        # 맛집 추천 관련 키워드가 있을 경우 주변 맛집 정보 추가
-        if any(keyword in user_message_text for keyword in ["맛집", "음식점", "배고파", "뭐 먹지"]):
-            nearby_restaurants_context = location_service.find_nearby_restaurants(latitude, longitude)
-            if nearby_restaurants_context:
-                print(f"--- [디버그] 주변 맛집 컨텍스트: {nearby_restaurants_context} ---")
 
-    # 1. 벡터 검색 컨텍스트
+    # 1. 위치 기반 추천 컨텍스트 (맛집, 카페 등)
+    location_recommendation_context = location_service.get_location_based_recommendation(user, user_message_text, latitude, longitude)
+    if location_recommendation_context:
+        print(f"--- [디버그] 위치 기반 추천 컨텍스트: {location_recommendation_context} ---")
+
+    # 2. 벡터 검색 컨텍스트
     vector_search_context = ""
     try:
         collection = vector_service.get_or_create_collection()
@@ -114,7 +112,7 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
     except Exception as e:
         print(f"--- Could not build vector search context due to an error: {e} ---")
 
-    # 2. 사용자 속성 컨텍스트
+    # 3. 사용자 속성 컨텍스트
     user_attributes = UserAttribute.objects.filter(user=user)
     user_attribute_context = ""
     if user_attributes.exists():
@@ -122,7 +120,7 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
         user_attribute_context = "[사용자 속성 (불변 정보): " + ", ".join(attribute_strings) + "]"
         print(f"--- [디버그] 사용자 속성 컨텍스트: {user_attribute_context} ---")
 
-    # 3. 사용자 활동 컨텍스트
+    # 4. 사용자 활동 컨텍스트 (활동 기록 검색 및 활동 기반 추천)
     activity_context = ""
     try:
         recent_activities = UserActivity.objects.filter(user=user).order_by('-activity_date', '-created_at')[:5]
@@ -148,7 +146,7 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
     if activity_context:
         print(f"--- [디버그] 활동 컨텍스트: {activity_context} ---")
 
-    # 4. 활동 분석 컨텍스트
+    # 5. 활동 분석 컨텍스트
     activity_analytics_context = ""
     try:
         recent_analytics = ActivityAnalytics.objects.filter(user=user).order_by('-period_start_date')[:3]
@@ -163,7 +161,7 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
     except Exception as e:
         print(f"--- Could not build activity analytics context due to an error: {e} ---")
 
-    # 5. 인간관계 컨텍스트
+    # 6. 인간관계 컨텍스트
     user_relationship_context = ""
     try:
         user_relationships = UserRelationship.objects.filter(user=user)
@@ -177,7 +175,7 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
 
     return {
         "location": location_context,
-        "nearby_restaurants": nearby_restaurants_context,
+        "location_recommendation": location_recommendation_context,
         "vector_search": vector_search_context,
         "attributes": user_attribute_context,
         "activity": activity_context,
@@ -193,8 +191,8 @@ def _build_final_system_prompt(user, time_contexts, memory_contexts):
     memory_context = f"너와 사용자의 현재 호감도 점수는 {affinity}점이야."
     if memory_contexts.get("location"):
         memory_context += "\n" + memory_contexts["location"]
-    if memory_contexts.get("nearby_restaurants"):
-        memory_context += "\n" + memory_contexts["nearby_restaurants"]
+    if memory_contexts.get("location_recommendation"):
+        memory_context += "\n" + memory_contexts["location_recommendation"]
     if memory_contexts.get("vector_search"):
         memory_context += "\n" + memory_contexts["vector_search"]
     if memory_contexts.get("attributes"):

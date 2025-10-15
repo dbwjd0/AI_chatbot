@@ -2,17 +2,36 @@ from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Count, Q
 from konlpy.tag import Okt
+from django.db.models import Count
 from ..models import UserActivity
+
+def get_user_place_preferences(user, category_keyword):
+    """
+    사용자의 활동 기록을 분석하여 특정 카테고리에서 가장 자주 방문한 장소 목록을 반환합니다.
+    """
+    try:
+        preferences = UserActivity.objects.filter(
+            user=user, 
+            place__icontains=category_keyword
+        ).values('place').annotate(
+            visit_count=Count('place')
+        ).order_by('-visit_count')
+
+        # 순수 장소 이름의 리스트를 반환 (상위 5개)
+        return [item['place'] for item in preferences[:5]]
+    except Exception as e:
+        print(f"--- Could not get user place preferences due to an error: {e} ---")
+        return []
 
 def get_activity_recommendation(user, user_message):
     """
-    사용자 메시지를 기반으로 활동 추천을 생성합니다.
+    사용자 메시지를 기반으로 활동 추천을 생성합니다. (활동 기록 기반)
     """
     # '추천', '갈만한' 등의 키워드가 있을 때만 작동
     if '추천' not in user_message and '갈만한' not in user_message:
         return ""
 
-    # '카페' 추천 로직
+    # '카페' 추천 로직 (활동 기록 기반)
     if '카페' in user_message:
         seven_days_ago = timezone.now().date() - timedelta(days=7)
         recent_cafe_visits = UserActivity.objects.filter(
@@ -28,6 +47,8 @@ def get_activity_recommendation(user, user_message):
         if most_visited['visit_count'] > 1:
             recommendation = f"이번 주에 {most_visited['place']}은(는) {most_visited['visit_count']}번이나 갔네. 오늘은 다른 곳에 가보는 건 어때? 예를 들면 새로운 동네 카페라던가."
             return f"[시스템 정보: 사용자의 활동 기록을 바탕으로 다음 추천을 생성했어. 이 내용을 참고해서 자연스럽게 제안해봐: '{recommendation}']"
+            
+    return ""
             
     return ""
 
