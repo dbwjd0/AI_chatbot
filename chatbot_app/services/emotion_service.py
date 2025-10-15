@@ -1,40 +1,70 @@
-# chatbot_app/services/emotion_service.py
+import os
+import torch
+from transformers import pipeline
 
-def analyze_emotion(bot_message_text):
+class EmotionAnalyzer:
     """
-    봇 메시지 텍스트에서 감정 키워드를 찾아 캐릭터의 감정을 결정합니다.
-    KoNLPy나 외부 라이브러리 없이 문자열 검색으로 처리합니다.
+    Hugging Face의 사전 훈련된 모델을 사용하여 감정 분석을 수행하는 클래스.
+    모델 로딩은 리소스가 많이 소모되므로, 클래스 인스턴스 생성 시 한 번만 수행됩니다.
     """
-    character_emotion = "default"
-    
-    # 메시지를 소문자로 변환하여 검색의 일관성을 확보합니다.
-    message = bot_message_text.lower()
-    
-    emotion_keywords = {
-        "joy": ["기쁨", "행복", "좋다", "신나", "재미", "즐겁다", "ㅋㅋ", "ㅎㅎ", "웃"], # '웃' 포함하여 웃다, 웃어 등 포괄
-        "sad": ["슬픔", "우울", "힘들다", "속상", "눈물", "ㅠㅠ", "ㅜㅜ", "시무룩"],
-        "angry": ["화나", "짜증", "열받", "분노", "나쁘다"],
-        "mischievous": ["장난", "메롱", "짓궂"],
-        "love": ["사랑", "고맙", "감사", "좋아"]
-    }
+    def __init__(self):
+        self.classifier = None
+        try:
+            self.classifier = pipeline("text-classification", model="dlckdfuf141/korean-emotion-kluebert-v2", top_k=None)
+            print("--- EmotionAnalyzer model loaded successfully. ---")
+        except Exception as e:
+            print(f"--- Failed to load EmotionAnalyzer model: {e} ---")
 
-    # 키워드 검색
-    for emotion, keywords in emotion_keywords.items():
-        for keyword in keywords:
-            if keyword in message:
-                character_emotion = emotion
-                break
-        if character_emotion != "default":
-            break
-            
-    # 감정 매핑 (기존 로직 유지)
-    if character_emotion == "joy":
-        character_emotion = "happy"
-    elif character_emotion == "love":
-        # 'love' 감정을 'mischievous'로 매핑하는 기존 로직 유지
-        character_emotion = "mischievous"
-    # sad, angry, mischievous, default는 그대로 유지
+    def analyze(self, text: str):
+        """
+        주어진 텍스트의 감정을 분석하고, 모든 감정 레이블과 점수를 반환합니다.
+        """
+        if not self.classifier or not isinstance(text, str) or not text.strip():
+            return []
+        
+        try:
+            emotion_scores = self.classifier(text)[0]
+            emotion_scores.sort(key=lambda x: x['score'], reverse=True)
+            return emotion_scores
+        except Exception as e:
+            print(f"--- Emotion analysis failed for text '{text}': {e} ---")
+            return []
 
-    # 디버그 출력은 Render 로그가 지저분해지는 것을 막기 위해 제거하는 것을 권장합니다.
-    
-    return character_emotion
+# Django 앱이 로드될 때 단 하나의 분석기 인스턴스만 생성하고 재사용합니다.
+emotion_analyzer_instance = EmotionAnalyzer()
+
+def analyze_emotion(bot_message_text: str) -> str:
+    """
+    AI의 메시지를 분석하여 모델이 예측한 최종 감정 라벨(문자열)을 반환합니다.
+    """
+    default_model_label = "중립"
+
+    try:
+        emotion_results = emotion_analyzer_instance.analyze(bot_message_text)
+
+        if not emotion_results:
+            return default_model_label
+
+        ID_TO_LABEL_MAP = {
+            0: '공포', 1: '놀람', 2: '분노', 3: '슬픔', 4: '중립', 5: '행복', 6: '혐오'
+        }
+
+        # 모델 결과에서 가장 확률이 높은 레이블(예: '3')을 가져옵니다.
+        top_label_str = emotion_results[0]['label']
+        
+        # 문자열 레이블을 정수로 변환합니다.
+        top_label_int = int(top_label_str)
+
+        # 맵을 사용해 최종 감정 문자열을 찾습니다.
+        final_label = ID_TO_LABEL_MAP.get(top_label_int, default_model_label)
+
+        print(f"\n--- Emotion Analysis (Refactored) ---")
+        print(f"Message: {bot_message_text}")
+        print(f"Top Emotion ID: {top_label_int} -> Final Label: {final_label}")
+        print(f"---------------------------------")
+
+        return final_label
+
+    except (ValueError, TypeError, IndexError) as e:
+        print(f"--- Emotion Service Error during processing: {e} ---")
+        return default_model_label
