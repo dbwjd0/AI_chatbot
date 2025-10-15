@@ -110,23 +110,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 (position) => {
                     console.log('sendMessage: Geolocation success!', position.coords);
                     const { latitude, longitude } = position.coords;
-                    fetchChatResponse(message, latitude, longitude);
+                    fetchChatResponse(messageText, latitude, longitude);
                 },
                 (error) => {
                     console.error('sendMessage: Geolocation error:', error);
-                    fetchChatResponse(message, null, null);
+                    fetchChatResponse(messageText, null, null);
                 }
             );
         } else {
             console.log('sendMessage: Checkbox not checked, sending without location.');
-            fetchChatResponse(message, null, null);
+            fetchChatResponse(messageText, null, null);
         }
     }
 
-    async function fetchChatResponse(message, latitude, longitude) {
+    async function fetchChatResponse(messageText, latitude, longitude) {
         try {
             const payload = {
-                message: message,
+                message: messageText,
             };
             if (latitude && longitude) {
                 payload.latitude = latitude;
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch('/chat_response/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
-                body: JSON.stringify({ message: messageText })
+                body: JSON.stringify(payload)
             });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 

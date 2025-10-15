@@ -4,10 +4,10 @@ import requests
 from django.utils import timezone
 
 from ..models import ChatMessage, UserAttribute, UserActivity, ActivityAnalytics, UserRelationship
-from ..services.context_service import get_activity_recommendation, search_activities_for_context
-from ..services.memory_service import extract_and_save_user_context_data
-from ..services.finetuning_service import build_finetuning_system_prompt
-from ..services import vector_service, location_service
+from .context_service import get_activity_recommendation, search_activities_for_context
+from .memory_service import extract_and_save_user_context_data
+from .finetuning_service import build_finetuning_system_prompt
+from . import vector_service, location_service
 
 def process_chat_interaction(request, user_message_text, latitude=None, longitude=None):
     """
