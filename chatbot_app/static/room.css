@@ -1,21 +1,19 @@
 #room {
-    background-image: url('img/room_bg.png');
+    background-image: url('img/room_bg2.png');
     background-size: cover;
     background-position: center;
     position: relative;
     overflow: hidden;
 }
 
-#character {
+#movable-character {
     position: absolute;
-    bottom: 50px;
-    left: 50px;
+    bottom: 50px; /* Initial position */
+    left: 50px;  /* Initial position */
     width: 60px; /* Adjust size as needed */
-    height: 90px; /* Adjust size as needed */
-    background-image: url('img/char_default.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    transition: left 0.1s linear, top 0.1s linear;
+    height: auto; /* Maintain aspect ratio for img */
+    z-index: 10; /* Ensure it's above background */
+    transition: left 0.1s linear, top 0.1s linear; /* Smooth movement */
 }
 
 #computer {

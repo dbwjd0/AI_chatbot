@@ -1,15 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const character = document.getElementById('character');
+    const movableCharacter = document.getElementById('movable-character');
     const room = document.getElementById('room');
     const computer = document.getElementById('computer');
     const overlay = document.getElementById('fade-overlay');
-    const step = 50; // 10px per move
+    const step = 10; // 10px per move (changed from 50 for smoother movement)
 
-    // Initial position
-    let charX = 50;
-    let charY = room.offsetHeight - 90 - 50; // character height - bottom offset
-    character.style.left = `${charX}px`;
-    character.style.top = `${charY}px`;
+    // Initial position - get from CSS or set explicitly
+    // Using getComputedStyle to read initial CSS values
+    let charX = parseFloat(getComputedStyle(movableCharacter).left);
+    let charY = parseFloat(getComputedStyle(movableCharacter).top);
+
+    // Fallback if CSS values are not set or are 'auto'
+    if (isNaN(charX)) charX = 50;
+    if (isNaN(charY)) charY = room.offsetHeight - movableCharacter.offsetHeight - 50; // Default bottom position
+
+    movableCharacter.style.left = `${charX}px`;
+    movableCharacter.style.top = `${charY}px`;
 
     computer.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent immediate navigation
@@ -22,23 +28,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('keydown', (event) => {
         const roomRect = room.getBoundingClientRect();
-        const charRect = character.getBoundingClientRect();
+        const charRect = movableCharacter.getBoundingClientRect(); // Use movableCharacter
+
+        let newCharX = charX;
+        let newCharY = charY;
 
         switch (event.key) {
             case 'ArrowUp':
-                charY = Math.max(0, charY - step);
+                newCharY = Math.max(0, charY - step);
                 break;
             case 'ArrowDown':
-                charY = Math.min(roomRect.height - charRect.height, charY + step);
+                newCharY = Math.min(roomRect.height - charRect.height, charY + step);
                 break;
             case 'ArrowLeft':
-                charX = Math.max(0, charX - step);
+                newCharX = Math.max(0, charX - step);
                 break;
             case 'ArrowRight':
-                charX = Math.min(roomRect.width - charRect.width, charX + step);
+                newCharX = Math.min(roomRect.width - charRect.width, charX + step);
                 break;
+            default:
+                return; // Do nothing for other keys
         }
-        character.style.left = `${charX}px`;
-        character.style.top = `${charY}px`;
+
+        // Only update if position changed to avoid unnecessary DOM manipulation
+        if (newCharX !== charX || newCharY !== charY) {
+            charX = newCharX;
+            charY = newCharY;
+            movableCharacter.style.left = `${charX}px`;
+            movableCharacter.style.top = `${charY}px`;
+        }
+        event.preventDefault(); // Prevent default scroll behavior for arrow keys
     });
 });

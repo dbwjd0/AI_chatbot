@@ -12,17 +12,31 @@
     <div class="container">
         <div class="chatbot-container setup-container">
             <div class="character-display">
-                <img src="{% static 'img/char_carrot_angry.png' %}" alt="AI 비서">
+                <img id="character-image" src="{% static 'img/char_carrot_default.png' %}" alt="AI 비서">
             </div>
             <div class="dialogue-frame">
-                <p id="question-text">{{ question }}</p>
-                <form method="post" id="setup-form">
-                    {% csrf_token %}
-                    <input type="text" name="answer" id="answer-input" autocomplete="off" required>
-                    <button type="submit">확인</button>
-                </form>
+                {% if setup_complete %}
+                    <p id="question-text">{{ completion_message }}</p>
+                    <p id="next-step-instruction">{{ next_step_instruction }}</p>
+                    <form method="post" id="setup-form" style="display:none;">
+                        {% csrf_token %}
+                        <input type="text" name="answer" id="answer-input" autocomplete="off" required>
+                        <input type="hidden" id="fact-type" value="{{ fact_type }}">
+                        <input type="hidden" id="setup-complete-flag" value="{{ setup_complete|yesno:"true,false" }}">
+                        <button type="submit">확인</button>
+                    </form>
+                {% else %}
+                    <p id="question-text">{{ question }}</p>
+                    <form method="post" id="setup-form">
+                        {% csrf_token %}
+                        <input type="text" name="answer" id="answer-input" autocomplete="off" required>
+                        <input type="hidden" id="fact-type" value="{{ fact_type }}">
+                        <button type="submit">확인</button>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </div>
+    <script src="{% static 'setup.js' %}"></script>
 </body>
 </html>
