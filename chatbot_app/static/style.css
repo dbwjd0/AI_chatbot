@@ -140,3 +140,27 @@ body {
     white-space: nowrap;
     margin-bottom: 5px; /* Align with the bottom of the message bubble */
 }
+
+/* Icon Button Styles */
+.chat-input .icon-button {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.chat-input .icon-button:hover {
+    background-color: transparent; /* 배경색은 투명하게 유지 */
+    color: #000; /* 아이콘 색상만 진하게 변경 */
+}
+
+.chat-input .icon-button svg {
+    width: 22px; /* Adjust icon size */
+    height: 22px;
+}
