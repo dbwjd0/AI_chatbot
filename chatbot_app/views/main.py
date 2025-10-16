@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.paginator import Paginator
+from django.utils import timezone
 import re
 from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship
+from chatbot_app.services.proactive_service import generate_proactive_message
 
 QUESTIONS = [
     {'step': 0, 'question': '안녕! 만나서 반가워. 너의 이름은 뭐야?', 'fact_type': '이름'},
@@ -141,3 +143,22 @@ def ai_status(request):
         'core_facts': core_facts,
         'user_relationships': user_relationships
     })
+
+@login_required
+def get_proactive_message_view(request):
+    message_text, emotion = generate_proactive_message(request.user)
+    if message_text:
+        # 능동적인 메시지를 ChatMessage에 저장하여 기록을 유지하고 반복 전송을 방지합니다.
+        proactive_chat_message = ChatMessage.objects.create(
+            user=request.user,
+            message=message_text,
+            is_user=False, # 봇 메시지
+            character_emotion=emotion # 감정 저장
+        )
+        # 저장 후, 프론트엔드에 전달할 메시지 객체를 다시 가져오거나 구성
+        return JsonResponse({
+            'message': proactive_chat_message.message,
+            'character_emotion': proactive_chat_message.character_emotion,
+            'timestamp': proactive_chat_message.timestamp.isoformat()
+        })
+    return JsonResponse({'message': None})
