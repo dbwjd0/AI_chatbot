@@ -7,6 +7,9 @@
     <title>AI 비서의 방</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="stylesheet" href="{% static 'room.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -15,11 +18,23 @@
             <a href="{% url 'logout' %}" style="color: #5E35B1; text-decoration: none; font-weight: bold; margin-left: 10px;">로그아웃</a>
         </div>
         <div class="chatbot-container" id="room">
+            <span id="schedule-icon" style="position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 32px; z-index: 20;">📓</span>
             <div id="fade-overlay"></div>
             <img id="character" src="{% static 'img/char_dot.png' %}" alt="AI Character">
             <a href="/chat" id="computer"></a>
         </div>
     </div>
+
+    <!-- Schedule Modal -->
+    <div id="schedule-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>오늘의 일과</h2>
+            <textarea id="schedule-textarea" placeholder="오늘의 일정을 자유롭게 적어주세요.&#10;예:&#10;- 10시: 팀 회의&#10;- 12시 30분: 점심 약속 (강남역)&#10;- 19시: 운동"></textarea>
+            <button id="save-schedule-btn">저장하기</button>
+        </div>
+    </div>
+
     <script src="{% static 'room.js' %}"></script>
 </body>
 </html>
