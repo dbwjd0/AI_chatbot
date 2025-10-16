@@ -112,3 +112,19 @@ class UserRelationship(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.name} ({self.relationship_type}) [{self.serial_code}]"
+
+class UserSchedule(models.Model):
+    """
+    사용자의 하루 일과를 저장하는 모델
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedules')
+    date = models.DateField(help_text="일과 날짜")
+    content = models.TextField(help_text="하루 일과 내용", blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'date') # 사용자는 하루에 하나의 스케줄만 가질 수 있음
+
+    def __str__(self):
+        return f"[{self.date}] {self.user.username}'s schedule"
