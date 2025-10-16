@@ -2,59 +2,19 @@ import json
 import os
 import requests
 from django.utils import timezone
+from typing import Optional, Dict, Any, Tuple
 
+# 상대 경로 임포트는 현재 파일이 특정 패키지 구조 내에 있음을 가정합니다.
 from ..models import ChatMessage, UserAttribute, UserActivity, ActivityAnalytics, UserRelationship
 from .context_service import get_activity_recommendation, search_activities_for_context
 from .memory_service import extract_and_save_user_context_data
 from .finetuning_service import build_finetuning_system_prompt
 from . import vector_service, location_service
 
-def process_chat_interaction(request, user_message_text, latitude=None, longitude=None):
-    """
-    사용자 메시지를 처리하고 AI 응답을 생성하는 전체 프로세스를 조율합니다.
-    """
-    user = request.user
-    bot_message_text = "죄송합니다. API 응답을 가져오는 데 실패했습니다."
-    explanation = ""
-    bot_message_obj = None
 
-    try:
-        api_key = os.environ.get("OPENAI_API_KEY")
-        if not api_key:
-            raise ValueError("OPENAI_API_KEY 환경 변수가 설정되지 않았습니다.")
-
-        model_to_use = os.getenv("FINETUNED_MODEL_ID", "gpt-4.1")
-        headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-
-        history = ChatMessage.objects.filter(user=user).order_by('-timestamp')
-        
-        # 1. 컨텍스트 생성
-        time_contexts = _get_time_contexts(history)
-        memory_contexts = _get_memory_contexts(user, user_message_text, latitude, longitude)
-        
-        # 2. 시스템 프롬프트 및 메시지 준비
-        final_system_prompt = _build_final_system_prompt(user, time_contexts, memory_contexts)
-        messages = _prepare_llm_messages(final_system_prompt, history, user_message_text)
-
-        # 3. LLM API 호출
-        response_json = _call_openai_api(model_to_use, headers, messages)
-        
-        # 4. 응답 처리 및 저장
-        bot_message_text, explanation, bot_message_obj = _finalize_chat_interaction(
-            request, user_message_text, response_json, history, api_key
-        )
-
-    except requests.exceptions.RequestException as e:
-        print(f"OpenAI API 요청 실패: {e}")
-        bot_message_text = f"API 요청 중 오류가 발생했습니다: {e}"
-    except (KeyError, IndexError, json.JSONDecodeError) as e:
-        print(f"API 응답 형식 오류: {e}")
-        bot_message_text = "API 응답 형식이 예상과 다릅니다."
-    except Exception as e:
-        print(f"예상치 못한 오류: {e}")
-        bot_message_text = f"예상치 못한 오류가 발생했습니다: {e}"
-
-    return bot_message_text, explanation, bot_message_obj
+# ==============================================================================
+# 헬퍼 함수 (반드시 process_chat_interaction보다 먼저 정의되어야 함)
+# ==============================================================================
 
 def _get_time_contexts(history):
     """현재 시간 및 마지막 대화와의 시간 간격에 대한 컨텍스트를 생성합니다."""
@@ -85,8 +45,10 @@ def _get_time_contexts(history):
         
     return current_time_context, time_awareness_context
 
-def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None):
+def _get_memory_contexts(user, user_message_text, latitude: Optional[float] = None, longitude: Optional[float] = None) -> Dict[str, str]:
     """사용자의 기억과 관련된 모든 컨텍스트를 종합하여 반환합니다."""
+    # ... (기존 _get_memory_contexts 로직과 동일) ...
+    
     # 0. 위치 컨텍스트
     location_context = ""
     if latitude is not None and longitude is not None:
@@ -166,12 +128,16 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
     try:
         user_relationships = UserRelationship.objects.filter(user=user)
         if user_relationships.exists():
-            # ... (기존 관계 컨텍스트 로직과 동일) ...
-            relationship_strings = [] # 이 부분은 설명을 위해 생략, 실제 코드는 유지
-            user_relationship_context = "[사용자의 인간관계: ... ]"
+             # ... (기존 관계 컨텍스트 로직과 동일) ...
+            relationship_strings = [
+                f"{rel.companion_name} (관계: {rel.relationship_type}, 중요도: {rel.importance})"
+                for rel in user_relationships
+            ]
+            user_relationship_context = "[사용자의 인간관계: " + ", ".join(relationship_strings) + "]"
             print(f"--- [디버그] 사용자 관계 컨텍스트: {user_relationship_context} ---")
     except Exception as e:
         print(f"--- Could not build user relationship context due to an error: {e} ---")
+
 
     return {
         "location": location_context,
@@ -183,26 +149,17 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
         "relationship": user_relationship_context,
     }
 
-def _build_final_system_prompt(user, time_contexts, memory_contexts):
+
+def _build_final_system_prompt(user, time_contexts: Tuple[str, str], memory_contexts: Dict[str, str]) -> str:
     """모든 컨텍스트를 조합하여 최종 시스템 프롬프트를 생성합니다."""
     current_time_context, time_awareness_context = time_contexts
     affinity = user.profile.affinity_score
 
     memory_context = f"너와 사용자의 현재 호감도 점수는 {affinity}점이야."
-    if memory_contexts.get("location"):
-        memory_context += "\n" + memory_contexts["location"]
-    if memory_contexts.get("location_recommendation"):
-        memory_context += "\n" + memory_contexts["location_recommendation"]
-    if memory_contexts.get("vector_search"):
-        memory_context += "\n" + memory_contexts["vector_search"]
-    if memory_contexts.get("attributes"):
-        memory_context += "\n" + memory_contexts["attributes"]
-    if memory_contexts.get("activity"):
-        memory_context += "\n" + memory_contexts["activity"]
-    if memory_contexts.get("analytics"):
-        memory_context += "\n" + memory_contexts["analytics"]
-    if memory_contexts.get("relationship"):
-        memory_context += "\n" + memory_contexts["relationship"]
+    # 모든 memory_contexts를 통합
+    for context_key in memory_contexts:
+        if memory_contexts[context_key]:
+             memory_context += "\n" + memory_contexts[context_key]
 
     print("--- [디버그] 모든 컨텍스트 통합 완료 ---")
 
@@ -233,17 +190,26 @@ def _build_final_system_prompt(user, time_contexts, memory_contexts):
     print("="*20 + " LLM 전달 최종 프롬프트 끝 " + "="*22 + "\n")
     return final_prompt
 
-def _prepare_llm_messages(final_system_prompt, history, user_message_text):
-    """API 요청을 위한 메시지 리스트를 준비합니다."""
+
+def _prepare_llm_messages(final_system_prompt: str, history: Any, user_message_text: str, image_b64_data: Optional[str] = None) -> list:
+    """
+    API 요청을 위한 메시지 리스트를 준비합니다.
+    이미지 데이터는 이미 텍스트 캡션으로 변환되어 user_message_text에 포함되어 있다고 가정합니다.
+    """
     messages = [{'role': 'system', 'content': final_system_prompt}]
     recent_history = history[:10]
+    
+    # 과거 대화 기록 추가
     for chat in reversed(recent_history):
         role = "user" if chat.is_user else "assistant"
         messages.append({'role': role, 'content': chat.message})
+    
+    # 현재 사용자 메시지 추가 (이미지 캡션이 user_message_text에 이미 포함되어 있음)
     messages.append({'role': 'user', 'content': user_message_text})
     return messages
 
-def _call_openai_api(model_to_use, headers, messages):
+
+def _call_openai_api(model_to_use: str, headers: Dict[str, str], messages: list) -> Dict[str, Any]:
     """OpenAI API를 호출하고 응답 JSON을 반환합니다."""
     print(f"--- Using Model: {model_to_use} ---")
     data = { 
@@ -259,29 +225,120 @@ def _call_openai_api(model_to_use, headers, messages):
     response.raise_for_status()
     return response.json()
 
-def _finalize_chat_interaction(request, user_message_text, response_json, history, api_key):
+def _finalize_chat_interaction(request, user_message_text: str, response_json: Dict[str, Any], history: Any, api_key: str, image_b64_data: Optional[str] = None) -> Tuple[str, str, Any]:
     """성공적인 LLM 응답을 처리하고 관련 데이터를 RDB와 벡터 DB에 저장합니다."""
     user = request.user
-    user_profile = user.profile
+    # user_profile = user.profile # 사용되지 않으므로 제거
 
-    content_from_llm = json.loads(response_json['choices'][0]['message']['content'])
-    bot_message_text = content_from_llm.get('answer', '').strip()
-    explanation = content_from_llm.get('explanation', '').strip()
+    llm_content = response_json['choices'][0]['message']['content']
+    if llm_content is None or llm_content.strip() == '':
+        bot_message_text = "죄송합니다. AI가 응답을 생성하지 못했습니다. 다시 시도해 주세요."
+        explanation = "AI 모델이 빈 응답을 반환했습니다."
+    else:
+        content_from_llm = json.loads(llm_content)
+        bot_message_text = content_from_llm.get('answer', '').strip()
+        explanation = content_from_llm.get('explanation', '').strip()
+        
+        # bot_message_text가 비어있을 경우 explanation을 사용하거나 기본 메시지 제공
+        if not bot_message_text:
+            if explanation:
+                bot_message_text = f"AI가 응답을 생성했지만, 주요 답변이 비어있습니다. (설명: {explanation})"
+            else:
+                bot_message_text = "AI가 응답을 생성했지만, 내용이 비어있습니다."
 
     # ChromaDB 컬렉션 가져오기
     collection = vector_service.get_or_create_collection()
 
     # RDB에 채팅 메시지 저장 및 ChromaDB에 업서트
-    user_message_obj = ChatMessage.objects.create(user=user, message=user_message_text, is_user=True)
+    user_message_obj = ChatMessage.objects.create(user=user, message=user_message_text, image_b64_data=image_b64_data, is_user=True)
     vector_service.upsert_message(collection, user_message_obj)
 
     bot_message_obj = ChatMessage.objects.create(user=user, message=bot_message_text, is_user=False)
     vector_service.upsert_message(collection, bot_message_obj)
     
-
-
     # 사용자 속성 및 활동 추출 및 저장
     recent_history_for_extraction = history[:5]
     extract_and_save_user_context_data(user, user_message_text, bot_message_text, recent_history_for_extraction, api_key)
+
+    return bot_message_text, explanation, bot_message_obj
+
+
+# ==============================================================================
+# 메인 함수 (이 함수는 모든 헬퍼 함수 정의 이후에 위치해야 합니다.)
+# ==============================================================================
+
+def process_chat_interaction(request, user_message_text: str, latitude: Optional[float] = None, longitude: Optional[float] = None, image_b64_data: Optional[str] = None):
+    """
+    사용자 메시지를 처리하고 AI 응답을 생성하는 전체 프로세스를 조율합니다.
+    (이미지 Base64 데이터가 있을 경우 멀티모달 처리를 포함합니다.)
+    """
+    user = request.user
+    bot_message_text = "죄송합니다. API 응답을 가져오는 데 실패했습니다."
+    explanation = ""
+    bot_message_obj = None
+
+    try:
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY 환경 변수가 설정되지 않았습니다.")
+
+        # 이미지 데이터가 있을 경우, 비전 모델(예: gpt-4-vision-preview)을 사용하도록 유도합니다.
+        # 이제 이미지 캡셔닝 서비스를 사용하므로, 항상 텍스트 전용 모델을 기본으로 사용합니다.
+        default_model = "gpt-4-turbo" # 텍스트 전용 모델
+        model_to_use = os.getenv("FINETUNED_MODEL_ID", default_model)
+        
+        headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+
+        history = ChatMessage.objects.filter(user=user).order_by('-timestamp')
+        
+        # 1. 컨텍스트 생성
+        time_contexts = _get_time_contexts(history)
+        
+        # 이미지 캡셔닝 서비스 인스턴스 생성 및 캡션 생성
+        image_caption = ""
+        if image_b64_data:
+            print("--- [디버그] 이미지 데이터 감지됨. 이미지 캡셔닝 서비스 호출 ---")
+            from .image_captioning_service import ImageCaptioningService
+            captioning_service = ImageCaptioningService()
+            image_caption = captioning_service.generate_caption(image_b64_data)
+            if image_caption:
+                # 사용자 메시지에 이미지 캡션 추가
+                user_message_text = f"[사용자가 보낸 이미지 설명: {image_caption}] {user_message_text}"
+                print(f"--- [디버그] 이미지 캡션 생성 완료: {image_caption} ---")
+            else:
+                print("--- [경고] 이미지 캡션 생성 실패 ---")
+
+        memory_contexts = _get_memory_contexts(user, user_message_text, latitude, longitude)
+        
+        # 2. 시스템 프롬프트 및 메시지 준비
+        final_system_prompt = _build_final_system_prompt(user, time_contexts, memory_contexts)
+        # 이미지 데이터는 이제 텍스트 캡션으로 변환되었으므로, _prepare_llm_messages에는 텍스트만 전달합니다.
+        messages = _prepare_llm_messages(final_system_prompt, history, user_message_text, None)
+
+        # 3. LLM API 호출
+        print("--- [디버그] LLM API로 전송되는 메시지: ---")
+        print(json.dumps(messages, indent=2, ensure_ascii=False))
+        print("---------------------------------------")
+        response_json = _call_openai_api(model_to_use, headers, messages)
+        
+        # 4. 응답 처리 및 저장
+        bot_message_text, explanation, bot_message_obj = _finalize_chat_interaction(
+            request, user_message_text, response_json, history, api_key, image_b64_data
+        )
+
+    except requests.exceptions.RequestException as e:
+        print(f"OpenAI API 요청 실패: {e}")
+        bot_message_text = f"API 요청 중 오류가 발생했습니다: {e}"
+    except (KeyError, IndexError, json.JSONDecodeError) as e:
+        print(f"API 응답 형식 오류: {e}")
+        bot_message_text = "API 응답 형식이 예상과 다릅니다. (LLM 응답이 JSON 형식이 아닐 수 있습니다.)"
+    except ValueError as e:
+        print(f"설정 오류: {e}")
+        bot_message_text = f"설정 오류가 발생했습니다: {e}"
+    except Exception as e:
+        import traceback
+        print(f"예상치 못한 오류: {e}")
+        traceback.print_exc()
+        bot_message_text = f"예상치 못한 오류가 발생했습니다: {e}"
 
     return bot_message_text, explanation, bot_message_obj

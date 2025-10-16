@@ -79,7 +79,7 @@ def chat_view(request):
     messages_page = paginator.get_page(page_number)
     
     # 템플릿에서는 시간순으로 보여줘야 하므로 다시 뒤집음
-    chat_messages_data = list(messages_page.object_list.values('message', 'is_user', 'timestamp'))[::-1]
+    chat_messages_data = list(messages_page.object_list.values('message', 'is_user', 'timestamp', 'image_b64_data'))[::-1]
 
     return render(request, 'chat.html', {
         'user_profile': user_profile, 
@@ -101,7 +101,7 @@ def load_more_messages(request):
     messages_page = paginator.get_page(page_number)
     
     # 템플릿에 맞게 데이터 포맷팅 (시간순으로 뒤집기)
-    messages_data = list(messages_page.object_list.values('message', 'is_user', 'timestamp'))[::-1]
+    messages_data = list(messages_page.object_list.values('message', 'is_user', 'timestamp', 'image_b64_data'))[::-1]
     
     return JsonResponse({
         'messages': messages_data,

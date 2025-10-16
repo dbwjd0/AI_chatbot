@@ -1,7 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('script.js loaded and DOMContentLoaded fired.'); // 이 줄 추가
     const chatLog = document.getElementById('chat-log');
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
+    const imageInput = document.getElementById('image-input');
+    const attachImageButton = document.getElementById('attach-image-button');
+    const imagePreview = document.getElementById('image-preview');
+    const clearImageButton = document.getElementById('clear-image-button');
+    let selectedImageBase64 = null; // 선택된 이미지의 Base64 문자열을 저장
+
+    console.log('imageInput element:', imageInput); // 이 줄 추가
+    console.log('attachImageButton element:', attachImageButton); // 이 줄 추가
+
     console.log("Found sendButton element:", sendButton); // 이 줄 추가
     const chatbotCharacter = document.getElementById('chatbot-character');
 
@@ -9,22 +19,75 @@ document.addEventListener('DOMContentLoaded', function() {
     let isLoading = false;
     let hasNextPage = chatLog.dataset.hasNextPage === 'true';
 
+    attachImageButton.addEventListener('click', () => {
+        console.log('Attach image button clicked!'); // 이 줄 추가
+        imageInput.click(); // 이미지 첨부 버튼 클릭 시 실제 파일 입력 필드 클릭
+    });
+    console.log('Attach image button listener attached.'); // 이 줄 추가
+
+    clearImageButton.addEventListener('click', () => {
+        clearImageSelection();
+        clearImageButton.style.display = 'none'; // Hide clear button after clearing
+    });
+
+    imageInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+                clearImageButton.style.display = 'inline-block'; // Show clear button
+                selectedImageBase64 = e.target.result.split(',')[1]; // Base64 부분만 저장
+            };
+            reader.readAsDataURL(file);
+        } else {
+            clearImageSelection(); // Call the new function
+            clearImageButton.style.display = 'none'; // Hide clear button
+        }
+    });
+
+    function clearImageSelection() {
+        imagePreview.src = '';
+        imagePreview.style.display = 'none';
+        selectedImageBase64 = null;
+        imageInput.value = ''; // 파일 입력 필드 초기화
+    }
+
     // --- 로직 함수 ---
     function createMessageDiv(msg) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', msg.is_user ? 'user-message' : 'bot-message');
         messageDiv.dataset.timestamp = msg.timestamp;
 
+        const contentWrapper = document.createElement('div'); // 이미지와 텍스트를 감싸는 래퍼
+        contentWrapper.style.display = 'flex';
+        contentWrapper.style.flexDirection = 'column';
+        contentWrapper.style.alignItems = 'flex-start'; // 텍스트와 이미지를 왼쪽 정렬 (메시지 버블 내에서)
+
+        // 이미지 데이터가 있으면 이미지 태그를 추가
+        if (msg.image_b64_data) {
+            const img = document.createElement('img');
+            img.src = `data:image/jpeg;base64,${msg.image_b64_data}`;
+            img.style.maxWidth = '100%'; // 이미지가 메시지 영역을 넘지 않도록
+            img.style.height = 'auto';
+            img.style.marginBottom = '5px'; // 메시지 텍스트와의 간격
+            img.style.borderRadius = '8px'; // 이미지 모서리 둥글게
+            contentWrapper.appendChild(img);
+        }
+
         const p = document.createElement('p');
         p.textContent = msg.message;
-        messageDiv.appendChild(p);
+        contentWrapper.appendChild(p); // 텍스트를 래퍼에 추가
+
+        messageDiv.appendChild(contentWrapper); // 래퍼를 메시지 div에 추가
 
         const time = new Date(msg.timestamp);
         const timeString = `(${(time.getHours()).toString().padStart(2, '0')}:${(time.getMinutes()).toString().padStart(2, '0')})`;
         const timeSpan = document.createElement('span');
         timeSpan.classList.add('timestamp');
         timeSpan.textContent = timeString;
-        messageDiv.appendChild(timeSpan);
+        messageDiv.appendChild(timeSpan); // 타임스탬프는 메시지 div에 직접 추가 (flex 아이템으로)
         
         return messageDiv;
     }
@@ -94,9 +157,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function sendMessage() {
         const messageText = userInput.value.trim();
-        if (messageText === '') return;
+        // 이미지 또는 텍스트, 또는 둘 다 보낼 수 있도록 허용
+        if (messageText === '' && !selectedImageBase64) return;
 
         const userMessage = { message: messageText, is_user: true, timestamp: new Date().toISOString() };
+        if (selectedImageBase64) { // 이미지 데이터가 있으면 userMessage 객체에 추가
+            userMessage.image_b64_data = selectedImageBase64;
+        }
         displayMessages([userMessage]);
         userInput.value = '';
         chatbotCharacter.src = STATIC_URLS['생각'] || STATIC_URLS.default; // 생각 중 이미지로 변경
@@ -110,20 +177,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 (position) => {
                     console.log('sendMessage: Geolocation success!', position.coords);
                     const { latitude, longitude } = position.coords;
-                    fetchChatResponse(messageText, latitude, longitude);
+                    fetchChatResponse(messageText, latitude, longitude, selectedImageBase64); // 이미지 데이터 전달
                 },
                 (error) => {
                     console.error('sendMessage: Geolocation error:', error);
-                    fetchChatResponse(messageText, null, null);
+                    fetchChatResponse(messageText, null, null, selectedImageBase64); // 이미지 데이터 전달
                 }
             );
         } else {
             console.log('sendMessage: Checkbox not checked, sending without location.');
-            fetchChatResponse(messageText, null, null);
+            fetchChatResponse(messageText, null, null, selectedImageBase64); // 이미지 데이터 전달
         }
+
+
     }
 
-    async function fetchChatResponse(messageText, latitude, longitude) {
+    async function fetchChatResponse(messageText, latitude, longitude, image_b64_data) { // image_b64_data 매개변수 추가
         try {
             const payload = {
                 message: messageText,
@@ -131,6 +200,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (latitude && longitude) {
                 payload.latitude = latitude;
                 payload.longitude = longitude;
+            }
+            if (image_b64_data) { // 이미지 데이터가 있으면 페이로드에 추가
+                payload.image_b64_data = image_b64_data;
             }
 
             const response = await fetch('/chat_response/', {

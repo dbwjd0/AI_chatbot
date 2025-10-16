@@ -39,6 +39,7 @@ def save_user_profile(sender, instance, **kwargs):
 class ChatMessage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.TextField()
+    image_b64_data = models.TextField(null=True, blank=True, help_text="Base64 encoded image data if message includes an image") # New field
     is_user = models.BooleanField(default=True)  # True면 사용자 메시지, False면 AI 메시지
     timestamp = models.DateTimeField(auto_now_add=True)
 

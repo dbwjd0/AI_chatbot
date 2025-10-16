@@ -20,6 +20,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Increase max memory size for file uploads (e.g., images)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10 MB
+
 
 # Application definition
 

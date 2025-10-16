@@ -14,6 +14,7 @@ def chat_response(request):
         user_message_text = data.get('message', '')
         latitude = data.get('latitude')
         longitude = data.get('longitude')
+        image_b64_data = data.get('image_b64_data') # 이미지 Base64 데이터 추가
         
         bot_message_text = "죄송합니다. API 응답을 가져오는 데 실패했습니다."
         explanation = ""
@@ -22,7 +23,7 @@ def chat_response(request):
 
         try:
             # 1. 채팅 상호작용 (컨텍스트 생성, API 호출, 응답 처리, 기억 저장)
-            bot_message_text, explanation, bot_message_obj = chat_service.process_chat_interaction(request, user_message_text, latitude, longitude)
+            bot_message_text, explanation, bot_message_obj = chat_service.process_chat_interaction(request, user_message_text, latitude, longitude, image_b64_data)
 
             # 2. 파인튜닝 데이터 로깅
             finetuning_service.anonymize_and_log_finetuning_data(request, user_message_text, bot_message_text)
@@ -46,8 +47,10 @@ def chat_response(request):
             user_profile.save()
 
         except Exception as e:
-            print(f"예상치 못한 오류: {e}")
-            bot_message_text = f"예상치 못한 오류가 발생했습니다: {e}"
+            import traceback
+            error_traceback = traceback.format_exc() # traceback을 문자열로 가져옵니다.
+            # 콘솔 출력은 문제가 있으므로, bot_message_text에 상세 traceback을 포함시킵니다.
+            bot_message_text = f"예상치 못한 오류가 발생했습니다: {e}\n\n--- 상세 오류 정보 ---\n{error_traceback}"
             character_emotion = "중립" # 오류 발생 시 기본 감정은 '중립'으로 설정
 
         timestamp = bot_message_obj.timestamp.isoformat() if bot_message_obj else timezone.now().isoformat()

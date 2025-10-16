@@ -32,6 +32,10 @@
                     {% endfor %}
                 </div>
                 <div class="chat-input">
+                    <input type="file" id="image-input" accept="image/*" style="display: none;">
+                    <button id="attach-image-button" class="icon-button">📎</button> <!-- 클립 아이콘 버튼 -->
+                    <img id="image-preview" src="" alt="Image Preview" style="max-width: 50px; max-height: 50px; margin-right: 10px; display: none;">
+                    <button id="clear-image-button" class="icon-button" style="display: none; margin-right: 10px;">❌</button> <!-- 이미지 지우기 버튼 -->
                     <input type="text" id="user-input" placeholder="메시지를 입력하세요...">
                     <button id="send-button">전송</button>
                     <div class="location-permission" style="display: flex; align-items: center; margin-left: 10px; font-size: 14px;">
