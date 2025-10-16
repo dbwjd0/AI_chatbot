@@ -243,11 +243,41 @@ def _call_openai_api(model_to_use, headers, messages):
 def _finalize_chat_interaction(request, user_message_text, response_json, history, api_key):
     """성공적인 LLM 응답을 처리하고 관련 데이터를 RDB와 벡터 DB에 저장합니다."""
     user = request.user
-    user_profile = user.profile
+    bot_message_text = "죄송합니다. AI가 응답을 생성하지 못했습니다." # 기본 대체 메시지
+    explanation = "AI 응답 처리 중 오류 발생."
+    bot_message_obj = None # 초기화 보장
 
-    content_from_llm = json.loads(response_json['choices'][0]['message']['content'])
-    bot_message_text = content_from_llm.get('answer', '').strip()
-    explanation = content_from_llm.get('explanation', '').strip()
+    try:
+        # 예상 경로가 존재하고 내용이 None이 아닌지 확인
+        if 'choices' not in response_json or not response_json['choices'] or \
+           'message' not in response_json['choices'][0] or \
+           'content' not in response_json['choices'][0]['message']:
+            raise ValueError("OpenAI API 응답에 'content' 필드가 누락되었습니다.")
+
+        content_from_llm_raw = response_json['choices'][0]['message']['content']
+
+        if content_from_llm_raw is None:
+            raise ValueError("OpenAI API 응답의 'content' 필드가 None입니다.")
+
+        try:
+            content_from_llm = json.loads(content_from_llm_raw)
+        except json.JSONDecodeError:
+            raise ValueError(f"LLM 응답이 유효한 JSON 형식이 아닙니다: {content_from_llm_raw[:100]}...") # 로그를 위해 자름
+
+        # 파싱된 JSON에 예상 키가 있는지 확인
+        if 'answer' not in content_from_llm or 'explanation' not in content_from_llm:
+            raise ValueError(f"LLM 응답 JSON에 'answer' 또는 'explanation' 키가 누락되었습니다: {content_from_llm}")
+
+        bot_message_text = content_from_llm.get('answer', '').strip()
+        explanation = content_from_llm.get('explanation', '').strip()
+
+    except (ValueError, KeyError, IndexError) as e:
+        bot_message_text = "뭔소리야" # 사용자 친화적 대체 메시지
+        explanation = f"LLM 응답 파싱 실패: {e}"
+    except Exception as e:
+        print(f"--- [예상치 못한 오류] LLM 응답 처리 중: {e} ---")
+        bot_message_text = "뭔소리야" # 사용자 친화적 대체 메시지
+        explanation = f"예상치 못한 오류 발생: {e}"
 
     # ChromaDB 컬렉션 가져오기
     collection = vector_service.get_or_create_collection()
@@ -259,8 +289,6 @@ def _finalize_chat_interaction(request, user_message_text, response_json, histor
     bot_message_obj = ChatMessage.objects.create(user=user, message=bot_message_text, is_user=False)
     vector_service.upsert_message(collection, bot_message_obj)
     
-
-
     # 사용자 속성 및 활동 추출 및 저장
     recent_history_for_extraction = history[:5]
     return bot_message_text, explanation, bot_message_obj

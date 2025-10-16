@@ -1,5 +1,5 @@
 #room {
-    background-image: url('img/room_bg.png');
+    background-image: url('img/room_bg2.png');
     background-size: cover;
     background-position: center;
     position: relative;
@@ -8,22 +8,20 @@
 
 #character {
     position: absolute;
-    bottom: 50px;
-    left: 50px;
-    width: 60px; /* Adjust size as needed */
-    height: 90px; /* Adjust size as needed */
-    background-image: url('img/char_default.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    transition: left 0.1s linear, top 0.1s linear;
+    bottom: 50px; /* 초기 위치 */
+    left: 50px;  /* 초기 위치 */
+    width: 60px; /* 필요에 따라 크기 조정 */
+    height: auto; /* 이미지 종횡비 유지 */
+    z-index: 10; /* 배경 위에 오도록 설정 */
+    transition: left 0.1s linear, top 0.1s linear; /* 부드러운 움직임 */
 }
 
 #computer {
     position: absolute;
     top: 40px;
     right: 50px;
-    width: 80px; /* Adjust size */
-    height: 70px; /* Adjust size */
+    width: 80px; /* 크기 조정 */
+    height: 70px; /* 크기 조정 */
     background-color: #555;
     border: 5px solid #333;
     border-radius: 10px;
@@ -37,7 +35,7 @@
     left: 10%;
     width: 80%;
     height: 60%;
-    background-color: #87CEEB; /* Screen color */
+    background-color: #87CEEB; /* 화면 색상 */
     border-radius: 5px;
 }
 

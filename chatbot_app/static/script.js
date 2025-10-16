@@ -9,6 +9,11 @@ document.addEventListener('DOMContentLoaded', function() {
     let isLoading = false;
     let hasNextPage = chatLog.dataset.hasNextPage === 'true';
 
+    function getValidDate(timestamp) {
+        const date = new Date(timestamp);
+        return !isNaN(date.getTime()) ? date : null;
+    }
+
     // --- 로직 함수 ---
     function createMessageDiv(msg) {
         const messageDiv = document.createElement('div');
@@ -19,8 +24,11 @@ document.addEventListener('DOMContentLoaded', function() {
         p.textContent = msg.message;
         messageDiv.appendChild(p);
 
-        const time = new Date(msg.timestamp);
-        const timeString = `(${(time.getHours()).toString().padStart(2, '0')}:${(time.getMinutes()).toString().padStart(2, '0')})`;
+        const time = getValidDate(msg.timestamp);
+        let timeString = '';
+        if (time) {
+            timeString = `(${(time.getHours()).toString().padStart(2, '0')}:${(time.getMinutes()).toString().padStart(2, '0')})`;
+        }
         const timeSpan = document.createElement('span');
         timeSpan.classList.add('timestamp');
         timeSpan.textContent = timeString;
@@ -38,16 +46,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
         messages.forEach(message => {
             const msgTimestamp = message.dataset.timestamp;
-            const msgDate = new Date(msgTimestamp).toDateString();
+            const date = getValidDate(msgTimestamp);
 
-            if (lastDate !== msgDate) {
-                const date = new Date(msgTimestamp);
-                const formattedDate = `[${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일]`;
+            if (!date) {
+                return;
+            }
+
+            let formattedDate = `[${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일]`;
+
+            if (lastDate !== formattedDate) {
                 const separatorDiv = document.createElement('div');
                 separatorDiv.classList.add('date-separator');
                 separatorDiv.textContent = formattedDate;
                 chatLog.insertBefore(separatorDiv, message);
-                lastDate = msgDate;
+                lastDate = formattedDate;
             }
         });
     }
@@ -174,9 +186,10 @@ document.addEventListener('DOMContentLoaded', function() {
     userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
     // 초기화
-    if (typeof chatHistory !== 'undefined' && chatHistory) {
+    if (typeof chatHistory !== 'undefined' && chatHistory && chatHistory.length > 0) {
         displayMessages(chatHistory);
     } else {
+        updateDateSeparators();
         chatLog.scrollTop = chatLog.scrollHeight;
     }
 });

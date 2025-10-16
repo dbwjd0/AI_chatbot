@@ -14,18 +14,25 @@ QUESTIONS = [
 
 def parse_onboarding_answer(answer, fact_type):
     """온보딩 답변을 파싱하여 핵심 정보만 추출합니다."""
-    if fact_type == 'gender':
-        if '남자' in answer: return '남자'
-        if '여자' in answer: return '여자'
-    elif fact_type == 'age':
+    cleaned_answer = None
+
+    if fact_type == '이름':
+        cleaned_answer = answer.strip()
+    elif fact_type == '성별':
+        if '남자' in answer: cleaned_answer = '남자'
+        elif '여자' in answer: cleaned_answer = '여자'
+    elif fact_type == '나이':
         match = re.search(r'\d+', answer)
-        if match: return match.group(0)
+        if match: cleaned_answer = match.group(0)
     elif fact_type == 'mbti':
         match = re.search(r'[A-Z]{4}', answer.upper())
-        if match: return match.group(0)
+        if match: cleaned_answer = match.group(0)
     
-    # 이름 또는 파싱 실패 시 원본 답변 반환
-    return answer
+    # 파싱에 실패했거나 해당 fact_type에 대한 특정 로직이 없는 경우 원본 답변을 반환 (이름의 경우 이미 처리됨)
+    # 다른 fact_type의 경우, 파싱 실패 시 None을 반환하여 저장되지 않도록 하거나, 
+    # setup_view에서 cleaned_answer가 None일 경우 UserAttribute를 생성하지 않도록 처리해야 함.
+    # 여기서는 클라이언트 측 유효성 검사가 있으므로, 파싱 실패 시 None을 반환하는 것이 더 안전함.
+    return cleaned_answer if cleaned_answer is not None else ""
 
 @login_required
 def setup_view(request):
@@ -38,25 +45,31 @@ def setup_view(request):
             current_question = QUESTIONS[onboarding_step]
             cleaned_answer = parse_onboarding_answer(answer, current_question['fact_type'])
             
-            UserAttribute.objects.create(
-                user=request.user,
-                fact_type=current_question['fact_type'],
-                content=cleaned_answer
-            )
+            if cleaned_answer:
+                UserAttribute.objects.create(
+                    user=request.user,
+                    fact_type=current_question['fact_type'],
+                    content=cleaned_answer
+                )
             
             onboarding_step += 1
             request.session['onboarding_step'] = onboarding_step
 
     if onboarding_step >= len(QUESTIONS):
-        # Onboarding complete
+        # 온보딩 완료
         profile = request.user.profile
         profile.is_onboarding_complete = True
         profile.save()
         del request.session['onboarding_step']
-        return redirect('room')
+        return render(request, 'setup.html', {
+            'setup_complete': True,
+            'completion_message': '좋아! 너에 대해 알게 됐어',
+            'next_step_instruction': '엔터 키를 누르면 대화 화면으로 넘어갈 수 있어.'
+        })
 
     question_to_ask = QUESTIONS[onboarding_step]['question']
-    return render(request, 'setup.html', {'question': question_to_ask})
+    fact_type_for_validation = QUESTIONS[onboarding_step]['fact_type']
+    return render(request, 'setup.html', {'question': question_to_ask, 'fact_type': fact_type_for_validation})
 
 @login_required
 def room(request):
@@ -116,7 +129,7 @@ def ai_status(request):
     core_facts = list(
         UserAttribute.objects.filter(user=request.user).values('fact_type', 'content')
     )
-    # Serialize relationships for pagination in JavaScript
+    # JavaScript에서 페이지네이션을 위해 관계를 직렬화
     user_relationships = list(
         UserRelationship.objects.filter(user=request.user).order_by('name').values(
             'serial_code', 'name', 'relationship_type', 'position', 'traits'
