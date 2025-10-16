@@ -176,9 +176,16 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
     try:
         user_relationships = UserRelationship.objects.filter(user=user)
         if user_relationships.exists():
-            # ... (기존 관계 컨텍스트 로직과 동일) ...
-            relationship_strings = [] # 이 부분은 설명을 위해 생략, 실제 코드는 유지
-            user_relationship_context = "[사용자의 인간관계: ... ]"
+            relationship_strings = []
+            for rel in user_relationships:
+                details = f"{rel.name} ({rel.relationship_type})"
+                if rel.position:
+                    details += f", 포지션: {rel.position}"
+                if rel.traits:
+                    details += f", 특징: {rel.traits}"
+                relationship_strings.append(details)
+            
+            user_relationship_context = "[사용자의 인간관계: " + "; ".join(relationship_strings) + "]"
             print(f"--- [디버그] 사용자 관계 컨텍스트: {user_relationship_context} ---")
     except Exception as e:
         print(f"--- Could not build user relationship context due to an error: {e} ---")

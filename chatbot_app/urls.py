@@ -12,4 +12,5 @@ urlpatterns = [
     path('logout/', auth.logout_view, name='logout'),
     path('ai_status/', main.ai_status, name='ai_status'),
     path('schedule/', schedule.schedule_view, name='schedule'),
+    path('get_proactive_message/', main.get_proactive_message_view, name='get_proactive_message'),
 ]
