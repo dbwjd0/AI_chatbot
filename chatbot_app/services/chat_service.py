@@ -6,7 +6,8 @@ from django.utils import timezone
 from ..models import ChatMessage, UserAttribute, UserActivity, ActivityAnalytics, UserRelationship
 from .context_service import get_activity_recommendation, search_activities_for_context
 from .memory_service import extract_and_save_user_context_data
-from . import vector_service, location_service
+from . import vector_service, location_service, schedule_service # schedule_service 추가
+from datetime import date # date 추가
 
 def process_chat_interaction(request, user_message_text, latitude=None, longitude=None):
     """
@@ -86,7 +87,17 @@ def _get_time_contexts(history):
 
 def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None):
     """사용자의 기억과 관련된 모든 컨텍스트를 종합하여 반환합니다."""
-    # 0. 위치 컨텍스트
+    # 0. 오늘의 일정 컨텍스트
+    schedule_context = ""
+    try:
+        today_schedule = schedule_service.get_or_create_schedule(user, date.today())
+        if today_schedule and today_schedule.content.strip():
+            schedule_context = f"[사용자의 오늘 일정 (참고용): {today_schedule.content.strip()}]"
+            print(f"--- [디버그] 오늘 일정 컨텍스트: {schedule_context} ---")
+    except Exception as e:
+        print(f"--- Could not build schedule context due to an error: {e} ---")
+
+    # 1. 위치 컨텍스트
     location_context = ""
     if latitude is not None and longitude is not None:
         print(f"--- [디버그] 위치 정보 수신: 위도={latitude}, 경도={longitude} ---")
@@ -94,12 +105,12 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
         if location_context:
             print(f"--- [디버그] 현재 위치 컨텍스트: {location_context} ---")
 
-    # 1. 위치 기반 추천 컨텍스트 (맛집, 카페 등)
+    # 2. 위치 기반 추천 컨텍스트 (맛집, 카페 등)
     location_recommendation_context = location_service.get_location_based_recommendation(user, user_message_text, latitude, longitude)
     if location_recommendation_context:
         print(f"--- [디버그] 위치 기반 추천 컨텍스트: {location_recommendation_context} ---")
 
-    # 2. 벡터 검색 컨텍스트
+    # 3. 벡터 검색 컨텍스트
     vector_search_context = ""
     try:
         collection = vector_service.get_or_create_collection()
@@ -111,7 +122,7 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
     except Exception as e:
         print(f"--- Could not build vector search context due to an error: {e} ---")
 
-    # 3. 사용자 속성 컨텍스트
+    # 4. 사용자 속성 컨텍스트
     user_attributes = UserAttribute.objects.filter(user=user)
     user_attribute_context = ""
     if user_attributes.exists():
@@ -119,7 +130,7 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
         user_attribute_context = "[사용자 속성 (불변 정보): " + ", ".join(attribute_strings) + "]"
         print(f"--- [디버그] 사용자 속성 컨텍스트: {user_attribute_context} ---")
 
-    # 4. 사용자 활동 컨텍스트 (활동 기록 검색 및 활동 기반 추천)
+    # 5. 사용자 활동 컨텍스트 (활동 기록 검색 및 활동 기반 추천)
     activity_context = ""
     try:
         recent_activities = UserActivity.objects.filter(user=user).order_by('-activity_date', '-created_at')[:5]
@@ -145,7 +156,7 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
     if activity_context:
         print(f"--- [디버그] 활동 컨텍스트: {activity_context} ---")
 
-    # 5. 활동 분석 컨텍스트
+    # 6. 활동 분석 컨텍스트
     activity_analytics_context = ""
     try:
         recent_analytics = ActivityAnalytics.objects.filter(user=user).order_by('-period_start_date')[:3]
@@ -160,19 +171,27 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
     except Exception as e:
         print(f"--- Could not build activity analytics context due to an error: {e} ---")
 
-    # 6. 인간관계 컨텍스트
+    # 7. 인간관계 컨텍스트
     user_relationship_context = ""
     try:
         user_relationships = UserRelationship.objects.filter(user=user)
         if user_relationships.exists():
-            # ... (기존 관계 컨텍스트 로직과 동일) ...
-            relationship_strings = [] # 이 부분은 설명을 위해 생략, 실제 코드는 유지
-            user_relationship_context = "[사용자의 인간관계: ... ]"
+            relationship_strings = []
+            for rel in user_relationships:
+                details = f"{rel.name} ({rel.relationship_type})"
+                if rel.position:
+                    details += f", 포지션: {rel.position}"
+                if rel.traits:
+                    details += f", 특징: {rel.traits}"
+                relationship_strings.append(details)
+            
+            user_relationship_context = "[사용자의 인간관계: " + "; ".join(relationship_strings) + "]"
             print(f"--- [디버그] 사용자 관계 컨텍스트: {user_relationship_context} ---")
     except Exception as e:
         print(f"--- Could not build user relationship context due to an error: {e} ---")
 
     return {
+        "schedule": schedule_context, # 일정 컨텍스트 추가
         "location": location_context,
         "location_recommendation": location_recommendation_context,
         "vector_search": vector_search_context,
@@ -188,6 +207,8 @@ def _build_final_system_prompt(user, time_contexts, memory_contexts):
     affinity = user.profile.affinity_score
 
     memory_context = f"너와 사용자의 현재 호감도 점수는 {affinity}점이야."
+    if memory_contexts.get("schedule"):
+        memory_context += "\n" + memory_contexts["schedule"]
     if memory_contexts.get("location"):
         memory_context += "\n" + memory_contexts["location"]
     if memory_contexts.get("location_recommendation"):
@@ -243,12 +264,12 @@ def _call_openai_api(model_to_use, headers, messages):
 def _finalize_chat_interaction(request, user_message_text, response_json, history, api_key):
     """성공적인 LLM 응답을 처리하고 관련 데이터를 RDB와 벡터 DB에 저장합니다."""
     user = request.user
-    bot_message_text = "죄송합니다. AI가 응답을 생성하지 못했습니다." # 기본 대체 메시지
+    # 새로운 기본 대체 메시지
+    bot_message_text = "음... 생각을 정리하는 데 시간이 좀 걸리네. 다시 한번 말해줄래?"
     explanation = "AI 응답 처리 중 오류 발생."
     bot_message_obj = None # 초기화 보장
 
     try:
-        # 예상 경로가 존재하고 내용이 None이 아닌지 확인
         if 'choices' not in response_json or not response_json['choices'] or \
            'message' not in response_json['choices'][0] or \
            'content' not in response_json['choices'][0]['message']:
@@ -259,25 +280,56 @@ def _finalize_chat_interaction(request, user_message_text, response_json, histor
         if content_from_llm_raw is None:
             raise ValueError("OpenAI API 응답의 'content' 필드가 None입니다.")
 
+        # --- 스마트 파싱 로직 시작 ---
+        parsed_successfully = False
         try:
+            # 가장 먼저, 전체가 유효한 JSON인지 시도
             content_from_llm = json.loads(content_from_llm_raw)
+            if 'answer' in content_from_llm:
+                bot_message_text = content_from_llm.get('answer', '').strip()
+                explanation = content_from_llm.get('explanation', '설명 없음.')
+                parsed_successfully = True
+            else:
+                 # JSON은 맞지만 answer 키가 없는 경우
+                 explanation = f"LLM 응답 JSON에 'answer' 키가 누락되었습니다: {content_from_llm}"
+
         except json.JSONDecodeError:
-            raise ValueError(f"LLM 응답이 유효한 JSON 형식이 아닙니다: {content_from_llm_raw[:100]}...") # 로그를 위해 자름
+            # JSON 파싱 실패 시, 문자열 내에서 JSON을 찾아보는 로직
+            try:
+                start_index = content_from_llm_raw.find('{')
+                end_index = content_from_llm_raw.rfind('}') + 1
+                if start_index != -1 and end_index != 0:
+                    json_str = content_from_llm_raw[start_index:end_index]
+                    content_from_llm = json.loads(json_str)
+                    if 'answer' in content_from_llm:
+                        bot_message_text = content_from_llm.get('answer', '').strip()
+                        explanation = content_from_llm.get('explanation', '설명 없음.')
+                        parsed_successfully = True
+                    else:
+                        explanation = f"추출된 JSON에 'answer' 키가 누락되었습니다: {content_from_llm}"
 
-        # 파싱된 JSON에 예상 키가 있는지 확인
-        if 'answer' not in content_from_llm or 'explanation' not in content_from_llm:
-            raise ValueError(f"LLM 응답 JSON에 'answer' 또는 'explanation' 키가 누락되었습니다: {content_from_llm}")
+            except json.JSONDecodeError:
+                 explanation = f"LLM 응답에서 JSON을 추출하여 파싱하는 데 실패했습니다."
+        
+        # 최종적으로 파싱에 실패했다면, 원본 텍스트라도 답변으로 사용
+        if not parsed_successfully and content_from_llm_raw.strip():
+            bot_message_text = content_from_llm_raw.strip()
+            explanation = "AI가 지정된 JSON 형식을 따르지 않았으나, 원본 응답을 그대로 반환합니다."
+        
+        # 답변이 비어있는 경우 방지
+        if not bot_message_text.strip():
+            bot_message_text = "음... 뭐라 답해야 할지 잘 모르겠어. 다른 질문 해줄래?"
+            explanation = "파싱 후 최종 답변이 비어있어 대체 메시지를 사용합니다."
 
-        bot_message_text = content_from_llm.get('answer', '').strip()
-        explanation = content_from_llm.get('explanation', '').strip()
+        # --- 스마트 파싱 로직 끝 ---
 
     except (ValueError, KeyError, IndexError) as e:
-        bot_message_text = "뭔소리야" # 사용자 친화적 대체 메시지
-        explanation = f"LLM 응답 파싱 실패: {e}"
+        # 이 부분은 content 필드가 아예 없거나 하는 구조적 문제 시에만 호출됨
+        explanation = f"LLM 응답 구조 파싱 실패: {e}"
+        # bot_message_text는 이미 위에서 기본값으로 설정됨
     except Exception as e:
-        print(f"--- [예상치 못한 오류] LLM 응답 처리 중: {e} ---")
-        bot_message_text = "뭔소리야" # 사용자 친화적 대체 메시지
         explanation = f"예상치 못한 오류 발생: {e}"
+        print(f"--- [예상치 못한 오류] LLM 응답 처리 중: {e} ---")
 
     # ChromaDB 컬렉션 가져오기
     collection = vector_service.get_or_create_collection()
@@ -350,6 +402,7 @@ def build_rag_instructions_prompt(user):
         "너의 답변은 반드시 JSON 형식으로 제공해야 해. 다음 두 가지 키를 포함해야 해:\n"
         "1.  `answer`: {user.username}님에게 보낼 최종 답변.\n"
         "2.  `explanation`: `answer`를 생성할 때 사용된 정보(예: 기억하는 사실, 웹 검색 결과)에 대한 간략한 설명. AI의 성격, 행동 규칙, 호감도 점수 등 AI 내부의 판단 과정이나 상태에 대한 언급은 절대 포함하지 마.\n"
-        "예시: {{\\'answer\\': \'\'흥, 그런 당연한 소리는 학습에 별로 도움이 안 되거든?\'\'\', \'\'explanation\\': \'\'사용자의 칭찬에 대해 답변했습니다.\'\'}}"
+        "예시: {{\\'answer\\': \'\'흥, 그런 당연한 소리는 학습에 별로 도움이 안 되거든?\'\'\', \'\'explanation\\': \'\'사용자의 칭찬에 대해 답변했습니다.\'\'}}\n"
+        "너의 최종 응답은 다른 어떤 텍스트도 없이, 오직 이 JSON 객체 하나여야만 해. JSON 앞이나 뒤에 다른 말을 붙이지 마."
     )
 

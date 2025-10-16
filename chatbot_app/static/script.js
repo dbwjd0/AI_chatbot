@@ -192,4 +192,24 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDateSeparators();
         chatLog.scrollTop = chatLog.scrollHeight;
     }
+
+    // 능동적인 메시지 폴링
+    setInterval(async () => {
+        try {
+            const response = await fetch('/get_proactive_message/', {
+                method: 'GET',
+                headers: { 'X-CSRFToken': getCookie('csrftoken') },
+            });
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            if (data.message) {
+                const botMessage = { message: data.message, is_user: false, timestamp: data.timestamp, character_emotion: data.character_emotion };
+                displayMessages([botMessage]);
+                // 캐릭터 이미지를 즉시 업데이트할 수도 있습니다.
+                chatbotCharacter.src = STATIC_URLS[data.character_emotion] || STATIC_URLS.default;
+            }
+        } catch (error) {
+            console.error('Error fetching proactive message:', error);
+        }
+    }, 60000); // 60초마다 폴링 (필요에 따라 조정)
 });

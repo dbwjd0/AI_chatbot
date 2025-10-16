@@ -53,6 +53,112 @@
 }
 
 #fade-overlay.visible {
+
     opacity: 1;
+
     visibility: visible;
+
+}
+
+
+
+/* Schedule Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5); /* Darker backdrop */
+}
+
+.modal-content {
+    font-family: 'VT323', monospace; /* Pixel font */
+    background-color: #fff;
+    color: #333;
+    margin: 15% auto;
+    padding: 20px;
+    padding-top: 40px; /* Space for rings */
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 2px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+/* Spring rings effect */
+.modal-content::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background-image: radial-gradient(circle at center, #888 2px, transparent 2px);
+    background-size: 25px 100%;
+    background-repeat: repeat-x;
+    background-position: 10px;
+}
+
+.modal-content h2 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.close-button {
+    color: #888;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#schedule-textarea {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    color: #333;
+    width: 100%;
+    height: 250px;
+    margin-top: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    /* Ruled lines effect - Adjusted for alignment */
+    background-image: linear-gradient(to top, #E8F0FE 1px, transparent 1px);
+    background-size: 100% 24px;
+    background-position-y: 9px; /* Align lines with text */
+    line-height: 24px;
+    resize: none;
+    outline: none;
+}
+
+#save-schedule-btn {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    background-color: #444;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    float: right;
+    margin-top: 15px;
+}
+
+#save-schedule-btn:hover {
+    background-color: #000;
 }
