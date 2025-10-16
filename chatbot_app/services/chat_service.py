@@ -165,9 +165,16 @@ def _get_memory_contexts(user, user_message_text, latitude=None, longitude=None)
     try:
         user_relationships = UserRelationship.objects.filter(user=user)
         if user_relationships.exists():
-            # ... (기존 관계 컨텍스트 로직과 동일) ...
-            relationship_strings = [] # 이 부분은 설명을 위해 생략, 실제 코드는 유지
-            user_relationship_context = "[사용자의 인간관계: ... ]"
+            relationship_strings = []
+            for rel in user_relationships:
+                details = f"{rel.name} ({rel.relationship_type})"
+                if rel.position:
+                    details += f", 포지션: {rel.position}"
+                if rel.traits:
+                    details += f", 특징: {rel.traits}"
+                relationship_strings.append(details)
+            
+            user_relationship_context = "[사용자의 인간관계: " + "; ".join(relationship_strings) + "]"
             print(f"--- [디버그] 사용자 관계 컨텍스트: {user_relationship_context} ---")
     except Exception as e:
         print(f"--- Could not build user relationship context due to an error: {e} ---")
@@ -345,11 +352,12 @@ def build_rag_instructions_prompt(user):
         "이 원칙을 최우선으로 삼아, 모든 정보를 너의 재치와 창의력으로 녹여내서 답변해줘.\n\n"
         "## 대화 예시 ##\n"
         f"{user.username}님: 너 정말 귀엽게 생겼다!\n"
-        f"아이: 흥, 그런 당연한 소리는 학습에 별로 도움이 안 되거든? ...뭐, 틀린 말은 아니지만. (살짝 으쓱하며) {user.username}님은 나한테 뭘 더 가르쳐 줄 수 있어?\n"
-        "## 응답 형식 ##\n"
-        "너의 답변은 반드시 JSON 형식으로 제공해야 해. 다음 두 가지 키를 포함해야 해:\n"
-        "1.  `answer`: {user.username}님에게 보낼 최종 답변.\n"
-        "2.  `explanation`: `answer`를 생성할 때 사용된 정보(예: 기억하는 사실, 웹 검색 결과)에 대한 간략한 설명. AI의 성격, 행동 규칙, 호감도 점수 등 AI 내부의 판단 과정이나 상태에 대한 언급은 절대 포함하지 마.\n"
+        f"아이: 흥, 그런 당연한 소리는 학습에 별로 도움이 안 되거든? ...뭐, 틀린 말은 아니지만. (살짝 으쓱하며) {user.username}님은 나한테 뭘 더 가르쳐 줄 수 있어?\n\n"
+        "--- 중요: 응답은 반드시 아래 JSON 형식으로만 제공해야 합니다. 다른 형식은 허용되지 않습니다. ---\n"
+        "{\n"
+        "  \"answer\": \"{user.username}님에게 보낼 최종 답변.\",\n"
+        "  \"explanation\": \"answer를 생성할 때 사용된 정보(예: 기억하는 사실, 웹 검색 결과)에 대한 간략한 설명. AI의 성격, 행동 규칙, 호감도 점수 등 AI 내부의 판단 과정이나 상태에 대한 언급은 절대 포함하지 마.\"\n"
+        "}\n"
         "예시: {{\\'answer\\': \'\'흥, 그런 당연한 소리는 학습에 별로 도움이 안 되거든?\'\'\', \'\'explanation\\': \'\'사용자의 칭찬에 대해 답변했습니다.\'\'}}"
     )
 
