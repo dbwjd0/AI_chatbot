@@ -3,21 +3,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const room = document.getElementById('room');
     const computer = document.getElementById('computer');
     const overlay = document.getElementById('fade-overlay');
-    const step = 50; // 10px per move
+    const step = 10;
 
-    // Initial position
-    let charX = 50;
-    let charY = room.offsetHeight - 90 - 50; // character height - bottom offset
+    let charX = parseFloat(getComputedStyle(character).left);
+    let charY = parseFloat(getComputedStyle(character).top);
+
+    if (isNaN(charX)) charX = 50;
+    if (isNaN(charY)) charY = room.offsetHeight - character.offsetHeight - 50;
+
     character.style.left = `${charX}px`;
     character.style.top = `${charY}px`;
 
     computer.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent immediate navigation
+        event.preventDefault();
         overlay.classList.add('visible');
-
         setTimeout(() => {
-            window.location.href = computer.href; // Navigate after fade
-        }, 200); // Match the CSS transition duration
+            window.location.href = computer.href;
+        }, 200);
     });
 
     document.addEventListener('keydown', (event) => {
@@ -37,8 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'ArrowRight':
                 charX = Math.min(roomRect.width - charRect.width, charX + step);
                 break;
+            default:
+                return;
         }
+
         character.style.left = `${charX}px`;
         character.style.top = `${charY}px`;
+        
+        event.preventDefault();
     });
 });
