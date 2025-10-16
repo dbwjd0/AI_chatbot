@@ -56,7 +56,7 @@ def setup_view(request):
             request.session['onboarding_step'] = onboarding_step
 
     if onboarding_step >= len(QUESTIONS):
-        # Onboarding complete
+        # 온보딩 완료
         profile = request.user.profile
         profile.is_onboarding_complete = True
         profile.save()
@@ -129,7 +129,7 @@ def ai_status(request):
     core_facts = list(
         UserAttribute.objects.filter(user=request.user).values('fact_type', 'content')
     )
-    # Serialize relationships for pagination in JavaScript
+    # JavaScript에서 페이지네이션을 위해 관계를 직렬화
     user_relationships = list(
         UserRelationship.objects.filter(user=request.user).order_by('name').values(
             'serial_code', 'name', 'relationship_type', 'position', 'traits'

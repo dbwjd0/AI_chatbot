@@ -9,6 +9,11 @@ document.addEventListener('DOMContentLoaded', function() {
     let isLoading = false;
     let hasNextPage = chatLog.dataset.hasNextPage === 'true';
 
+    function getValidDate(timestamp) {
+        const date = new Date(timestamp);
+        return !isNaN(date.getTime()) ? date : null;
+    }
+
     // --- 로직 함수 ---
     function createMessageDiv(msg) {
         const messageDiv = document.createElement('div');
@@ -19,12 +24,10 @@ document.addEventListener('DOMContentLoaded', function() {
         p.textContent = msg.message;
         messageDiv.appendChild(p);
 
-        const time = new Date(msg.timestamp);
+        const time = getValidDate(msg.timestamp);
         let timeString = '';
-        if (!isNaN(time.getTime())) { // Check if date is valid
+        if (time) {
             timeString = `(${(time.getHours()).toString().padStart(2, '0')}:${(time.getMinutes()).toString().padStart(2, '0')})`;
-        } else {
-            timeString = '(시간 없음)'; // Fallback for invalid date
         }
         const timeSpan = document.createElement('span');
         timeSpan.classList.add('timestamp');
@@ -43,23 +46,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         messages.forEach(message => {
             const msgTimestamp = message.dataset.timestamp;
-            const date = new Date(msgTimestamp);
-            let formattedDate = '';
-            if (!isNaN(date.getTime())) { // Check if date is valid
-                const today = new Date();
-                const yesterday = new Date(today);
-                yesterday.setDate(today.getDate() - 1);
+            const date = getValidDate(msgTimestamp);
 
-                if (date.toDateString() === today.toDateString()) {
-                    formattedDate = '[오늘]';
-                } else if (date.toDateString() === yesterday.toDateString()) {
-                    formattedDate = '[어제]';
-                } else {
-                    formattedDate = `[${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일]`;
-                }
-            } else {
-                formattedDate = '[날짜 없음]'; // Fallback for invalid date
+            if (!date) {
+                return;
             }
+
+            let formattedDate = `[${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일]`;
 
             if (lastDate !== formattedDate) {
                 const separatorDiv = document.createElement('div');
@@ -196,19 +189,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof chatHistory !== 'undefined' && chatHistory && chatHistory.length > 0) {
         displayMessages(chatHistory);
     } else {
-        const initialMessage = chatLog.querySelector('.bot-message');
-        if (initialMessage) {
-            const msgTimestamp = initialMessage.dataset.timestamp;
-            const time = new Date(msgTimestamp);
-            let timeString = '';
-            if (!isNaN(time.getTime())) {
-                timeString = `(${(time.getHours()).toString().padStart(2, '0')}:${(time.getMinutes()).toString().padStart(2, '0')})`;
-            }
-            const timeSpan = document.createElement('span');
-            timeSpan.classList.add('timestamp');
-            timeSpan.textContent = timeString;
-            initialMessage.appendChild(timeSpan);
-        }
         updateDateSeparators();
         chatLog.scrollTop = chatLog.scrollHeight;
     }

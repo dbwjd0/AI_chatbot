@@ -6,22 +6,22 @@
     overflow: hidden;
 }
 
-#movable-character {
+#character {
     position: absolute;
-    bottom: 50px; /* Initial position */
-    left: 50px;  /* Initial position */
-    width: 60px; /* Adjust size as needed */
-    height: auto; /* Maintain aspect ratio for img */
-    z-index: 10; /* Ensure it's above background */
-    transition: left 0.1s linear, top 0.1s linear; /* Smooth movement */
+    bottom: 50px; /* 초기 위치 */
+    left: 50px;  /* 초기 위치 */
+    width: 60px; /* 필요에 따라 크기 조정 */
+    height: auto; /* 이미지 종횡비 유지 */
+    z-index: 10; /* 배경 위에 오도록 설정 */
+    transition: left 0.1s linear, top 0.1s linear; /* 부드러운 움직임 */
 }
 
 #computer {
     position: absolute;
     top: 40px;
     right: 50px;
-    width: 80px; /* Adjust size */
-    height: 70px; /* Adjust size */
+    width: 80px; /* 크기 조정 */
+    height: 70px; /* 크기 조정 */
     background-color: #555;
     border: 5px solid #333;
     border-radius: 10px;
@@ -35,7 +35,7 @@
     left: 10%;
     width: 80%;
     height: 60%;
-    background-color: #87CEEB; /* Screen color */
+    background-color: #87CEEB; /* 화면 색상 */
     border-radius: 5px;
 }
 

@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const DEFAULT_IMAGE_SRC = getStaticUrl('img/char_carrot_default.png');
     const FINAL_IMAGE_SRC = getStaticUrl('img/char_default.png');
 
-    // Validation functions
+    // 유효성 검사 함수
     function isValidName(value) {
         const trimmedValue = value.trim();
         if (trimmedValue.length < 2) return false;
@@ -33,10 +33,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function isValidAge(value) {
-        const ageMatch = value.match(/\d+/); // Extract digits
+        const ageMatch = value.match(/\d+/); // 숫자 추출
         if (!ageMatch) return false;
         const age = parseInt(ageMatch[0]);
-        return age > 0 && age < 150; // Numeric and reasonable age
+        return age > 0 && age < 150; // 숫자 형식 및 적절한 나이
     }
 
     function isValidMBTI(value) {
@@ -59,56 +59,56 @@ document.addEventListener('DOMContentLoaded', function() {
         return isValid;
     }
 
-    // Check if setup is complete
+    // 설정이 완료되었는지 확인
     if (setupCompleteFlag && setupCompleteFlag.value === 'true') {
-        characterImage.src = FINAL_IMAGE_SRC; // Show final image (char_default.png)
+        characterImage.src = FINAL_IMAGE_SRC; // 최종 이미지 표시 (char_default.png)
         if (setupForm) {
             setupForm.style.display = 'none';
         }
         
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                window.location.href = '/'; // Redirect directly
+                window.location.href = '/'; // 바로 리디렉션
             }
         });
         return; 
     }
 
-    // Auto-focus on input when page loads (if setup is not complete)
+    // 페이지 로드 시 입력창에 자동 포커스 (설정이 완료되지 않은 경우)
     answerInput.focus();
 
-    // Attach event listeners only if setup is NOT complete
+    // 설정이 완료되지 않은 경우에만 이벤트 리스너 연결
     setupForm.addEventListener('submit', function(event) {
-        // event.preventDefault(); // Removed from here
+        // event.preventDefault(); // 여기서 제거됨
 
         const factType = factTypeInput.value;
         const inputValue = answerInput.value.trim();
         const isValid = performValidation(factType, inputValue);
 
         if (!isValid) {
-            event.preventDefault(); // Only prevent default if validation fails
+            event.preventDefault(); // 유효성 검사에 실패한 경우에만 기본 동작 방지
             characterImage.src = ANGRY_IMAGE_SRC;
             questionText.textContent = '뭐야?? 제대로 알려줘!!!';
-            answerInput.value = ''; // Clear the input field
-            answerInput.disabled = true; // Disable input
-            setupForm.querySelector('button[type="submit"]').disabled = true; // Disable submit button
+            answerInput.value = ''; // 입력 필드 지우기
+            answerInput.disabled = true; // 입력 비활성화
+            setupForm.querySelector('button[type="submit"]').disabled = true; // 제출 버튼 비활성화
 
             setTimeout(() => {
                 characterImage.src = DEFAULT_IMAGE_SRC;
                 questionText.textContent = originalQuestionText;
-                answerInput.disabled = false; // Re-enable input
-                setupForm.querySelector('button[type="submit"]').disabled = false; // Re-enable submit button
-                answerInput.focus(); // Focus for re-entry
-            }, 1500); // 1.5-second delay
+                answerInput.disabled = false; // 입력 다시 활성화
+                setupForm.querySelector('button[type="submit"]').disabled = false; // 제출 버튼 다시 활성화
+                answerInput.focus(); // 재입력을 위해 포커스
+            }, 1500); // 1.5초 지연
         } else {
-            // If valid, the form will submit naturally because preventDefault was not called
+            // 유효한 경우, preventDefault가 호출되지 않았으므로 폼이 자연스럽게 제출됨
             characterImage.src = DEFAULT_IMAGE_SRC;
             questionText.textContent = originalQuestionText;
-            // setupForm.submit(); // Removed this line as it's no longer needed
+            // setupForm.submit(); // 더 이상 필요하지 않으므로 이 줄 제거
         }
     });
 
-    // Logic to reset image and question text if user starts typing after an error
+    // 오류 후 사용자가 입력을 시작하면 이미지와 질문 텍스트를 재설정하는 로직
     answerInput.addEventListener('input', function() {
         if (characterImage.src === ANGRY_IMAGE_SRC) {
             characterImage.src = DEFAULT_IMAGE_SRC;
