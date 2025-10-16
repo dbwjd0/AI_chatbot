@@ -1,8 +1,8 @@
 import json
 import os
-import requests
 from django.utils import timezone
 from typing import Optional, Dict, Any, Tuple
+from openai import OpenAI, APIError
 
 # 상대 경로 임포트는 현재 파일이 특정 패키지 구조 내에 있음을 가정합니다.
 from ..models import ChatMessage, UserAttribute, UserActivity, ActivityAnalytics, UserRelationship
@@ -209,21 +209,19 @@ def _prepare_llm_messages(final_system_prompt: str, history: Any, user_message_t
     return messages
 
 
-def _call_openai_api(model_to_use: str, headers: Dict[str, str], messages: list) -> Dict[str, Any]:
-    """OpenAI API를 호출하고 응답 JSON을 반환합니다."""
+def _call_openai_api(client: OpenAI, model_to_use: str, messages: list) -> Dict[str, Any]:
+    """OpenAI API를 최신 openai 라이브러리를 사용하여 호출하고 응답 JSON을 반환합니다."""
     print(f"--- Using Model: {model_to_use} ---")
-    data = { 
-        "model": model_to_use, 
-        "messages": messages, 
-        "temperature": 0.7, 
-        "top_p": 0.9, 
-        "frequency_penalty": 0.2, 
-        "presence_penalty": 0.1,
-        "response_format": {"type": "json_object"} 
-    }
-    response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=data)
-    response.raise_for_status()
-    return response.json()
+    response = client.chat.completions.create(
+        model=model_to_use,
+        messages=messages,
+        temperature=0.7,
+        top_p=0.9,
+        frequency_penalty=0.2,
+        presence_penalty=0.1,
+        response_format={"type": "json_object"}
+    )
+    return response.model_dump()
 
 def _finalize_chat_interaction(request, user_message_text: str, response_json: Dict[str, Any], history: Any, api_key: str, image_b64_data: Optional[str] = None) -> Tuple[str, str, Any]:
     """성공적인 LLM 응답을 처리하고 관련 데이터를 RDB와 벡터 DB에 저장합니다."""
@@ -278,55 +276,60 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
     bot_message_obj = None
 
     try:
+        # API 키는 컨텍스트 추출 등 다른 곳에서 여전히 필요하므로 유지합니다.
         api_key = os.environ.get("OPENAI_API_KEY")
         if not api_key:
             raise ValueError("OPENAI_API_KEY 환경 변수가 설정되지 않았습니다.")
+        
+        # 최신 openai 라이브러리 사용을 위해 클라이언트를 초기화합니다.
+        client = OpenAI()
 
         # 이미지 데이터가 있을 경우, 비전 모델(예: gpt-4-vision-preview)을 사용하도록 유도합니다.
         # 이제 이미지 캡셔닝 서비스를 사용하므로, 항상 텍스트 전용 모델을 기본으로 사용합니다.
         default_model = "gpt-4-turbo" # 텍스트 전용 모델
         model_to_use = os.getenv("FINETUNED_MODEL_ID", default_model)
         
-        headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-
         history = ChatMessage.objects.filter(user=user).order_by('-timestamp')
         
         # 1. 컨텍스트 생성
         time_contexts = _get_time_contexts(history)
         
+        # LLM에 전달할 프롬프트와 DB에 저장할 사용자 메시지를 분리합니다.
+        llm_user_prompt = user_message_text
+
         # 이미지 캡셔닝 서비스 인스턴스 생성 및 캡션 생성
-        image_caption = ""
         if image_b64_data:
             print("--- [디버그] 이미지 데이터 감지됨. 이미지 캡셔닝 서비스 호출 ---")
             from .image_captioning_service import ImageCaptioningService
             captioning_service = ImageCaptioningService()
             image_caption = captioning_service.generate_caption(image_b64_data)
             if image_caption:
-                # 사용자 메시지에 이미지 캡션 추가
-                user_message_text = f"[사용자가 보낸 이미지 설명: {image_caption}] {user_message_text}"
+                # LLM에 전달할 프롬프트에만 이미지 캡션을 추가합니다.
+                llm_user_prompt = f"[사용자가 보낸 이미지 설명: {image_caption}] {user_message_text}"
                 print(f"--- [디버그] 이미지 캡션 생성 완료: {image_caption} ---")
             else:
                 print("--- [경고] 이미지 캡션 생성 실패 ---")
 
-        memory_contexts = _get_memory_contexts(user, user_message_text, latitude, longitude)
+        # 메모리 컨텍스트는 LLM 프롬프트를 기반으로 생성합니다.
+        memory_contexts = _get_memory_contexts(user, llm_user_prompt, latitude, longitude)
         
         # 2. 시스템 프롬프트 및 메시지 준비
         final_system_prompt = _build_final_system_prompt(user, time_contexts, memory_contexts)
-        # 이미지 데이터는 이제 텍스트 캡션으로 변환되었으므로, _prepare_llm_messages에는 텍스트만 전달합니다.
-        messages = _prepare_llm_messages(final_system_prompt, history, user_message_text, None)
+        # LLM에 전달할 프롬프트(llm_user_prompt)를 메시지 준비에 사용합니다.
+        messages = _prepare_llm_messages(final_system_prompt, history, llm_user_prompt, None)
 
-        # 3. LLM API 호출
+        # 3. LLM API 호출 (수정됨)
         print("--- [디버그] LLM API로 전송되는 메시지: ---")
         print(json.dumps(messages, indent=2, ensure_ascii=False))
         print("---------------------------------------")
-        response_json = _call_openai_api(model_to_use, headers, messages)
+        response_json = _call_openai_api(client, model_to_use, messages)
         
         # 4. 응답 처리 및 저장
         bot_message_text, explanation, bot_message_obj = _finalize_chat_interaction(
             request, user_message_text, response_json, history, api_key, image_b64_data
         )
 
-    except requests.exceptions.RequestException as e:
+    except APIError as e:
         print(f"OpenAI API 요청 실패: {e}")
         bot_message_text = f"API 요청 중 오류가 발생했습니다: {e}"
     except (KeyError, IndexError, json.JSONDecodeError) as e:

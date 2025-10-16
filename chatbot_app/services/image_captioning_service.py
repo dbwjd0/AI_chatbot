@@ -1,53 +1,51 @@
-from PIL import Image
-from transformers import BlipProcessor, BlipForConditionalGeneration
+import os
 import base64
-import io
+from openai import OpenAI
 
 class ImageCaptioningService:
     _instance = None
-    _processor = None
-    _model = None
+    _client = None
 
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(ImageCaptioningService, cls).__new__(cls)
-            cls._instance._load_model()
+            # Initialize the client upon creation.
+            # The OpenAI client automatically looks for the OPENAI_API_KEY env var.
+            try:
+                cls._client = OpenAI()
+                print("OpenAI client initialized successfully.")
+            except Exception as e:
+                cls._client = None
+                print(f"Failed to initialize OpenAI client: {e}")
         return cls._instance
-
-    def _load_model(self):
-        """Loads the BLIP model and processor."""
-        if self._processor is None:
-            print("Loading BLIP processor...")
-            self._processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
-            print("BLIP processor loaded.")
-        if self._model is None:
-            print("Loading BLIP model...")
-            self._model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
-            print("BLIP model loaded.")
 
     def generate_caption(self, image_data_b64: str) -> str:
         """
-        Generates a caption for a given image.
-
-        Args:
-            image_data_b64: Base64 encoded image data (JPEG).
-
-        Returns:
-            A string caption for the image.
+        Generates a caption for a given image using the OpenAI gpt-4o model.
         """
-        if not self._processor or not self._model:
-            self._load_model()
+        if not self._client:
+            return "OpenAI 클라이언트가 초기화되지 않았습니다. OPENAI_API_KEY 환경 변수를 확인하세요."
 
         try:
-            # Decode base64 image data
-            image_bytes = base64.b64decode(image_data_b64)
-            raw_image = Image.open(io.BytesIO(image_bytes)).convert('RGB')
+            response = self._client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": "이 이미지를 한 문장으로 설명해줘."},
+                            {
+                                "type": "image_url",
+                                "image_url": {"url": f"data:image/jpeg;base64,{image_data_b64}"},
+                            },
+                        ],
+                    }
+                ],
+                max_tokens=100,
+            )
+            caption = response.choices[0].message.content
+            return caption.strip()
 
-            # unconditional image captioning
-            inputs = self._processor(raw_image, return_tensors="pt")
-            out = self._model.generate(**inputs)
-            caption = self._processor.decode(out[0], skip_special_tokens=True)
-            return caption
         except Exception as e:
-            print(f"Error generating caption: {e}")
+            print(f"Error generating caption with OpenAI: {e}")
             return "이미지 캡션을 생성하는 데 실패했습니다."
