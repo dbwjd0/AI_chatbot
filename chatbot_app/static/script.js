@@ -25,9 +25,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     console.log('Attach image button listener attached.'); // 이 줄 추가
 
+    const previewContainer = document.getElementById('preview-container'); // 새 컨테이너 가져오기
+
     clearImageButton.addEventListener('click', () => {
         clearImageSelection();
-        clearImageButton.style.display = 'none'; // Hide clear button after clearing
     });
 
     imageInput.addEventListener('change', (event) => {
@@ -36,20 +37,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const reader = new FileReader();
             reader.onload = (e) => {
                 imagePreview.src = e.target.result;
-                imagePreview.style.display = 'block';
-                clearImageButton.style.display = 'inline-block'; // Show clear button
+                previewContainer.style.display = 'block'; // 컨테이너를 보여줌
                 selectedImageBase64 = e.target.result.split(',')[1]; // Base64 부분만 저장
             };
             reader.readAsDataURL(file);
         } else {
-            clearImageSelection(); // Call the new function
-            clearImageButton.style.display = 'none'; // Hide clear button
+            clearImageSelection();
         }
     });
 
     function clearImageSelection() {
         imagePreview.src = '';
-        imagePreview.style.display = 'none';
+        previewContainer.style.display = 'none'; // 컨테이너를 숨김
         selectedImageBase64 = null;
         imageInput.value = ''; // 파일 입력 필드 초기화
     }
@@ -157,39 +156,41 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function sendMessage() {
         const messageText = userInput.value.trim();
-        // 이미지 또는 텍스트, 또는 둘 다 보낼 수 있도록 허용
-        if (messageText === '' && !selectedImageBase64) return;
+        const imageToSend = selectedImageBase64; // 1. 전송할 이미지 데이터를 임시 변수에 복사
 
+        // 2. 보낼 내용이 없으면 아무것도 하지 않음
+        if (messageText === '' && !imageToSend) return;
+
+        // 3. 사용자 메시지를 화면에 먼저 표시
         const userMessage = { message: messageText, is_user: true, timestamp: new Date().toISOString() };
-        if (selectedImageBase64) { // 이미지 데이터가 있으면 userMessage 객체에 추가
-            userMessage.image_b64_data = selectedImageBase64;
+        if (imageToSend) {
+            userMessage.image_b64_data = imageToSend;
         }
         displayMessages([userMessage]);
+
+        // 4. 입력 UI를 즉시 초기화 (사용자 경험 향상)
         userInput.value = '';
-        chatbotCharacter.src = STATIC_URLS['생각'] || STATIC_URLS.default; // 생각 중 이미지로 변경
+        clearImageSelection(); 
+        
+        // 5. 챗봇 상태를 '생각 중'으로 변경
+        chatbotCharacter.src = STATIC_URLS['생각'] || STATIC_URLS.default;
 
+        // 6. 위치 정보와 함께, 임시 변수에 저장해 둔 이미지 데이터를 서버로 전송
         const locationCheckbox = document.getElementById('location-checkbox');
-        console.log('sendMessage: Checkbox is checked:', locationCheckbox.checked);
-
         if (locationCheckbox.checked) {
-            console.log('sendMessage: Attempting to get geolocation...');
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    console.log('sendMessage: Geolocation success!', position.coords);
                     const { latitude, longitude } = position.coords;
-                    fetchChatResponse(messageText, latitude, longitude, selectedImageBase64); // 이미지 데이터 전달
+                    fetchChatResponse(messageText, latitude, longitude, imageToSend);
                 },
                 (error) => {
-                    console.error('sendMessage: Geolocation error:', error);
-                    fetchChatResponse(messageText, null, null, selectedImageBase64); // 이미지 데이터 전달
+                    console.error('Geolocation error:', error);
+                    fetchChatResponse(messageText, null, null, imageToSend);
                 }
             );
         } else {
-            console.log('sendMessage: Checkbox not checked, sending without location.');
-            fetchChatResponse(messageText, null, null, selectedImageBase64); // 이미지 데이터 전달
+            fetchChatResponse(messageText, null, null, imageToSend);
         }
-
-
     }
 
     async function fetchChatResponse(messageText, latitude, longitude, image_b64_data) { // image_b64_data 매개변수 추가

@@ -45,9 +45,8 @@ def _get_time_contexts(history):
         
     return current_time_context, time_awareness_context
 
-def _get_memory_contexts(user, user_message_text, latitude: Optional[float] = None, longitude: Optional[float] = None) -> Dict[str, str]:
+def _get_memory_contexts(user, user_message_text, latitude: Optional[float] = None, longitude: Optional[float] = None, image_b64_data: Optional[str] = None) -> Dict[str, str]:
     """사용자의 기억과 관련된 모든 컨텍스트를 종합하여 반환합니다."""
-    # ... (기존 _get_memory_contexts 로직과 동일) ...
     
     # 0. 위치 컨텍스트
     location_context = ""
@@ -62,17 +61,18 @@ def _get_memory_contexts(user, user_message_text, latitude: Optional[float] = No
     if location_recommendation_context:
         print(f"--- [디버그] 위치 기반 추천 컨텍스트: {location_recommendation_context} ---")
 
-    # 2. 벡터 검색 컨텍스트
+    # 2. 벡터 검색 컨텍스트 (이미지가 없을 때만 수행)
     vector_search_context = ""
-    try:
-        collection = vector_service.get_or_create_collection()
-        similar_results = vector_service.query_similar_messages(collection, user_message_text, user.id, n_results=5)
-        if similar_results and isinstance(similar_results, dict) and similar_results.get('documents'):
-            past_conversations = [f"{meta.get('speaker', '알수없음')}: {doc}" for doc, meta in zip(similar_results['documents'], similar_results['metadatas'])]
-            vector_search_context = "[과거 관련 대화 내용(벡터DB): " + " | ".join(past_conversations) + "]"
-            print(f"--- [디버그] 벡터DB 유사도 검색 결과: {vector_search_context} ---")
-    except Exception as e:
-        print(f"--- Could not build vector search context due to an error: {e} ---")
+    if not image_b64_data:
+        try:
+            collection = vector_service.get_or_create_collection()
+            similar_results = vector_service.query_similar_messages(collection, user_message_text, user.id, n_results=5)
+            if similar_results and isinstance(similar_results, dict) and similar_results.get('documents'):
+                past_conversations = [f"{meta.get('speaker', '알수없음')}: {doc}" for doc, meta in zip(similar_results['documents'], similar_results['metadatas'])]
+                vector_search_context = "[과거 관련 대화 내용(벡터DB): " + " | ".join(past_conversations) + "]"
+                print(f"--- [디버그] 벡터DB 유사도 검색 결과: {vector_search_context} ---")
+        except Exception as e:
+            print(f"--- Could not build vector search context due to an error: {e} ---")
 
     # 3. 사용자 속성 컨텍스트
     user_attributes = UserAttribute.objects.filter(user=user)
@@ -128,7 +128,6 @@ def _get_memory_contexts(user, user_message_text, latitude: Optional[float] = No
     try:
         user_relationships = UserRelationship.objects.filter(user=user)
         if user_relationships.exists():
-             # ... (기존 관계 컨텍스트 로직과 동일) ...
             relationship_strings = [
                 f"{rel.companion_name} (관계: {rel.relationship_type}, 중요도: {rel.importance})"
                 for rel in user_relationships
@@ -181,7 +180,7 @@ def _build_final_system_prompt(user, time_contexts: Tuple[str, str], memory_cont
         "너의 답변은 반드시 JSON 형식으로 제공해야 해. 다음 두 가지 키를 포함해야 해:\n"
         "1.  `answer`: {user.username}님에게 보낼 최종 답변.\n"
         "2.  `explanation`: `answer`를 생성할 때 사용된 정보(예: 기억하는 사실, 웹 검색 결과)에 대한 간략한 설명. AI의 성격, 행동 규칙, 호감도 점수 등 AI 내부의 판단 과정이나 상태에 대한 언급은 절대 포함하지 마.\n"
-        "예시: {{\\'answer\\': \'\'흥, 그런 당연한 소리는 학습에 별로 도움이 안 되거든?\'\'\', \'\'explanation\\': \'\'사용자의 칭찬에 대해 답변했습니다.\'\'}}"
+        "예시: {{'answer': ''흥, 그런 당연한 소리는 학습에 별로 도움이 안 되거든?''}}, ''explanation'': ''사용자의 칭찬에 대해 답변했습니다.''}}"
     )
 
     final_prompt = f"{finetuning_system_prompt}{rag_instructions_prompt}\n\n## 추가 컨텍스트 ##\n{current_time_context}\n{time_awareness_context}\n{memory_context}"
@@ -192,22 +191,16 @@ def _build_final_system_prompt(user, time_contexts: Tuple[str, str], memory_cont
 
 
 def _prepare_llm_messages(final_system_prompt: str, history: Any, user_message_text: str, image_b64_data: Optional[str] = None) -> list:
-    """
-    API 요청을 위한 메시지 리스트를 준비합니다.
-    이미지 데이터는 이미 텍스트 캡션으로 변환되어 user_message_text에 포함되어 있다고 가정합니다.
-    """
+    """API 요청을 위한 메시지 리스트를 준비합니다."""
     messages = [{'role': 'system', 'content': final_system_prompt}]
     recent_history = history[:10]
     
-    # 과거 대화 기록 추가
     for chat in reversed(recent_history):
         role = "user" if chat.is_user else "assistant"
         messages.append({'role': role, 'content': chat.message})
     
-    # 현재 사용자 메시지 추가 (이미지 캡션이 user_message_text에 이미 포함되어 있음)
     messages.append({'role': 'user', 'content': user_message_text})
     return messages
-
 
 def _call_openai_api(client: OpenAI, model_to_use: str, messages: list) -> Dict[str, Any]:
     """OpenAI API를 최신 openai 라이브러리를 사용하여 호출하고 응답 JSON을 반환합니다."""
@@ -226,7 +219,6 @@ def _call_openai_api(client: OpenAI, model_to_use: str, messages: list) -> Dict[
 def _finalize_chat_interaction(request, user_message_text: str, response_json: Dict[str, Any], history: Any, api_key: str, image_b64_data: Optional[str] = None) -> Tuple[str, str, Any]:
     """성공적인 LLM 응답을 처리하고 관련 데이터를 RDB와 벡터 DB에 저장합니다."""
     user = request.user
-    # user_profile = user.profile # 사용되지 않으므로 제거
 
     llm_content = response_json['choices'][0]['message']['content']
     if llm_content is None or llm_content.strip() == '':
@@ -237,24 +229,20 @@ def _finalize_chat_interaction(request, user_message_text: str, response_json: D
         bot_message_text = content_from_llm.get('answer', '').strip()
         explanation = content_from_llm.get('explanation', '').strip()
         
-        # bot_message_text가 비어있을 경우 explanation을 사용하거나 기본 메시지 제공
         if not bot_message_text:
             if explanation:
                 bot_message_text = f"AI가 응답을 생성했지만, 주요 답변이 비어있습니다. (설명: {explanation})"
             else:
                 bot_message_text = "AI가 응답을 생성했지만, 내용이 비어있습니다."
 
-    # ChromaDB 컬렉션 가져오기
     collection = vector_service.get_or_create_collection()
 
-    # RDB에 채팅 메시지 저장 및 ChromaDB에 업서트
     user_message_obj = ChatMessage.objects.create(user=user, message=user_message_text, image_b64_data=image_b64_data, is_user=True)
     vector_service.upsert_message(collection, user_message_obj)
 
     bot_message_obj = ChatMessage.objects.create(user=user, message=bot_message_text, is_user=False)
     vector_service.upsert_message(collection, bot_message_obj)
     
-    # 사용자 속성 및 활동 추출 및 저장
     recent_history_for_extraction = history[:5]
     extract_and_save_user_context_data(user, user_message_text, bot_message_text, recent_history_for_extraction, api_key)
 
@@ -266,65 +254,54 @@ def _finalize_chat_interaction(request, user_message_text: str, response_json: D
 # ==============================================================================
 
 def process_chat_interaction(request, user_message_text: str, latitude: Optional[float] = None, longitude: Optional[float] = None, image_b64_data: Optional[str] = None):
-    """
-    사용자 메시지를 처리하고 AI 응답을 생성하는 전체 프로세스를 조율합니다.
-    (이미지 Base64 데이터가 있을 경우 멀티모달 처리를 포함합니다.)
-    """
+    """사용자 메시지를 처리하고 AI 응답을 생성하는 전체 프로세스를 조율합니다."""
     user = request.user
     bot_message_text = "죄송합니다. API 응답을 가져오는 데 실패했습니다."
     explanation = ""
     bot_message_obj = None
 
     try:
-        # API 키는 컨텍스트 추출 등 다른 곳에서 여전히 필요하므로 유지합니다.
         api_key = os.environ.get("OPENAI_API_KEY")
         if not api_key:
             raise ValueError("OPENAI_API_KEY 환경 변수가 설정되지 않았습니다.")
         
-        # 최신 openai 라이브러리 사용을 위해 클라이언트를 초기화합니다.
         client = OpenAI()
 
-        # 이미지 데이터가 있을 경우, 비전 모델(예: gpt-4-vision-preview)을 사용하도록 유도합니다.
-        # 이제 이미지 캡셔닝 서비스를 사용하므로, 항상 텍스트 전용 모델을 기본으로 사용합니다.
-        default_model = "gpt-4-turbo" # 텍스트 전용 모델
-        model_to_use = os.getenv("FINETUNED_MODEL_ID", default_model)
-        
         history = ChatMessage.objects.filter(user=user).order_by('-timestamp')
         
-        # 1. 컨텍스트 생성
         time_contexts = _get_time_contexts(history)
         
-        # LLM에 전달할 프롬프트와 DB에 저장할 사용자 메시지를 분리합니다.
         llm_user_prompt = user_message_text
 
-        # 이미지 캡셔닝 서비스 인스턴스 생성 및 캡션 생성
         if image_b64_data:
             print("--- [디버그] 이미지 데이터 감지됨. 이미지 캡셔닝 서비스 호출 ---")
             from .image_captioning_service import ImageCaptioningService
             captioning_service = ImageCaptioningService()
             image_caption = captioning_service.generate_caption(image_b64_data)
             if image_caption:
-                # LLM에 전달할 프롬프트에만 이미지 캡션을 추가합니다.
                 llm_user_prompt = f"[사용자가 보낸 이미지 설명: {image_caption}] {user_message_text}"
                 print(f"--- [디버그] 이미지 캡션 생성 완료: {image_caption} ---")
             else:
                 print("--- [경고] 이미지 캡션 생성 실패 ---")
 
-        # 메모리 컨텍스트는 LLM 프롬프트를 기반으로 생성합니다.
-        memory_contexts = _get_memory_contexts(user, llm_user_prompt, latitude, longitude)
+        memory_contexts = _get_memory_contexts(user, llm_user_prompt, latitude, longitude, image_b64_data)
         
-        # 2. 시스템 프롬프트 및 메시지 준비
+        # 하이브리드 모델 선택 로직
+        default_model = os.getenv("FINETUNED_MODEL_ID", "gpt-4-turbo")
+        model_to_use = default_model
+        if memory_contexts.get("vector_search"):
+            print("--- [디버그] 벡터 검색 컨텍스트 감지됨. gpt-4-turbo 모델로 전환합니다. ---")
+            model_to_use = "gpt-4-turbo"
+
         final_system_prompt = _build_final_system_prompt(user, time_contexts, memory_contexts)
-        # LLM에 전달할 프롬프트(llm_user_prompt)를 메시지 준비에 사용합니다.
+        
         messages = _prepare_llm_messages(final_system_prompt, history, llm_user_prompt, None)
 
-        # 3. LLM API 호출 (수정됨)
         print("--- [디버그] LLM API로 전송되는 메시지: ---")
         print(json.dumps(messages, indent=2, ensure_ascii=False))
         print("---------------------------------------")
         response_json = _call_openai_api(client, model_to_use, messages)
         
-        # 4. 응답 처리 및 저장
         bot_message_text, explanation, bot_message_obj = _finalize_chat_interaction(
             request, user_message_text, response_json, history, api_key, image_b64_data
         )
