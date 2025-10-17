@@ -287,11 +287,11 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
         memory_contexts = _get_memory_contexts(user, llm_user_prompt, latitude, longitude, image_b64_data)
         
         # 하이브리드 모델 선택 로직
-        default_model = os.getenv("FINETUNED_MODEL_ID", "gpt-4-turbo")
+        default_model = os.getenv("FINETUNED_MODEL_ID")
         model_to_use = default_model
         if memory_contexts.get("vector_search"):
-            print("--- [디버그] 벡터 검색 컨텍스트 감지됨. gpt-4-turbo 모델로 전환합니다. ---")
-            model_to_use = "gpt-4-turbo"
+            print(f"--- [디버그] 벡터 검색 컨텍스트 감지됨. 기본 모델({model_to_use})을 사용합니다. ---")
+            # model_to_use = "gpt-4-turbo"
 
         final_system_prompt = _build_final_system_prompt(user, time_contexts, memory_contexts)
         
