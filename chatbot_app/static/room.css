@@ -1,11 +1,31 @@
 #room {
-    background-image: url('img/pixel_room2.png'); /* Use the pixel art background */
+    background-image: url('img/베이스 배경.png'); /* Use the base background image */
     background-size: cover;
     background-position: center;
     position: relative;
     overflow: hidden;
     image-rendering: pixelated; /* Keep the pixel art sharp */
 }
+
+.furniture-object {
+    position: absolute;
+    z-index: 5; /* Below player, above background */
+}
+
+#stove { left: 130px; top: 20px; width: 200px; height: 250px; }
+#refrigerator { left: 70px; top: 530px; width: 250px; height: 150px; }
+#lamp { left: 740px; top: 80px; width: 130px; height: 170px; }
+#robot-vacuum { left: 520px; top: 200px; width: 50px; height: 50px; }
+#sofa { left: 70px; top: 300px; width: 130px; height: 250px; }
+#wardrobe { left: 1100px; top: 200px; width: 100px; height: 330px; }
+#books-desk { left: 330px; top: 100px; width: 180px; height: 150px; }
+#bed { left: 880px; top: 70px; width: 230px; height: 280px; }
+#computer-obj { left: 770px; top: 500px; width: 300px; height: 200px; }
+#tv { left: 360px; top: 510px; width: 220px; height: 230px; }
+#tea-table { left: 250px; top: 380px; width: 160px; height: 90px; }
+#wall-clock { left: 480px; top: 50px; width: 80px; height: 80px; }
+#wall-plant { left: 70px; top: 18px; width: 250px; height: 80px; }
+#storage-cabinet { left: 70px; top: 70px; width: 70px; height: 300px; }
 
 .wall {
     position: absolute;
