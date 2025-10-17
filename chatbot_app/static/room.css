@@ -1,42 +1,95 @@
 #room {
-    background-image: url('img/room_bg2.png');
+    background-image: url('img/pixel_room2.png'); /* Use the pixel art background */
     background-size: cover;
     background-position: center;
     position: relative;
     overflow: hidden;
+    image-rendering: pixelated; /* Keep the pixel art sharp */
 }
 
-#character {
+.wall {
     position: absolute;
-    bottom: 50px; /* 초기 위치 */
-    left: 50px;  /* 초기 위치 */
-    width: 60px; /* 필요에 따라 크기 조정 */
-    height: auto; /* 이미지 종횡비 유지 */
-    z-index: 10; /* 배경 위에 오도록 설정 */
-    transition: left 0.1s linear, top 0.1s linear; /* 부드러운 움직임 */
+    background-color: rgba(0, 255, 0, 0.5); /* Green, semi-transparent for debugging */
+    z-index: 20; /* Make sure walls are on top of the background but below the player */
+}
+
+#wall-top { left: 0px; top: 0px; width: 1249px; height: 5px; }
+#wall-left { left: 0px; top: 0px; width: 5px; height: 832px; }
+#wall-right { left: 1244px; top: 0px; width: 5px; height: 832px; }
+#wall-bottom { left: 0px; top: 827px; width: 1249px; height: 5px; }
+#wall-divider { left: 485px; top: 60px; width: 5px; height: 742px; }
+#wall-stove { left: 180px; top: 150px; width: 80px; height: 5px; }
+#wall-desk { left: 250px; top: 120px; width: 200px; height: 5px; }
+#wall-sofa { left: 30px; top: 450px; width: 5px; height: 200px; }
+#wall-lower-stuff { left: 30px; top: 700px; width: 455px; height: 5px; }
+#wall-bed { left: 650px; top: 120px; width: 300px; height: 5px; }
+#wall-gamer-desk { left: 750px; top: 500px; width: 280px; height: 5px; }
+
+
+#player {
+    position: absolute;
+    /* Initial position will be set by JS, but provide a fallback */
+    left: 50%;
+    top: 50%;
+    width: 120px;  /* Adjust to sprite size */
+    height: 120px; /* Adjust to sprite size */
+    z-index: 10;
+    transform: translate(-50%, -50%);
+}
+
+#player img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.interactive-object {
+    position: absolute;
+    z-index: 9;
+    /* Add a subtle glow or border to indicate interactivity */
+    box-shadow: 0 0 10px 5px rgba(255, 255, 0, 0.5);
+    border-radius: 5px;
 }
 
 #computer {
-    position: absolute;
-    top: 40px;
-    right: 50px;
-    width: 80px; /* 크기 조정 */
-    height: 70px; /* 크기 조정 */
-    background-color: #555;
-    border: 5px solid #333;
-    border-radius: 10px;
-    cursor: pointer;
+    top: 122px;
+    left: 319px;
+    width: 90px;
+    height: 80px;
+    border: 2px solid red; /* Show bounding box for debugging */
+    box-shadow: none; /* Hide the default glow to see the border clearly */
 }
 
-#computer::before {
-    content: '';
+#bookshelf {
+    top: 110px;
+    left: 100px;
+    width: 80px;
+    height: 130px;
+}
+
+#schedule-object {
+    top: 300px;
+    left: 400px;
+    width: 50px;
+    height: 50px;
+    font-size: 40px;
+    text-align: center;
+    line-height: 50px; /* Vertically center the emoji */
+}
+
+#interaction-prompt {
+    display: none; /* Hidden by default */
     position: absolute;
-    top: 10%;
-    left: 10%;
-    width: 80%;
-    height: 60%;
-    background-color: #87CEEB; /* 화면 색상 */
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 15px;
     border-radius: 5px;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    z-index: 100;
 }
 
 #fade-overlay {
@@ -53,14 +106,49 @@
 }
 
 #fade-overlay.visible {
-
     opacity: 1;
-
     visibility: visible;
-
 }
 
+.hidden {
+    display: none !important;
+}
 
+#dialog-box {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    height: 150px;
+    background-color: rgba(0, 0, 0, 0.75);
+    border: 4px solid #555;
+    border-radius: 5px;
+    padding: 15px;
+    z-index: 200;
+    color: white;
+    font-family: 'VT323', monospace;
+}
+
+#dialog-speaker-container {
+    position: absolute;
+    top: -45px;
+    left: 20px;
+    background-color: #333;
+    border: 4px solid #555;
+    padding: 5px 20px;
+    border-radius: 10px;
+}
+
+#dialog-speaker {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+}
+
+#dialog-text {
+    font-size: 22px;
+    padding-top: 10px;
+}
 
 /* Schedule Modal Styles */
 .modal {

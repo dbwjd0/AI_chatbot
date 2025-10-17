@@ -18,10 +18,20 @@
             <a href="{% url 'logout' %}" style="color: #5E35B1; text-decoration: none; font-weight: bold; margin-left: 10px;">로그아웃</a>
         </div>
         <div class="chatbot-container" id="room">
-            <span id="schedule-icon" style="position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 32px; z-index: 20;">📓</span>
+            <div id="schedule-object" class="interactive-object" data-interaction-target="schedule" data-interaction-message="일정 확인하기 (Enter)">📓</div>
+            <div id="player">
+                <img src="{% static 'img/char_dot.png' %}" alt="Player">
+            </div>
+            <div id="computer" class="interactive-object" data-interaction-target="chat" data-interaction-message="컴퓨터를 사용해 채팅하기 (Enter)"></div>
+            <div id="bookshelf" class="interactive-object" data-interaction-target="books" data-interaction-message="책장을 살펴보기 (Enter)"></div>
+            <div id="interaction-prompt"></div>
+            <div id="dialog-box" class="hidden">
+                <div id="dialog-speaker-container">
+                    <span id="dialog-speaker"></span>
+                </div>
+                <div id="dialog-text"></div>
+            </div>
             <div id="fade-overlay"></div>
-            <img id="character" src="{% static 'img/char_dot.png' %}" alt="AI Character">
-            <a href="/chat" id="computer"></a>
         </div>
     </div>
 
