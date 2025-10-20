@@ -17,16 +17,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const walkSideLeftGif = '/static/img/walk_side_left.gif';
     const walkSideRightGif = '/static/img/walk_side_right.gif';
 
+    // Directional Idle Images
+    const idleLeftImg = '/static/img/left_stand.png';
+    const idleRightImg = '/static/img/right_stand.png';
+    const idleUpImg = '/static/img/side_up_stand.png';
+
     // --- Game State ---
     const playerState = {
         x: room.offsetWidth / 2,
         y: room.offsetHeight / 2,
         speed: 3,
-        currentAnimation: idleImg
+        currentAnimation: idleImg,
+        lastDirection: 'down' // Default direction
     };
     const keys = {};
     let activeInteraction = null;
     let isDialogActive = false;
+
+    // --- Debug Visualization ---
+    const playerDebugBox = document.createElement('div');
+    playerDebugBox.className = 'debug-box';
+    room.appendChild(playerDebugBox);
+
+    const obstacles = document.querySelectorAll('.furniture-object');
+    const obstacleCollisionBuffer = 35; // Make sure this is defined before use
+
+    obstacles.forEach(obstacle => {
+        // 'invisible-wall-'로 시작하는 ID를 가진 요소는 디버그 상자를 그리지 않고 건너뜁니다.
+        if (obstacle.id.startsWith('invisible-wall-')) {
+            return;
+        }
+        const debugBox = document.createElement('div');
+        debugBox.className = 'debug-box';
+        const rect = {
+            left: obstacle.offsetLeft + obstacleCollisionBuffer,
+            top: obstacle.offsetTop + obstacleCollisionBuffer,
+            width: obstacle.offsetWidth - (2 * obstacleCollisionBuffer),
+            height: obstacle.offsetHeight - (2 * obstacleCollisionBuffer)
+        };
+        debugBox.style.left = `${rect.left}px`;
+        debugBox.style.top = `${rect.top}px`;
+        debugBox.style.width = `${rect.width}px`;
+        debugBox.style.height = `${rect.height}px`;
+        room.appendChild(debugBox);
+    });
 
     // --- Input Handlers ---
     document.addEventListener('keydown', (e) => {
@@ -76,8 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
         isDialogActive = false;
     }
 
-    const walls = document.querySelectorAll('.wall');
-
     // --- Game Loop (New Robust Logic) ---
     function gameLoop() {
         let newAnimation = playerState.currentAnimation;
@@ -96,11 +128,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const nextX = playerState.x + dx * playerState.speed;
         const nextY = playerState.y + dy * playerState.speed;
 
-        // 3. Wall Collision Detection
+        // 3. Obstacle Collision Detection
         const playerWidth = player.offsetWidth;
         const playerHeight = player.offsetHeight;
-        const playerCollisionBuffer = 10; // Adjust this value as needed
-
+        const playerCollisionBuffer = 10; // Shrinks player's box
+        
         // Calculate player's half-dimensions
         const playerHalfWidth = playerWidth / 2;
         const playerHalfHeight = playerHeight / 2;
@@ -117,9 +149,26 @@ document.addEventListener('DOMContentLoaded', () => {
             height: collisionHeight
         };
         let collisionX = false;
-        for (const wall of walls) {
-            const wallRect = { left: wall.offsetLeft, top: wall.offsetTop, width: wall.offsetWidth, height: wall.offsetHeight };
-            if (checkRectCollision(futurePlayerRectX, wallRect)) {
+        for (const obstacle of obstacles) {
+            let obstacleRect;
+            if (obstacle.id.startsWith('invisible-wall-')) {
+                // For our wall, use the exact dimensions without a buffer
+                obstacleRect = {
+                    left: obstacle.offsetLeft,
+                    top: obstacle.offsetTop,
+                    width: obstacle.offsetWidth,
+                    height: obstacle.offsetHeight
+                };
+            } else {
+                // For all other obstacles, use the buffer as before
+                obstacleRect = { 
+                    left: obstacle.offsetLeft + obstacleCollisionBuffer,
+                    top: obstacle.offsetTop + obstacleCollisionBuffer,
+                    width: obstacle.offsetWidth - (2 * obstacleCollisionBuffer),
+                    height: obstacle.offsetHeight - (2 * obstacleCollisionBuffer)
+                };
+            }
+            if (checkRectCollision(futurePlayerRectX, obstacleRect)) {
                 collisionX = true;
                 break;
             }
@@ -136,9 +185,26 @@ document.addEventListener('DOMContentLoaded', () => {
             height: collisionHeight
         };
         let collisionY = false;
-        for (const wall of walls) {
-            const wallRect = { left: wall.offsetLeft, top: wall.offsetTop, width: wall.offsetWidth, height: wall.offsetHeight };
-            if (checkRectCollision(futurePlayerRectY, wallRect)) {
+        for (const obstacle of obstacles) {
+            let obstacleRect;
+            if (obstacle.id.startsWith('invisible-wall-')) {
+                // For our wall, use the exact dimensions without a buffer
+                obstacleRect = {
+                    left: obstacle.offsetLeft,
+                    top: obstacle.offsetTop,
+                    width: obstacle.offsetWidth,
+                    height: obstacle.offsetHeight
+                };
+            } else {
+                // For all other obstacles, use the buffer as before
+                obstacleRect = { 
+                    left: obstacle.offsetLeft + obstacleCollisionBuffer,
+                    top: obstacle.offsetTop + obstacleCollisionBuffer,
+                    width: obstacle.offsetWidth - (2 * obstacleCollisionBuffer),
+                    height: obstacle.offsetHeight - (2 * obstacleCollisionBuffer)
+                };
+            }
+            if (checkRectCollision(futurePlayerRectY, obstacleRect)) {
                 collisionY = true;
                 break;
             }
@@ -152,15 +218,34 @@ document.addEventListener('DOMContentLoaded', () => {
             // Animation decision (Y-axis priority)
             if (dy === -1) { // Moving Up
                 newAnimation = walkUpImg;
+                playerState.lastDirection = 'up';
             } else if (dy === 1) { // Moving Down
                 newAnimation = walkFrontGif;
+                playerState.lastDirection = 'down';
             } else if (dx === -1) { // Moving Left
                 newAnimation = walkSideLeftGif;
+                playerState.lastDirection = 'left';
             } else if (dx === 1) { // Moving Right
                 newAnimation = walkSideRightGif;
+                playerState.lastDirection = 'right';
             }
         } else {
-            newAnimation = idleImg;
+            // Select idle animation based on last direction
+            switch (playerState.lastDirection) {
+                case 'up':
+                    newAnimation = idleUpImg;
+                    break;
+                case 'left':
+                    newAnimation = idleLeftImg;
+                    break;
+                case 'right':
+                    newAnimation = idleRightImg;
+                    break;
+                case 'down':
+                default:
+                    newAnimation = idleImg; // Default down-facing idle
+                    break;
+            }
         }
 
         // 5. Only update src if the animation has changed
@@ -171,12 +256,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 6. Boundary Collision (redundant with walls, but good as a fallback)
         const roomRect = room.getBoundingClientRect();
-        playerState.x = Math.max(0, Math.min(roomRect.width - playerWidth, playerState.x));
-        playerState.y = Math.max(0, Math.min(roomRect.height - playerHeight, playerState.y));
+        playerState.x = Math.max(playerWidth / 2, Math.min(roomRect.width - playerWidth / 2, playerState.x));
+        playerState.y = Math.max(playerHeight / 2, Math.min(roomRect.height - playerHeight / 2, playerState.y));
 
         // 7. Update Player Position on screen
         player.style.left = `${playerState.x}px`;
         player.style.top = `${playerState.y}px`;
+
+        // --- Update Debug Box for Player ---
+        const playerCollisionRect = {
+            left: playerState.x - playerHalfWidth + playerCollisionBuffer,
+            top: playerState.y - playerHalfHeight + playerCollisionBuffer,
+            width: collisionWidth,
+            height: collisionHeight
+        };
+        playerDebugBox.style.left = `${playerCollisionRect.left}px`;
+        playerDebugBox.style.top = `${playerCollisionRect.top}px`;
+        playerDebugBox.style.width = `${playerCollisionRect.width}px`;
+        playerDebugBox.style.height = `${playerCollisionRect.height}px`;
 
         // 8. Check for Interactions
         if (!isDialogActive) {

@@ -15,9 +15,9 @@ body {
 
 .chatbot-container {
     display: flex;
-    width: 90%;
+    width: 1200px;
     max-width: 1200px;
-    height: 90%;
+    height: 800px;
     max-height: 800px;
     background-image: url('픽셀p1.jpg');
     background-size: cover;
