@@ -4,10 +4,10 @@ from .chat_service import build_persona_system_prompt
 
 def log_for_finetuning(system_prompt, user_message, assistant_message, filename="finetuning_dataset.jsonl"):
     """
-    Appends a conversation turn to a JSONL file for fine-tuning.
+    대화 턴을 파인튜닝을 위한 JSONL 파일에 추가합니다.
     """
     try:
-        # The data structure for OpenAI's fine-tuning format
+        # OpenAI의 파인튜닝 형식에 맞는 데이터 구조
         training_example = {
             "messages": [
                 {"role": "system", "content": system_prompt},
@@ -16,17 +16,17 @@ def log_for_finetuning(system_prompt, user_message, assistant_message, filename=
             ]
         }
 
-        # Append to the file in JSONL format, ensuring UTF-8 encoding
+        # JSONL 형식으로 파일에 추가하며, UTF-8 인코딩을 보장합니다.
         with open(filename, 'a', encoding='utf-8') as f:
             f.write(json.dumps(training_example, ensure_ascii=False) + '\n')
 
     except Exception as e:
-        # Log errors to the console without crashing the main application
+        # 메인 애플리케이션을 중단시키지 않고 콘솔에 오류를 기록합니다.
         print(f"--- Could not write to fine-tuning log: {e} ---")
 
 def anonymize_and_log_finetuning_data(request, user_message_text, bot_message_text):
     """
-    Prepares the data by anonymizing it, then logs it for fine-tuning.
+    데이터를 익명화한 후 파인튜닝을 위해 기록합니다.
     """
     user = request.user
     finetuning_system_prompt = build_persona_system_prompt(user)
@@ -37,7 +37,7 @@ def anonymize_and_log_finetuning_data(request, user_message_text, bot_message_te
         if preferred_name_obj and preferred_name_obj.content:
             names_to_replace.add(preferred_name_obj.content)
     except Exception as e:
-        print(f"--- Error retrieving preferred name for logging: {e} ---")
+        print(f"--- 로깅을 위한 선호 이름 검색 중 오류 발생: {e} ---")
         pass
 
     generic_finetuning_prompt = finetuning_system_prompt
@@ -56,7 +56,7 @@ def anonymize_and_log_finetuning_data(request, user_message_text, bot_message_te
                     placeholder = f"[{rel.relationship_type}]"
                     generic_bot_message = generic_bot_message.replace(rel.name, placeholder)
     except Exception as e:
-        print(f"--- Error replacing third-party names for logging: {e} ---")
+        print(f"--- 로깅을 위한 제3자 이름 대체 중 오류 발생: {e} ---")
         pass
 
     log_for_finetuning(generic_finetuning_prompt, user_message_text, generic_bot_message)
