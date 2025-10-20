@@ -47,21 +47,22 @@ def _call_llm_for_proactive_message(user, system_prompt):
 
 def generate_proactive_message(user):
     last_chat = ChatMessage.objects.filter(user=user).order_by('-timestamp').first()
-    now_korea = timezone.now().astimezone(timezone.get_default_timezone())
+    korea_tz = timezone.get_default_timezone()
+    now_korea = timezone.now().astimezone(korea_tz)
     
     trigger_type = None
     proactive_instruction_base = ""
 
     # 1. 비활동 기반 트리거
     # 1시간 이상 활동이 없으면 능동적인 메시지 생성
-    if last_chat and (now_korea - last_chat.timestamp.astimezone(now_korea)) > timedelta(hours=1):
+    if last_chat and (now_korea - last_chat.timestamp.astimezone(korea_tz)) > timedelta(hours=1):
         trigger_type = "inactivity"
         proactive_instruction_base = (
             f"너는 {user.username}님에게 오랜만에 말을 거는 상황이야. "
             f"1시간 이상 대화가 없었으니, {user.username}님의 안부를 묻거나, "
         )
     # 2. 시간대 기반 트리거 (30분 이상 비활동 시 고려)
-    elif not last_chat or (now_korea - last_chat.timestamp.astimezone(now_korea)) > timedelta(minutes=30):
+    elif not last_chat or (now_korea - last_chat.timestamp.astimezone(korea_tz)) > timedelta(minutes=30):
         current_hour = now_korea.hour
         if 6 <= current_hour < 10: # 아침
             trigger_type = "morning_greeting"

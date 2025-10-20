@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("chatbot_app", "0013_userprofile_is_onboarding_complete"),
+        ("chatbot_app", "0014_userschedule"),
     ]
 
     operations = [
