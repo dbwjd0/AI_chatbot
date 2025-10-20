@@ -5,6 +5,7 @@ import os
 import requests
 import json
 from .chat_service import build_persona_system_prompt, build_rag_instructions_prompt, _assemble_context_data # 필요한 함수 임포트
+from .emotion_service import analyze_emotion
 
 def _call_llm_for_proactive_message(user, system_prompt):
     api_key = os.environ.get("OPENAI_API_KEY")
@@ -37,8 +38,7 @@ def _call_llm_for_proactive_message(user, system_prompt):
         
         content_from_llm = json.loads(response_json['choices'][0]['message']['content'])
         message_text = content_from_llm.get('answer', '').strip()
-        # LLM이 감정을 반환한다고 가정
-        emotion = content_from_llm.get('character_emotion', 'default') 
+        emotion = analyze_emotion(message_text) # emotion_service를 사용하여 감정 분석 
         return message_text, emotion
     except (requests.exceptions.RequestException, KeyError, IndexError, json.JSONDecodeError) as e:
         print(f"LLM 능동적 메시지 생성 오류: {e}")
@@ -55,14 +55,14 @@ def generate_proactive_message(user):
 
     # 1. 비활동 기반 트리거
     # 1시간 이상 활동이 없으면 능동적인 메시지 생성
-    if last_chat and (now_korea - last_chat.timestamp.astimezone(korea_tz)) > timedelta(hours=1):
+    if last_chat and (now_korea - last_chat.timestamp.astimezone(now_korea.tzinfo)) > timedelta(hours=1):
         trigger_type = "inactivity"
         proactive_instruction_base = (
             f"너는 {user.username}님에게 오랜만에 말을 거는 상황이야. "
             f"1시간 이상 대화가 없었으니, {user.username}님의 안부를 묻거나, "
         )
     # 2. 시간대 기반 트리거 (30분 이상 비활동 시 고려)
-    elif not last_chat or (now_korea - last_chat.timestamp.astimezone(korea_tz)) > timedelta(minutes=30):
+    elif not last_chat or (now_korea - last_chat.timestamp.astimezone(now_korea.tzinfo)) > timedelta(minutes=30):
         current_hour = now_korea.hour
         if 6 <= current_hour < 10: # 아침
             trigger_type = "morning_greeting"
@@ -76,7 +76,7 @@ def generate_proactive_message(user):
         # TODO: 다른 시간대 (새벽, 오후 등) 추가 가능
 
     # 3. 컨텍스트 기반 트리거 강화 (기존 로직에 통합)
-    # LLM 호출 전에 system_prompt에 memory_context_str을 추가하는 방식으로 이미 강화되어 있음.
+    # LLM 호출 전에 system_prompt에 assemble_context를 추가하는 방식으로 이미 강화되어 있음.
     # proactive_instruction_base에 컨텍스트 활용 지시를 더 명확히 추가.
     
     if trigger_type:
@@ -92,12 +92,7 @@ def generate_proactive_message(user):
             memory_context_str = "\n## 사용자 기억 컨텍스트 ##\n" + memory_context_str
         
         # 능동적 메시지 생성을 위한 추가 지시사항
-        proactive_instruction = (
-            proactive_instruction_base +
-            f"제공된 사용자 정보와 기억 컨텍스트를 적극적으로 활용하여 메시지를 생성해줘. "
-            f"너의 페르소나(츤데레)에 맞게 재치있고 흥미롭게 말을 걸어줘. "
-            f"응답은 반드시 JSON 형식으로 'answer'와 'character_emotion' 키를 포함해야 해."
-        )
+        proactive_instruction = f"{proactive_instruction_base}제공된 사용자 정보와 기억 컨텍스트를 적극적으로 활용하여 메시지를 생성해줘. 너의 페르소나(츤데레)에 맞게 재치있고 흥미롭게 말을 걸어줘. 응답은 반드시 JSON 형식으로 'answer' 키를 포함해야 해."
         
         system_prompt = f"{persona_system_prompt}{rag_instructions_prompt}{memory_context_str}\n\n## 능동적 대화 지시 ##\n{proactive_instruction}"
         
