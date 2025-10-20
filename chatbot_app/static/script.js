@@ -42,6 +42,10 @@ document.addEventListener('DOMContentLoaded', function() {
         imageInput.value = '';
     }
 
+    function getValidDate(timestamp) {
+        const date = new Date(timestamp);
+        return !isNaN(date.getTime()) ? date : null;
+    }
     // --- 로직 함수 ---
     function createMessageDiv(msg) {
         const messageDiv = document.createElement('div');
@@ -70,8 +74,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         messageDiv.appendChild(contentWrapper);
 
-        const time = new Date(msg.timestamp);
-        const timeString = `(${(time.getHours()).toString().padStart(2, '0')}:${(time.getMinutes()).toString().padStart(2, '0')})`;
+        const time = getValidDate(msg.timestamp);
+        let timeString = '';
+        if (time) {
+            timeString = `(${(time.getHours()).toString().padStart(2, '0')}:${(time.getMinutes()).toString().padStart(2, '0')})`;
+        }
         const timeSpan = document.createElement('span');
         timeSpan.classList.add('timestamp');
         timeSpan.textContent = timeString;
@@ -86,15 +93,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const messages = chatLog.querySelectorAll('.message');
         messages.forEach(message => {
             const msgTimestamp = message.dataset.timestamp;
-            const msgDate = new Date(msgTimestamp).toDateString();
-            if (lastDate !== msgDate) {
-                const date = new Date(msgTimestamp);
-                const formattedDate = `[${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일]`;
+            const date = getValidDate(msgTimestamp);
+
+            if (!date) {
+                return;
+            }
+
+            let formattedDate = `[${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일]`;
+
+            if (lastDate !== formattedDate) {
                 const separatorDiv = document.createElement('div');
                 separatorDiv.classList.add('date-separator');
                 separatorDiv.textContent = formattedDate;
                 chatLog.insertBefore(separatorDiv, message);
-                lastDate = msgDate;
+                lastDate = formattedDate;
             }
         });
     }
@@ -250,6 +262,27 @@ document.addEventListener('DOMContentLoaded', function() {
         // 초기 로드 시에는 서버에서 image.url을 내려주므로 별도 처리가 필요 없음
         displayMessages(chatHistory);
     } else {
+        updateDateSeparators();
         chatLog.scrollTop = chatLog.scrollHeight;
     }
+
+    // 능동적인 메시지 폴링
+    setInterval(async () => {
+        try {
+            const response = await fetch('/get_proactive_message/', {
+                method: 'GET',
+                headers: { 'X-CSRFToken': getCookie('csrftoken') },
+            });
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            if (data.message) {
+                const botMessage = { message: data.message, is_user: false, timestamp: data.timestamp, character_emotion: data.character_emotion };
+                displayMessages([botMessage]);
+                // 캐릭터 이미지를 즉시 업데이트할 수도 있습니다.
+                chatbotCharacter.src = STATIC_URLS[data.character_emotion] || STATIC_URLS.default;
+            }
+        } catch (error) {
+            console.error('Error fetching proactive message:', error);
+        }
+    }, 60000); // 60초마다 폴링 (필요에 따라 조정)
 });

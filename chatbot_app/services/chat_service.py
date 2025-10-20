@@ -10,7 +10,8 @@ from ..models import ChatMessage, UserAttribute, UserActivity, ActivityAnalytics
 from .context_service import get_activity_recommendation, search_activities_for_context
 from .memory_service import extract_and_save_user_context_data
 from .image_captioning_service import ImageCaptioningService
-from . import vector_service, location_service
+from . import vector_service, location_service, schedule_service # schedule_service 추가
+from datetime import date # date 추가
 
 
 def process_chat_interaction(request, user_message_text: str, latitude: Optional[float] = None, longitude: Optional[float] = None, image_file: Optional[UploadedFile] = None):
@@ -107,18 +108,38 @@ def _get_time_contexts(history):
 def _assemble_context_data(user, user_message_text, latitude=None, longitude=None, has_image=False):
     """사용자의 기억과 관련된 모든 컨텍스트를 종합하여 반환합니다."""
     contexts = {}
-    # 위치 컨텍스트
+    # 0. 오늘의 일정 컨텍스트
+    schedule_context = ""
+    try:
+        today_schedule = schedule_service.get_or_create_schedule(user, date.today())
+        if today_schedule and today_schedule.content.strip():
+            schedule_context = f"[사용자의 오늘 일정 (참고용): {today_schedule.content.strip()}]"
+            contexts['schedule'] = schedule_context
+            print(f"--- [디버그] 오늘 일정 컨텍스트: {schedule_context} ---")
+    except Exception as e:
+        print(f"--- Could not build schedule context due to an error: {e} ---")
+
+
+    # 1. 위치 컨텍스트
+    location_context = ""
     if latitude is not None and longitude is not None:
         location_context = location_service.get_location_context(latitude, longitude)
         if location_context:
             contexts['location'] = location_context
+            print(f"--- [디버그] 현재 위치 컨텍스트: {location_context} ---")
+
+    # 2. 위치 기반 추천 컨텍스트 (맛집, 카페 등)
+    location_recommendation_context = location_service.get_location_based_recommendation(user, user_message_text, latitude, longitude)
+    if location_recommendation_context:
+        print(f"--- [디버그] 위치 기반 추천 컨텍스트: {location_recommendation_context} ---")
+        contexts['location'] = location_context
         
         # 위치 기반 추천 컨텍스트
         location_recommendation = location_service.get_location_based_recommendation(user, user_message_text, latitude, longitude)
         if location_recommendation:
             contexts['location_recommendation'] = location_recommendation
 
-    # 벡터 검색 컨텍스트 (이미지가 없을 때만 수행)
+    # 3. 벡터 검색 컨텍스트 (이미지가 없을 때만 수행)
     if not has_image:
         try:
             collection = vector_service.get_or_create_collection()
@@ -129,13 +150,13 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
         except Exception as e:
             print(f"--- 벡터 검색 컨텍스트 생성 오류: {e} ---")
 
-    # 사용자 속성 컨텍스트
+    # 4. 사용자 속성 컨텍스트
     user_attributes = UserAttribute.objects.filter(user=user)
     if user_attributes.exists():
         attribute_strings = [f"{attr.fact_type}: {attr.content}" for attr in user_attributes]
         contexts['attributes'] = "[사용자 속성 (불변 정보): " + ", ".join(attribute_strings) + "]"
 
-    # 사용자 활동 컨텍스트
+    # 5. 사용자 활동 컨텍스트
     activity_strings = []
     try:
         recent_activities = UserActivity.objects.filter(user=user).order_by('-activity_date', '-created_at')[:5]
@@ -160,7 +181,7 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
     if activity_strings:
         contexts['activity'] = "\n".join(activity_strings)
 
-    # 활동 분석 컨텍스트
+    # 6. 활동 분석 컨텍스트
     try:
         recent_analytics = ActivityAnalytics.objects.filter(user=user).order_by('-period_start_date')[:3]
         if recent_analytics.exists():
@@ -173,10 +194,19 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
     except Exception as e:
         print(f"--- 활동 분석 컨텍스트 생성 오류: {e} ---")
 
-    # 인간관계 컨텍스트
+    # 7. 인간관계 컨텍스트
     try:
         user_relationships = UserRelationship.objects.filter(user=user)
         if user_relationships.exists():
+            relationship_strings = []
+            for rel in user_relationships:
+                details = f"{rel.name} ({rel.relationship_type})"
+                if rel.position:
+                    details += f", 포지션: {rel.position}"
+                if rel.traits:
+                    details += f", 특징: {rel.traits}"
+                relationship_strings.append(details)
+            
             relationship_strings = [f"{rel.name} ({rel.relationship_type}, 특징: {rel.traits})" for rel in user_relationships]
             contexts['relationship'] = "[사용자의 인간관계: " + "; ".join(relationship_strings) + "]"
     except Exception as e:
@@ -213,6 +243,8 @@ def _build_final_system_prompt(user, time_contexts, assembled_contexts, image_an
 
     print("--- [디버그] 모든 컨텍스트 통합 완료 ---")
 
+    persona_system_prompt = build_persona_system_prompt(user)
+    rag_instructions_prompt = build_rag_instructions_prompt(user)
     persona_system_prompt = build_persona_system_prompt(user)
     rag_instructions_prompt = build_rag_instructions_prompt(user)
 
@@ -313,6 +345,7 @@ def _finalize_chat_interaction(request, user_message_text, response_json, histor
     except Exception as e:
         explanation = f"예상치 못한 오류 발생: {e}"
 
+    # ChromaDB 컬렉션 가져오기
     collection = vector_service.get_or_create_collection()
 
     # ChatMessage 저장 시 image_file을 직접 사용
