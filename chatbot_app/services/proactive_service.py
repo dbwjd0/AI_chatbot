@@ -47,7 +47,8 @@ def _call_llm_for_proactive_message(user, system_prompt):
 
 def generate_proactive_message(user):
     last_chat = ChatMessage.objects.filter(user=user).order_by('-timestamp').first()
-    now_korea = timezone.now().astimezone(timezone.get_default_timezone())
+    korea_tz = timezone.get_default_timezone()
+    now_korea = timezone.now().astimezone(korea_tz)
     
     trigger_type = None
     proactive_instruction_base = ""
