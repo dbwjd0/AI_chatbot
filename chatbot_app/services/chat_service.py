@@ -1,8 +1,10 @@
 import json
 import os
+import base64
 from django.utils import timezone
 from typing import Optional, Dict, Any, Tuple
 from openai import OpenAI, APIError
+from django.core.files.uploadedfile import UploadedFile
 
 from ..models import ChatMessage, UserAttribute, UserActivity, ActivityAnalytics, UserRelationship
 from .context_service import get_activity_recommendation, search_activities_for_context
@@ -11,12 +13,13 @@ from .image_captioning_service import ImageCaptioningService
 from . import vector_service, location_service
 
 
-def process_chat_interaction(request, user_message_text: str, latitude: Optional[float] = None, longitude: Optional[float] = None, image_b64_data: Optional[str] = None):
+def process_chat_interaction(request, user_message_text: str, latitude: Optional[float] = None, longitude: Optional[float] = None, image_file: Optional[UploadedFile] = None):
     """사용자 메시지를 처리하고 AI 응답을 생성하는 전체 프로세스를 조율합니다."""
     user = request.user
     bot_message_text = "죄송합니다. API 응답을 가져오는 데 실패했습니다."
     explanation = ""
     bot_message_obj = None
+    user_message_obj = None
 
     try:
         api_key = os.environ.get("OPENAI_API_KEY")
@@ -27,8 +30,13 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
 
         # 1단계: 이미지 분석 (이미지가 있는 경우)
         image_analysis_context = None
-        if image_b64_data:
-            print("--- [디버그] 이미지 데이터 감지됨. 1차 분석 시작 ---")
+        image_b64_data = None
+        if image_file:
+            print("--- [디버그] 이미지 파일 감지됨. 1차 분석 시작 ---")
+            # ImageCaptioningService가 Base64를 사용하므로, 파일 내용을 인코딩하여 전달
+            image_b64_data = base64.b64encode(image_file.read()).decode('utf-8')
+            image_file.seek(0) # 파일을 다시 읽을 수 있도록 포인터를 처음으로 되돌림
+
             analyzer = ImageCaptioningService()
             analysis_result = analyzer.analyze_image(image_b64_data, user_message_text)
             if analysis_result:
@@ -41,7 +49,7 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
         history = ChatMessage.objects.filter(user=user).order_by('-timestamp')
         time_contexts = _get_time_contexts(history)
         # 벡터 검색은 이미지가 없을 때만 수행하여 효율성 증대
-        assembled_contexts = _assemble_context_data(user, user_message_text, latitude, longitude, image_b64_data)
+        assembled_contexts = _assemble_context_data(user, user_message_text, latitude, longitude, bool(image_file))
         
         # 3단계: 최종 프롬프트 생성 (이미지 분석 결과 포함)
         final_system_prompt = _build_final_system_prompt(user, time_contexts, assembled_contexts, image_analysis_context)
@@ -52,8 +60,8 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
         response_json = _call_openai_api(client, model_to_use, messages)
         
         # 5단계: 응답 처리 및 저장
-        bot_message_text, explanation, bot_message_obj = _finalize_chat_interaction(
-            request, user_message_text, response_json, history, api_key, image_b64_data
+        bot_message_text, explanation, bot_message_obj, user_message_obj = _finalize_chat_interaction(
+            request, user_message_text, response_json, history, api_key, image_file
         )
 
     except APIError as e:
@@ -68,7 +76,8 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
         traceback.print_exc()
         bot_message_text = f"예상치 못한 오류가 발생했습니다: {e}"
 
-    return bot_message_text, explanation, bot_message_obj
+    # user_message_obj를 반환하도록 수정
+    return bot_message_text, explanation, bot_message_obj, user_message_obj
 
 def _get_time_contexts(history):
     """현재 시간 및 마지막 대화와의 시간 간격에 대한 컨텍스트를 생성합니다."""
@@ -95,7 +104,7 @@ def _get_time_contexts(history):
 
     return current_time_context, time_awareness_context
 
-def _assemble_context_data(user, user_message_text, latitude=None, longitude=None, image_b64_data=None):
+def _assemble_context_data(user, user_message_text, latitude=None, longitude=None, has_image=False):
     """사용자의 기억과 관련된 모든 컨텍스트를 종합하여 반환합니다."""
     contexts = {}
     # 위치 컨텍스트
@@ -110,7 +119,7 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
             contexts['location_recommendation'] = location_recommendation
 
     # 벡터 검색 컨텍스트 (이미지가 없을 때만 수행)
-    if not image_b64_data:
+    if not has_image:
         try:
             collection = vector_service.get_or_create_collection()
             similar_results = vector_service.query_similar_messages(collection, user_message_text, user.id, n_results=5)
@@ -195,7 +204,7 @@ def _build_final_system_prompt(user, time_contexts, assembled_contexts, image_an
             f"- 너의 임무: 위 '이미지 분석 정보'를 핵심 재료로 사용하되, 너의 '츤데레' 성격에 맞춰 답변을 완전히 새롭게 재구성해야 해. 답변 초안을 그대로 사용하지 말고, 너의 창의력으로 더 재치있고 재미있는 답변을 만들어봐.\n"
         )
 
-    # 메모리 컨텍스트 문자열 생성
+    # 추가 컨텍스트 문자열 생성
     context_list = [f"너와 사용자의 현재 호감도 점수는 {user.profile.affinity_score}점이야."]
     for key, value in assembled_contexts.items():
         if value:
@@ -237,12 +246,13 @@ def _call_openai_api(client: OpenAI, model_to_use: str, messages: list) -> Dict[
     )
     return response.model_dump()
 
-def _finalize_chat_interaction(request, user_message_text, response_json, history, api_key, image_b64_data: Optional[str] = None):
+def _finalize_chat_interaction(request, user_message_text, response_json, history, api_key, image_file: Optional[UploadedFile] = None):
     """성공적인 LLM 응답을 처리하고 관련 데이터를 RDB와 벡터 DB에 저장합니다."""
     user = request.user
     bot_message_text = "음... 생각을 정리하는 데 시간이 좀 걸리네. 다시 한번 말해줄래?"
     explanation = "AI 응답 처리 중 오류 발생."
     bot_message_obj = None
+    user_message_obj = None
 
     try:
         if 'choices' not in response_json or not response_json['choices'] or \
@@ -305,7 +315,8 @@ def _finalize_chat_interaction(request, user_message_text, response_json, histor
 
     collection = vector_service.get_or_create_collection()
 
-    user_message_obj = ChatMessage.objects.create(user=user, message=user_message_text, image_b64_data=image_b64_data, is_user=True)
+    # ChatMessage 저장 시 image_file을 직접 사용
+    user_message_obj = ChatMessage.objects.create(user=user, message=user_message_text, image=image_file, is_user=True)
     vector_service.upsert_message(collection, user_message_obj)
 
     bot_message_obj = ChatMessage.objects.create(user=user, message=bot_message_text, is_user=False)
@@ -314,7 +325,7 @@ def _finalize_chat_interaction(request, user_message_text, response_json, histor
     recent_history_for_extraction = history[:5]
     extract_and_save_user_context_data(user, user_message_text, bot_message_text, recent_history_for_extraction, api_key)
 
-    return bot_message_text, explanation, bot_message_obj
+    return bot_message_text, explanation, bot_message_obj, user_message_obj
 
 def build_persona_system_prompt(user):
     """AI 캐릭터 '아이'의 시스템 프롬프트를 생성하며, 호감도에 따라 페르소나를 동적으로 조정합니다."""

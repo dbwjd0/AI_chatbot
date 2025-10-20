@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('script.js loaded and DOMContentLoaded fired.'); // 이 줄 추가
     const chatLog = document.getElementById('chat-log');
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
@@ -7,40 +6,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const attachImageButton = document.getElementById('attach-image-button');
     const imagePreview = document.getElementById('image-preview');
     const clearImageButton = document.getElementById('clear-image-button');
-    let selectedImageBase64 = null; // 선택된 이미지의 Base64 문자열을 저장
+    const previewContainer = document.getElementById('preview-container');
+    
+    let selectedImageFile = null; // 선택된 이미지 파일을 저장
 
-    console.log('imageInput element:', imageInput); // 이 줄 추가
-    console.log('attachImageButton element:', attachImageButton); // 이 줄 추가
-
-    console.log("Found sendButton element:", sendButton); // 이 줄 추가
     const chatbotCharacter = document.getElementById('chatbot-character');
 
     let currentPage = 2;
     let isLoading = false;
     let hasNextPage = chatLog.dataset.hasNextPage === 'true';
 
-    attachImageButton.addEventListener('click', () => {
-        console.log('Attach image button clicked!'); // 이 줄 추가
-        imageInput.click(); // 이미지 첨부 버튼 클릭 시 실제 파일 입력 필드 클릭
-    });
-    console.log('Attach image button listener attached.'); // 이 줄 추가
+    attachImageButton.addEventListener('click', () => imageInput.click());
 
-    const previewContainer = document.getElementById('preview-container'); // 새 컨테이너 가져오기
-
-    clearImageButton.addEventListener('click', () => {
-        clearImageSelection();
-    });
+    clearImageButton.addEventListener('click', () => clearImageSelection());
 
     imageInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
+            selectedImageFile = file; // 파일 객체 저장
             const reader = new FileReader();
             reader.onload = (e) => {
                 imagePreview.src = e.target.result;
-                previewContainer.style.display = 'block'; // 컨테이너를 보여줌
-                selectedImageBase64 = e.target.result.split(',')[1]; // Base64 부분만 저장
+                previewContainer.style.display = 'block';
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(file); // 미리보기용으로만 사용
         } else {
             clearImageSelection();
         }
@@ -48,9 +37,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function clearImageSelection() {
         imagePreview.src = '';
-        previewContainer.style.display = 'none'; // 컨테이너를 숨김
-        selectedImageBase64 = null;
-        imageInput.value = ''; // 파일 입력 필드 초기화
+        previewContainer.style.display = 'none';
+        selectedImageFile = null;
+        imageInput.value = '';
     }
 
     // --- 로직 함수 ---
@@ -59,49 +48,45 @@ document.addEventListener('DOMContentLoaded', function() {
         messageDiv.classList.add('message', msg.is_user ? 'user-message' : 'bot-message');
         messageDiv.dataset.timestamp = msg.timestamp;
 
-        const contentWrapper = document.createElement('div'); // 이미지와 텍스트를 감싸는 래퍼
+        const contentWrapper = document.createElement('div');
         contentWrapper.style.display = 'flex';
         contentWrapper.style.flexDirection = 'column';
-        contentWrapper.style.alignItems = 'flex-start'; // 텍스트와 이미지를 왼쪽 정렬 (메시지 버블 내에서)
+        contentWrapper.style.alignItems = 'flex-start';
 
-        // 이미지 데이터가 있으면 이미지 태그를 추가
-        if (msg.image_b64_data) {
+        // image_url을 사용하여 이미지 렌더링
+        if (msg.image_url) {
             const img = document.createElement('img');
-            img.src = `data:image/jpeg;base64,${msg.image_b64_data}`;
-            img.style.maxWidth = '100%'; // 이미지가 메시지 영역을 넘지 않도록
+            img.src = msg.image_url;
+            img.style.maxWidth = '100%';
             img.style.height = 'auto';
-            img.style.marginBottom = '5px'; // 메시지 텍스트와의 간격
-            img.style.borderRadius = '8px'; // 이미지 모서리 둥글게
+            img.style.marginBottom = '5px';
+            img.style.borderRadius = '8px';
             contentWrapper.appendChild(img);
         }
 
         const p = document.createElement('p');
         p.textContent = msg.message;
-        contentWrapper.appendChild(p); // 텍스트를 래퍼에 추가
+        contentWrapper.appendChild(p);
 
-        messageDiv.appendChild(contentWrapper); // 래퍼를 메시지 div에 추가
+        messageDiv.appendChild(contentWrapper);
 
         const time = new Date(msg.timestamp);
         const timeString = `(${(time.getHours()).toString().padStart(2, '0')}:${(time.getMinutes()).toString().padStart(2, '0')})`;
         const timeSpan = document.createElement('span');
         timeSpan.classList.add('timestamp');
         timeSpan.textContent = timeString;
-        messageDiv.appendChild(timeSpan); // 타임스탬프는 메시지 div에 직접 추가 (flex 아이템으로)
+        messageDiv.appendChild(timeSpan);
         
         return messageDiv;
     }
 
     function updateDateSeparators() {
-        // 기존 구분선 모두 제거
         chatLog.querySelectorAll('.date-separator').forEach(el => el.remove());
-
         let lastDate = null;
         const messages = chatLog.querySelectorAll('.message');
-
         messages.forEach(message => {
             const msgTimestamp = message.dataset.timestamp;
             const msgDate = new Date(msgTimestamp).toDateString();
-
             if (lastDate !== msgDate) {
                 const date = new Date(msgTimestamp);
                 const formattedDate = `[${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일]`;
@@ -116,7 +101,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function displayMessages(messages, prepend = false) {
         const scrollHeightBefore = chatLog.scrollHeight;
-
         messages.forEach(msg => {
             const messageEl = createMessageDiv(msg);
             if (prepend) {
@@ -125,9 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 chatLog.appendChild(messageEl);
             }
         });
-
         updateDateSeparators();
-
         if (prepend) {
             chatLog.scrollTop = chatLog.scrollHeight - scrollHeightBefore;
         } else {
@@ -156,70 +138,87 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function sendMessage() {
         const messageText = userInput.value.trim();
-        const imageToSend = selectedImageBase64; // 1. 전송할 이미지 데이터를 임시 변수에 복사
+        const imageFile = selectedImageFile;
 
-        // 2. 보낼 내용이 없으면 아무것도 하지 않음
-        if (messageText === '' && !imageToSend) return;
+        if (messageText === '' && !imageFile) return;
 
-        // 3. 사용자 메시지를 화면에 먼저 표시
-        const userMessage = { message: messageText, is_user: true, timestamp: new Date().toISOString() };
-        if (imageToSend) {
-            userMessage.image_b64_data = imageToSend;
+        // 사용자 메시지를 화면에 먼저 표시 (미리보기용 URL 사용)
+        const userMessage = { 
+            message: messageText, 
+            is_user: true, 
+            timestamp: new Date().toISOString() 
+        };
+        if (imageFile) {
+            userMessage.image_url = URL.createObjectURL(imageFile); // 임시 URL 생성
         }
         displayMessages([userMessage]);
 
-        // 4. 입력 UI를 즉시 초기화 (사용자 경험 향상)
         userInput.value = '';
-        clearImageSelection(); 
+        clearImageSelection();
         
-        // 5. 챗봇 상태를 '생각 중'으로 변경
         chatbotCharacter.src = STATIC_URLS['생각'] || STATIC_URLS.default;
 
-        // 6. 위치 정보와 함께, 임시 변수에 저장해 둔 이미지 데이터를 서버로 전송
         const locationCheckbox = document.getElementById('location-checkbox');
         if (locationCheckbox.checked) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
-                    fetchChatResponse(messageText, latitude, longitude, imageToSend);
+                    fetchChatResponse(messageText, latitude, longitude, imageFile);
                 },
                 (error) => {
                     console.error('Geolocation error:', error);
-                    fetchChatResponse(messageText, null, null, imageToSend);
+                    fetchChatResponse(messageText, null, null, imageFile);
                 }
             );
         } else {
-            fetchChatResponse(messageText, null, null, imageToSend);
+            fetchChatResponse(messageText, null, null, imageFile);
         }
     }
 
-    async function fetchChatResponse(messageText, latitude, longitude, image_b64_data) { // image_b64_data 매개변수 추가
+    async function fetchChatResponse(messageText, latitude, longitude, imageFile) {
         try {
-            const payload = {
-                message: messageText,
-            };
+            const formData = new FormData();
+            formData.append('message', messageText);
+
             if (latitude && longitude) {
-                payload.latitude = latitude;
-                payload.longitude = longitude;
+                formData.append('latitude', latitude);
+                formData.append('longitude', longitude);
             }
-            if (image_b64_data) { // 이미지 데이터가 있으면 페이로드에 추가
-                payload.image_b64_data = image_b64_data;
+            if (imageFile) {
+                formData.append('image', imageFile);
             }
 
             const response = await fetch('/chat_response/', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
-                body: JSON.stringify(payload)
+                headers: { 'X-CSRFToken': getCookie('csrftoken') }, // Content-Type은 브라우저가 자동으로 설정
+                body: formData
             });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
             const data = await response.json();
-            const botMessage = { message: data.message, is_user: false, timestamp: data.timestamp };
-            
-            setTimeout(() => {
-                displayMessages([botMessage]);
-                chatbotCharacter.src = STATIC_URLS[data.character_emotion] || STATIC_URLS.default;
-            }, 500);
+
+            // AI 응답 메시지 표시
+            const botMessage = { 
+                message: data.message, 
+                is_user: false, 
+                timestamp: data.timestamp 
+            };
+            displayMessages([botMessage]);
+
+            // AI 캐릭터 감정 업데이트
+            chatbotCharacter.src = STATIC_URLS[data.character_emotion] || STATIC_URLS.default;
+
+            // 사용자가 보낸 이미지의 URL을 실제 서버 URL로 업데이트
+            if (data.user_image_url) {
+                const userMessages = chatLog.querySelectorAll('.user-message');
+                const lastUserMessage = userMessages[userMessages.length - 1];
+                const imgElement = lastUserMessage.querySelector('img');
+                if (imgElement && imgElement.src.startsWith('blob:')) {
+                    URL.revokeObjectURL(imgElement.src); // 기존 blob URL 메모리 해제
+                    imgElement.src = data.user_image_url;
+                }
+            }
+
         } catch (error) {
             console.error('Error sending message:', error);
             const errorMessage = { message: '죄송합니다. 메시지를 처리하는 데 문제가 발생했습니다.', is_user: false, timestamp: new Date().toISOString() };
@@ -248,6 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 초기화
     if (typeof chatHistory !== 'undefined' && chatHistory) {
+        // 초기 로드 시에는 서버에서 image.url을 내려주므로 별도 처리가 필요 없음
         displayMessages(chatHistory);
     } else {
         chatLog.scrollTop = chatLog.scrollHeight;

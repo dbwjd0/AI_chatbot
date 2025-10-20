@@ -23,6 +23,9 @@
                 <div id="chat-log" class="chat-log" data-has-next-page="{{ has_next_page|yesno:'true,false' }}">
                     {% for message in chat_messages %}
                         <div class="message {% if message.is_user %}user-message{% else %}bot-message{% endif %}">
+                            {% if message.image %}
+                                <img src="{{ message.image.url }}" alt="User image" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 5px;">
+                            {% endif %}
                             <p>{{ message.message }}</p>
                         </div>
                     {% empty %}
