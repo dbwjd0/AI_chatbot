@@ -115,31 +115,24 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
         if today_schedule and today_schedule.content.strip():
             schedule_context = f"[사용자의 오늘 일정 (참고용): {today_schedule.content.strip()}]"
             contexts['schedule'] = schedule_context
-            print(f"--- [디버그] 오늘 일정 컨텍스트: {schedule_context} ---")
+            #print(f"--- [디버그] 오늘 일정 컨텍스트: {schedule_context} ---")
     except Exception as e:
         print(f"--- Could not build schedule context due to an error: {e} ---")
 
 
-    # 1. 위치 컨텍스트
-    location_context = ""
+    # 1. 위치 컨텍스트 및 위치 기반 추천 컨텍스트
     if latitude is not None and longitude is not None:
         location_context = location_service.get_location_context(latitude, longitude)
         if location_context:
             contexts['location'] = location_context
-            print(f"--- [디버그] 현재 위치 컨텍스트: {location_context} ---")
+            #print(f"--- [디버그] 현재 위치 컨텍스트: {location_context} ---")
 
-    # 2. 위치 기반 추천 컨텍스트 (맛집, 카페 등)
-    location_recommendation_context = location_service.get_location_based_recommendation(user, user_message_text, latitude, longitude)
-    if location_recommendation_context:
-        print(f"--- [디버그] 위치 기반 추천 컨텍스트: {location_recommendation_context} ---")
-        contexts['location'] = location_context
-        
-        # 위치 기반 추천 컨텍스트
-        location_recommendation = location_service.get_location_based_recommendation(user, user_message_text, latitude, longitude)
-        if location_recommendation:
-            contexts['location_recommendation'] = location_recommendation
+        location_recommendation_result = location_service.get_location_based_recommendation(user, user_message_text, latitude, longitude)
+        if location_recommendation_result:
+            contexts['location_recommendation'] = location_recommendation_result
+            #print(f"--- [디버그] 위치 기반 추천 컨텍스트: {location_recommendation_result} ---")
 
-    # 3. 벡터 검색 컨텍스트 (이미지가 없을 때만 수행)
+    # 2. 벡터 검색 컨텍스트 (이미지가 없을 때만 수행)
     if not has_image:
         try:
             collection = vector_service.get_or_create_collection()
@@ -150,13 +143,13 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
         except Exception as e:
             print(f"--- 벡터 검색 컨텍스트 생성 오류: {e} ---")
 
-    # 4. 사용자 속성 컨텍스트
+    # 3. 사용자 속성 컨텍스트
     user_attributes = UserAttribute.objects.filter(user=user)
     if user_attributes.exists():
         attribute_strings = [f"{attr.fact_type}: {attr.content}" for attr in user_attributes]
         contexts['attributes'] = "[사용자 속성 (불변 정보): " + ", ".join(attribute_strings) + "]"
 
-    # 5. 사용자 활동 컨텍스트
+    # 4. 사용자 활동 컨텍스트
     activity_strings = []
     try:
         recent_activities = UserActivity.objects.filter(user=user).order_by('-activity_date', '-created_at')[:5]
@@ -181,7 +174,7 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
     if activity_strings:
         contexts['activity'] = "\n".join(activity_strings)
 
-    # 6. 활동 분석 컨텍스트
+    # 5. 활동 분석 컨텍스트
     try:
         recent_analytics = ActivityAnalytics.objects.filter(user=user).order_by('-period_start_date')[:3]
         if recent_analytics.exists():
@@ -194,7 +187,7 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
     except Exception as e:
         print(f"--- 활동 분석 컨텍스트 생성 오류: {e} ---")
 
-    # 7. 인간관계 컨텍스트
+    # 6. 인간관계 컨텍스트
     try:
         user_relationships = UserRelationship.objects.filter(user=user)
         if user_relationships.exists():
