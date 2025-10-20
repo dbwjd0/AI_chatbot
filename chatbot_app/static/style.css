@@ -140,3 +140,72 @@ body {
     white-space: nowrap;
     margin-bottom: 5px; /* Align with the bottom of the message bubble */
 }
+
+/* Icon Button Styles */
+.chat-input .icon-button {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.chat-input .icon-button:hover {
+    background-color: transparent; /* 배경색은 투명하게 유지 */
+    color: #000; /* 아이콘 색상만 진하게 변경 */
+}
+
+.chat-input .icon-button svg {
+    width: 16px; /* Adjust icon size */
+    height: 16px;
+}
+
+/* Image Preview Container Styles */
+.preview-container {
+    position: relative;
+    padding: 10px;
+    margin: 0 10px 10px 10px; /* top, right, bottom, left */
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background-color: #f9f9f9;
+}
+
+.preview-container #image-preview {
+    max-width: 100%;
+    max-height: 150px; /* Limit preview height */
+    border-radius: 8px;
+    display: block;
+}
+
+.preview-container #clear-image-button {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: transparent; /* 배경색 투명하게 */
+    /* color: white; */ /* 아이콘 색상 상위 규칙에서 상속 */
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    transition: background-color 0.2s, color 0.2s; /* 부드러운 전환 효과 추가 */
+}
+
+.preview-container #clear-image-button:hover {
+    background-color: transparent; /* 호버 시에도 배경 투명 유지 */
+    color: #000; /* 호버 시 아이콘 색상 진하게 */
+}
+
+.preview-container #clear-image-button svg {
+    width: 16px;
+    height: 16px;
+    fill: #555; /* 기본 아이콘 색상 강제 지정 */
+}
+
+.preview-container #clear-image-button:hover svg {
+    fill: #000; /* 호버 시 아이콘 색상 진하게 변경 */
+}

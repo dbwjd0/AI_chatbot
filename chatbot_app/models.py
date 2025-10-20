@@ -39,6 +39,7 @@ def save_user_profile(sender, instance, **kwargs):
 class ChatMessage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.TextField()
+    image = models.ImageField(upload_to='chat_images/', null=True, blank=True, help_text="메시지에 첨부된 이미지 파일")
     is_user = models.BooleanField(default=True)  # True면 사용자 메시지, False면 AI 메시지
     character_emotion = models.CharField(max_length=50, null=True, blank=True, help_text="AI 캐릭터의 감정 상태") # New field
     timestamp = models.DateTimeField(auto_now_add=True)

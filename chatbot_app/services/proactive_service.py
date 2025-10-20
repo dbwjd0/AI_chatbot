@@ -4,7 +4,7 @@ from datetime import timedelta
 import os
 import requests
 import json
-from .chat_service import build_persona_system_prompt, build_rag_instructions_prompt, _get_memory_contexts # 필요한 함수 임포트
+from .chat_service import build_persona_system_prompt, build_rag_instructions_prompt, _assemble_context_data # 필요한 함수 임포트
 
 def _call_llm_for_proactive_message(user, system_prompt):
     api_key = os.environ.get("OPENAI_API_KEY")
@@ -82,7 +82,7 @@ def generate_proactive_message(user):
         persona_system_prompt = build_persona_system_prompt(user)
         rag_instructions_prompt = build_rag_instructions_prompt(user)
 
-        memory_contexts_dict = _get_memory_contexts(user, "")
+        memory_contexts_dict = _assemble_context_data(user, "")
         memory_context_str = ""
         for key, value in memory_contexts_dict.items():
             if value:
