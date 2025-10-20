@@ -20,6 +20,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Increase max memory size for file uploads (e.g., images)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10 MB
+
 
 # Application definition
 
@@ -120,4 +123,8 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_URL = 'login'
+
+# Media files (User-uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
