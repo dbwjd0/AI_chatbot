@@ -34,12 +34,17 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
         image_b64_data = None
         if image_file:
             print("--- [디버그] 이미지 파일 감지됨. 1차 분석 시작 ---")
+            
+            # 추가된 디버깅 로그
+            print(f"--- [디버그] 파일명: {image_file.name}, Content-Type: {image_file.content_type} ---")
+
             # ImageCaptioningService가 Base64를 사용하므로, 파일 내용을 인코딩하여 전달
             image_b64_data = base64.b64encode(image_file.read()).decode('utf-8')
             image_file.seek(0) # 파일을 다시 읽을 수 있도록 포인터를 처음으로 되돌림
 
             analyzer = ImageCaptioningService()
-            analysis_result = analyzer.analyze_image(image_b64_data, user_message_text)
+            # 업로드된 파일의 content_type을 함께 전달
+            analysis_result = analyzer.analyze_image(image_b64_data, user_message_text, image_file.content_type)
             if analysis_result:
                 image_analysis_context = analysis_result
                 print("--- [디버그] 1차 분석 완료 --- ")
@@ -219,12 +224,10 @@ def _build_final_system_prompt(user, time_contexts, assembled_contexts, image_an
     image_context_str = ""
     if image_analysis_context:
         desc = image_analysis_context.get('image_description', 'N/A')
-        draft = image_analysis_context.get('draft_response', 'N/A')
         image_context_str = (
             f"\n## 이미지 분석 정보 ##\n"
             f"- 사용자가 보낸 이미지에 대한 설명: {desc}\n"
-            f"- 위 설명을 바탕으로 생성된 답변 초안: {draft}\n"
-            f"- 너의 임무: 위 '이미지 분석 정보'를 핵심 재료로 사용하되, 너의 '츤데레' 성격에 맞춰 답변을 완전히 새롭게 재구성해야 해. 답변 초안을 그대로 사용하지 말고, 너의 창의력으로 더 재치있고 재미있는 답변을 만들어봐.\n"
+            f"- 너의 임무: 위 이미지 설명을 바탕으로, 사용자의 메시지에 대한 답변을 너의 '츤데레' 성격에 맞춰 창의적으로 생성해줘.\n"
         )
 
     # 추가 컨텍스트 문자열 생성
@@ -413,7 +416,7 @@ def build_rag_instructions_prompt(user):
         "## 응답 형식 ##\n"
         "너의 답변은 반드시 JSON 형식으로 제공해야 해. 다음 두 가지 키를 포함해야 해:\n"
         "1.  `answer`: {user.username}님에게 보낼 최종 답변.\n"
-        "2.  `explanation`: `answer`를 생성할 때 사용된 정보(예: 기억하는 사실, 웹 검색 결과)에 대한 간략한 설명. AI의 성격, 행동 규칙, 호감도 점수 등 AI 내부의 판단 과정이나 상태에 대한 언급은 절대 포함하지 마.\n"
+        "2.  `explanation`: `answer`를 생성할 때 참고한 주요 정보(예: 사용자 기억, 현재 시간, 이미지 분석 결과 등)를 1~2문장으로 간략하게 설명해줘.\n"
         "예시: {{'answer': ''흥, 그런 당연한 소리는 학습에 별로 도움이 안 되거든?'', ''explanation'': ''사용자의 칭찬에 대해 답변했습니다.''}}\n"
         "너의 최종 응답은 다른 어떤 텍스트도 없이, 오직 이 JSON 객체 하나여야만 해. JSON 앞이나 뒤에 다른 말을 붙이지 마."
     )
