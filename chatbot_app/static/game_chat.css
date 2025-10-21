@@ -1,0 +1,202 @@
+/* game_chat.css */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Malgun Gothic', sans-serif;
+}
+
+.game-container {
+    width: 100%;
+    height: 100%;
+    background-image: url('/static/img/pixel_room_bg.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.top-menu {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 15px;
+    border-radius: 10px;
+    color: white;
+    z-index: 100;
+}
+
+.top-menu a {
+    color: #a9d1ff;
+    text-decoration: none;
+    margin-left: 15px;
+}
+
+.top-menu a:hover {
+    text-decoration: underline;
+}
+
+.character-container {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 80%;
+    z-index: 10;
+}
+
+.character-container img {
+    height: 100%;
+    object-fit: contain;
+    /* 캐릭터가 대화창 위에 오도록 */
+    position: relative; 
+    bottom: -60px; /* 대화창 높이와 겹치지 않게 조정 */
+}
+
+
+
+
+.dialogue-box {
+    position: absolute;
+    bottom: 80px; /* 입력창 위로 올림 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 900px;
+    height: 150px;
+    background-color: rgba(0, 0, 0, 0.75);
+    border: 2px solid #a9d1ff;
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+}
+
+.dialogue-nav-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid #a9d1ff;
+    border-radius: 5px;
+    color: white;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 5px 10px;
+    z-index: 21;
+}
+
+.dialogue-nav-button:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.dialogue-nav-button.hidden {
+    display: none;
+}
+
+#speaker-name {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #a9d1ff;
+}
+
+#dialogue-text {
+    font-size: 1.1em;
+    line-height: 1.5;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.chat-input-container {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    z-index: 30;
+    background-color: #1a1a1a;
+    padding: 10px 0;
+}
+
+.chat-input {
+    width: 80%;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+#user-input {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #555;
+    background-color: #333;
+    color: white;
+    margin: 0 10px;
+}
+
+.icon-button, #send-button {
+    background: none;
+    border: none;
+    color: #a9d1ff;
+    cursor: pointer;
+    font-size: 1.5em;
+    padding: 5px;
+}
+
+#send-button {
+    font-size: 1em;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+}
+
+.location-permission {
+    display: flex;
+    align-items: center;
+    color: white;
+    margin-left: 15px;
+}
+
+/* 이미지 미리보기 */
+.preview-container {
+    position: absolute;
+    bottom: 60px; /* 입력창 바로 위 */
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    padding: 10px;
+    border-radius: 10px;
+    z-index: 40;
+}
+
+#image-preview {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 5px;
+}
+
+#clear-image-button {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: white;
+    color: black;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    line-height: 25px;
+    text-align: center;
+}
