@@ -300,8 +300,8 @@ def _finalize_chat_interaction(request, user_message_text, response_json, histor
                 explanation = content_from_llm.get('explanation', '설명 없음.')
                 parsed_successfully = True
             else:
-                 # JSON은 맞지만 answer 키가 없는 경우
                  explanation = f"LLM 응답 JSON에 'answer' 키가 누락되었습니다: {content_from_llm}"
+                 bot_message_text = "AI 응답 형식이 잘못되었습니다. (answer 키 누락)"
 
         except json.JSONDecodeError:
             # JSON 파싱 실패 시, 문자열 내에서 JSON을 찾아보는 로직
@@ -317,14 +317,19 @@ def _finalize_chat_interaction(request, user_message_text, response_json, histor
                         parsed_successfully = True
                     else:
                         explanation = f"추출된 JSON에 'answer' 키가 누락되었습니다: {content_from_llm}"
+                        bot_message_text = "AI 응답 형식이 잘못되었습니다. (추출된 JSON에 answer 키 누락)"
 
             except json.JSONDecodeError:
                  explanation = f"LLM 응답에서 JSON을 추출하여 파싱하는 데 실패했습니다."
+                 bot_message_text = "AI 응답 형식이 잘못되었습니다. (JSON 파싱 실패)"
         
         # 최종적으로 파싱에 실패했다면, 원본 텍스트라도 답변으로 사용
         if not parsed_successfully and content_from_llm_raw.strip():
             bot_message_text = content_from_llm_raw.strip()
             explanation = "AI가 지정된 JSON 형식을 따르지 않았으나, 원본 응답을 그대로 반환합니다."
+        elif not parsed_successfully: # 파싱에 완전히 실패했고, 원본 응답도 비어있거나 없음
+            bot_message_text = f"AI 응답 파싱 실패. 원본 응답: '{content_from_llm_raw}'. 설명: {explanation}"
+            explanation = "LLM 응답 파싱에 실패하여 디버그 메시지를 반환합니다."
         
         # 답변이 비어있는 경우 방지
         if not bot_message_text.strip():
