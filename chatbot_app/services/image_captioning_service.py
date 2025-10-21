@@ -20,20 +20,20 @@ class ImageCaptioningService:
                 print(f"OpenAI 클라이언트 초기화 실패: {e}")
         return cls._instance
 
-    def analyze_image(self, image_data_b64: str, user_message: str) -> dict:
+    def analyze_image(self, image_data_b64: str, user_message: str, image_content_type: str = 'image/jpeg') -> dict:
         """
-        이미지를 분석하고, 상세한 설명과 답변 초안을 생성합니다.
-        'image_description'과 'draft_response' 키를 가진 딕셔너리를 반환합니다.
+        이미지를 분석하고, 상세한 설명을 생성합니다.
+        'image_description' 키를 가진 딕셔너리를 반환합니다.
         """
         if not self._client:
             print("OpenAI 클라이언트가 초기화되지 않았습니다.")
             return None
 
         analysis_prompt = f"""
-        제공된 이미지를 자세히 분석해주세요. 주요 대상, 배경, 전체적인 분위기, 그리고 흥미로운 세부 사항들을 묘사해주세요.
-        이 분석과 사용자의 메시지(\"{user_message}\")를 바탕으로, 간단하고 사실에 기반한 답변의 초안을 작성해주세요.
-        결과는 "image_description"과 "draft_response" 두 개의 키를 가진 JSON 객체로 출력해주세요.
-        **모든 설명과 답변은 반드시 한글로 작성해야 합니다.**
+        제공된 이미지를 자세히 분석하고, 그 내용을 바탕으로 상세한 설명을 생성해주세요.
+        설명에는 주요 대상, 배경, 전체적인 분위기, 그리고 사용자의 메시지(\"{user_message}\")와 관련될 수 있는 흥미로운 세부 사항들이 포함되어야 합니다.
+        결과는 다른 부가 설명 없이, 이미지에 대한 설명 텍스트만 간결하게 반환해주세요.
+        **모든 설명은 반드시 한글로 작성해야 합니다.**
         """
 
         try:
@@ -46,19 +46,33 @@ class ImageCaptioningService:
                             {"type": "text", "text": analysis_prompt},
                             {
                                 "type": "image_url",
-                                "image_url": {"url": f"data:image/jpeg;base64,{image_data_b64}"},
+                                "image_url": {"url": f"data:{image_content_type};base64,{image_data_b64}"},
                             },
                         ],
                     }
                 ],
                 max_tokens=500,
-                response_format={"type": "json_object"},
             )
             
-            analysis_result = json.loads(response.choices[0].message.content)
+            choice = response.choices[0]
+            message_content = choice.message.content
+
+            if not message_content:
+                finish_reason = choice.finish_reason
+                print(f"OpenAI 이미지 분석 실패: API가 응답 내용을 반환하지 않았습니다. (종료 사유: {finish_reason})")
+                if finish_reason == 'content_filter':
+                    print("--- [원인] OpenAI의 콘텐츠 필터링 정책에 의해 응답이 차단되었을 수 있습니다.")
+                return None
+
+            # 호출 함수와의 호환성을 위해 텍스트를 딕셔너리 형식으로 래핑
+            analysis_result = {"image_description": message_content.strip()}
             print(f"--- [디버그] 이미지 분석 결과 (gpt-4o): {analysis_result} ---")
             return analysis_result
 
+        except json.JSONDecodeError as e:
+            print(f"OpenAI 이미지 분석 중 JSON 파싱 오류 발생: {e}")
+            print(f"--- [원문] LLM 원본 응답: {message_content}")
+            return None
         except Exception as e:
             print(f"OpenAI 이미지 분석 중 오류 발생: {e}")
             return None

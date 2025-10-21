@@ -123,26 +123,24 @@ def _get_existing_relationships_context(user):
 def _save_user_attributes(user, attributes_data):
     print(f"--- Found Attributes to Create/Update for {user.username}: {attributes_data} ---")
     for attribute_data in attributes_data:
-        action = attribute_data.get('action')
+        action = attribute_data.get('action') # 'action' 필드는 이제 DB 작업에 덜 중요합니다.
         fact_type = attribute_data.get('fact_type')
         content = attribute_data.get('content')
 
-        if not (action and fact_type and content):
+        if not (fact_type and content):
             continue
 
-        if action == 'update':
-            UserAttribute.objects.update_or_create(
-                user=user,
-                fact_type=fact_type,
-                defaults={'content': content}
-            )
-        elif action == 'create':
-            UserAttribute.objects.get_or_create(
-                user=user,
-                fact_type=fact_type,
-                content=content
-            )
-
+        # 'create' 및 'update' 작업 모두에 대해 세 가지 필드를 모두 사용하여 update_or_create를 사용합니다.
+        # 이는 정확한 (사용자, 속성 유형, 내용) 조합이 고유하도록 보장합니다.
+        # 그리고 중복 없이 생성 및 존재 여부 확인을 모두 처리합니다.
+        UserAttribute.objects.update_or_create(
+            user=user,
+            fact_type=fact_type,
+            content=content,
+            defaults={} # 모든 필드가 조회에 사용되므로 기본값은 필요하지 않습니다.
+        )
+        # LLM의 'action' 필드는 이제 DB 메서드를 지시하는 것이 아니라 정보 제공용입니다.
+        print(f"--- Ensured UserAttribute exists (action: {action}): {fact_type}: {content} for {user.username} ---")
 def _save_activity(user, activity_data, today_str):
     activities_to_save = []
     if isinstance(activity_data, list):
