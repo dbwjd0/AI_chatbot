@@ -28,7 +28,7 @@ def chat_response(request):
             )
 
             # 2. 파인튜닝 데이터 로깅
-            finetuning_service.anonymize_and_log_finetuning_data(request, user_message_text, bot_message_text)
+            finetuning_service.anonymize_and_log_finetuning_data(request, user_message_text, bot_message_text, explanation)
 
             # 3. 감정 분석
             character_emotion = emotion_service.analyze_emotion(bot_message_text)
