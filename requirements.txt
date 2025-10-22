@@ -5,6 +5,7 @@ JPype1
 python-dotenv
 openai
 chromadb
+django-apscheduler
 
 # For Hugging Face transformer-based emotion analysis
 transformers
