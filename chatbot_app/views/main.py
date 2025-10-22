@@ -140,6 +140,33 @@ def load_more_messages(request):
     })
 
 @login_required
+def game_chat_view(request):
+    """미연시 스타일의 새로운 채팅 페이지를 렌더링합니다."""
+    user_profile = UserProfile.objects.get(user=request.user)
+    
+    all_messages = ChatMessage.objects.filter(user=request.user).order_by('-timestamp')
+    
+    paginator = Paginator(all_messages, 20)
+    page_number = 1
+    messages_page = paginator.get_page(page_number)
+    
+    chat_messages_data = [
+        {
+            'message': msg.message,
+            'is_user': msg.is_user,
+            'timestamp': msg.timestamp.isoformat(),
+            'image_url': msg.image.url if msg.image else None
+        }
+        for msg in messages_page.object_list
+    ][::-1]
+
+    return render(request, 'game_chat.html', {
+        'user_profile': user_profile, 
+        'chat_messages': chat_messages_data,
+        'has_next_page': messages_page.has_next()
+    })
+
+@login_required
 def ai_status(request):
     """AI의 상태(기억, 호감도 등)를 보여주는 페이지를 렌더링합니다."""
     user_profile = UserProfile.objects.get(user=request.user)

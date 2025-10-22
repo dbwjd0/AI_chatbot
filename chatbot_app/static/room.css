@@ -380,3 +380,13 @@
      background-color: green; /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
 } 
+
+#invisible-wall-11 {
+     position: absolute;
+     top: 540px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 200px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 100px;  /* 장애물의 너비 */
+     height: 5px;  /* 장애물의 높이 */
+     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+} 
