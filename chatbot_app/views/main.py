@@ -63,11 +63,7 @@ def setup_view(request):
         profile.is_onboarding_complete = True
         profile.save()
         del request.session['onboarding_step']
-        return render(request, 'setup.html', {
-            'setup_complete': True,
-            'completion_message': '좋아! 너에 대해 알게 됐어',
-            'next_step_instruction': '엔터 키를 누르면 대화 화면으로 넘어갈 수 있어.'
-        })
+        return redirect('opening')
 
     question_to_ask = QUESTIONS[onboarding_step]['question']
     fact_type_for_validation = QUESTIONS[onboarding_step]['fact_type']
@@ -205,3 +201,8 @@ def get_proactive_message_view(request):
             'timestamp': proactive_chat_message.timestamp.isoformat()
         })
     return JsonResponse({'message': None})
+
+@login_required
+def opening_view(request):
+    """오프닝 비디오를 재생하는 페이지를 렌더링합니다."""
+    return render(request, 'opening.html')
