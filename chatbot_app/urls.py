@@ -8,6 +8,7 @@ urlpatterns = [
     path('chat_response/', chatWithAi.chat_response, name='chat_response'),
     path('chat/load-messages/', main.load_more_messages, name='load_more_messages'),
     path('setup/', main.setup_view, name='setup'),
+    path('opening/', main.opening_view, name='opening'),
     path('signup/', auth.signup_view, name='signup'),
     path('login/', auth.login_view, name='login'),
     path('logout/', auth.logout_view, name='logout'),
