@@ -1,11 +1,31 @@
 from ..models import ChatMessage, UserProfile
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, datetime, date, time
 import os
 import requests
 import json
+import re
 from .chat_service import build_persona_system_prompt, build_rag_instructions_prompt, _assemble_context_data # 필요한 함수 임포트
 from .emotion_service import analyze_emotion
+from . import schedule_service # schedule_service 임포트
+
+def _check_upcoming_schedule(user):
+    today = date.today()
+    schedule = schedule_service.get_or_create_schedule(user, today)
+
+    if schedule.schedule_time and schedule.content:
+        now_korea = timezone.now().astimezone(timezone.get_default_timezone())
+        
+        # Combine today's date with schedule_time to create a datetime object
+        schedule_datetime = datetime.combine(today, schedule.schedule_time)
+        schedule_datetime = timezone.make_aware(schedule_datetime, timezone.get_default_timezone())
+
+        time_until_schedule = schedule_datetime - now_korea
+
+        # Check if the schedule is within the next 10 minutes and not in the past
+        if timedelta(minutes=0) < time_until_schedule <= timedelta(minutes=5):
+            return schedule.content
+    return None
 
 def _call_llm_for_proactive_message(user, system_prompt):
     api_key = os.environ.get("OPENAI_API_KEY")
@@ -75,7 +95,16 @@ def generate_proactive_message(user):
             proactive_instruction_base = f"{user.username}님, 저녁 시간이야! 오늘 하루는 어땠는지 묻거나, 편안한 저녁을 보낼 수 있도록 격려하는 메시지를 생성해줘. "
         # TODO: 다른 시간대 (새벽, 오후 등) 추가 가능
 
-    # 3. 컨텍스트 기반 트리거 강화 (기존 로직에 통합)
+    # 3. 일정 알림 트리거 (새로 추가)
+    upcoming_schedule_content = _check_upcoming_schedule(user)
+    if upcoming_schedule_content:
+        trigger_type = "upcoming_schedule"
+        proactive_instruction_base = (
+            f"{user.username}님, 곧 일정이 있어! {upcoming_schedule_content} 일정이 10분 이내로 다가왔으니, "
+            f"일정을 상기시켜주거나, 준비를 돕는 메시지를 생성해줘. "
+        )
+    
+    # 4. 컨텍스트 기반 트리거 강화 (기존 로직에 통합)
     # LLM 호출 전에 system_prompt에 assemble_context를 추가하는 방식으로 이미 강화되어 있음.
     # proactive_instruction_base에 컨텍스트 활용 지시를 더 명확히 추가.
     
@@ -92,7 +121,7 @@ def generate_proactive_message(user):
             memory_context_str = "\n## 사용자 기억 컨텍스트 ##\n" + memory_context_str
         
         # 능동적 메시지 생성을 위한 추가 지시사항
-        proactive_instruction = f"{proactive_instruction_base}제공된 사용자 정보와 기억 컨텍스트를 적극적으로 활용하여 메시지를 생성해줘. 너의 페르소나(츤데레)에 맞게 재치있고 흥미롭게 말을 걸어줘. 응답은 반드시 JSON 형식으로 'answer' 키를 포함해야 해."
+        proactive_instruction = f"{proactive_instruction_base}제공된 사용자 정보와 기억 컨텍스트를 적극적으로 활용하여 메시지를 생성해줘. 너의 페르소나에 맞게 재치있고 흥미롭게 말을 걸어줘. 응답은 반드시 JSON 형식으로 'answer' 키를 포함해야 해."
         
         system_prompt = f"{persona_system_prompt}{rag_instructions_prompt}{memory_context_str}\n\n## 능동적 대화 지시 ##\n{proactive_instruction}"
         
@@ -110,6 +139,8 @@ def generate_proactive_message(user):
                 return "점심시간이야! 뭐 먹을지 고민돼?", "thinking"
             elif trigger_type == "evening_greeting":
                 return "오늘 하루도 수고했어!", "default"
+            elif trigger_type == "upcoming_schedule": # Add default message for upcoming schedule
+                return f"곧 {upcoming_schedule_content} 일정이 있어! 준비는 잘 되고 있어?", "default"
             else:
                 return "무슨 일이야?", "default"
 

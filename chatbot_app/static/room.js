@@ -332,6 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeButton = scheduleModal.querySelector('.close-button');
     const saveScheduleBtn = document.getElementById('save-schedule-btn');
     const scheduleTextarea = document.getElementById('schedule-textarea');
+    const scheduleTimeInput = document.getElementById('schedule-time-input'); // Get the new time input
 
     const openModal = () => {
         if (isDialogActive) return;
@@ -339,22 +340,26 @@ document.addEventListener('DOMContentLoaded', () => {
         isDialogActive = true;
         fetch('/schedule/')
             .then(response => response.json())
-            .then(data => { scheduleTextarea.value = data.content || ''; })
+            .then(data => {
+                scheduleTextarea.value = data.content || '';
+                scheduleTimeInput.value = data.schedule_time || '09:00'; // Populate time input, default to 09:00
+            })
             .catch(error => console.error('Error fetching schedule:', error));
     };
 
-    const closeModal = () => { 
+    const closeModal = () => {
         scheduleModal.style.display = 'none';
         isDialogActive = false;
     };
 
     const saveSchedule = () => {
         const content = scheduleTextarea.value;
+        const schedule_time = scheduleTimeInput.value; // Get time value
         const csrftoken = getCookie('csrftoken');
         fetch('/schedule/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
-            body: JSON.stringify({ content: content })
+            body: JSON.stringify({ content: content, schedule_time: schedule_time }) // Include schedule_time
         })
         .then(response => response.json())
         .then(data => {
