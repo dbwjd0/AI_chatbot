@@ -36,12 +36,12 @@ def chat_response(request):
             # 4. 감정 분석 결과에 따라 호감도 증감
             user_profile = request.user.profile
             AFFINITY_CHANGE_MAP = {
-                "공포": -5,
-                "놀람": -2,
+                "공포": -1,
+                "놀람": -1,
                 "분노": -3,
                 "슬픔": 0,
-                "중립": +1,
-                "행복": +3,
+                "중립": +3,
+                "행복": +5,
                 "혐오": -10,
             }
             affinity_change = AFFINITY_CHANGE_MAP.get(character_emotion, 0) # 매핑되지 않은 감정은 0으로 처리
