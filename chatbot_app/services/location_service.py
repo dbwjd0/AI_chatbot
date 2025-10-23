@@ -31,7 +31,7 @@ def get_location_context(latitude, longitude):
         road_address = address_doc.get('road_address')
         address_name = address_doc['address']['address_name']
         if road_address and road_address.get('building_name'):
-            return f"[현재 위치: {road_address['building_name']}]"
+            return f"[현재 위치]: {road_address['building_name']}"
         keyword_params = {
             'query': address_name, 'x': longitude, 'y': latitude,
             'radius': 20, 'sort': 'distance'
@@ -40,9 +40,9 @@ def get_location_context(latitude, longitude):
         response.raise_for_status()
         places_data = response.json()
         if places_data['documents']:
-            return f"[현재 위치: {places_data['documents'][0]['place_name']}]"
+            return f"[현재 위치]: {places_data['documents'][0]['place_name']}"
         if address_name:
-            return f"[현재 위치: {address_name} 부근]"
+            return f"[현재 위치]: {address_name} 부근"
     except (requests.exceptions.RequestException, KeyError, IndexError) as e:
         print(f"Kakao API 호출 오류: {e}")
     return ""
@@ -64,7 +64,7 @@ def get_location_based_recommendation(user, message, latitude, longitude):
                 found_preferred_places = search_specific_places_nearby(latitude, longitude, preferred_places)
                 if found_preferred_places:
                     places_str = ", ".join([f"'{p}'" for p in found_preferred_places])
-                    return f"[선호 장소 추천: 주변에 자주 가시던 {places_str}이(가) 있어요! 가보시는 건 어때요?]"
+                    return f"[선호 장소 추천]: 주변에 자주 가시던 {places_str}이(가) 있어요! 가보시는 건 어때요?"
             
             # 3. (선호 장소가 없거나 주변에 없는 경우) 주변의 다른 장소 추천
             return find_nearby_places(latitude, longitude, category_code, category_name)
@@ -88,7 +88,7 @@ def find_nearby_places(latitude, longitude, category_code, category_name):
         if not data['documents']:
             return ""
         place_list = [place['place_name'] for place in data['documents'][:5]]
-        return f"[주변 {category_name} 정보: " + ", ".join(place_list) + "]"
+        return f"[주변 {category_name} 정보]: " + ", ".join(place_list)
     except (requests.exceptions.RequestException, KeyError) as e:
         print(f"Kakao API 주변 {category_name} 검색 오류: {e}")
         return ""
