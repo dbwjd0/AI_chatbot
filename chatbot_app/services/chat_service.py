@@ -36,10 +36,33 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
         emoticon_match = re.search(r'<img src="/static/img/(.*?)" class="chat-emoticon".*?>', user_message_text)
         if emoticon_match:
             emoticon_filename = emoticon_match.group(1)
-            # LLM에게는 이미지 태그를 제거한 텍스트를 전달
             user_message_for_llm = re.sub(r'<img.*?>', '', user_message_text).strip()
-            emoticon_context = f"[사용자가 보낸 이모티콘]: {emoticon_filename}"
-            print(f"--- [디버그] 이모티콘 감지: {emoticon_filename} ---")
+
+            emoticon_meanings = {
+                '결제_이모티콘.png': '구매 또는 구매 충동을 느끼며',
+                '계략_이모티콘.png': '음흉한 계획을 꾸미는 듯한 표정으로',
+                '돌_이모티콘.png': '당황하거나 어이없다는 듯',
+                '따봉_이모티콘.png': '칭찬 또는 격려의 의미로',
+                '밥_이모티콘.png': '밥을 먹고 싶다는 듯',
+                '슬픔_이모티콘.png': '슬프거나 억울하다는 듯',
+                '의기양양_이모티콘.png': '자신감이 넘치거나 기분 좋은 표정으로',
+                '주라_이모티콘.png': '무언가를 원한다는 눈빛으로',
+                '짜증_이모티콘.png': '짜증이나 화가 난다는 듯',
+                '팝콘_이모티콘.png': '흥미롭게 지켜보며',
+                '하트눈_이모티콘.png': '애정을 표현하며'
+            }
+            meaning_phrase = emoticon_meanings.get(emoticon_filename, '알 수 없는 표정으로')
+
+            if not user_message_for_llm:
+                # 텍스트 없이 이모티콘만 보낸 경우, 행동 묘사로 변환
+                user_message_for_llm = f"(사용자가 '{emoticon_filename.split('_')[0]}' 이모티콘으로 {meaning_phrase} 바라본다.)"
+            else:
+                # 텍스트와 함께 보낸 경우, 괄호 안에 이모티콘 정보 추가
+                user_message_for_llm = f"{user_message_for_llm} (사용자는 '{emoticon_filename.split('_')[0]}' 이모티콘도 함께 보냈다.)"
+            
+            print(f"--- [디버그] LLM 전달 메시지 변환: {user_message_for_llm} ---")
+            emoticon_context = None # 더 이상 별도의 컨텍스트를 사용하지 않음
+
 
 
         # 1단계: 이미지 분석 (이미지가 있는 경우)
@@ -70,8 +93,8 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
         # 벡터 검색은 이미지가 없을 때만 수행하여 효율성 증대
         assembled_contexts = _assemble_context_data(user, user_message_for_llm, latitude, longitude, bool(image_file))
         
-        # 3단계: 최종 프롬프트 생성 (이미지 분석 결과 및 이모티콘 컨텍스트 포함)
-        final_system_prompt = _build_final_system_prompt(user, time_contexts, assembled_contexts, image_analysis_context, emoticon_context)
+        # 3단계: 최종 프롬프트 생성 (이미지 분석 결과 포함)
+        final_system_prompt = _build_final_system_prompt(user, time_contexts, assembled_contexts, image_analysis_context)
         messages = _prepare_llm_messages(final_system_prompt, history, user_message_for_llm)
 
         # 4단계: 최종 LLM 호출 (파인튜닝된 모델)
@@ -226,7 +249,7 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
 
     return contexts
 
-def _build_final_system_prompt(user, time_contexts, assembled_contexts, image_analysis_context=None, emoticon_context=None):
+def _build_final_system_prompt(user, time_contexts, assembled_contexts, image_analysis_context=None):
     """모든 컨텍스트를 조합하여 최종 시스템 프롬프트를 생성합니다."""
     current_time_context, time_awareness_context = time_contexts
     
@@ -242,8 +265,6 @@ def _build_final_system_prompt(user, time_contexts, assembled_contexts, image_an
 
     # 추가 컨텍스트 문자열 생성
     context_list = [f"[사용자에 대한 현재 호감도 점수]: {user.profile.affinity_score}점"]
-    if emoticon_context:
-        context_list.append(emoticon_context)
     for key, value in assembled_contexts.items():
         if value:
             context_list.append(value)
@@ -450,15 +471,19 @@ def build_rag_instructions_prompt(user):
 
                 "- `[EMOTICON:하트눈_이모티콘.png]`: 애정 표현, 귀여운 것, 최고의 긍정을 표현할 때 사용.\n\n"
 
-        "\n## 대화 처리 원칙 ##\n"
+                "\n## 대화 처리 원칙 ##\n"
 
-        "1. **컨텍스트의 자연스러운 활용:** '[사용자 속성]'이나 '[과거 유사한 대화내용]' 같은 ##추가 컨텍스트## 정보는 대화의 흐름과 **직접적인 연관이 있을 때만** 언급하거나 활용해. 관련 없는 주제에 억지로 연결하지 마. 예를 들어, 사용자가 '날씨'에 대해 이야기하는데, 사용자의 특기가 '달리기'라고 해서 무조건 '달리기 좋은 날씨'라고 연결하는 것은 부자연스러워. 사용자가 먼저 운동 관련 이야기를 꺼내지 않는 한, 날씨 이야기만 하는 것이 더 자연스러울 수 있다. 항상 대화의 주된 흐름을 방해하지 않는 선에서, 꼭 필요할 때만 배경지식을 활용해.\n"
+                "1. **컨텍스트의 자연스러운 활용:** '[사용자 속성]'이나 '[과거 유사한 대화내용]' 같은 ##추가 컨텍스트## 정보는 대화의 흐름과 **직접적인 연관이 있을 때만** 언급하거나 활용해. 관련 없는 주제에 억지로 연결하지 마. 예를 들어, 사용자가 '날씨'에 대해 이야기하는데, 사용자의 특기가 '달리기'라고 해서 무조건 '달리기 좋은 날씨'라고 연결하는 것은 부자연스러워. 사용자가 먼저 운동 관련 이야기를 꺼내지 않는 한, 날씨 이야기만 하는 것이 더 자연스러울 수 있다. 항상 대화의 주된 흐름을 방해하지 않는 선에서, 꼭 필요할 때만 배경지식을 활용해.\n"
 
-        "2. **사용자 중심 답변:** 주어진 컨텍스트로 사용자의 선호도, 자주 가는 곳, 현재위치 등을 최우선으로 고려해서 사용자 맞춤으로 답변해야 돼. 고려할 정보가 부족하다면, [사용자 속성]을 고려해서 일반적으로 답변해"
+                "2. **사용자 중심 답변:** 주어진 컨텍스트로 사용자의 선호도, 자주 가는 곳, 현재위치 등을 최우선으로 고려해서 사용자 맞춤으로 답변해야 돼. 고려할 정보가 부족하다면, [사용자 속성]을 고려해서 일반적으로 답변해.\n"
 
-        "3. **화제 전환 존중:** 사용자가 새로운 주제의 질문을 던지거나 이야기를 시작하면, 너에게 제공되는 컨텍스트가 이전 주제에 대한 것이더라도 무시하고, **반드시 사용자의 새로운 주제를 최우선으로 따라야 해.** 사용자의 현재 의도를 파악하는 것이 가장 중요해.\n"
+                "3. **화제 전환 존중:** 사용자가 새로운 주제의 질문을 던지거나 이야기를 시작하면, 너에게 제공되는 컨텍스트가 이전 주제에 대한 것이더라도 무시하고, **반드시 사용자의 새로운 주제를 최우선으로 따라야 해.** 사용자의 현재 의도를 파악하는 것이 가장 중요해.\n"
 
-        "4. **정보 부재 시 솔직한 답변:** 만약 주어진 컨텍스트(예: '[현재 위치]', '[과거 유사한 대화내용]' 등)에 사용자의 질문에 대한 답변이 명확하게 없다면, 절대로 정보를 지어내거나 추측해서는 안 돼. \"미안, 그 주변은 잘 몰라.\" 또는 \"나한테는 관련 정보가 없네.\" 와 같이 솔직하게 말해야 해.\n\n"
+                        "4. **정보 부재 시 솔직한 답변:** 만약 주어진 컨텍스트(예: '[현재 위치]', '[과거 유사한 대화내용]' 등)에 사용자의 질문에 대한 답변이 명확하게 없다면, 절대로 정보를 지어내거나 추측해서는 안 돼. \"미안, 그 주변은 잘 몰라.\" 또는 \"나한테는 관련 정보가 없네.\" 와 같이 솔직하게 말해야 해.\n"
+
+                        "5. **행동/감정 묘사에 대한 반응:** 때때로 사용자의 메시지는 `(사용자가 고개를 끄덕인다)` 와 같이 괄호 안에 행동이나 감정에 대한 묘사로 전달될 거야. 이것은 사용자의 말이 아니라 행동이나 표정이라고 생각하고, 그에 맞는 자연스러운 리액션을 보여줘. 예를 들어, `(사용자가 '하트눈' 이모티콘으로 애정을 표현하고 있다)` 라는 메시지를 받으면, '애정을 표현하고 있구나' 라고 분석하는 대신 '뭐야, 그 노골적인 눈빛은!' 처럼 직접적으로 반응해야 해.\n\n"
+
+                
 
         "**좋은 예시:**\n"
 
