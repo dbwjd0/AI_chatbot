@@ -280,16 +280,13 @@ body, html {
 /* AI Emoticon Bubble */
 .ai-emoticon-bubble {
     position: absolute;
-    top: 40%; /* 캐릭터 이미지의 중간쯤 높이 */
-    left: 85%; /* 캐릭터 이미지의 오른쪽으로 이동 */
+    top: calc(40% - 150px); /* 50px 추가로 위로 이동 */
+    left: calc(85% + 30px); /* 30px 오른쪽으로 이동 */
     transform: translateY(-50%);
     width: 100px;
     height: 100px;
     background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 50%; /* 원형 말풍선 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    border-radius: 15px; /* 네모난 말풍선 */
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     z-index: 15; /* 캐릭터와 대화창 사이 */
     border: 2px solid #a9d1ff;
@@ -307,7 +304,12 @@ body, html {
 }
 
 #ai-emoticon-img {
-    width: 70px;
-    height: 70px;
+    /* 강력한 중앙 정렬 방식 적용 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 80%; /* 말풍선 안쪽에 여백을 두기 위함 */
+    max-height: 80%;
     object-fit: contain;
 }
