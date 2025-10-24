@@ -276,3 +276,38 @@ body, html {
     vertical-align: middle; /* 텍스트와 수직 정렬 */
     margin: 0 2px; /* 좌우 약간의 여백 */
 }
+
+/* AI Emoticon Bubble */
+.ai-emoticon-bubble {
+    position: absolute;
+    top: 40%; /* 캐릭터 이미지의 중간쯤 높이 */
+    left: 85%; /* 캐릭터 이미지의 오른쪽으로 이동 */
+    transform: translateY(-50%);
+    width: 100px;
+    height: 100px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%; /* 원형 말풍선 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 15; /* 캐릭터와 대화창 사이 */
+    border: 2px solid #a9d1ff;
+}
+
+.ai-emoticon-bubble::after {
+    content: '';
+    position: absolute;
+    left: -18px; /* 말풍선 꼬리 위치 */
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent rgba(255, 255, 255, 0.9) transparent transparent;
+}
+
+#ai-emoticon-img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+}

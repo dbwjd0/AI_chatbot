@@ -14,6 +14,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const imagePreview = document.getElementById('image-preview');
     const clearImageButton = document.getElementById('clear-image-button');
 
+    const aiEmoticonBubble = document.getElementById('ai-emoticon-bubble');
+    const aiEmoticonImg = document.getElementById('ai-emoticon-img');
+
     const emoticonButton = document.getElementById('emoticon-button');
     const emoticonPalette = document.getElementById('emoticon-palette');
     const emoticonPreviewContainer = document.getElementById('emoticon-preview-container');
@@ -186,16 +189,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const data = await response.json();
             console.log('Raw AI message from backend:', data.message);
+
+            // Handle emoticons and get the cleaned message
+            const cleanedMessage = handleAiMessage(data.message);
             
             // Store the full AI response for history
-            currentFullAiResponse = data.message;
+            currentFullAiResponse = cleanedMessage;
 
             // Update character emotion
             const emotion = data.character_emotion || 'default';
             characterImage.src = STATIC_URLS[emotion] || STATIC_URLS['default'];
 
             // Queue up AI message for line-by-line display
-            queueAiMessage(data.message);
+            queueAiMessage(cleanedMessage);
 
         } catch (error) {
             console.error('Error sending message:', error);
@@ -204,6 +210,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- AI Message Display Logic ---
+    function handleAiMessage(message) {
+        const emoticonRegex = /\[EMOTICON:(.*?)\]/;
+        const match = message.match(emoticonRegex);
+
+        if (match) {
+            const emoticonFilename = match[1];
+            aiEmoticonImg.src = `/static/img/${emoticonFilename}`;
+            aiEmoticonBubble.style.display = 'flex';
+
+            // Hide the bubble after 4 seconds
+            setTimeout(() => {
+                aiEmoticonBubble.style.display = 'none';
+            }, 4000);
+
+            // Return the message without the placeholder
+            return message.replace(emoticonRegex, '').trim();
+        }
+
+        // If no emoticon, return the original message
+        return message;
+    }
+
     function queueAiMessage(fullMessage) {
         // Split by sentence-ending punctuation, keeping the punctuation with the sentence
         const sentences = fullMessage.match(/[^.!?]+[.!?]*/g) || [fullMessage];

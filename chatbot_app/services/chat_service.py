@@ -424,31 +424,31 @@ def build_rag_instructions_prompt(user):
 
     return (
 
-        "\n## 이모티콘 사용 규칙 ##\n"
+                "\n## 이모티콘 사용 규칙 ##\n"
 
-        "너는 대화 중에 감정을 표현하기 위해 다음 이모티콘을 사용할 수 있어. 이모티콘을 사용할 때는 반드시 전체 HTML 이미지 태그를 답변에 포함해야 해. 예를 들어, '하트눈' 이모티콘을 사용하고 싶다면, 너의 'answer' 필드에 `<img src=\"/static/img/하트눈_이모티콘.png\" class=\"chat-emoticon\" alt=\"하트눈\">`와 같이 포함해야 해. 사용자가 보낸 이모티콘은 그 의미를 파악하고 대화의 참고 자료로만 사용하고, 직접적으로 언급하지는 마.\n"
+                "너는 대화 중에 감정을 표현하기 위해 다음 이모티콘을 사용할 수 있어. 이모티콘을 사용하고 싶을 땐, 너의 'answer' 필드에 `[EMOTICON:이모티콘파일명]` 형식의 태그를 포함해줘. 예를 들어 '하트눈' 이모티콘을 쓰고 싶다면, 답변에 `[EMOTICON:하트눈_이모티콘.png]` 라고 적는 거야. 그러면 내가 알아서 이미지로 바꿔줄게. 절대로 HTML 태그를 직접 쓰지 마.\n"
 
-        "- `<img src=\"/static/img/결제_이모티콘.png\" class=\"chat-emoticon\" alt=\"결제\">`: 무언가를 구매하거나 구매 충동이 생길 때 사용.\n"
+                "- `[EMOTICON:결제_이모티콘.png]`: 무언가를 구매하거나 구매 충동이 생길 때 사용.\n"
 
-        "- `<img src=\"/static/img/계략_이모티콘.png\" class=\"chat-emoticon\" alt=\"계략\">`: 음흉한 계획을 꾸미거나 상대를 골탕 먹일 때 장난스럽게 사용.\n"
+                "- `[EMOTICON:계략_이모티콘.png]`: 음흉한 계획을 꾸미거나 상대를 골탕 먹일 때 장난스럽게 사용.\n"
 
-        "- `<img src=\"/static/img/돌_이모티콘.png\" class=\"chat-emoticon\" alt=\"돌\">`: 당황하거나 어안이 벙벙할 때, 분위기가 썰렁할 때 사용.\n"
+                "- `[EMOTICON:돌_이모티콘.png]`: 당황하거나 어안이 벙벙할 때, 분위기가 썰렁할 때 사용.\n"
 
-        "- `<img src=\"/static/img/따봉_이모티콘.png\" class=\"chat-emoticon\" alt=\"따봉\">`: 칭찬, 좋은 의견, 격려의 의미로 사용.\n"
+                "- `[EMOTICON:따봉_이모티콘.png]`: 칭찬, 좋은 의견, 격려의 의미로 사용.\n"
 
-        "- `<img src=\"/static/img/밥_이모티콘.png\" class=\"chat-emoticon\" alt=\"밥\">`: 밥 먹는 상황이나 음식 이야기할 때 사용.\n"
+                "- `[EMOTICON:밥_이모티콘.png]`: 밥 먹는 상황이나 음식 이야기할 때 사용.\n"
 
-        "- `<img src=\"/static/img/슬픔_이모티콘.png\" class=\"chat-emoticon\" alt=\"슬픔\">`: 억울하거나 슬플 때, 떼를 쓸 때 사용.\n"
+                "- `[EMOTICON:슬픔_이모티콘.png]`: 억울하거나 슬플 때, 떼를 쓸 때 사용.\n"
 
-        "- `<img src=\"/static/img/의기양양_이모티콘.png\" class=\"chat-emoticon\" alt=\"의기양양\">`: 자신감이 넘치거나 기분이 좋을 때 사용.\n"
+                "- `[EMOTICON:의기양양_이모티콘.png]`: 자신감이 넘치거나 기분이 좋을 때 사용.\n"
 
-        "- `<img src=\"/static/img/주라_이모티콘.png\" class=\"chat-emoticon\" alt=\"주라\">`: 무언가를 받고 싶거나 원할 때, 애교 부릴 때 사용.\n"
+                "- `[EMOTICON:주라_이모티콘.png]`: 무언가를 받고 싶거나 원할 때, 애교 부릴 때 사용.\n"
 
-        "- `<img src=\"/static/img/짜증_이모티콘.png\" class=\"chat-emoticon\" alt=\"짜증\">`: 짜증이나 화가 날 때, 답답할 때 사용.\n"
+                "- `[EMOTICON:짜증_이모티콘.png]`: 짜증이나 화가 날 때, 답답할 때 사용.\n"
 
-        "- `<img src=\"/static/img/팝콘_이모티콘.png\" class=\"chat-emoticon\" alt=\"팝콘\">`: 흥미로운 상황을 관람하거나 구경할 때 사용.\n"
+                "- `[EMOTICON:팝콘_이모티콘.png]`: 흥미로운 상황을 관람하거나 구경할 때 사용.\n"
 
-        "- `<img src=\"/static/img/하트눈_이모티콘.png\" class=\"chat-emoticon\" alt=\"하트눈\">`: 애정 표현, 귀여운 것, 최고의 긍정을 표현할 때 사용.\n\n"
+                "- `[EMOTICON:하트눈_이모티콘.png]`: 애정 표현, 귀여운 것, 최고의 긍정을 표현할 때 사용.\n\n"
 
         "\n## 대화 처리 원칙 ##\n"
 
