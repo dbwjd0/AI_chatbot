@@ -200,3 +200,116 @@ body, html {
     line-height: 25px;
     text-align: center;
 }
+
+/* Emoticon styles */
+.emoticon-preview-container {
+    position: absolute;
+    bottom: 70px; /* 입력창 바로 위 */
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    padding: 10px;
+    border-radius: 10px;
+    z-index: 40;
+    width: 100px; /* 정사각형에 가깝게 */
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #a9d1ff; /* 채팅창과 유사한 테두리 */
+}
+
+#emoticon-preview {
+    max-width: 80px;
+    max-height: 80px;
+}
+
+#clear-emoticon-button {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: white;
+    color: black;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    line-height: 25px;
+    text-align: center;
+}
+
+.emoticon-palette {
+    position: absolute;
+    bottom: 70px; /* 입력창 바로 위 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 400px;
+    background-color: rgba(0, 0, 0, 0.9);
+    border: 1px solid #a9d1ff;
+    border-radius: 10px;
+    padding: 15px;
+    z-index: 50;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.emoticon-item {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.emoticon-item:hover {
+    transform: scale(1.1);
+}
+
+.chat-emoticon {
+    width: 28px; /* 채팅 텍스트에 맞춰 크기 조정 */
+    height: 28px;
+    vertical-align: middle; /* 텍스트와 수직 정렬 */
+    margin: 0 2px; /* 좌우 약간의 여백 */
+}
+
+/* AI Emoticon Bubble */
+.ai-emoticon-bubble {
+    position: absolute;
+    top: calc(40% - 150px); /* 50px 추가로 위로 이동 */
+    left: calc(85% + 30px); /* 30px 오른쪽으로 이동 */
+    transform: translateY(-50%);
+    width: 100px;
+    height: 100px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px; /* 네모난 말풍선 */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 15; /* 캐릭터와 대화창 사이 */
+    border: 2px solid #a9d1ff;
+}
+
+.ai-emoticon-bubble::after {
+    content: '';
+    position: absolute;
+    left: -18px; /* 말풍선 꼬리 위치 */
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent rgba(255, 255, 255, 0.9) transparent transparent;
+}
+
+#ai-emoticon-img {
+    /* 강력한 중앙 정렬 방식 적용 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 95%; /* 크기를 키워 여백을 줄임 */
+    max-height: 95%;
+    object-fit: contain;
+}

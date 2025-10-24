@@ -120,6 +120,7 @@ class UserSchedule(models.Model):
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedules')
     date = models.DateField(help_text="일과 날짜")
+    schedule_time = models.TimeField(null=True, blank=True, help_text="일과 시간") # New field
     content = models.TextField(help_text="하루 일과 내용", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
