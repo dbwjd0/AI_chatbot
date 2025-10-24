@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ChatMessage, UserAttribute, UserActivity, UserProfile, ActivityAnalytics, UserRelationship
+from .models import ChatMessage, UserAttribute, UserActivity, UserProfile, ActivityAnalytics, UserRelationship, UserSchedule
 
 # Register your models here.
 
@@ -37,9 +37,16 @@ class UserRelationshipAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'name', 'relationship_type', 'traits', 'disambiguator')
     list_per_page = 20
 
+class UserScheduleAdmin(admin.ModelAdmin):
+    list_display = ('user', 'date', 'schedule_time', 'content', 'created_at', 'updated_at')
+    list_filter = ('date', 'user')
+    search_fields = ('user__username', 'content')
+    list_per_page = 20
+
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(ChatMessage, ChatMessageAdmin)
 admin.site.register(UserAttribute, UserAttributeAdmin)
 admin.site.register(UserActivity, UserActivityAdmin)
 admin.site.register(ActivityAnalytics, ActivityAnalyticsAdmin)
 admin.site.register(UserRelationship, UserRelationshipAdmin)
+admin.site.register(UserSchedule, UserScheduleAdmin)

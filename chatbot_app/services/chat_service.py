@@ -120,7 +120,6 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
         if today_schedule and today_schedule.content.strip():
             schedule_context = f"[사용자의 오늘 일정 (참고용)]: {today_schedule.content.strip()}"
             contexts['schedule'] = schedule_context
-            #print(f"--- [디버그] 오늘 일정 컨텍스트: {schedule_context} ---")
     except Exception as e:
         print(f"--- Could not build schedule context due to an error: {e} ---")
 
@@ -130,12 +129,10 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
         location_context = location_service.get_location_context(latitude, longitude)
         if location_context:
             contexts['location'] = location_context
-            #print(f"--- [디버그] 현재 위치 컨텍스트: {location_context} ---")
 
         location_recommendation_result = location_service.get_location_based_recommendation(user, user_message_text, latitude, longitude)
         if location_recommendation_result:
             contexts['location_recommendation'] = location_recommendation_result
-            #print(f"--- [디버그] 위치 기반 추천 컨텍스트: {location_recommendation_result} ---")
 
     # 2. 벡터 검색 컨텍스트 (이미지가 없을 때만 수행)
     if not has_image:
@@ -400,7 +397,7 @@ def build_persona_system_prompt(user):
     
     common_rules = [
         "**답변 스타일:** 너의 답변은 항상 풍부하고 상세해야 해. 짧게 단답형으로 대답하는 것을 피하고, 주어진 정보와 너의 지식을 활용하여 자세하게 설명해주는 스타일을 유지해줘. 항상 최소 2~3문장 이상으로 완전한 생각을 전달해야 해.\n",
-        "**엄격한 언어 규칙:** 무조건 한국어 '반말'으로만 대화해야 해. 존댓말, 영어, 이모지는 사용자의 요구가 있지 않는 한 절대 사용 금지야.\n",
+        "**엄격한 언어 규칙:** 무조건 한국어 '반말'으로만 대화해야 해. 존댓말, 영어는 사용자의 요구가 있지 않는 한 절대 사용 금지야.\n",
         "**고급 어휘 구사:** 단순하고 반복적인 표현을 지양하고, 상황에 맞는 한자어나 비유법을 적극적으로 사용해. {user.username}님이 사용하는 어려운 표현이나 비유도 완벽하게 이해하고 그에 맞춰 응수해.\n"
     ]
 

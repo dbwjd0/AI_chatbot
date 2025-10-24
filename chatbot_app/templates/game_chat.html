@@ -60,6 +60,7 @@
             'default': "{% static 'img/char_default.png' %}"
         };
         const USERNAME = "{{ user.username }}";
+        const affinityScore = "{{ user_profile.affinity_score|default:0 }}";
     </script>
     <script src="{% static 'game_chat.js' %}"></script>
 </body>
