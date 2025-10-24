@@ -309,7 +309,7 @@ body, html {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-width: 80%; /* 말풍선 안쪽에 여백을 두기 위함 */
-    max-height: 80%;
+    max-width: 95%; /* 크기를 키워 여백을 줄임 */
+    max-height: 95%;
     object-fit: contain;
 }
