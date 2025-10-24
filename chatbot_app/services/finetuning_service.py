@@ -1,6 +1,6 @@
 import json
 from ..models import UserAttribute, UserRelationship
-from .chat_service import build_persona_system_prompt
+from .prompt_service import build_persona_system_prompt
 
 def log_for_finetuning(system_prompt, user_message, assistant_message, filename="finetuning_dataset.jsonl"):
     """

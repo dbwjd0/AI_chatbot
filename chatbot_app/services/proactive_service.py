@@ -5,7 +5,8 @@ import os
 import requests
 import json
 import re
-from .chat_service import build_persona_system_prompt, build_rag_instructions_prompt, _assemble_context_data # 필요한 함수 임포트
+from .chat_service import _assemble_context_data # 필요한 함수 임포트
+from .prompt_service import build_persona_system_prompt, build_rag_instructions_prompt
 from .emotion_service import analyze_emotion
 from . import schedule_service # schedule_service 임포트
 
