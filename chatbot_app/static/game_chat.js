@@ -14,13 +14,26 @@ document.addEventListener('DOMContentLoaded', function () {
     const imagePreview = document.getElementById('image-preview');
     const clearImageButton = document.getElementById('clear-image-button');
 
+    const emoticonButton = document.getElementById('emoticon-button');
+    const emoticonPalette = document.getElementById('emoticon-palette');
+    const emoticonPreviewContainer = document.getElementById('emoticon-preview-container');
+    const emoticonPreview = document.getElementById('emoticon-preview');
+    const clearEmoticonButton = document.getElementById('clear-emoticon-button');
+
     const locationCheckbox = document.getElementById('location-checkbox');
 
     let aiMessageQueue = [];
     let displayedAiLinesHistory = []; // Stores full AI responses
     let isDisplayingMessage = false;
     let currentImageFile = null;
+    let currentSelectedEmoticon = null; // To store the selected emoticon URL
     let currentFullAiResponse = ""; // To store the full AI response for history
+
+    const emoticons = [
+        '결제_이모티콘.png', '계략_이모티콘.png', '돌_이모티콘.png', '따봉_이모티콘.png',
+        '밥_이모티콘.png', '슬픔_이모티콘.png', '의기양양_이모티콘.png', '주라_이모티콘.png',
+        '짜증_이모티콘.png', '팝콘_이모티콘.png', '하트눈_이모티콘.png'
+    ];
 
     // --- Image Handling ---
     attachImageButton.addEventListener('click', () => imageInput.click());
@@ -44,6 +57,47 @@ document.addEventListener('DOMContentLoaded', function () {
         previewContainer.style.display = 'none';
         imagePreview.src = '';
     });
+
+    // --- Emoticon Handling ---
+    function populateEmoticonPalette() {
+        emoticons.forEach(emoticonFile => {
+            const img = document.createElement('img');
+            img.src = `/static/img/${emoticonFile}`;
+            img.classList.add('emoticon-item');
+            img.dataset.emoticonFile = emoticonFile;
+            emoticonPalette.appendChild(img);
+        });
+    }
+
+    emoticonButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent click from immediately closing the palette
+        emoticonPalette.style.display = emoticonPalette.style.display === 'grid' ? 'none' : 'grid';
+    });
+
+    emoticonPalette.addEventListener('click', (e) => {
+        if (e.target.classList.contains('emoticon-item')) {
+            const emoticonFile = e.target.dataset.emoticonFile;
+            currentSelectedEmoticon = `/static/img/${emoticonFile}`;
+            emoticonPreview.src = currentSelectedEmoticon;
+            emoticonPreviewContainer.style.display = 'flex';
+            emoticonPalette.style.display = 'none';
+        }
+    });
+
+    clearEmoticonButton.addEventListener('click', () => {
+        currentSelectedEmoticon = null;
+        emoticonPreviewContainer.style.display = 'none';
+        emoticonPreview.src = '';
+    });
+
+    // Close palette if clicking outside
+    document.addEventListener('click', (e) => {
+        if (!emoticonPalette.contains(e.target) && e.target !== emoticonButton) {
+            emoticonPalette.style.display = 'none';
+        }
+    });
+
+    populateEmoticonPalette(); // Initialize the palette on load
 
     // --- Message Sending ---
     sendButton.addEventListener('click', sendMessage);
@@ -73,24 +127,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function sendMessage() {
         const messageText = userInput.value.trim();
-        if (messageText === '' && !currentImageFile) return;
+        if (messageText === '' && !currentImageFile && !currentSelectedEmoticon) return;
 
-        // Clear history for new interaction
-        displayedAiLinesHistory = [];
-        prevDialogueButton.classList.add('hidden');
+        let combinedMessage = messageText;
+        if (currentSelectedEmoticon) {
+            const emoticonTag = `<img src="${currentSelectedEmoticon}" class="chat-emoticon" alt="emoticon">`;
+            combinedMessage = messageText ? `${messageText} ${emoticonTag}` : emoticonTag;
+        }
 
         // Display user message immediately
         speakerName.textContent = USERNAME; // Defined in the HTML template
-        dialogueText.textContent = messageText;
+        dialogueText.innerHTML = combinedMessage; // Use innerHTML to render emoticon
         userInput.value = '';
 
         const formData = new FormData();
-        formData.append('message', messageText);
+        formData.append('message', combinedMessage);
         formData.append('csrfmiddlewaretoken', csrftoken);
 
         if (currentImageFile) {
             formData.append('image', currentImageFile);
             clearImageButton.click(); // Clear preview after attaching
+        }
+
+        if (currentSelectedEmoticon) {
+            clearEmoticonButton.click();
         }
 
         if (locationCheckbox.checked) {
@@ -170,10 +230,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const line = aiMessageQueue.shift();
             speakerName.textContent = "AI 비서";
-            dialogueText.textContent = line;
+            dialogueText.innerHTML = line; // Use innerHTML to render emoticons
             // Show a visual indicator that there's more to come
             if (aiMessageQueue.length > 0) {
-                dialogueText.textContent += ' ▾';
+                dialogueText.innerHTML += ' ▾';
             }
             prevDialogueButton.classList.remove('hidden'); // Show button if there's history
         } else {
@@ -192,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (displayedAiLinesHistory.length > 0) {
             const fullAiResponseToReview = displayedAiLinesHistory.pop();
             speakerName.textContent = "AI 비서";
-            dialogueText.textContent = fullAiResponseToReview;
+            dialogueText.innerHTML = fullAiResponseToReview; // Use innerHTML
             
             // Clear the current queue as we are reviewing a past full message
             aiMessageQueue = [];
@@ -255,5 +315,5 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const randomIndex = Math.floor(Math.random() * selectedMessages.length);
-    dialogueText.textContent = selectedMessages[randomIndex].replace('{USERNAME}', USERNAME);
+    dialogueText.innerHTML = selectedMessages[randomIndex].replace('{USERNAME}', USERNAME);
 });

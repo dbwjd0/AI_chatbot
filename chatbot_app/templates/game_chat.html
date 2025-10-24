@@ -30,11 +30,21 @@
             <img id="image-preview" src="" alt="Image Preview">
             <button id="clear-image-button" class="icon-button" title="이미지 지우기">&times;</button>
         </div>
+
+        <div id="emoticon-preview-container" class="emoticon-preview-container" style="display: none;">
+            <img id="emoticon-preview" src="" alt="Emoticon Preview">
+            <button id="clear-emoticon-button" class="icon-button" title="이모티콘 지우기">&times;</button>
+        </div>
+
+        <div id="emoticon-palette" class="emoticon-palette" style="display: none;">
+            <!-- Emoticons will be loaded here by JavaScript -->
+        </div>
         
         <div id="chat-input-container" class="chat-input-container">
             <div class="chat-input">
                 <input type="file" id="image-input" accept="image/*" style="display: none;">
                 <button id="attach-image-button" class="icon-button" title="이미지 첨부">📎</button>
+                <button id="emoticon-button" class="icon-button" title="이모티콘 선택">😊</button>
                 <input type="text" id="user-input" placeholder="메시지를 입력하세요...">
                 <button id="send-button">전송</button>
                 <div class="location-permission">

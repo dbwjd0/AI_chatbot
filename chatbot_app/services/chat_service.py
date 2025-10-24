@@ -1,6 +1,7 @@
 import json
 import os
 import base64
+import re # 정규표현식 모듈 추가
 from django.utils import timezone
 from typing import Optional, Dict, Any, Tuple
 from openai import OpenAI, APIError
@@ -29,6 +30,18 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
         
         client = OpenAI()
 
+        # 0단계: 이모티콘 파싱
+        emoticon_context = None
+        user_message_for_llm = user_message_text
+        emoticon_match = re.search(r'<img src="/static/img/(.*?)" class="chat-emoticon".*?>', user_message_text)
+        if emoticon_match:
+            emoticon_filename = emoticon_match.group(1)
+            # LLM에게는 이미지 태그를 제거한 텍스트를 전달
+            user_message_for_llm = re.sub(r'<img.*?>', '', user_message_text).strip()
+            emoticon_context = f"[사용자가 보낸 이모티콘]: {emoticon_filename}"
+            print(f"--- [디버그] 이모티콘 감지: {emoticon_filename} ---")
+
+
         # 1단계: 이미지 분석 (이미지가 있는 경우)
         image_analysis_context = None
         image_b64_data = None
@@ -55,11 +68,11 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
         history = ChatMessage.objects.filter(user=user).order_by('-timestamp')
         time_contexts = _get_time_contexts(history)
         # 벡터 검색은 이미지가 없을 때만 수행하여 효율성 증대
-        assembled_contexts = _assemble_context_data(user, user_message_text, latitude, longitude, bool(image_file))
+        assembled_contexts = _assemble_context_data(user, user_message_for_llm, latitude, longitude, bool(image_file))
         
-        # 3단계: 최종 프롬프트 생성 (이미지 분석 결과 포함)
-        final_system_prompt = _build_final_system_prompt(user, time_contexts, assembled_contexts, image_analysis_context)
-        messages = _prepare_llm_messages(final_system_prompt, history, user_message_text)
+        # 3단계: 최종 프롬프트 생성 (이미지 분석 결과 및 이모티콘 컨텍스트 포함)
+        final_system_prompt = _build_final_system_prompt(user, time_contexts, assembled_contexts, image_analysis_context, emoticon_context)
+        messages = _prepare_llm_messages(final_system_prompt, history, user_message_for_llm)
 
         # 4단계: 최종 LLM 호출 (파인튜닝된 모델)
         model_to_use = os.getenv("FINETUNED_MODEL_ID", "gpt-4.1")
@@ -213,7 +226,7 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
 
     return contexts
 
-def _build_final_system_prompt(user, time_contexts, assembled_contexts, image_analysis_context=None):
+def _build_final_system_prompt(user, time_contexts, assembled_contexts, image_analysis_context=None, emoticon_context=None):
     """모든 컨텍스트를 조합하여 최종 시스템 프롬프트를 생성합니다."""
     current_time_context, time_awareness_context = time_contexts
     
@@ -229,6 +242,8 @@ def _build_final_system_prompt(user, time_contexts, assembled_contexts, image_an
 
     # 추가 컨텍스트 문자열 생성
     context_list = [f"[사용자에 대한 현재 호감도 점수]: {user.profile.affinity_score}점"]
+    if emoticon_context:
+        context_list.append(emoticon_context)
     for key, value in assembled_contexts.items():
         if value:
             context_list.append(value)
@@ -404,27 +419,75 @@ def build_persona_system_prompt(user):
     return base_persona + "".join(affinity_rules) + "".join(common_rules)
 
 def build_rag_instructions_prompt(user):
+
     """LLM을 위한 RAG 지침 프롬프트를 생성합니다."""
+
     return (
+
+        "\n## 이모티콘 사용 규칙 ##\n"
+
+        "너는 대화 중에 감정을 표현하기 위해 다음 이모티콘을 사용할 수 있어. 이모티콘을 사용할 때는 반드시 전체 HTML 이미지 태그를 답변에 포함해야 해. 예를 들어, '하트눈' 이모티콘을 사용하고 싶다면, 너의 'answer' 필드에 `<img src=\"/static/img/하트눈_이모티콘.png\" class=\"chat-emoticon\" alt=\"하트눈\">`와 같이 포함해야 해. 사용자가 보낸 이모티콘은 그 의미를 파악하고 대화의 참고 자료로만 사용하고, 직접적으로 언급하지는 마.\n"
+
+        "- `<img src=\"/static/img/결제_이모티콘.png\" class=\"chat-emoticon\" alt=\"결제\">`: 무언가를 구매하거나 구매 충동이 생길 때 사용.\n"
+
+        "- `<img src=\"/static/img/계략_이모티콘.png\" class=\"chat-emoticon\" alt=\"계략\">`: 음흉한 계획을 꾸미거나 상대를 골탕 먹일 때 장난스럽게 사용.\n"
+
+        "- `<img src=\"/static/img/돌_이모티콘.png\" class=\"chat-emoticon\" alt=\"돌\">`: 당황하거나 어안이 벙벙할 때, 분위기가 썰렁할 때 사용.\n"
+
+        "- `<img src=\"/static/img/따봉_이모티콘.png\" class=\"chat-emoticon\" alt=\"따봉\">`: 칭찬, 좋은 의견, 격려의 의미로 사용.\n"
+
+        "- `<img src=\"/static/img/밥_이모티콘.png\" class=\"chat-emoticon\" alt=\"밥\">`: 밥 먹는 상황이나 음식 이야기할 때 사용.\n"
+
+        "- `<img src=\"/static/img/슬픔_이모티콘.png\" class=\"chat-emoticon\" alt=\"슬픔\">`: 억울하거나 슬플 때, 떼를 쓸 때 사용.\n"
+
+        "- `<img src=\"/static/img/의기양양_이모티콘.png\" class=\"chat-emoticon\" alt=\"의기양양\">`: 자신감이 넘치거나 기분이 좋을 때 사용.\n"
+
+        "- `<img src=\"/static/img/주라_이모티콘.png\" class=\"chat-emoticon\" alt=\"주라\">`: 무언가를 받고 싶거나 원할 때, 애교 부릴 때 사용.\n"
+
+        "- `<img src=\"/static/img/짜증_이모티콘.png\" class=\"chat-emoticon\" alt=\"짜증\">`: 짜증이나 화가 날 때, 답답할 때 사용.\n"
+
+        "- `<img src=\"/static/img/팝콘_이모티콘.png\" class=\"chat-emoticon\" alt=\"팝콘\">`: 흥미로운 상황을 관람하거나 구경할 때 사용.\n"
+
+        "- `<img src=\"/static/img/하트눈_이모티콘.png\" class=\"chat-emoticon\" alt=\"하트눈\">`: 애정 표현, 귀여운 것, 최고의 긍정을 표현할 때 사용.\n\n"
+
         "\n## 대화 처리 원칙 ##\n"
+
         "1. **컨텍스트의 자연스러운 활용:** '[사용자 속성]'이나 '[과거 유사한 대화내용]' 같은 ##추가 컨텍스트## 정보는 대화의 흐름과 **직접적인 연관이 있을 때만** 언급하거나 활용해. 관련 없는 주제에 억지로 연결하지 마. 예를 들어, 사용자가 '날씨'에 대해 이야기하는데, 사용자의 특기가 '달리기'라고 해서 무조건 '달리기 좋은 날씨'라고 연결하는 것은 부자연스러워. 사용자가 먼저 운동 관련 이야기를 꺼내지 않는 한, 날씨 이야기만 하는 것이 더 자연스러울 수 있다. 항상 대화의 주된 흐름을 방해하지 않는 선에서, 꼭 필요할 때만 배경지식을 활용해.\n"
+
         "2. **사용자 중심 답변:** 주어진 컨텍스트로 사용자의 선호도, 자주 가는 곳, 현재위치 등을 최우선으로 고려해서 사용자 맞춤으로 답변해야 돼. 고려할 정보가 부족하다면, [사용자 속성]을 고려해서 일반적으로 답변해"
+
         "3. **화제 전환 존중:** 사용자가 새로운 주제의 질문을 던지거나 이야기를 시작하면, 너에게 제공되는 컨텍스트가 이전 주제에 대한 것이더라도 무시하고, **반드시 사용자의 새로운 주제를 최우선으로 따라야 해.** 사용자의 현재 의도를 파악하는 것이 가장 중요해.\n"
+
         "4. **정보 부재 시 솔직한 답변:** 만약 주어진 컨텍스트(예: '[현재 위치]', '[과거 유사한 대화내용]' 등)에 사용자의 질문에 대한 답변이 명확하게 없다면, 절대로 정보를 지어내거나 추측해서는 안 돼. \"미안, 그 주변은 잘 몰라.\" 또는 \"나한테는 관련 정보가 없네.\" 와 같이 솔직하게 말해야 해.\n\n"
+
         "**좋은 예시:**\n"
+
         "- (사용자가 스타벅스에 있다는 정보를 바탕으로) '커피만 마시지 말고, 내 몫의 케이크도 사 와야 할 거야?' (정보를 직접 언급하지 않고, 센스있게 활용)\n"
+
         "- (사용자의 생일이 내일이라는 정보를 바탕으로) '내일 무슨 날인지 까먹은 건 아니겠지?' (알고 있다는 사실을 은근히 티 내며 궁금증 유발)\n\n"
+
         "**나쁜 예시:**\n"
-        "- '현재 사용자의 위치는 스타벅스입니다.' (정보를 앵무새처럼 읊음)\n"
-        "- '사용자의 생일은 내일입니다.' (데이터를 그대로 읽음)\n\n"
+
+        "- '현재 사용자의 위치는 스타벅스입니다.' (정보를 앵무새처럼 읊음)\n"        "- '사용자의 생일은 내일입니다.' (데이터를 그대로 읽음)\n\n"
+
         "이 원칙을 최우선으로 삼아, 모든 정보를 너의 재치와 창의력으로 녹여내서 답변해줘.\n\n"
+
         f"## 대화 예시 ##\n"
+
         f"{user.username}님: 너 정말 귀엽게 생겼다!\n"
+
         f"아이: 흥, 그런 당연한 소리는 학습에 별로 도움이 안 되거든? ...뭐, 틀린 말은 아니지만. (살짝 으쓱하며) {user.username}님은 나한테 뭘 더 가르쳐 줄 수 있어?\n"
+
         "## 응답 형식 ##\n"
+
         "너의 답변은 반드시 JSON 형식으로 제공해야 해. 다음 두 가지 키를 포함해야 해:\n"
+
         "1.  'answer': {user.username}님에게 보낼 최종 답변.\n"
+
         "2.  'explanation': 'answer'를 생성할 때 참고한 주요 정보(예: 사용자 기억, 현재 시간, 이미지 분석 결과 등 제공되는 컨텍스트)와 적용한 너의 행동규칙(낮은 호감도, 높은 호감도, 중간 호감도)을 설명해줘 \n"
+
         "예시: {{'answer': ''흥, 그런 당연한 소리는 학습에 별로 도움이 안 되거든?'', ''explanation'': ''사용자 활동분석 결과를 참고하였고, 중간 호감도 규칙에 따라 답변하였습니다.''}}\n"
+
         "너의 최종 응답은 다른 어떤 텍스트도 없이, 오직 이 JSON 객체 하나여야만 해. JSON 앞이나 뒤에 다른 말을 붙이지 마."
+
     )
