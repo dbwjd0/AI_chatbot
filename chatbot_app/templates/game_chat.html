@@ -6,8 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 비서와의 대화</title>
     <link rel="stylesheet" href="{% static 'game_chat.css' %}">
+    <style>
+        #toggle-bgm-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            z-index: 101;
+        }
+    </style>
 </head>
 <body>
+    <button id="toggle-bgm-btn">BGM OFF</button>
     <div class="game-container">
         <div class="top-menu">
             <strong>{{ user.username }}</strong>님, 환영합니다.
@@ -62,5 +78,12 @@
         const USERNAME = "{{ user.username }}";
     </script>
     <script src="{% static 'game_chat.js' %}"></script>
+
+    <!-- 게임 페이지용 BGM (login.html 제외) -->
+    <audio id="bgm2" loop>
+        <source src="{% static 'music/game_bgm.mp3' %}" type="audio/mpeg">
+    </audio>
+
+    <script src="{% static 'bgm.js' %}"></script>
 </body>
 </html>
