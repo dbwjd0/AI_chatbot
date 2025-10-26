@@ -1,4 +1,4 @@
-from ..models import ChatMessage, UserProfile
+from ..models import ChatMessage, UserProfile, PendingProactiveMessage
 from django.utils import timezone
 from datetime import timedelta, datetime, date, time
 import os
@@ -77,7 +77,7 @@ def generate_proactive_message(user):
     emotion = "default"
 
     # 1. 비활동 기반 트리거
-    if last_chat and (now_korea - last_chat.timestamp.astimezone(korea_tz)) > timedelta(hours=1):
+    if last_chat and (now_korea - last_chat.timestamp.astimezone(korea_tz)) > timedelta(seconds=30):
         trigger_type = "inactivity"
         proactive_instruction_base = f"너는 {user.username}님에게 오랜만에 말을 거는 상황이야. 1시간 이상 대화가 없었으니, {user.username}님의 안부를 묻거나, "
     
@@ -146,6 +146,13 @@ def generate_proactive_message(user):
             print("--- [디버그] 능동 메시지 벡터 DB 저장 완료 ---")
         except Exception as e:
             print(f"--- [오류] 능동 메시지 벡터 DB 저장 실패: {e} ---")
+
+        # 읽지 않은 메시지로 등록
+        PendingProactiveMessage.objects.update_or_create(
+            user=user,
+            defaults={'message': proactive_chat_message}
+        )
+        print(f"--- [디버그] {user.username}님에게 읽지 않은 능동 메시지 등록 완료 ---")
             
         return proactive_chat_message
 

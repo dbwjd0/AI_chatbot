@@ -393,4 +393,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return cookieValue;
     }
+
+    // --- Proactive Notification Logic ---
+    const notificationBubble = document.getElementById('proactive-notification');
+
+    function checkProactiveNotification() {
+        fetch('/check-notification/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.has_pending_message) {
+                    // Position and show the bubble
+                    const playerRect = player.getBoundingClientRect();
+                    const roomRect = room.getBoundingClientRect();
+
+                    // Position above the player
+                    notificationBubble.style.left = `${player.offsetLeft + (player.offsetWidth / 2) - (notificationBubble.offsetWidth / 2)}px`;
+                    notificationBubble.style.top = `${player.offsetTop - notificationBubble.offsetHeight - 10}px`;
+
+                    notificationBubble.style.display = 'flex'; // Use flex to center the '!'
+                } else {
+                    notificationBubble.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error checking for proactive messages:', error);
+                notificationBubble.style.display = 'none';
+            });
+    }
+
+    // Check immediately on load, then every 5 seconds
+    checkProactiveNotification();
+    setInterval(checkProactiveNotification, 5000);
 });
