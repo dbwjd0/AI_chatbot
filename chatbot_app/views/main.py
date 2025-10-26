@@ -185,16 +185,9 @@ def ai_status(request):
 
 @login_required
 def get_proactive_message_view(request):
-    message_text, emotion = generate_proactive_message(request.user)
-    if message_text:
-        # 능동적인 메시지를 ChatMessage에 저장하여 기록을 유지하고 반복 전송을 방지합니다.
-        proactive_chat_message = ChatMessage.objects.create(
-            user=request.user,
-            message=message_text,
-            is_user=False, # 봇 메시지
-            character_emotion=emotion # 감정 저장
-        )
-        # 저장 후, 프론트엔드에 전달할 메시지 객체를 다시 가져오거나 구성
+    proactive_chat_message = generate_proactive_message(request.user)
+    if proactive_chat_message:
+        # 서비스에서 이미 메시지를 생성하고 저장했으므로, 해당 객체를 바로 사용합니다.
         return JsonResponse({
             'message': proactive_chat_message.message,
             'character_emotion': proactive_chat_message.character_emotion,
