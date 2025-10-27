@@ -12,20 +12,20 @@ from . import schedule_service # schedule_service 임포트
 
 def _check_upcoming_schedule(user):
     today = date.today()
-    schedule = schedule_service.get_or_create_schedule(user, today)
+    schedules = schedule_service.get_schedules_for_day(user, today)
+    now_korea = timezone.now().astimezone(timezone.get_default_timezone())
 
-    if schedule.schedule_time and schedule.content:
-        now_korea = timezone.now().astimezone(timezone.get_default_timezone())
-        
-        # Combine today's date with schedule_time to create a datetime object
-        schedule_datetime = datetime.combine(today, schedule.schedule_time)
-        schedule_datetime = timezone.make_aware(schedule_datetime, timezone.get_default_timezone())
+    for schedule in schedules:
+        if schedule.schedule_time and schedule.content:
+            # 오늘 날짜와 스케줄 시간을 결합하여 datetime 객체 생성
+            schedule_datetime = datetime.combine(today, schedule.schedule_time)
+            schedule_datetime = timezone.make_aware(schedule_datetime, timezone.get_default_timezone())
 
-        time_until_schedule = schedule_datetime - now_korea
+            time_until_schedule = schedule_datetime - now_korea
 
-        # Check if the schedule is within the next 10 minutes and not in the past
-        if timedelta(minutes=0) < time_until_schedule <= timedelta(minutes=5):
-            return schedule.content
+            # 스케줄이 10분 이내로 다가왔고 과거가 아닌지 확인
+            if timedelta(minutes=0) < time_until_schedule <= timedelta(minutes=10):
+                return schedule.content # 가장 빨리 다가오는 스케줄 내용 반환
     return None
 
 def _call_llm_for_proactive_message(user, system_prompt):
@@ -98,7 +98,7 @@ def generate_proactive_message(user):
     upcoming_schedule_content = _check_upcoming_schedule(user)
     if upcoming_schedule_content:
         trigger_type = "upcoming_schedule"
-        proactive_instruction_base = f"{user.username}님, 곧 일정이 있어! '{upcoming_schedule_content}' 일정이 5분 이내로 다가왔으니, 일정을 상기시켜주거나, 준비를 돕는 메시지를 생성해줘. "
+        proactive_instruction_base = f"{user.username}님, 곧 일정이 있어! '{upcoming_schedule_content}' 일정이 10분 이내로 다가왔으니, 일정을 상기시켜주거나, 준비를 돕는 메시지를 생성해줘. "
 
     if trigger_type:
         persona_system_prompt = build_persona_system_prompt(user)
