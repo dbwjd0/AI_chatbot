@@ -119,10 +119,12 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
     # 0. 오늘의 일정 컨텍스트
     schedule_context = ""
     try:
-        today_schedule = schedule_service.get_or_create_schedule(user, date.today())
-        if today_schedule and today_schedule.content.strip():
-            schedule_context = f"[사용자의 오늘 일정 (참고용)]: {today_schedule.content.strip()}"
-            contexts['schedule'] = schedule_context
+        today_schedules = schedule_service.get_schedules_for_day(user, date.today())
+        if today_schedules:
+            schedule_contents = [s.content.strip() for s in today_schedules if s.content and s.content.strip()]
+            if schedule_contents:
+                schedule_context = f"[사용자의 오늘 일정 (참고용)]: {', '.join(schedule_contents)}"
+                contexts['schedule'] = schedule_context
     except Exception as e:
         print(f"--- Could not build schedule context due to an error: {e} ---")
 

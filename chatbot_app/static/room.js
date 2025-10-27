@@ -362,21 +362,78 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Schedule Modal Logic ---
     const scheduleModal = document.getElementById('schedule-modal');
     const closeButton = scheduleModal.querySelector('.close-button');
-    const saveScheduleBtn = document.getElementById('save-schedule-btn');
-    const scheduleTextarea = document.getElementById('schedule-textarea');
-    const scheduleTimeInput = document.getElementById('schedule-time-input'); // Get the new time input
+    const scheduleListContainer = document.getElementById('schedule-list-container');
+    const newScheduleTimeInput = document.getElementById('new-schedule-time-input');
+    const newScheduleTextarea = document.getElementById('new-schedule-textarea');
+    const addScheduleBtn = document.getElementById('add-schedule-btn');
+
+    let editingScheduleId = null; // 현재 편집 중인 스케줄 ID 추적
+
+    const fetchAndRenderSchedules = () => {
+        fetch('/schedule/')
+            .then(response => response.json())
+            .then(data => {
+                renderSchedules(data.schedules);
+            })
+            .catch(error => console.error('스케줄 불러오기 오류:', error));
+    };
+
+    const renderSchedules = (schedules) => {
+        scheduleListContainer.innerHTML = ''; // Clear existing list
+        if (schedules.length === 0) {
+            scheduleListContainer.innerHTML = '<p>오늘의 일정이 없습니다. 새로운 일정을 추가해보세요!</p>';
+            return;
+        }
+
+        schedules.forEach(schedule => {
+            const scheduleItem = document.createElement('div');
+            scheduleItem.className = 'schedule-item';
+            scheduleItem.dataset.id = schedule.id;
+            scheduleItem.innerHTML = `
+                <span class="schedule-time">${schedule.schedule_time || '시간 미지정'}</span>
+                <span class="schedule-content">${schedule.content}</span>
+                <div class="schedule-actions">
+                    <button class="edit-schedule-btn" data-id="${schedule.id}">수정</button>
+                    <button class="delete-schedule-btn" data-id="${schedule.id}">삭제</button>
+                </div>
+            `;
+            scheduleListContainer.appendChild(scheduleItem);
+        });
+
+        // Add event listeners for dynamically created buttons
+        scheduleListContainer.querySelectorAll('.edit-schedule-btn').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const id = parseInt(event.target.dataset.id);
+                const scheduleToEdit = schedules.find(s => s.id === id);
+                if (scheduleToEdit) {
+                    newScheduleTimeInput.value = scheduleToEdit.schedule_time || '09:00';
+                    newScheduleTextarea.value = scheduleToEdit.content;
+                    addScheduleBtn.textContent = '일정 업데이트';
+                    editingScheduleId = id;
+                }
+            });
+        });
+
+        scheduleListContainer.querySelectorAll('.delete-schedule-btn').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const id = parseInt(event.target.dataset.id);
+                if (confirm('정말로 이 일정을 삭제하시겠습니까?')) {
+                    deleteSchedule(id);
+                }
+            });
+        });
+    };
 
     const openModal = () => {
         if (isDialogActive) return;
         scheduleModal.style.display = 'block';
         isDialogActive = true;
-        fetch('/schedule/')
-            .then(response => response.json())
-            .then(data => {
-                scheduleTextarea.value = data.content || '';
-                scheduleTimeInput.value = data.schedule_time || '09:00'; // Populate time input, default to 09:00
-            })
-            .catch(error => console.error('Error fetching schedule:', error));
+        fetchAndRenderSchedules(); // Fetch and render schedules when modal opens
+        // Reset new schedule input fields
+        newScheduleTimeInput.value = '09:00';
+        newScheduleTextarea.value = '';
+        addScheduleBtn.textContent = '일정 추가';
+        editingScheduleId = null;
     };
 
     const closeModal = () => {
@@ -384,29 +441,67 @@ document.addEventListener('DOMContentLoaded', () => {
         isDialogActive = false;
     };
 
-    const saveSchedule = () => {
-        const content = scheduleTextarea.value;
-        const schedule_time = scheduleTimeInput.value; // Get time value
+    const handleAddUpdateSchedule = () => {
+        const content = newScheduleTextarea.value;
+        const schedule_time = newScheduleTimeInput.value;
         const csrftoken = getCookie('csrftoken');
+
+        if (!content) {
+            alert('일정 내용을 입력해주세요.');
+            return;
+        }
+
+        let bodyData = { content: content, schedule_time: schedule_time };
+        let action = 'create';
+
+        if (editingScheduleId) {
+            action = 'update';
+            bodyData.id = editingScheduleId;
+        }
+        bodyData.action = action;
+
         fetch('/schedule/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
-            body: JSON.stringify({ content: content, schedule_time: schedule_time }) // Include schedule_time
+            body: JSON.stringify(bodyData)
         })
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('일정이 저장되었습니다.');
-                closeModal();
+                alert(data.message);
+                newScheduleTextarea.value = '';
+                newScheduleTimeInput.value = '09:00';
+                addScheduleBtn.textContent = '일정 추가';
+                editingScheduleId = null;
+                fetchAndRenderSchedules(); // Re-fetch and render schedules
             } else {
-                alert('저장에 실패했습니다: ' + data.message);
+                alert('작업에 실패했습니다: ' + data.message);
+            }d
+        })
+        .catch(error => console.error('스케줄 저장 오류:', error));
+    };
+
+    const deleteSchedule = (id) => {
+        const csrftoken = getCookie('csrftoken');
+        fetch('/schedule/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+            body: JSON.stringify({ action: 'delete', id: id })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(data.message);
+                fetchAndRenderSchedules(); // 스케줄 다시 불러와 렌더링
+            } else {
+                alert('삭제에 실패했습니다: ' + data.message);
             }
         })
-        .catch(error => console.error('Error saving schedule:', error));
+        .catch(error => console.error('스케줄 삭제 오류:', error));
     };
 
     closeButton.addEventListener('click', closeModal);
-    saveScheduleBtn.addEventListener('click', saveSchedule);
+    addScheduleBtn.addEventListener('click', handleAddUpdateSchedule);
     window.addEventListener('click', (event) => {
         if (event.target == scheduleModal) closeModal();
     });

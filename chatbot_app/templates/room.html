@@ -83,9 +83,16 @@
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2>오늘의 일과</h2>
-            <input type="time" id="schedule-time-input" class="schedule-input" value="09:00">
-            <textarea id="schedule-textarea" placeholder="오늘의 일정을 자유롭게 적어주세요.&#10;예:&#10;- 팀 회의&#10;- 점심 약속 (강남역)&#10;- 운동"></textarea>
-            <button id="save-schedule-btn">저장하기</button>
+            <div id="schedule-list-container">
+                <!-- Schedules will be loaded here by JavaScript -->
+            </div>
+            <div class="schedule-input-form">
+                <div class="input-group">
+                    <input type="time" id="new-schedule-time-input" class="schedule-input" value="09:00">
+                    <textarea id="new-schedule-textarea" placeholder="새 일정을 입력하세요." rows="2"></textarea>
+                </div>
+                <button id="add-schedule-btn">일정 추가</button>
+            </div>
         </div>
     </div>
 
