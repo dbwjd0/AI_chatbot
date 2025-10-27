@@ -7,6 +7,7 @@ urlpatterns = [
     path('game_start/', main.game_start_view, name='game_start'),
     path('chat/', main.chat_view, name='chat'),
     path('game-chat/', main.game_chat_view, name='game_chat'),
+    path('narrative-setup/', main.narrative_setup_view, name='narrative_setup'),
     path('chat_response/', chatWithAi.chat_response, name='chat_response'),
     path('chat/load-messages/', main.load_more_messages, name='load_more_messages'),
     path('setup/', main.setup_view, name='setup'),

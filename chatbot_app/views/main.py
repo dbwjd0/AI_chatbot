@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.utils import timezone
 import re
+import json # json 모듈 임포트
 from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage
 from chatbot_app.services.proactive_service import generate_proactive_message
 
@@ -35,6 +36,32 @@ def parse_onboarding_answer(answer, fact_type):
     # setup_view에서 cleaned_answer가 None일 경우 UserAttribute를 생성하지 않도록 처리해야 함.
     # 여기서는 클라이언트 측 유효성 검사가 있으므로, 파싱 실패 시 None을 반환하는 것이 더 안전함.
     return cleaned_answer if cleaned_answer is not None else ""
+
+@login_required
+def narrative_setup_view(request):
+    """새로운 대화형 온보딩 페이지를 렌더링하고, 사용자 정보 제출을 처리합니다."""
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        fact_type = data.get('fact_type')
+        content = data.get('content')
+
+        if fact_type and content:
+            UserAttribute.objects.update_or_create(
+                user=request.user,
+                fact_type=fact_type,
+                defaults={'content': content}
+            )
+            return JsonResponse({'status': 'success', 'message': f'{fact_type} 저장 완료'})
+        
+        if data.get('action') == 'complete':
+            profile = request.user.profile
+            profile.is_onboarding_complete = True
+            profile.save()
+            return JsonResponse({'status': 'success', 'message': '온보딩 완료'})
+
+        return JsonResponse({'status': 'error', 'message': '데이터가 누락되었습니다.'}, status=400)
+
+    return render(request, 'narrative_setup.html')
 
 @login_required
 def setup_view(request):
@@ -73,7 +100,7 @@ def setup_view(request):
 def room(request):
     """캐릭터가 있는 방 페이지를 렌더링합니다."""
     if not request.user.profile.is_onboarding_complete:
-        return redirect('setup')
+        return redirect('narrative_setup')
     return render(request, 'room.html')
 
 @login_required
