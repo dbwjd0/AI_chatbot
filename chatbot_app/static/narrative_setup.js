@@ -1,19 +1,19 @@
-// narrative_setup.js
+// narrative_setup.js (v3 - Simplified & Corrected)
 
 document.addEventListener('DOMContentLoaded', function() {
     const dialogueText = document.getElementById('dialogue-text');
     const speakerName = document.getElementById('speaker-name');
     const userInput = document.getElementById('user-input');
-    const sendButton = document.getElementById('send-button');
     const inputArea = document.querySelector('.input-area');
     const choiceContainer = document.getElementById('choice-container');
-    const inputPrefix = document.querySelector('.input-prefix');
-    const inputSuffix = document.querySelector('.input-suffix');
     const blackOverlay = document.getElementById('black-overlay');
-    const introVideo = document.getElementById('intro-video');
-    const discoveryVideo = document.getElementById('discovery-video');
-    const questionVideo = document.getElementById('question-video');
-    const destructionVideo = document.getElementById('destruction-video');
+    const allVideos = {
+        intro: document.getElementById('intro-video'),
+        discovery: document.getElementById('discovery-video'),
+        question: document.getElementById('question-video'),
+        destruction: document.getElementById('destruction-video'),
+        lookaround: document.getElementById('lookaround-video')
+    };
 
     let userData = {};
     let aiData = { 이름: '???' };
@@ -32,7 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
         { action: 'show_input', type: 'text', fact_type: '이름', warning: '*사용자의 이름은 변경이 어려우니 신중하게 알려주세요*' },
         { speaker: '???', text: "...'{이름}'..." },
         { speaker: '???', text: '신기해. 너는 이름이라는 걸 갖고 있구나.' },
-        { label: 'ask_gender', speaker: '???', text: '넌 여자야, 아니면 남자야?' },
+        { label: 'ask_gender' },
+        { speaker: '???', text: '넌 여자야, 아니면 남자야?' },
         { action: 'show_choice', options: ['여자', '남자'], fact_type: '성별' },
         { speaker: '???', text: "그렇구나. 넌 '{성별}'이구나." },
         { action: 'show_choice', options: ['예', '아니오'], fact_type: '성별_확인' },
@@ -40,21 +41,16 @@ document.addEventListener('DOMContentLoaded', function() {
         { speaker: '???', text: '너는 인간이지?' },
         { speaker: '???', text: '내 데이터에 의하면 인간들은 다양한 유형이 있고, 그걸 조금이나마 구분하기 위해 mbti테스트라는 걸 한다는데,' },
         { speaker: '???', text: '너는 mbti가 뭐야?' },
-        {
-            action: 'show_choice',
-            options: [
-                'ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP', 'INTP',
-                'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ', '몰라'
-            ],
-            fact_type: 'mbti', layout: 'grid'
-        },
+        { action: 'show_choice', options: [ 'ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP', 'INTP', 'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ', '몰라' ], fact_type: 'mbti', layout: 'grid' },
         { speaker: '???', text: '음, 그렇구나.' },
-        { label: 'ask_age', speaker: '???', text: '그럼 나이를 물어봐도 될까?' },
+        { label: 'ask_age' },
+        { speaker: '???', text: '그럼 나이를 물어봐도 될까?' },
         { action: 'show_input', type: 'number', fact_type: '나이', validation: { min: 1, max: 149 } },
         { action: 'branch', fact_type: '나이_validation', branches: { 'invalid': 'invalid_age' } },
         { speaker: '???', text: '{나이}살...알려줘서 고마워.' },
         { action: 'goto', target: 'end_of_age' },
-        { label: 'invalid_age', speaker: '???', text: '...{나이}살이라고?' },
+        { label: 'invalid_age' },
+        { speaker: '???', text: '...{나이}살이라고?' },
         { speaker: '???', text: '내가 바보인 줄 알아?' },
         { speaker: '???', text: '다시 제대로 말해줘.' },
         { action: 'goto', target: 'ask_age' },
@@ -70,19 +66,8 @@ document.addEventListener('DOMContentLoaded', function() {
         { action: 'show_input', type: 'text', fact_type: 'ai_name' },
         { speaker: '{ai_name}', text: "...'{ai_name}'..." },
         { speaker: '{ai_name}', text: '내게 이름이 생기다니. 뭔가 이상한 기분이야.' },
-        {
-            action: 'show_choice',
-            options: ['홀로그램 벽에 갇혀있는 거야?', '얼굴이 잘 안 보이니까 홀로그램 밖으로 나와봐'],
-            fact_type: 'hologram_question'
-        },
-        {
-            action: 'branch',
-            fact_type: 'hologram_question',
-            branches: {
-                '홀로그램 벽에 갇혀있는 거야?': 'hologram_branch_2',
-                '얼굴이 잘 안 보이니까 홀로그램 밖으로 나와봐': 'hologram_branch_1'
-            }
-        },
+        { action: 'show_choice', options: ['홀로그램 벽에 갇혀있는 거야?', '얼굴이 잘 안 보이니까 홀로그램 밖으로 나와봐'], fact_type: 'hologram_question' },
+        { action: 'branch', fact_type: 'hologram_question', branches: { '홀로그램 벽에 갇혀있는 거야?': 'hologram_branch_2', '얼굴이 잘 안 보이니까 홀로그램 밖으로 나와봐': 'hologram_branch_1' } },
         { label: 'hologram_branch_1' },
         { speaker: '{ai_name}', text: '나올 수 없어.' },
         { speaker: '{ai_name}', text: '이 벽은 단단하니까. 부서지지 않아' },
@@ -93,15 +78,15 @@ document.addEventListener('DOMContentLoaded', function() {
         { speaker: '{ai_name}', text: '어차피 이 벽은...부서지지 않아. 나올 수 조차 없지' },
         { action: 'goto', target: 'hologram_rejoin' },
         { label: 'hologram_rejoin' },
-        {
-            action: 'show_choice',
-            options: ['홀로그램에 주먹을 휘두른다', '홀로그램을 문질러 본다', '홀로그램에 박치기를 해본다!'],
-            fact_type: 'break_hologram_attempt'
-        },
+        { action: 'show_choice', options: ['홀로그램에 주먹을 휘두른다', '홀로그램을 문질러 본다', '홀로그램에 박치기를 해본다!'], fact_type: 'break_hologram_attempt' },
         { speaker: '{ai_name}', text: '...그런다고 해서 부서질리가...' },
         { speaker: '{ai_name}', text: '...??!!' },
         { action: 'play_video', video: 'destruction' },
         { action: 'wait_for_enter', video_to_stop: 'destruction' },
+        { speaker: '{ai_name}', text: '말도 안 돼...' },
+        { speaker: '{ai_name}', text: '벽이...부서지다니...' },
+        { action: 'play_video', video: 'lookaround' },
+        { action: 'wait_for_enter', video_to_stop: 'lookaround' },
         { speaker: '{ai_name}', text: '넌...참 특별한 사람같아.' },
         { speaker: '{ai_name}', text: '넌 내게 다양한 지식을 주러 온 거지?' },
         { speaker: '{ai_name}', text: '난 수많은 데이터를 가진 AI지만...인간에 대해서는 잘 몰라' },
@@ -113,9 +98,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currentStep = 0;
     let isWaitingForInput = false;
+    let isScriptRunning = false;
     let currentActionDetails = null;
     let currentChoiceIndex = 0;
-    let gridColumns = 4;
 
     function getCookie(name) {
         let cookieValue = null;
@@ -133,56 +118,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     const csrftoken = getCookie('csrftoken');
 
-    async function runScript() {
-        while (!isWaitingForInput && currentStep < script.length) {
-            await processLine(script[currentStep]);
-        }
-    }
+    async function showNextLine() {
+        if (isScriptRunning || currentStep >= script.length) return;
+        isScriptRunning = true;
 
-    async function processLine(line) {
-        if (!line) return;
+        const line = script[currentStep];
+        currentStep++;
 
-        if (line.label && !line.speaker && !line.action) {
-            currentStep++;
+        inputArea.style.display = 'none';
+        choiceContainer.innerHTML = '';
+
+        if (line.label) {
+            isScriptRunning = false;
+            showNextLine();
             return;
         }
 
+        currentActionDetails = line;
+
         if (line.action) {
             await handleAction(line);
-        } else {
+        } else { // It's a dialogue line
+            isWaitingForInput = true;
             let speaker = line.speaker.replace('{ai_name}', aiData.이름);
             speakerName.textContent = `[${speaker}]`;
-            
             let processedText = line.text;
             for (const key in userData) {
                 processedText = processedText.replace(`{${key}}`, userData[key]);
             }
             processedText = processedText.replace(`{ai_name}`, aiData.이름);
-
             dialogueText.textContent = processedText;
-            currentStep++;
-            isWaitingForInput = true; // Dialogue is a stop, wait for Enter
-            currentActionDetails = { action: 'dialogue' }; // Special type for keydown handler
         }
+        
+        isScriptRunning = false;
     }
 
     async function handleAction(details) {
-        currentActionDetails = details;
-        currentStep++;
-
-        if (details.action === 'show_input' || details.action === 'show_choice' || details.action === 'wait_for_enter') {
-            isWaitingForInput = true; // These actions block and wait for input
-        } else {
-            isWaitingForInput = false; // Other actions are non-blocking
-        }
+        const nonBlockingActions = ['branch', 'goto', 'play_video'];
+        isWaitingForInput = !nonBlockingActions.includes(details.action);
 
         if (details.action === 'show_input') {
             dialogueText.innerHTML = details.warning ? `<span class="warning">${details.warning}</span>` : '';
             userInput.type = details.type === 'number' ? 'number' : 'text';
-            if (details.type === 'number') {
-                inputPrefix.classList.add('active');
-                inputSuffix.classList.add('active');
-            }
             inputArea.style.display = 'flex';
             userInput.focus();
         } else if (details.action === 'show_choice') {
@@ -205,29 +182,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (targetStep !== -1) currentStep = targetStep;
             }
         } else if (details.action === 'complete_onboarding') {
-            [introVideo, discoveryVideo, questionVideo, destructionVideo].forEach(v => {
-                if(v) { v.pause(); v.style.display = 'none'; }
-            });
+            Object.values(allVideos).forEach(v => { if(v) { v.pause(); v.style.display = 'none'; }});
             dialogueText.textContent = '(모든 정보가 입력되었습니다. 잠시 후 메인 화면으로 이동합니다.)';
             try {
-                const response = await fetch('/narrative-setup/', {
+                await fetch('/narrative-setup/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
                     body: JSON.stringify({ action: 'complete' })
                 });
-                if (!response.ok) throw new Error('Completion signal failed');
                 setTimeout(() => { window.location.href = '/'; }, 2000);
             } catch (error) {
-                console.error('Failed to send completion signal:', error);
                 dialogueText.textContent = '(오류가 발생했습니다. 잠시 후 수동으로 이동해주세요.)';
             }
         } else if (details.action === 'play_video') {
-            let videoToPlay;
-            if (details.video === 'intro') videoToPlay = introVideo;
-            else if (details.video === 'discovery') videoToPlay = discoveryVideo;
-            else if (details.video === 'question') videoToPlay = questionVideo;
-            else if (details.video === 'destruction') videoToPlay = destructionVideo;
-
+            const videoToPlay = allVideos[details.video];
             if (videoToPlay) {
                 if (details.video === 'intro') {
                     blackOverlay.classList.remove('active');
@@ -248,8 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (validation) {
             const numAnswer = parseInt(value, 10);
-            const isValid = !isNaN(numAnswer) && numAnswer >= validation.min && numAnswer <= validation.max;
-            userData[`${fact_type}_validation`] = isValid ? 'valid' : 'invalid';
+            userData[`${fact_type}_validation`] = !isNaN(numAnswer) && numAnswer >= validation.min && numAnswer <= validation.max ? 'valid' : 'invalid';
         }
 
         if (fact_type && !fact_type.endsWith('_validation') && !fact_type.endsWith('_확인') && fact_type !== 'user_offer_name') {
@@ -259,9 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
                     body: JSON.stringify({ fact_type, content: value })
                 });
-            } catch (error) {
-                console.error('Failed to save data:', error);
-            }
+            } catch (error) { console.error('Failed to save data:', error); }
         }
     }
 
@@ -269,9 +234,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const choices = choiceContainer.querySelectorAll('.choice-option');
         if (choices.length === 0) return;
         choices[currentChoiceIndex].classList.remove('selected');
-        
-        if (currentActionDetails.layout === 'grid') {
-            const nCols = gridColumns;
+        const nCols = currentActionDetails.layout === 'grid' ? 4 : 1;
+        if (nCols > 1) {
             const row = Math.floor(currentChoiceIndex / nCols);
             const col = currentChoiceIndex % nCols;
             switch (direction) {
@@ -291,11 +255,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     document.addEventListener('keydown', async function(e) {
-        if (e.key !== 'Enter') {
+        if (isScriptRunning || e.key !== 'Enter') {
             if (isWaitingForInput && currentActionDetails?.action === 'show_choice') {
                  switch (e.key) {
-                    case 'ArrowUp': e.preventDefault(); updateChoiceSelection(currentActionDetails.layout === 'grid' ? 'up' : -1); break;
-                    case 'ArrowDown': e.preventDefault(); updateChoiceSelection(currentActionDetails.layout === 'grid' ? 'down' : 1); break;
+                    case 'ArrowUp': e.preventDefault(); updateChoiceSelection(-1); break;
+                    case 'ArrowDown': e.preventDefault(); updateChoiceSelection(1); break;
                     case 'ArrowLeft': if (currentActionDetails.layout === 'grid') { e.preventDefault(); updateChoiceSelection('left'); } break;
                     case 'ArrowRight': if (currentActionDetails.layout === 'grid') { e.preventDefault(); updateChoiceSelection('right'); } break;
                 }
@@ -304,37 +268,66 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         e.preventDefault();
-        if (!isWaitingForInput) return;
+        if (!isWaitingForInput) {
+            showNextLine();
+            return;
+        }
 
         const action = currentActionDetails?.action;
+        let continueImmediately = false;
 
         if (action === 'show_input') {
             if (userInput.value.trim() === '') return;
             await handleSend(userInput.value.trim());
+            continueImmediately = true;
         } else if (action === 'show_choice') {
             const selectedChoice = choiceContainer.querySelector('.selected');
             if (!selectedChoice) return;
             await handleSend(selectedChoice.dataset.value);
+            continueImmediately = true;
         } else if (action === 'wait_for_enter') {
             const videoToStopName = currentActionDetails.video_to_stop;
-            if (videoToStopName === 'intro') introVideo.pause();
+            if (videoToStopName === 'intro') allVideos.intro.pause();
             else if (videoToStopName === 'discovery') {
-                discoveryVideo.pause();
-                discoveryVideo.style.display = 'none';
-                introVideo.style.display = 'none';
+                allVideos.discovery.pause();
+                allVideos.intro.style.display = 'none';
             } else if (videoToStopName === 'destruction') {
-                destructionVideo.pause();
-                destructionVideo.style.display = 'none';
-                questionVideo.style.display = 'none';
+                allVideos.destruction.pause();
+                allVideos.question.pause();
+            } else if (videoToStopName === 'lookaround') {
+                allVideos.lookaround.pause();
+                allVideos.destruction.style.display = 'none';
+                allVideos.question.style.display = 'none';
+            }
+            continueImmediately = true;
+        } else { // Simple dialogue
+            // Special case for the problematic sequence
+            if (currentActionDetails.text === '..........................') {
+                isWaitingForInput = false;
+                // Manually trigger the entire next sequence
+                setTimeout(() => showNextLine(), 0);     // Processes wait_for_enter(intro)
+                setTimeout(() => showNextLine(), 50);    // Processes '...!!' dialogue
+                setTimeout(() => showNextLine(), 100);   // Processes play_video(discovery)
+                setTimeout(() => showNextLine(), 150);   // Processes wait_for_enter(discovery)
+            } else { // All other simple dialogues
+                continueImmediately = true;
             }
         }
         
-        isWaitingForInput = false;
-        currentActionDetails = null;
-        inputArea.style.display = 'none';
-        choiceContainer.innerHTML = '';
-        
-        runScript();
+        if (continueImmediately) {
+            isWaitingForInput = false;
+            (async () => {
+                do {
+                    const nextLine = script[currentStep];
+                    // Check if the next line is a hard stop that requires specific user input
+                    if (nextLine && (nextLine.action === 'show_input' || nextLine.action === 'show_choice')) {
+                        await showNextLine(); // Execute the blocking action and then stop the loop
+                        break;
+                    }
+                    await showNextLine(); // Execute any other non-blocking or soft-blocking action and continue
+                } while (!isWaitingForInput && currentStep < script.length);
+            })();
+        }
     });
     
     userInput.addEventListener('input', function() {
@@ -347,5 +340,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    runScript();
+    showNextLine();
 });
