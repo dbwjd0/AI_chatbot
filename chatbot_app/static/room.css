@@ -349,3 +349,163 @@
 #add-schedule-btn:hover {
     background-color: #45a049;
 }
+
+/* 위치 조정을 위한 보이는 장애물 스타일 */
+#invisible-wall-1 {
+     position: absolute;
+     top: 500px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 805px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 230px;  /* 장애물의 너비 */
+     height: 5px;  /* 장애물의 높이 */
+     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+}
+
+#invisible-wall-2 {
+     position: absolute;
+     top: 450px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 600px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 5px;  /* 장애물의 너비 */
+     height: 500px;  /* 장애물의 높이 */
+     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+}
+
+#invisible-wall-3 {
+     position: absolute;
+     top: 50px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 600px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 5px;  /* 장애물의 너비 */
+     height: 200px;  /* 장애물의 높이 */
+     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+}
+
+#invisible-wall-4 {
+     position: absolute;
+     top: 20px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 770px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 5px;  /* 장애물의 너비 */
+     height: 100px;  /* 장애물의 높이 */
+     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+} 
+
+#invisible-wall-5 {
+     position: absolute;
+     top: 650px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 55px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 5px;  /* 장애물의 너비 */
+     height: 150px;  /* 장애물의 높이 */
+     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+}
+
+#invisible-wall-6 {
+     position: absolute;
+     top: 720px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 70px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 150px;  /* 장애물의 너비 */
+     height: 5px;  /* 장애물의 높이 */
+     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+}
+
+#invisible-wall-7 {
+     position: absolute;
+     top: 380px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 284px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 93px;  /* 장애물의 너비 */
+     height: 5px;  /* 장애물의 높이 */
+     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+} 
+
+#invisible-wall-8 {
+     position: absolute;
+     top: 595px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 406px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 93px;  /* 장애물의 너비 */
+     height: 5px;  /* 장애물의 높이 */
+     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+} 
+
+#invisible-wall-9 {
+     position: absolute;
+     top: 550px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 500px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 5px;  /* 장애물의 너비 */
+     height: 50px;  /* 장애물의 높이 */
+     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+} 
+
+#invisible-wall-10 {
+     position: absolute;
+     top: 520px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 520px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 40px;  /* 장애물의 너비 */
+     height: 5px;  /* 장애물의 높이 */
+     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+} 
+
+#invisible-wall-11 {
+     position: absolute;
+     top: 540px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 200px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 100px;  /* 장애물의 너비 */
+     height: 5px;  /* 장애물의 높이 */
+     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+} 
+
+#proactive-notification {
+    position: absolute;
+    /* 위치는 room.js에서 플레이어 위치에 따라 동적으로 설정됩니다. */
+    width: 40px;
+    height: 40px;
+    background-color: #ffffff; /* 눈에 띄는 노란색 */
+    border: 2px solid #a9d1ff;
+    border-radius: 20px; /* 둥근 사각형 */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    z-index: 11; /* 플레이어 위에 표시 */
+    
+    /* 텍스트 중앙 정렬 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff0000;
+    font-family: 'VT323', monospace;
+}
+
+#proactive-notification::before {
+    content: '';
+    position: absolute;
+    bottom: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 12px solid #a9d1ff;
+    z-index: 0;
+}
+
+#proactive-notification::after {
+    content: '';
+    position: absolute;
+    bottom: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 10px solid #ffffff;
+    z-index: 1;
+}
