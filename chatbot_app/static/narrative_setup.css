@@ -21,6 +21,7 @@ html, body {
 
 .dialogue-box {
     position: absolute;
+    z-index: 101; /* 이 줄이 추가됩니다 */
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
@@ -50,7 +51,7 @@ html, body {
 }
 
 .input-area {
-    display: flex;
+    display: none; /* 기본적으로 숨김 처리 */
     margin-top: 10px;
     align-items: center; /* 세로 중앙 정렬 */
 }
@@ -131,4 +132,55 @@ html, body {
     display: block;
     text-align: center;
     margin-bottom: 10px;
+}
+
+#black-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    z-index: 100;
+    
+    /* Use a mask to create the circular opening effect */
+    -webkit-mask-image: radial-gradient(circle at center, transparent 0%, black 100%);
+    mask-image: radial-gradient(circle at center, transparent 0%, black 100%);
+    -webkit-mask-size: 0%;
+    mask-size: 0%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    
+    transition: -webkit-mask-size 2s ease-in;
+    transition: mask-size 2s ease-in;
+    pointer-events: all; /* Blocks clicks initially */
+}
+
+#black-overlay.active {
+    /* When active, the mask should be 0, so the screen is black */
+    -webkit-mask-size: 0%;
+    mask-size: 0%;
+    pointer-events: all;
+}
+
+#black-overlay:not(.active) {
+    /* When active class is removed, grow the mask to reveal the content underneath */
+    -webkit-mask-size: 300%;
+    mask-size: 300%; /* A large enough size to cover the whole screen */
+    pointer-events: none;
+}
+
+.narrative-video {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 1;
+    transform: translateX(-50%) translateY(-50%);
+    display: none; /* 처음에는 숨김 */
 }

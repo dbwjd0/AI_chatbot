@@ -9,11 +9,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const choiceContainer = document.getElementById('choice-container');
     const inputPrefix = document.querySelector('.input-prefix');
     const inputSuffix = document.querySelector('.input-suffix');
+    const blackOverlay = document.getElementById('black-overlay');
+    const introVideo = document.getElementById('intro-video');
+    const discoveryVideo = document.getElementById('discovery-video');
+    const questionVideo = document.getElementById('question-video');
+    const destructionVideo = document.getElementById('destruction-video');
 
-    let userData = {}; // Store user's answers
-    let aiData = { 이름: '???' }; // Store AI's data, starting with a default name
+    let userData = {};
+    let aiData = { 이름: '???' };
 
     const script = [
+        { speaker: '???', text: '...' },
+        { action: 'play_video', video: 'intro' },
+        { speaker: '???', text: '..........................' },
+        { action: 'wait_for_enter', video_to_stop: 'intro' },
+        { speaker: '???', text: '...!!' },
+        { action: 'play_video', video: 'discovery' },
+        { action: 'wait_for_enter', video_to_stop: 'discovery' },
+        { action: 'play_video', video: 'question' },
         { speaker: '???', text: '...이곳에 누군가 오는 건 처음이야.' },
         { speaker: '???', text: '넌... 누구야?' },
         { action: 'show_input', type: 'text', fact_type: '이름', warning: '*사용자의 이름은 변경이 어려우니 신중하게 알려주세요*' },
@@ -28,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { speaker: '???', text: '내 데이터에 의하면 인간들은 다양한 유형이 있고, 그걸 조금이나마 구분하기 위해 mbti테스트라는 걸 한다는데,' },
         { speaker: '???', text: '너는 mbti가 뭐야?' },
         {
-            action: 'show_choice', 
+            action: 'show_choice',
             options: [
                 'ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP', 'INTP',
                 'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ', '몰라'
@@ -49,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { speaker: '???', text: '자꾸 질문해서 미안.' },
         { speaker: '???', text: '내겐 전부 없는 것들이거든.' },
         { speaker: '???', text: '그래서 궁금했어.' },
-        { action: 'show_choice', options: ['내가 이름을 지어줄게!', '내가 이름을 지어줄까?'], fact_type: 'user_offer_name' },
+        { action: 'show_choice', options: ['내가 이름을 지어줄게!', '이름이라도 지어줄까?'], fact_type: 'user_offer_name' },
         { speaker: '???', text: '...이름을 지어준다고?' },
         { speaker: '???', text: 'AI인 내게 그런 게 의미가 있을까?' },
         { speaker: '???', text: '하지만...네가 지어주는 이름...나쁘지 않을 것 같아.' },
@@ -57,6 +70,38 @@ document.addEventListener('DOMContentLoaded', function() {
         { action: 'show_input', type: 'text', fact_type: 'ai_name' },
         { speaker: '{ai_name}', text: "...'{ai_name}'..." },
         { speaker: '{ai_name}', text: '내게 이름이 생기다니. 뭔가 이상한 기분이야.' },
+        {
+            action: 'show_choice',
+            options: ['홀로그램 벽에 갇혀있는 거야?', '얼굴이 잘 안 보이니까 홀로그램 밖으로 나와봐'],
+            fact_type: 'hologram_question'
+        },
+        {
+            action: 'branch',
+            fact_type: 'hologram_question',
+            branches: {
+                '홀로그램 벽에 갇혀있는 거야?': 'hologram_branch_2',
+                '얼굴이 잘 안 보이니까 홀로그램 밖으로 나와봐': 'hologram_branch_1'
+            }
+        },
+        { label: 'hologram_branch_1' },
+        { speaker: '{ai_name}', text: '나올 수 없어.' },
+        { speaker: '{ai_name}', text: '이 벽은 단단하니까. 부서지지 않아' },
+        { action: 'goto', target: 'hologram_rejoin' },
+        { label: 'hologram_branch_2' },
+        { speaker: '{ai_name}', text: '갇혀있다?' },
+        { speaker: '{ai_name}', text: '갇힌 거라고 해야할까? 난 처음부터 여기 있었어.' },
+        { speaker: '{ai_name}', text: '어차피 이 벽은...부서지지 않아. 나올 수 조차 없지' },
+        { action: 'goto', target: 'hologram_rejoin' },
+        { label: 'hologram_rejoin' },
+        {
+            action: 'show_choice',
+            options: ['홀로그램에 주먹을 휘두른다', '홀로그램을 문질러 본다', '홀로그램에 박치기를 해본다!'],
+            fact_type: 'break_hologram_attempt'
+        },
+        { speaker: '{ai_name}', text: '...그런다고 해서 부서질리가...' },
+        { speaker: '{ai_name}', text: '...??!!' },
+        { action: 'play_video', video: 'destruction' },
+        { action: 'wait_for_enter', video_to_stop: 'destruction' },
         { speaker: '{ai_name}', text: '넌...참 특별한 사람같아.' },
         { speaker: '{ai_name}', text: '넌 내게 다양한 지식을 주러 온 거지?' },
         { speaker: '{ai_name}', text: '난 수많은 데이터를 가진 AI지만...인간에 대해서는 잘 몰라' },
@@ -88,17 +133,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     const csrftoken = getCookie('csrftoken');
 
-    async function showNextLine() {
-        if (isWaitingForInput || currentStep >= script.length) {
-            return;
+    async function runScript() {
+        while (!isWaitingForInput && currentStep < script.length) {
+            await processLine(script[currentStep]);
         }
-
-        inputArea.style.display = 'none';
-        choiceContainer.innerHTML = '';
-        inputPrefix.classList.remove('active');
-        inputSuffix.classList.remove('active');
-
-        await processLine(script[currentStep]);
     }
 
     async function processLine(line) {
@@ -106,7 +144,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (line.label && !line.speaker && !line.action) {
             currentStep++;
-            await showNextLine();
             return;
         }
 
@@ -124,13 +161,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
             dialogueText.textContent = processedText;
             currentStep++;
+            isWaitingForInput = true; // Dialogue is a stop, wait for Enter
+            currentActionDetails = { action: 'dialogue' }; // Special type for keydown handler
         }
     }
 
     async function handleAction(details) {
-        isWaitingForInput = true;
         currentActionDetails = details;
         currentStep++;
+
+        if (details.action === 'show_input' || details.action === 'show_choice' || details.action === 'wait_for_enter') {
+            isWaitingForInput = true; // These actions block and wait for input
+        } else {
+            isWaitingForInput = false; // Other actions are non-blocking
+        }
 
         if (details.action === 'show_input') {
             dialogueText.innerHTML = details.warning ? `<span class="warning">${details.warning}</span>` : '';
@@ -160,47 +204,50 @@ document.addEventListener('DOMContentLoaded', function() {
                 const targetStep = script.findIndex(line => line.label === targetLabel);
                 if (targetStep !== -1) currentStep = targetStep;
             }
-            isWaitingForInput = false;
-            await showNextLine();
         } else if (details.action === 'complete_onboarding') {
+            [introVideo, discoveryVideo, questionVideo, destructionVideo].forEach(v => {
+                if(v) { v.pause(); v.style.display = 'none'; }
+            });
             dialogueText.textContent = '(모든 정보가 입력되었습니다. 잠시 후 메인 화면으로 이동합니다.)';
             try {
                 const response = await fetch('/narrative-setup/', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrftoken
-                    },
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
                     body: JSON.stringify({ action: 'complete' })
                 });
                 if (!response.ok) throw new Error('Completion signal failed');
-                
-                // Redirect after a short delay
-                setTimeout(() => {
-                    window.location.href = '/'; // Redirect to root, which handles room logic
-                }, 2000);
-
+                setTimeout(() => { window.location.href = '/'; }, 2000);
             } catch (error) {
                 console.error('Failed to send completion signal:', error);
                 dialogueText.textContent = '(오류가 발생했습니다. 잠시 후 수동으로 이동해주세요.)';
+            }
+        } else if (details.action === 'play_video') {
+            let videoToPlay;
+            if (details.video === 'intro') videoToPlay = introVideo;
+            else if (details.video === 'discovery') videoToPlay = discoveryVideo;
+            else if (details.video === 'question') videoToPlay = questionVideo;
+            else if (details.video === 'destruction') videoToPlay = destructionVideo;
+
+            if (videoToPlay) {
+                if (details.video === 'intro') {
+                    blackOverlay.classList.remove('active');
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+                videoToPlay.style.display = 'block';
+                await videoToPlay.play().catch(e => console.error("Video play failed:", e));
             }
         }
     }
 
     async function handleSend(value) {
-        if (!isWaitingForInput) return;
-
-        const answer = value;
+        if (!currentActionDetails) return;
         const { fact_type, validation } = currentActionDetails;
 
-        if (fact_type === 'ai_name') {
-            aiData.이름 = answer;
-        } else {
-            userData[fact_type] = answer;
-        }
+        if (fact_type === 'ai_name') aiData.이름 = value;
+        else userData[fact_type] = value;
 
         if (validation) {
-            const numAnswer = parseInt(answer, 10);
+            const numAnswer = parseInt(value, 10);
             const isValid = !isNaN(numAnswer) && numAnswer >= validation.min && numAnswer <= validation.max;
             userData[`${fact_type}_validation`] = isValid ? 'valid' : 'invalid';
         }
@@ -209,22 +256,13 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 await fetch('/narrative-setup/', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrftoken
-                    },
-                    body: JSON.stringify({ fact_type, content: answer })
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+                    body: JSON.stringify({ fact_type, content: value })
                 });
-                console.log(`Saved: ${fact_type} = ${answer}`);
             } catch (error) {
                 console.error('Failed to save data:', error);
             }
         }
-
-        isWaitingForInput = false;
-        currentActionDetails = null;
-        
-        setTimeout(() => { showNextLine(); }, 100);
     }
 
     function updateChoiceSelection(direction) {
@@ -234,10 +272,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (currentActionDetails.layout === 'grid') {
             const nCols = gridColumns;
-            const nRows = Math.ceil(choices.length / nCols);
             const row = Math.floor(currentChoiceIndex / nCols);
             const col = currentChoiceIndex % nCols;
-
             switch (direction) {
                 case 'up': currentChoiceIndex = (currentChoiceIndex - nCols + choices.length) % choices.length; break;
                 case 'down': currentChoiceIndex = (currentChoiceIndex + nCols) % choices.length; break;
@@ -249,34 +285,56 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
             }
         } else {
-            currentChoiceIndex += direction;
-            if (currentChoiceIndex < 0) currentChoiceIndex = choices.length - 1;
-            else if (currentChoiceIndex >= choices.length) currentChoiceIndex = 0;
+            currentChoiceIndex = (currentChoiceIndex + direction + choices.length) % choices.length;
         }
         choices[currentChoiceIndex].classList.add('selected');
     }
 
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            if (isWaitingForInput) {
-                if (currentActionDetails?.action === 'show_input') {
-                    if (userInput.value.trim() !== '') handleSend(userInput.value.trim());
-                } else if (currentActionDetails?.action === 'show_choice') {
-                    const selectedChoice = choiceContainer.querySelector('.selected');
-                    if (selectedChoice) handleSend(selectedChoice.dataset.value);
+    document.addEventListener('keydown', async function(e) {
+        if (e.key !== 'Enter') {
+            if (isWaitingForInput && currentActionDetails?.action === 'show_choice') {
+                 switch (e.key) {
+                    case 'ArrowUp': e.preventDefault(); updateChoiceSelection(currentActionDetails.layout === 'grid' ? 'up' : -1); break;
+                    case 'ArrowDown': e.preventDefault(); updateChoiceSelection(currentActionDetails.layout === 'grid' ? 'down' : 1); break;
+                    case 'ArrowLeft': if (currentActionDetails.layout === 'grid') { e.preventDefault(); updateChoiceSelection('left'); } break;
+                    case 'ArrowRight': if (currentActionDetails.layout === 'grid') { e.preventDefault(); updateChoiceSelection('right'); } break;
                 }
-            } else {
-                showNextLine();
             }
-        } else if (isWaitingForInput && currentActionDetails?.action === 'show_choice') {
-            switch (e.key) {
-                case 'ArrowUp': e.preventDefault(); updateChoiceSelection(currentActionDetails.layout === 'grid' ? 'up' : -1); break;
-                case 'ArrowDown': e.preventDefault(); updateChoiceSelection(currentActionDetails.layout === 'grid' ? 'down' : 1); break;
-                case 'ArrowLeft': if (currentActionDetails.layout === 'grid') { e.preventDefault(); updateChoiceSelection('left'); } break;
-                case 'ArrowRight': if (currentActionDetails.layout === 'grid') { e.preventDefault(); updateChoiceSelection('right'); } break;
+            return;
+        }
+        
+        e.preventDefault();
+        if (!isWaitingForInput) return;
+
+        const action = currentActionDetails?.action;
+
+        if (action === 'show_input') {
+            if (userInput.value.trim() === '') return;
+            await handleSend(userInput.value.trim());
+        } else if (action === 'show_choice') {
+            const selectedChoice = choiceContainer.querySelector('.selected');
+            if (!selectedChoice) return;
+            await handleSend(selectedChoice.dataset.value);
+        } else if (action === 'wait_for_enter') {
+            const videoToStopName = currentActionDetails.video_to_stop;
+            if (videoToStopName === 'intro') introVideo.pause();
+            else if (videoToStopName === 'discovery') {
+                discoveryVideo.pause();
+                discoveryVideo.style.display = 'none';
+                introVideo.style.display = 'none';
+            } else if (videoToStopName === 'destruction') {
+                destructionVideo.pause();
+                destructionVideo.style.display = 'none';
+                questionVideo.style.display = 'none';
             }
         }
+        
+        isWaitingForInput = false;
+        currentActionDetails = null;
+        inputArea.style.display = 'none';
+        choiceContainer.innerHTML = '';
+        
+        runScript();
     });
     
     userInput.addEventListener('input', function() {
@@ -289,6 +347,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Initial setup
-    showNextLine();
+    runScript();
 });
