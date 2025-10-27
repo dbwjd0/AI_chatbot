@@ -173,6 +173,8 @@ document.addEventListener('DOMContentLoaded', function () {
         characterImage.src = STATIC_URLS['생각'];
         speakerName.textContent = "AI 비서";
         dialogueText.textContent = "... (생각 중) ...";
+        userInput.disabled = true; // Disable input during thinking
+        sendButton.disabled = true; // Disable send button during thinking
 
         try {
             const response = await fetch('/chat_response/', {
@@ -260,6 +262,8 @@ document.addEventListener('DOMContentLoaded', function () {
             prevDialogueButton.classList.remove('hidden'); // Show button if there's history
         } else {
             isDisplayingMessage = false;
+            userInput.disabled = false; // Enable input after AI finishes
+            sendButton.disabled = false; // Enable send button after AI finishes
             userInput.focus(); // Focus input for next message
             if (displayedAiLinesHistory.length === 0) {
                 prevDialogueButton.classList.add('hidden'); // Hide button if no history
