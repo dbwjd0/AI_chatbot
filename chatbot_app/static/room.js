@@ -22,6 +22,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const idleRightImg = '/static/img/right_stand.png';
     const idleUpImg = '/static/img/side_up_stand.png';
 
+    // --- Audio Elements ---
+    const moveSound = new Audio('/static/audio/walking_bgm.mp3'); // Using walking_bgm.mp3
+    moveSound.volume = 0.5; // Reduced volume
+    moveSound.loop = true; // Intended for continuous, infinite playback when playing
+    let isMovingSoundPlaying = false;
+
+    const collisionSound = new Audio('/static/audio/crash_bgm.mp3'); // Using crash_bgm.mp3
+    collisionSound.volume = 0.5; // Reduced volume
+    let isCurrentlyColliding = false; // New flag to track if player is currently colliding
+
     // --- Game State ---
     const playerState = {
         x: room.offsetWidth / 2,
@@ -33,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const keys = {};
     let activeInteraction = null;
     let isDialogActive = false;
+    let lastFrameTime = 0; // For time-based movement
 
     // --- Debug Visualization ---
     const playerDebugBox = document.createElement('div');
@@ -114,7 +125,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Game Loop (New Robust Logic) ---
-    function gameLoop() {
+    function gameLoop(timestamp) {
+        if (!lastFrameTime) lastFrameTime = timestamp;
+        const deltaTime = (timestamp - lastFrameTime) / 1000; // Convert to seconds
+        lastFrameTime = timestamp;
+
         let newAnimation = playerState.currentAnimation;
 
         // 1. Calculate movement vector
@@ -127,9 +142,26 @@ document.addEventListener('DOMContentLoaded', () => {
             if (keys['ArrowRight']) dx += 1;
         }
 
+        // Adjust speed by deltaTime
+        const currentSpeed = playerState.speed * deltaTime * 60; // Multiply by 60 for a base 60fps speed
+
         // 2. Proposed new position
-        const nextX = playerState.x + dx * playerState.speed;
-        const nextY = playerState.y + dy * playerState.speed;
+        const nextX = playerState.x + dx * currentSpeed;
+        const nextY = playerState.y + dy * currentSpeed;
+
+        // Play/pause movement sound
+        if (dx !== 0 || dy !== 0) {
+            if (!isMovingSoundPlaying) {
+                moveSound.play();
+                isMovingSoundPlaying = true;
+            }
+        } else {
+            if (isMovingSoundPlaying) {
+                moveSound.pause();
+                // moveSound.currentTime = 0; // Removed again to allow continuous loop without reset
+                isMovingSoundPlaying = false;
+            }
+        }
 
         // 3. Obstacle Collision Detection
         const playerWidth = player.offsetWidth;
@@ -143,6 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Calculate the effective collision box dimensions
         const collisionWidth = playerWidth - (2 * playerCollisionBuffer);
         const collisionHeight = playerHeight - (2 * playerCollisionBuffer);
+
+        let currentFrameCollision = false; // Flag for collision in this frame
 
         // Check X-axis collision
         const futurePlayerRectX = {
@@ -173,6 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (checkRectCollision(futurePlayerRectX, obstacleRect)) {
                 collisionX = true;
+                currentFrameCollision = true;
                 break;
             }
         }
@@ -209,12 +244,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (checkRectCollision(futurePlayerRectY, obstacleRect)) {
                 collisionY = true;
+                currentFrameCollision = true;
                 break;
             }
         }
         if (!collisionY) {
             playerState.y = nextY;
         }
+
+        // Collision sound logic: Play only on initial impact
+        if (currentFrameCollision && !isCurrentlyColliding) {
+            collisionSound.currentTime = 0; // Ensure it plays from the start
+            collisionSound.play();
+        }
+        isCurrentlyColliding = currentFrameCollision;
         
         // 4. Determine animation based on actual movement
         if (dx !== 0 || dy !== 0) {
@@ -357,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
     player.style.left = `${playerState.x}px`;
     player.style.top = `${playerState.y}px`;
     playerImage.src = idleImg; // Set initial image
-    gameLoop();
+    requestAnimationFrame(gameLoop);
 
     // --- Schedule Modal Logic ---
     const scheduleModal = document.getElementById('schedule-modal');
