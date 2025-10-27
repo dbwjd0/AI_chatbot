@@ -73,76 +73,80 @@ def generate_proactive_message(user):
     
     trigger_type = None
     proactive_instruction_base = ""
+    message_text = None
+    emotion = "default"
 
     # 1. 비활동 기반 트리거
-    # 1시간 이상 활동이 없으면 능동적인 메시지 생성
-    if last_chat and (now_korea - last_chat.timestamp.astimezone(now_korea.tzinfo)) > timedelta(hours=1):
+    if last_chat and (now_korea - last_chat.timestamp.astimezone(korea_tz)) > timedelta(hours=1):
         trigger_type = "inactivity"
-        proactive_instruction_base = (
-            f"너는 {user.username}님에게 오랜만에 말을 거는 상황이야. "
-            f"1시간 이상 대화가 없었으니, {user.username}님의 안부를 묻거나, "
-        )
-    # 2. 시간대 기반 트리거 (30분 이상 비활동 시 고려)
-    elif not last_chat or (now_korea - last_chat.timestamp.astimezone(now_korea.tzinfo)) > timedelta(minutes=30):
+        proactive_instruction_base = f"너는 {user.username}님에게 오랜만에 말을 거는 상황이야. 1시간 이상 대화가 없었으니, {user.username}님의 안부를 묻거나, "
+    
+    # 2. 시간대 기반 트리거
+    elif not last_chat or (now_korea - last_chat.timestamp.astimezone(korea_tz)) > timedelta(minutes=30):
         current_hour = now_korea.hour
-        if 6 <= current_hour < 10: # 아침
+        if 6 <= current_hour < 10:
             trigger_type = "morning_greeting"
             proactive_instruction_base = f"좋은 아침이야, {user.username}! 오늘 하루를 활기차게 시작할 수 있도록 응원하는 메시지를 생성해줘. "
-        elif 12 <= current_hour < 14: # 점심
+        elif 12 <= current_hour < 14:
             trigger_type = "lunch_time"
             proactive_instruction_base = f"{user.username}님, 점심시간이야! 맛있는 점심을 추천하거나, 점심 관련 가벼운 대화를 시작하는 메시지를 생성해줘. "
-        elif 18 <= current_hour < 22: # 저녁
+        elif 18 <= current_hour < 22:
             trigger_type = "evening_greeting"
             proactive_instruction_base = f"{user.username}님, 저녁 시간이야! 오늘 하루는 어땠는지 묻거나, 편안한 저녁을 보낼 수 있도록 격려하는 메시지를 생성해줘. "
-        # TODO: 다른 시간대 (새벽, 오후 등) 추가 가능
 
-    # 3. 일정 알림 트리거 (새로 추가)
+    # 3. 일정 알림 트리거
     upcoming_schedule_content = _check_upcoming_schedule(user)
     if upcoming_schedule_content:
         trigger_type = "upcoming_schedule"
-        proactive_instruction_base = (
-            f"{user.username}님, 곧 일정이 있어! {upcoming_schedule_content} 일정이 10분 이내로 다가왔으니, "
-            f"일정을 상기시켜주거나, 준비를 돕는 메시지를 생성해줘. "
-        )
-    
-    # 4. 컨텍스트 기반 트리거 강화 (기존 로직에 통합)
-    # LLM 호출 전에 system_prompt에 assemble_context를 추가하는 방식으로 이미 강화되어 있음.
-    # proactive_instruction_base에 컨텍스트 활용 지시를 더 명확히 추가.
-    
+        proactive_instruction_base = f"{user.username}님, 곧 일정이 있어! '{upcoming_schedule_content}' 일정이 5분 이내로 다가왔으니, 일정을 상기시켜주거나, 준비를 돕는 메시지를 생성해줘. "
+
     if trigger_type:
         persona_system_prompt = build_persona_system_prompt(user)
         rag_instructions_prompt = build_rag_instructions_prompt(user)
-
-        memory_contexts_dict = _assemble_context_data(user, "")
-        memory_context_str = ""
-        for key, value in memory_contexts_dict.items():
-            if value:
-                memory_context_str += f"[{key.replace('_', ' ').capitalize()}]: {value}\n"
-        if memory_context_str:
-            memory_context_str = "\n## 사용자 기억 컨텍스트 ##\n" + memory_context_str
+        assembled_contexts_dict = _assemble_context_data(user, "")
+        assembled_contexts_str = "\n".join([f"[{key.replace('_', ' ').capitalize()}]: {value}" for key, value in assembled_contexts_dict.items() if value])
+        if assembled_contexts_str:
+            assembled_contexts_str = "\n## 사용자 기억 컨텍스트 ##\n" + assembled_contexts_str
         
-        # 능동적 메시지 생성을 위한 추가 지시사항
         proactive_instruction = f"{proactive_instruction_base}제공된 사용자 정보와 기억 컨텍스트를 적극적으로 활용하여 메시지를 생성해줘. 너의 페르소나에 맞게 재치있고 흥미롭게 말을 걸어줘. 응답은 반드시 JSON 형식으로 'answer' 키를 포함해야 해."
-        
-        system_prompt = f"{persona_system_prompt}{rag_instructions_prompt}{memory_context_str}\n\n## 능동적 대화 지시 ##\n{proactive_instruction}"
+        system_prompt = f"{persona_system_prompt}{rag_instructions_prompt}{assembled_contexts_str}\n\n## 능동적 대화 지시 ##\n{proactive_instruction}"
         
         message_text, emotion = _call_llm_for_proactive_message(user, system_prompt)
-        if message_text:
-            return message_text, emotion
-        else:
-            # LLM 호출 실패 시 기본 메시지
-            # 각 트리거 타입별 기본 메시지를 다르게 설정할 수도 있음
-            if trigger_type == "inactivity":
-                return "오랜만이야! 뭐 하고 지냈어?", "default"
-            elif trigger_type == "morning_greeting":
-                return "좋은 아침이야!", "happy"
-            elif trigger_type == "lunch_time":
-                return "점심시간이야! 뭐 먹을지 고민돼?", "thinking"
-            elif trigger_type == "evening_greeting":
-                return "오늘 하루도 수고했어!", "default"
-            elif trigger_type == "upcoming_schedule": # Add default message for upcoming schedule
-                return f"곧 {upcoming_schedule_content} 일정이 있어! 준비는 잘 되고 있어?", "default"
-            else:
-                return "무슨 일이야?", "default"
 
-    return None, None # 능동적인 메시지가 필요하지 않음
+        # LLM 호출 실패 시 기본 메시지 설정
+        if not message_text:
+            emotion = "default"
+            if trigger_type == "inactivity":
+                message_text = "오랜만이야! 뭐 하고 지냈어?"
+            elif trigger_type == "morning_greeting":
+                message_text = "좋은 아침이야!"
+                emotion = "happy"
+            elif trigger_type == "lunch_time":
+                message_text = "점심시간이야! 뭐 먹을지 고민돼?"
+                emotion = "thinking"
+            elif trigger_type == "evening_greeting":
+                message_text = "오늘 하루도 수고했어!"
+            elif trigger_type == "upcoming_schedule":
+                message_text = f"곧 '{upcoming_schedule_content}' 일정이 있어! 준비는 잘 되고 있어?"
+
+    if message_text:
+        # ChatMessage 객체 생성 및 저장
+        proactive_chat_message = ChatMessage.objects.create(
+            user=user,
+            message=message_text,
+            is_user=False,
+            character_emotion=emotion
+        )
+        
+        # 벡터 DB에 저장
+        try:
+            from . import vector_service
+            collection = vector_service.get_or_create_collection()
+            vector_service.upsert_message(collection, proactive_chat_message)
+            print("--- [디버그] 능동 메시지 벡터 DB 저장 완료 ---")
+        except Exception as e:
+            print(f"--- [오류] 능동 메시지 벡터 DB 저장 실패: {e} ---")
+            
+        return proactive_chat_message
+
+    return None # 능동적인 메시지가 생성되지 않음
