@@ -77,7 +77,7 @@ def generate_proactive_message(user):
     emotion = "default"
 
     # 1. 비활동 기반 트리거
-    if last_chat and (now_korea - last_chat.timestamp.astimezone(korea_tz)) > timedelta(seconds=30):
+    if last_chat and (now_korea - last_chat.timestamp.astimezone(korea_tz)) > timedelta(hours=1):
         trigger_type = "inactivity"
         proactive_instruction_base = f"너는 {user.username}님에게 오랜만에 말을 거는 상황이야. 1시간 이상 대화가 없었으니, {user.username}님의 안부를 묻거나, "
     
