@@ -24,7 +24,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('room')
+                return redirect('game_start')
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
