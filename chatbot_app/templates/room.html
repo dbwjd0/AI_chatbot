@@ -10,8 +10,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        #toggle-bgm-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            z-index: 101;
+        }
+    </style>
 </head>
 <body>
+    <button id="toggle-bgm-btn">BGM OFF</button>
     <div class="container">
         <div style="position: absolute; top: 20px; right: 20px; color: #333; background-color: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 5px; z-index: 100;">
             <strong>{{ user.username }}</strong>님, 환영합니다.
@@ -47,6 +63,10 @@
             <div id="player">
                 <img src="{% static 'img/char_dot.png' %}" alt="Player">
             </div>
+
+            <!-- Proactive Message Notification Bubble -->
+            <div id="proactive-notification" style="display: none;">!</div>
+
             <div id="interaction-prompt"></div>
             <div id="dialog-box" class="hidden">
                 <div id="dialog-speaker-container">
@@ -63,12 +83,26 @@
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2>오늘의 일과</h2>
-            <input type="time" id="schedule-time-input" class="schedule-input" value="09:00">
-            <textarea id="schedule-textarea" placeholder="오늘의 일정을 자유롭게 적어주세요.&#10;예:&#10;- 팀 회의&#10;- 점심 약속 (강남역)&#10;- 운동"></textarea>
-            <button id="save-schedule-btn">저장하기</button>
+            <div id="schedule-list-container">
+                <!-- Schedules will be loaded here by JavaScript -->
+            </div>
+            <div class="schedule-input-form">
+                <div class="input-group">
+                    <input type="time" id="new-schedule-time-input" class="schedule-input" value="09:00">
+                    <textarea id="new-schedule-textarea" placeholder="새 일정을 입력하세요." rows="2"></textarea>
+                </div>
+                <button id="add-schedule-btn">일정 추가</button>
+            </div>
         </div>
     </div>
 
     <script src="{% static 'room.js' %}"></script>
+
+    <!-- 게임 페이지용 BGM (login.html 제외) -->
+    <audio id="bgm2" loop>
+        <source src="{% static 'music/game_bgm.mp3' %}" type="audio/mpeg">
+    </audio>
+
+    <script src="{% static 'bgm.js' %}"></script>
 </body>
 </html>

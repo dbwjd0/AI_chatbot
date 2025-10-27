@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 import re
 import json # json 모듈 임포트
-from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship
+from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage
 from chatbot_app.services.proactive_service import generate_proactive_message
 
 QUESTIONS = [
@@ -212,16 +212,9 @@ def ai_status(request):
 
 @login_required
 def get_proactive_message_view(request):
-    message_text, emotion = generate_proactive_message(request.user)
-    if message_text:
-        # 능동적인 메시지를 ChatMessage에 저장하여 기록을 유지하고 반복 전송을 방지합니다.
-        proactive_chat_message = ChatMessage.objects.create(
-            user=request.user,
-            message=message_text,
-            is_user=False, # 봇 메시지
-            character_emotion=emotion # 감정 저장
-        )
-        # 저장 후, 프론트엔드에 전달할 메시지 객체를 다시 가져오거나 구성
+    proactive_chat_message = generate_proactive_message(request.user)
+    if proactive_chat_message:
+        # 서비스에서 이미 메시지를 생성하고 저장했으므로, 해당 객체를 바로 사용합니다.
         return JsonResponse({
             'message': proactive_chat_message.message,
             'character_emotion': proactive_chat_message.character_emotion,
@@ -229,7 +222,48 @@ def get_proactive_message_view(request):
         })
     return JsonResponse({'message': None})
 
-@login_required
 def opening_view(request):
     """오프닝 비디오를 재생하는 페이지를 렌더링합니다."""
+    if request.user.is_authenticated:
+        return redirect('game_start')
     return render(request, 'opening.html')
+
+@login_required
+def check_proactive_notification(request):
+    """읽지 않은 능동 메시지가 있는지 확인하고, 없으면 생성을 시도합니다."""
+    user = request.user
+    has_pending = PendingProactiveMessage.objects.filter(user=user).exists()
+
+    if not has_pending:
+        # 읽지 않은 메시지가 없을 경우, 새로 생성을 시도
+        generate_proactive_message(user)
+        # 생성 시도 후 다시 확인
+        has_pending = PendingProactiveMessage.objects.filter(user=user).exists()
+
+    return JsonResponse({'has_pending_message': has_pending})
+
+@login_required
+def get_and_clear_pending_message(request):
+    """읽지 않은 능동 메시지를 가져오고, '읽음' 처리(삭제)합니다."""
+    user = request.user
+    pending_message_entry = PendingProactiveMessage.objects.filter(user=user).first()
+
+    if pending_message_entry:
+        chat_message = pending_message_entry.message
+        
+        # '읽음' 처리: pending 테이블에서 해당 기록 삭제
+        pending_message_entry.delete()
+
+        return JsonResponse({
+            'message': chat_message.message,
+            'character_emotion': chat_message.character_emotion,
+            'timestamp': chat_message.timestamp.isoformat(),
+            'is_user': False, # AI 메시지이므로 항상 False
+            'image_url': chat_message.image.url if chat_message.image else None
+        })
+    
+    return JsonResponse({'message': None})
+
+def game_start_view(request):
+    """로그인 후 게임 시작 화면을 렌더링합니다."""
+    return render(request, 'game_start.html')

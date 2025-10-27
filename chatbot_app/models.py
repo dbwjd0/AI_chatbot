@@ -17,6 +17,7 @@ class UserProfile(models.Model):
     is_onboarding_complete = models.BooleanField(default=False, help_text="사용자 초기 설정(온보딩) 완료 여부")
     affinity_score = models.IntegerField(default=0, help_text="AI '아이'와의 호감도 점수")
     memory = models.JSONField(default=dict, help_text="사용자에 대한 기억 저장소")
+    chatbot_name = models.CharField(max_length=100, default='아이', help_text="사용자가 지정한 챗봇 이름")
 
     def __str__(self):
         return f"{self.user.username}의 프로필"
@@ -126,7 +127,18 @@ class UserSchedule(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('user', 'date') # 사용자는 하루에 하나의 스케줄만 가질 수 있음
+        # unique_together = ('user', 'date') # 사용자는 하루에 하나의 스케줄만 가질 수 있음
+        # 사용자별, 날짜별로 여러 스케줄을 허용하며, 시간(최신순)으로 정렬
+        ordering = ['date', '-schedule_time']
 
     def __str__(self):
         return f"[{self.date}] {self.user.username}'s schedule"
+
+class PendingProactiveMessage(models.Model):
+    """읽지 않은 능동 메시지를 추적하는 모델"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='pending_proactive_message')
+    message = models.OneToOneField(ChatMessage, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}의 읽지 않은 능동 메시지"

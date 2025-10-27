@@ -235,49 +235,119 @@
     cursor: pointer;
 }
 
-#schedule-textarea {
+/* Schedule List Container */
+#schedule-list-container {
+    max-height: 300px; /* Adjust as needed */
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.schedule-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.schedule-item:last-child {
+    border-bottom: none;
+}
+
+.schedule-time {
+    font-weight: bold;
+    color: #5E35B1; /* A distinct color */
+    margin-right: 10px;
+    flex-shrink: 0; /* Prevent shrinking */
+    width: 60px; /* Fixed width for time */
+}
+
+.schedule-content {
+    flex-grow: 1;
+    color: #333;
+}
+
+.schedule-actions {
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.schedule-actions button {
+    background-color: #5E35B1;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.schedule-actions button:hover {
+    opacity: 0.8;
+}
+
+/* Schedule Input Form */
+.schedule-input-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.schedule-input-form .input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.schedule-input-form input[type="time"],
+.schedule-input-form textarea {
     font-family: 'VT323', monospace;
     font-size: 18px;
     color: #333;
-    width: 100%;
-    height: 250px;
-    margin-top: 10px;
-    padding: 10px;
-    box-sizing: border-box;
+    padding: 8px;
     border: 1px solid #ddd;
-    background-color: #fff;
-    /* Ruled lines effect - Adjusted for alignment */
-    background-image: linear-gradient(to top, #E8F0FE 1px, transparent 1px);
-    background-size: 100% 24px;
-    background-position-y: 9px; /* Align lines with text */
-    line-height: 24px;
-    resize: none;
+    border-radius: 3px;
+    box-sizing: border-box;
     outline: none;
 }
 
-#save-schedule-btn {
+.schedule-input-form input[type="time"] {
+    width: 150px; /* Adjusted width for time input */
+    flex-shrink: 0;
+}
+
+.schedule-input-form textarea {
+    flex-grow: 1;
+    resize: vertical;
+    min-height: 60px;
+    /* Ruled lines effect for textarea */
+    background-image: linear-gradient(to top, #E8F0FE 1px, transparent 1px);
+    background-size: 100% 24px;
+    background-position-y: 9px;
+    line-height: 24px;
+}
+
+#add-schedule-btn {
     font-family: 'VT323', monospace;
     font-size: 18px;
-    background-color: #444;
+    background-color: #4CAF50; /* Green for add */
     color: white;
     padding: 10px 20px;
     border: none;
-    border-radius: 2px;
+    border-radius: 3px;
     cursor: pointer;
-    float: right;
-    margin-top: 15px;
+    align-self: flex-end; /* Align button to the right */
 }
 
-#save-schedule-btn:hover {
-    background-color: #000;
-}
-
-.debug-box {
-    display: none; /*Hide debug boxes */
-    position: absolute;
-    border: 2px solid red;
-    z-index: 999;
-    pointer-events: none; /* Ensures the box doesn't block mouse events */
+#add-schedule-btn:hover {
+    background-color: #45a049;
 }
 
 /* 위치 조정을 위한 보이는 장애물 스타일 */
@@ -390,3 +460,52 @@
      background-color: green; /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
 } 
+
+#proactive-notification {
+    position: absolute;
+    /* 위치는 room.js에서 플레이어 위치에 따라 동적으로 설정됩니다. */
+    width: 40px;
+    height: 40px;
+    background-color: #ffffff; /* 눈에 띄는 노란색 */
+    border: 2px solid #a9d1ff;
+    border-radius: 20px; /* 둥근 사각형 */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    z-index: 11; /* 플레이어 위에 표시 */
+    
+    /* 텍스트 중앙 정렬 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff0000;
+    font-family: 'VT323', monospace;
+}
+
+#proactive-notification::before {
+    content: '';
+    position: absolute;
+    bottom: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 12px solid #a9d1ff;
+    z-index: 0;
+}
+
+#proactive-notification::after {
+    content: '';
+    position: absolute;
+    bottom: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 10px solid #ffffff;
+    z-index: 1;
+}
