@@ -6,6 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>새로운 시작</title>
     <link rel="stylesheet" href="{% static 'narrative_setup.css' %}">
+    <style>
+        #enter-indicator {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            color: grey;
+            font-size: 14px;
+            opacity: 0.3; /* Default to semi-transparent */
+            transition: opacity 0.3s ease;
+        }
+    </style>
 </head>
 <body>
     <div id="black-overlay" class="active"></div>
@@ -30,6 +41,7 @@
             <span class="input-suffix"></span>
             <button id="send-button">전송</button>
         </div>
+        <div id="enter-indicator">Enter</div>
     </div>
 
     <script src="{% static 'narrative_setup.js' %}"></script>

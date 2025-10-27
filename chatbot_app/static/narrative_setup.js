@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const userInput = document.getElementById('user-input');
     const inputArea = document.querySelector('.input-area');
     const choiceContainer = document.getElementById('choice-container');
+    const enterIndicator = document.getElementById('enter-indicator');
     const blackOverlay = document.getElementById('black-overlay');
     const allVideos = {
         intro: document.getElementById('intro-video'),
@@ -105,6 +106,15 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentActionDetails = null;
     let currentChoiceIndex = 0;
 
+    function updateEnterIndicator(isActive) {
+        if (!enterIndicator) return;
+        if (isActive) {
+            enterIndicator.style.opacity = '0.8';
+        } else {
+            enterIndicator.style.opacity = '0.3';
+        }
+    }
+
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -143,6 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
             await handleAction(line);
         } else { // It's a dialogue line
             isWaitingForInput = true;
+            updateEnterIndicator(true);
             let speaker = line.speaker.replace('{ai_name}', aiData.이름);
             speakerName.textContent = `[${speaker}]`;
             let processedText = line.text;
@@ -159,13 +170,18 @@ document.addEventListener('DOMContentLoaded', function() {
     async function handleAction(details) {
         const nonBlockingActions = ['branch', 'goto', 'play_video'];
         isWaitingForInput = !nonBlockingActions.includes(details.action);
+        updateEnterIndicator(isWaitingForInput);
 
         if (details.action === 'show_input') {
+            updateEnterIndicator(false); // Hide for text input
+            isWaitingForInput = true; // It is waiting for input, just not Enter to continue script
             dialogueText.innerHTML = details.warning ? `<span class="warning">${details.warning}</span>` : '';
             userInput.type = details.type === 'number' ? 'number' : 'text';
             inputArea.style.display = 'flex';
             userInput.focus();
         } else if (details.action === 'show_choice') {
+            isWaitingForInput = true;
+            updateEnterIndicator(true);
             dialogueText.textContent = '';
             choiceContainer.className = details.layout === 'grid' ? 'grid' : '';
             currentChoiceIndex = 0;
@@ -185,6 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (targetStep !== -1) currentStep = targetStep;
             }
         } else if (details.action === 'complete_onboarding') {
+            updateEnterIndicator(false);
             Object.values(allVideos).forEach(v => { if(v) { v.pause(); v.style.display = 'none'; }});
             dialogueText.textContent = '(모든 정보가 입력되었습니다. 잠시 후 메인 화면으로 이동합니다.)';
             try {
@@ -204,9 +221,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     blackOverlay.classList.remove('active');
                     await new Promise(resolve => setTimeout(resolve, 1000));
                 }
+
                 videoToPlay.style.display = 'block';
-                await videoToPlay.play().catch(e => console.error("Video play failed:", e));
+                const isLooping = videoToPlay.loop;
+
+                if (!isLooping) {
+                    updateEnterIndicator(false);
+                    // This promise will resolve when the video ends, thus blocking handleAction
+                    await new Promise(resolve => {
+                        videoToPlay.onended = resolve;
+                        videoToPlay.play().catch(e => {
+                            console.error("Video play failed:", e);
+                            resolve(); // Resolve on error too to not get stuck
+                        });
+                    });
+                } else {
+                    await videoToPlay.play().catch(e => console.error("Video play failed:", e));
+                }
             }
+        } else if (details.action === 'wait_for_enter') {
+            isWaitingForInput = true;
+            updateEnterIndicator(true);
         }
     }
 
@@ -328,17 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             continueImmediately = true;
         } else { // Simple dialogue
-            // Special case for the problematic sequence
-            if (currentActionDetails.text === '..........................') {
-                isWaitingForInput = false;
-                // Manually trigger the entire next sequence
-                setTimeout(() => showNextLine(), 0);     // Processes wait_for_enter(intro)
-                setTimeout(() => showNextLine(), 50);    // Processes '...!!' dialogue
-                setTimeout(() => showNextLine(), 100);   // Processes play_video(discovery)
-                setTimeout(() => showNextLine(), 150);   // Processes wait_for_enter(discovery)
-            } else { // All other simple dialogues
-                continueImmediately = true;
-            }
+            continueImmediately = true;
         }
         
         if (continueImmediately) {
