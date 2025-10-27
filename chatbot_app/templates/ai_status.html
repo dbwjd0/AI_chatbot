@@ -7,8 +7,22 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <style>
+        #toggle-bgm-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            z-index: 101;
+        }
         body {
             display: flex;
+
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -141,6 +155,7 @@
     </style>
 </head>
 <body>
+    <button id="toggle-bgm-btn">BGM OFF</button>
     <div class="status-container">
         <h1>아이의 현재 상태</h1>
 
@@ -316,5 +331,11 @@
         });
     </script>
 
+    <!-- 게임 페이지용 BGM (login.html 제외) -->
+    <audio id="bgm2" loop>
+        <source src="{% static 'music/game_bgm.mp3' %}" type="audio/mpeg">
+    </audio>
+
+    <script src="{% static 'bgm.js' %}"></script>
 </body>
 </html>

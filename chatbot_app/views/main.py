@@ -195,7 +195,13 @@ def get_proactive_message_view(request):
         })
     return JsonResponse({'message': None})
 
-@login_required
 def opening_view(request):
     """오프닝 비디오를 재생하는 페이지를 렌더링합니다."""
+    if request.user.is_authenticated:
+        return redirect('game_start')
     return render(request, 'opening.html')
+
+@login_required
+def game_start_view(request):
+    """로그인 후 게임 시작 화면을 렌더링합니다."""
+    return render(request, 'game_start.html')
