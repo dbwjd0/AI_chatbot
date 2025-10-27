@@ -10,8 +10,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        #toggle-bgm-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            z-index: 101;
+        }
+    </style>
 </head>
 <body>
+    <button id="toggle-bgm-btn">BGM OFF</button>
     <div class="container">
         <div style="position: absolute; top: 20px; right: 20px; color: #333; background-color: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 5px; z-index: 100;">
             <strong>{{ user.username }}</strong>님, 환영합니다.
@@ -74,5 +90,12 @@
     </div>
 
     <script src="{% static 'room.js' %}"></script>
+
+    <!-- 게임 페이지용 BGM (login.html 제외) -->
+    <audio id="bgm2" loop>
+        <source src="{% static 'music/game_bgm.mp3' %}" type="audio/mpeg">
+    </audio>
+
+    <script src="{% static 'bgm.js' %}"></script>
 </body>
 </html>
