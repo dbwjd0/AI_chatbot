@@ -236,6 +236,7 @@ def get_and_clear_pending_message(request):
         })
     
     return JsonResponse({'message': None})
+
 def game_start_view(request):
     """로그인 후 게임 시작 화면을 렌더링합니다."""
     return render(request, 'game_start.html')

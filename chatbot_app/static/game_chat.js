@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
     sendButton.addEventListener('click', sendMessage);
     userInput.addEventListener('keydown', (e) => {
         // Allow Enter to send message only if not displaying AI message
-        if (e.key === 'Enter' && !isDisplayingMessage) {
+        if (e.key === 'Enter') {
             e.preventDefault();
             sendMessage();
         }
@@ -239,6 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (lines.length > 0) {
             aiMessageQueue.push(...lines);
+            displayedAiLinesHistory.push(fullMessage); // Store the full message for history
             if (!isDisplayingMessage) {
                 displayNextAiLine();
             }
@@ -248,13 +249,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function displayNextAiLine() {
         if (aiMessageQueue.length > 0) {
             isDisplayingMessage = true;
-            userInput.disabled = true; // Disable input
-            sendButton.disabled = true; // Disable send button
-
-            // If this is the first line of a new AI response, store the full response for history
-            if (displayedAiLinesHistory.length === 0 && aiMessageQueue.length === currentFullAiResponse.match(/[^.!?]+[.!?]*/g).length - 1) {
-                displayedAiLinesHistory.push(currentFullAiResponse);
-            }
 
             const line = aiMessageQueue.shift();
             speakerName.textContent = "AI 비서";
@@ -266,8 +260,6 @@ document.addEventListener('DOMContentLoaded', function () {
             prevDialogueButton.classList.remove('hidden'); // Show button if there's history
         } else {
             isDisplayingMessage = false;
-            userInput.disabled = false; // Enable input
-            sendButton.disabled = false; // Enable send button
             userInput.focus(); // Focus input for next message
             if (displayedAiLinesHistory.length === 0) {
                 prevDialogueButton.classList.add('hidden'); // Hide button if no history
@@ -300,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Listen for Enter key to advance dialogue
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && isDisplayingMessage) {
+        if (e.key === 'Enter' && isDisplayingMessage && document.activeElement !== userInput) {
             e.preventDefault();
             displayNextAiLine();
         }
