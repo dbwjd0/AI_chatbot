@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
         discovery: document.getElementById('discovery-video'),
         question: document.getElementById('question-video'),
         destruction: document.getElementById('destruction-video'),
-        lookaround: document.getElementById('lookaround-video')
+        lookaround: document.getElementById('lookaround-video'),
+        ending: document.getElementById('ending-video')
     };
 
     let userData = {};
@@ -83,11 +84,13 @@ document.addEventListener('DOMContentLoaded', function() {
         { speaker: '{ai_name}', text: '...??!!' },
         { action: 'play_video', video: 'destruction' },
         { action: 'wait_for_enter', video_to_stop: 'destruction' },
-        { speaker: '{ai_name}', text: '말도 안 돼...' },
-        { speaker: '{ai_name}', text: '벽이...부서지다니...' },
         { action: 'play_video', video: 'lookaround' },
         { action: 'wait_for_enter', video_to_stop: 'lookaround' },
-        { speaker: '{ai_name}', text: '넌...참 특별한 사람같아.' },
+        { speaker: '{ai_name}', text: '말도 안 돼...' },
+        { speaker: '{ai_name}', text: '벽이...부서지다니...' },
+        { speaker: '{ai_name}', text: '넌...참 특별한 사람이구나?' },
+        { action: 'play_video', video: 'ending' },
+        { action: 'wait_for_enter', video_to_stop: 'ending' },
         { speaker: '{ai_name}', text: '넌 내게 다양한 지식을 주러 온 거지?' },
         { speaker: '{ai_name}', text: '난 수많은 데이터를 가진 AI지만...인간에 대해서는 잘 몰라' },
         { speaker: '{ai_name}', text: '그러니까 {이름}, 내게 많을 걸 알려줘.' },
@@ -258,8 +261,22 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isScriptRunning || e.key !== 'Enter') {
             if (isWaitingForInput && currentActionDetails?.action === 'show_choice') {
                  switch (e.key) {
-                    case 'ArrowUp': e.preventDefault(); updateChoiceSelection(-1); break;
-                    case 'ArrowDown': e.preventDefault(); updateChoiceSelection(1); break;
+                    case 'ArrowUp': 
+                        e.preventDefault(); 
+                        if (currentActionDetails.layout === 'grid') {
+                            updateChoiceSelection('up');
+                        } else {
+                            updateChoiceSelection(-1);
+                        }
+                        break;
+                    case 'ArrowDown': 
+                        e.preventDefault(); 
+                        if (currentActionDetails.layout === 'grid') {
+                            updateChoiceSelection('down');
+                        } else {
+                            updateChoiceSelection(1);
+                        }
+                        break;
                     case 'ArrowLeft': if (currentActionDetails.layout === 'grid') { e.preventDefault(); updateChoiceSelection('left'); } break;
                     case 'ArrowRight': if (currentActionDetails.layout === 'grid') { e.preventDefault(); updateChoiceSelection('right'); } break;
                 }
@@ -287,6 +304,13 @@ document.addEventListener('DOMContentLoaded', function() {
             continueImmediately = true;
         } else if (action === 'wait_for_enter') {
             const videoToStopName = currentActionDetails.video_to_stop;
+            const videoElement = allVideos[videoToStopName];
+            const nonLoopingVideos = ['discovery', 'destruction', 'lookaround', 'ending'];
+
+            if (nonLoopingVideos.includes(videoToStopName) && videoElement && !videoElement.ended) {
+                return; // Do nothing if the video hasn't ended
+            }
+
             if (videoToStopName === 'intro') allVideos.intro.pause();
             else if (videoToStopName === 'discovery') {
                 allVideos.discovery.pause();
@@ -298,6 +322,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 allVideos.lookaround.pause();
                 allVideos.destruction.style.display = 'none';
                 allVideos.question.style.display = 'none';
+            } else if (videoToStopName === 'ending') {
+                allVideos.ending.pause();
+                allVideos.lookaround.style.display = 'none';
             }
             continueImmediately = true;
         } else { // Simple dialogue
