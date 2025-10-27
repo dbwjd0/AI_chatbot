@@ -37,6 +37,7 @@
             height: 100%;
             z-index: 2;
             display: flex;
+            flex-direction: column; /* Added for vertical alignment of video and text */
             justify-content: center;
             align-items: center;
         }
@@ -46,6 +47,20 @@
             width: auto;
             height: auto;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .press-start-text {
+            position: absolute;
+            bottom: 10%; /* Adjust as needed */
+            color: white;
+            font-family: 'VT323', monospace; /* Assuming this font is available or linked */
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            animation: blink 1s step-end infinite;
+            cursor: pointer;
+        }
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
         }
     </style>
 </head>
@@ -57,16 +72,31 @@
         </video>
     </div>
     <div class="video-foreground">
-        <video autoplay muted onended="redirectToRoom()">
+        <video muted>
             <source src="{% static 'img/오프닝.mp4' %}" type="video/mp4">
             Your browser does not support the video tag.
         </video>
+        <div class="press-start-text">PRESS START</div>
     </div>
 
     <script>
-        function redirectToRoom() {
-            window.location.href = "{% url 'room' %}";
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.querySelector('.video-foreground video');
+            const pressStartText = document.querySelector('.press-start-text');
+
+            // Start playing the video
+            video.play();
+
+            // Function to redirect
+            function handleStart() {
+                window.location.href = "{% url 'room' %}";
+            }
+
+            // Event listeners for interaction
+            document.addEventListener('keydown', handleStart);
+            document.addEventListener('click', handleStart);
+            pressStartText.addEventListener('click', handleStart); // Also make the text clickable
+        });
     </script>
 </body>
 </html>

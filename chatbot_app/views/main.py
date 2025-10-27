@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.utils import timezone
 import re
-from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship
+from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage
 from chatbot_app.services.proactive_service import generate_proactive_message
 
 QUESTIONS = [
@@ -195,7 +195,48 @@ def get_proactive_message_view(request):
         })
     return JsonResponse({'message': None})
 
-@login_required
 def opening_view(request):
     """오프닝 비디오를 재생하는 페이지를 렌더링합니다."""
+    if request.user.is_authenticated:
+        return redirect('game_start')
     return render(request, 'opening.html')
+
+@login_required
+def check_proactive_notification(request):
+    """읽지 않은 능동 메시지가 있는지 확인하고, 없으면 생성을 시도합니다."""
+    user = request.user
+    has_pending = PendingProactiveMessage.objects.filter(user=user).exists()
+
+    if not has_pending:
+        # 읽지 않은 메시지가 없을 경우, 새로 생성을 시도
+        generate_proactive_message(user)
+        # 생성 시도 후 다시 확인
+        has_pending = PendingProactiveMessage.objects.filter(user=user).exists()
+
+    return JsonResponse({'has_pending_message': has_pending})
+
+@login_required
+def get_and_clear_pending_message(request):
+    """읽지 않은 능동 메시지를 가져오고, '읽음' 처리(삭제)합니다."""
+    user = request.user
+    pending_message_entry = PendingProactiveMessage.objects.filter(user=user).first()
+
+    if pending_message_entry:
+        chat_message = pending_message_entry.message
+        
+        # '읽음' 처리: pending 테이블에서 해당 기록 삭제
+        pending_message_entry.delete()
+
+        return JsonResponse({
+            'message': chat_message.message,
+            'character_emotion': chat_message.character_emotion,
+            'timestamp': chat_message.timestamp.isoformat(),
+            'is_user': False, # AI 메시지이므로 항상 False
+            'image_url': chat_message.image.url if chat_message.image else None
+        })
+    
+    return JsonResponse({'message': None})
+
+def game_start_view(request):
+    """로그인 후 게임 시작 화면을 렌더링합니다."""
+    return render(request, 'game_start.html')
