@@ -13,6 +13,13 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleBgmBtn.textContent = 'BGM OFF';
         }
 
+        // Restore playback position if available
+        const savedTime = localStorage.getItem('bgmCurrentTime');
+        if (savedTime) {
+            bgm.currentTime = parseFloat(savedTime);
+            localStorage.removeItem('bgmCurrentTime'); // Clear after use
+        }
+
         toggleBgmBtn.addEventListener('click', function() {
             if (bgm.muted) {
                 bgm.muted = false;
@@ -30,6 +37,13 @@ document.addEventListener('DOMContentLoaded', function() {
         bgm.play().catch(error => {
             console.log("BGM autoplay failed:", error);
             // Inform user that they might need to interact to play audio
+        });
+
+        // Save current playback time before unloading the page
+        window.addEventListener('beforeunload', () => {
+            if (!bgm.muted) { // Only save if BGM is not muted
+                localStorage.setItem('bgmCurrentTime', bgm.currentTime.toString());
+            }
         });
     }
 });
