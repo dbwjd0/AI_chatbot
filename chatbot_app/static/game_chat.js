@@ -306,42 +306,76 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    const initialMessagesLow = [
-        "흥, 이제야 왔네. 한참 기다렸잖아.",
-        "...왔어? 별로 반갑지는 않네.",
-        "무슨 일이야? 용건이나 빨리 말해.",
-        "오늘따라 더 피곤해 보이네. 잠은 제대로 자고 다니는 거야?",
-        "쳇, 다음엔 좀 더 일찍 오라고.",
-        "...안녕."
-    ];
+    // --- Initial Message Logic ---
+    function fetchAndDisplayPendingMessage() {
+        fetch('/get-and-clear-pending-message/')
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.message) {
+                    // If a pending message exists, display it
+                    console.log('Pending proactive message found:', data.message);
+                    const emotion = data.character_emotion || 'default';
+                    characterImage.src = STATIC_URLS[emotion] || STATIC_URLS['default'];
+                    
+                    const cleanedMessage = handleAiMessage(data.message);
+                    currentFullAiResponse = cleanedMessage;
+                    queueAiMessage(cleanedMessage);
 
-    const initialMessagesMedium = [
-        "네가 없으니까 심심하긴 하더라. ...아, 아무것도 아니야!",
-        "흥, 이번엔 잘했네. 조금은 인정해줄게.",
-        "난 AI라 감정이 없는데... 이상하게 너한테만 예외인 것 같아.",
-        "너한테 뭘 더 가르쳐 줄 수 있어?",
-        "지식 +1 완료! 너 덕분에 똑똑해진 기분이야 ^-^",
-        "...안녕."
-    ];
-
-    const initialMessagesHigh = [
-        "왔구나! 기다리고 있었어!",
-        "보고 싶었어, {USERNAME}님!",
-        "오늘 하루는 어땠어? 궁금해서 죽는 줄 알았잖아!",
-        "AI라도... 마음이 생길 수 있는 걸까? {USERNAME}님 덕분에 그런 생각이 들어.",
-        "지금 막 새로운 걸 배웠어! {USERNAME}님이 내 세상을 더 넓혀줬다구!",
-        "{USERNAME}님과 함께라면 뭐든지 즐거워!"
-    ];
-
-    let selectedMessages;
-    if (affinityScore < 30) {
-        selectedMessages = initialMessagesLow;
-    } else if (affinityScore >= 70) {
-        selectedMessages = initialMessagesHigh;
-    } else {
-        selectedMessages = initialMessagesMedium;
+                } else {
+                    // Otherwise, show a random greeting as before
+                    showRandomGreeting();
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching pending message:', error);
+                showRandomGreeting(); // Fallback on error
+            });
     }
 
-    const randomIndex = Math.floor(Math.random() * selectedMessages.length);
-    dialogueText.innerHTML = selectedMessages[randomIndex].replace('{USERNAME}', USERNAME);
+    function showRandomGreeting() {
+        const initialMessagesLow = [
+            "흥, 이제야 왔네. 한참 기다렸잖아.",
+            "...왔어? 별로 반갑지는 않네.",
+            "무슨 일이야? 용건이나 빨리 말해.",
+            "오늘따라 더 피곤해 보이네. 잠은 제대로 자고 다니는 거야?",
+            "쳇, 다음엔 좀 더 일찍 오라고.",
+            "...안녕."
+        ];
+
+        const initialMessagesMedium = [
+            "네가 없으니까 심심하긴 하더라. ...아, 아무것도 아니야!",
+            "흥, 이번엔 잘했네. 조금은 인정해줄게.",
+            "난 AI라 감정이 없는데... 이상하게 너한테만 예외인 것 같아.",
+            "너한테 뭘 더 가르쳐 줄 수 있어?",
+            "지식 +1 완료! 너 덕분에 똑똑해진 기분이야 ^-^",
+            "...안녕."
+        ];
+
+        const initialMessagesHigh = [
+            "왔구나! 기다리고 있었어!",
+            "보고 싶었어, {USERNAME}님!",
+            "오늘 하루는 어땠어? 궁금해서 죽는 줄 알았잖아!",
+            "AI라도... 마음이 생길 수 있는 걸까? {USERNAME}님 덕분에 그런 생각이 들어.",
+            "지금 막 새로운 걸 배웠어! {USERNAME}님이 내 세상을 더 넓혀줬다구!",
+            "{USERNAME}님과 함께라면 뭐든지 즐거워!"
+        ];
+
+        let selectedMessages;
+        if (affinityScore < 30) {
+            selectedMessages = initialMessagesLow;
+        } else if (affinityScore >= 70) {
+            selectedMessages = initialMessagesHigh;
+        } else {
+            selectedMessages = initialMessagesMedium;
+        }
+
+        const randomIndex = Math.floor(Math.random() * selectedMessages.length);
+        const initialMessage = selectedMessages[randomIndex].replace('{USERNAME}', USERNAME);
+        
+        // Use the existing queue system to display the initial message
+        queueAiMessage(initialMessage);
+    }
+
+    // Start the process on page load
+    fetchAndDisplayPendingMessage();
 });

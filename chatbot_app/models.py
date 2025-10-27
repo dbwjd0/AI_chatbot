@@ -130,3 +130,12 @@ class UserSchedule(models.Model):
 
     def __str__(self):
         return f"[{self.date}] {self.user.username}'s schedule"
+
+class PendingProactiveMessage(models.Model):
+    """읽지 않은 능동 메시지를 추적하는 모델"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='pending_proactive_message')
+    message = models.OneToOneField(ChatMessage, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}의 읽지 않은 능동 메시지"

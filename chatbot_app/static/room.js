@@ -298,6 +298,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Update proactive notification position
+        if (notificationBubble && notificationBubble.style.display !== 'none') {
+            const bubbleWidth = 40;
+            const bubbleHeight = 40;
+            const playerHeight = 120;
+            notificationBubble.style.left = `${playerState.x - bubbleWidth / 2}px`;
+            notificationBubble.style.top = `${playerState.y - playerHeight / 2 - bubbleHeight - 20}px`;
+        }
+
         // 9. Continue Loop
         requestAnimationFrame(gameLoop);
     }
@@ -320,6 +329,29 @@ document.addEventListener('DOMContentLoaded', () => {
             rect1.top + rect1.height > rect2.top
         );
     }
+
+    // --- Proactive Notification Logic ---
+    const notificationBubble = document.getElementById('proactive-notification');
+
+    function checkProactiveNotification() {
+        fetch('/check-notification/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.has_pending_message) {
+                    notificationBubble.style.display = 'flex'; // Use flex to center the '!'
+                } else {
+                    notificationBubble.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error checking for proactive messages:', error);
+                notificationBubble.style.display = 'none';
+            });
+    }
+
+    // Check immediately on load, then every 5 seconds
+    checkProactiveNotification();
+    setInterval(checkProactiveNotification, 5000);
 
     // --- Initialize and Start Game ---
     player.style.left = `${playerState.x}px`;
