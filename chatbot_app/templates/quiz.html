@@ -197,7 +197,7 @@
     </style>
 </head>
 <body {% if quiz_feedback %}data-character-emotion="{{ quiz_feedback.character_emotion }}"{% endif %}>
-    {% include 'includes/top_menu.html' with show_room_link=False %}
+    {% include 'includes/top_menu.html' with show_room_link=True %}
     <div class="quiz-layout-wrapper">
         <div class="character-container">
             <img id="chatbot-character" src="{% static 'img/quiz_mode.png' %}" alt="AI 비서">
