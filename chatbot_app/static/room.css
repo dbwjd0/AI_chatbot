@@ -353,29 +353,29 @@
 /* 위치 조정을 위한 보이는 장애물 스타일 */
 #invisible-wall-1 {
      position: absolute;
-     top: 500px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 805px;   /* X 좌표 (왼쪽에서부터의 거리) */
-     width: 230px;  /* 장애물의 너비 */
+     top: 760px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 555px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 600px;  /* 장애물의 너비 */
      height: 5px;  /* 장애물의 높이 */
      background-color: green; /* 눈에 보이도록 녹색으로 설정 */
-     visibility: hidden;
+     /* visibility: hidden; */
 }
 
 #invisible-wall-2 {
      position: absolute;
      top: 450px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 600px;   /* X 좌표 (왼쪽에서부터의 거리) */
-     width: 5px;  /* 장애물의 너비 */
+     left: 580px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 13px;  /* 장애물의 너비 */
      height: 500px;  /* 장애물의 높이 */
      background-color: green; /* 눈에 보이도록 녹색으로 설정 */
-     visibility: hidden;
+     /* visibility: hidden; */
 }
 
 #invisible-wall-3 {
      position: absolute;
-     top: 50px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 600px;   /* X 좌표 (왼쪽에서부터의 거리) */
-     width: 5px;  /* 장애물의 너비 */
+     top: 80px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 570px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 9px;  /* 장애물의 너비 */
      height: 200px;  /* 장애물의 높이 */
      background-color: green; /* 눈에 보이도록 녹색으로 설정 */
      /* visibility: hidden; */
@@ -388,47 +388,47 @@
      width: 5px;  /* 장애물의 너비 */
      height: 100px;  /* 장애물의 높이 */
      background-color: green; /* 눈에 보이도록 녹색으로 설정 */
-     visibility: hidden;
+     /* visibility: hidden; */
 } 
 
 #invisible-wall-5 {
      position: absolute;
      top: 650px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 55px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     left: 330px;   /* X 좌표 (왼쪽에서부터의 거리) */
      width: 5px;  /* 장애물의 너비 */
      height: 150px;  /* 장애물의 높이 */
-     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
-     visibility: hidden;
+     background-color: rgb(16, 59, 99); /* 눈에 보이도록 녹색으로 설정 */
+     /* visibility: hidden; */
 }
 
 #invisible-wall-6 {
      position: absolute;
      top: 720px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 70px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     left: 55px;   /* X 좌표 (왼쪽에서부터의 거리) */
      width: 150px;  /* 장애물의 너비 */
      height: 5px;  /* 장애물의 높이 */
-     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
-     visibility: hidden;
+     background-color: rgb(188, 224, 26); /* 눈에 보이도록 녹색으로 설정 */
+     /* visibility: hidden; */
 }
 
 #invisible-wall-7 {
      position: absolute;
-     top: 380px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 284px;   /* X 좌표 (왼쪽에서부터의 거리) */
-     width: 93px;  /* 장애물의 너비 */
-     height: 5px;  /* 장애물의 높이 */
-     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
-     visibility: hidden;
+     top: 390px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 240px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 5px;  /* 장애물의 너비 */
+     height: 50px;  /* 장애물의 높이 */
+     background-color: rgb(177, 40, 124); /* 눈에 보이도록 녹색으로 설정 */
+     /* visibility: hidden; */
 } 
 
 #invisible-wall-8 {
      position: absolute;
-     top: 595px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 406px;   /* X 좌표 (왼쪽에서부터의 거리) */
-     width: 93px;  /* 장애물의 너비 */
-     height: 5px;  /* 장애물의 높이 */
-     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
-     visibility: hidden;
+     top: 390px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 355px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 5px;  /* 장애물의 너비 */
+     height: 50px;  /* 장애물의 높이 */
+     background-color: rgb(95, 22, 129); /* 눈에 보이도록 녹색으로 설정 */
+     /* visibility: hidden; */
 } 
 
 #invisible-wall-9 {
@@ -437,8 +437,8 @@
      left: 500px;   /* X 좌표 (왼쪽에서부터의 거리) */
      width: 5px;  /* 장애물의 너비 */
      height: 50px;  /* 장애물의 높이 */
-     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
-     visibility: hidden;
+     background-color: rgb(201, 157, 13); /* 눈에 보이도록 녹색으로 설정 */
+     /* visibility: hidden; */
 } 
 
 #invisible-wall-10 {
@@ -448,17 +448,17 @@
      width: 40px;  /* 장애물의 너비 */
      height: 5px;  /* 장애물의 높이 */
      background-color: green; /* 눈에 보이도록 녹색으로 설정 */
-     visibility: hidden;
+     /* visibility: hidden; */
 } 
 
 #invisible-wall-11 {
      position: absolute;
-     top: 540px;    /* Y 좌표 (위에서부터의 거리) */
+     top: 730px;    /* Y 좌표 (위에서부터의 거리) */
      left: 200px;   /* X 좌표 (왼쪽에서부터의 거리) */
-     width: 100px;  /* 장애물의 너비 */
-     height: 5px;  /* 장애물의 높이 */
-     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
-     visibility: hidden;
+     width: 5px;  /* 장애물의 너비 */
+     height: 100px;  /* 장애물의 높이 */
+     background-color: rgb(146, 127, 66); /* 눈에 보이도록 녹색으로 설정 */
+     /* visibility: hidden; */
 } 
 
 #proactive-notification {
@@ -509,10 +509,10 @@
     border-top: 10px solid #ffffff;
     z-index: 1;
 }
-/* .debug-box {
+.debug-box {
     position: absolute;
     border: 2px solid red;
     box-sizing: border-box;
-    pointer-events: none; #(설명주석필요) So it doesn't interfere with mouse events
-} */
+    /* pointer-events: none; #(설명주석필요) So it doesn't interfere with mouse events */
+}
 
