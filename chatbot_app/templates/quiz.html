@@ -1,0 +1,296 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>퀴즈 모드</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <style>
+        body {
+            background-image: url('{% static "img/quiz_mode.png" %}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin: 0; /* Remove default body margin */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .quiz-layout-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px; /* Space between character and quiz box */
+            max-width: 1200px; /* Max width for the entire layout */
+            width: 90%;
+        }
+        .quiz-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            flex: 1; /* Allow quiz container to take available space */
+            max-width: 600px; /* Adjust max-width for quiz content */
+        }
+        .character-container {
+            position: relative; /* Added for absolute positioning of emoticon bubble */
+            text-align: center;
+            max-width: 300px; /* Max width for the character container */
+        }
+        .character-container img {
+            width: 80%; /* Reduce image size to 80% */
+            height: auto;
+            display: block; /* Remove extra space below image */
+            margin: 0 auto; /* Center image */
+        }
+        .ai-emoticon-bubble {
+            position: absolute;
+            top: -20px; /* Adjust as needed */
+            right: -20px; /* Adjust as needed */
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+        .ai-emoticon-bubble img {
+            width: 50px; /* Adjust size as needed */
+            height: 50px;
+        }
+        .quiz-container h1 {
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            color: #a9d1ff;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+            color: #e0f7fa;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            background-color: #333;
+            color: white;
+            font-size: 1em;
+            appearance: none; /* Remove default select arrow */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2C197.3L159.3%2C69.7c-3.2-3.2-8.3-3.2-11.6%2C0L5.4%2C197.3c-3.2%2C3.2-3.2%2C8.3%2C0%2C11.6l11.6%2C11.6c3.2%2C3.2%2C8.3%2C3.2%2C11.6%2C0l120.7-120.7l120.7%2C120.7c3.2%2C3.2%2C8.3%2C3.2%2C11.6%2C0l11.6-11.6C290.2%2C205.6%2C290.2%2C200.5%2C287%2C197.3z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: 12px;
+            padding-right: 30px; /* Make space for the custom arrow */
+        }
+        .form-control:focus {
+            border-color: #a9d1ff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(169, 209, 255, 0.5);
+        }
+        .btn-primary {
+            background-color: #ff9800;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        .btn-primary:hover {
+            background-color: #fb8c00;
+        }
+        .top-menu {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            left: auto; /* Override left: 20px from style.css if it exists */
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px 15px;
+            border-radius: 10px;
+            color: white;
+            z-index: 100;
+        }
+        .question-box {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: left;
+        }
+        .question-box p {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .options-group label {
+            display: block;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .options-group label:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+        .options-group input[type="radio"] {
+            margin-right: 10px;
+        }
+        .quiz-feedback {
+            margin-top: 20px;
+            margin-bottom: 20px; /* Add margin to separate from the next button */
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .quiz-feedback.correct {
+            color: #8bc34a; /* Green */
+        }
+        .quiz-feedback.incorrect {
+            color: #f44336; /* Red */
+        }
+        .quiz-results {
+            margin-top: 30px;
+            font-size: 1.5em;
+        }
+        .quiz-results h2 {
+            color: #a9d1ff;
+            margin-bottom: 20px;
+        }
+        .quiz-results p {
+            margin-bottom: 10px;
+        }
+        .quiz-results .btn-primary {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'includes/top_menu.html' with show_room_link=False %}
+    <div class="quiz-layout-wrapper">
+        <div class="character-container">
+            <img id="chatbot-character" src="{% static 'img/quiz_mode.png' %}" alt="AI 비서">
+            <div id="ai-emoticon-bubble" class="ai-emoticon-bubble" style="display: none;">
+                <img id="ai-emoticon-img" src="" alt="AI Emoticon">
+            </div>
+        </div>
+        <div class="quiz-container">
+            {% if quiz_active %}
+                <h1>퀴즈 모드</h1>
+                <p>문제 {{ current_question_number }} / {{ total_questions }}</p>
+                <div class="question-box">
+                    <p>{{ question }}</p>
+                    {% if quiz_feedback %}
+                        <div class="quiz-feedback {% if quiz_feedback.is_correct %}correct{% else %}incorrect{% endif %}">
+                            {% if quiz_feedback.is_correct %}
+                                정답입니다!
+                            {% else %}
+                                오답입니다. 정답은 '{{ quiz_feedback.correct_answer }}' 입니다.
+                            {% endif %}
+                        </div>
+                        <button type="button" class="btn btn-primary" data-next-url-base="{% url 'quiz_question' %}" onclick="window.location.href=this.dataset.nextUrlBase + '?next_question=true'">다음 문제</button>
+                    {% else %}
+                        <form action="{% url 'quiz_question' %}" method="post">
+                            {% csrf_token %}
+                            <div class="options-group">
+                                {% for option in options %}
+                                    <label>
+                                        <input type="radio" name="answer" value="{{ option }}" required>
+                                        {{ option }}
+                                    </label>
+                                {% endfor %}
+                            </div>
+                            <button type="submit" class="btn btn-primary">정답 제출</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% elif quiz_finished %}
+                <h1>퀴즈 결과</h1>
+                <div class="quiz-results">
+                    <h2>최종 점수: {{ final_score }} / {{ total_questions }}</h2>
+                    <p>수고하셨습니다!</p>
+                    <a href="{% url 'quiz_mode' %}" class="btn btn-primary">다시 퀴즈 시작</a>
+                </div>
+            {% else %}
+                <h1>퀴즈 모드</h1>
+                <form action="{% url 'start_quiz' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="genre">장르:</label>
+                        <select name="genre" id="genre" class="form-control">
+                            <option value="all">랜덤</option>
+                            <option value="korean_history">한국사</option>
+                            <option value="world_history">세계사</option>
+                            <option value="science">과학</option>
+                            <option value="literature">문학</option>
+                            <option value="general">상식</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="num_questions">문제 수:</label>
+                        <select name="num_questions" id="num_questions" class="form-control">
+                            <option value="10">10개</option>
+                            <option value="20">20개</option>
+                            <option value="30">30개</option>
+                            <option value="40">40개</option>
+                            <option value="50">50개</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">퀴즈 시작</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        const STATIC_URLS = {
+            '생각': "{% static 'img/char_thinking.png' %}",
+            '행복': "{% static 'img/char_happy.png' %}",
+            '슬픔': "{% static 'img/char_sad.png' %}",
+            '분노': "{% static 'img/char_angry.png' %}",
+            '놀람': "{% static 'img/char_surprise.png' %}",
+            '공포': "{% static 'img/char_fear.png' %}",
+            '혐오': "{% static 'img/char_disgust.png' %}",
+            '중립': "{% static 'img/char_default.png' %}",
+            'default': "{% static 'img/char_default.png' %}",
+            '정답': "{% static 'img/char_happy.png' %}", // Custom for quiz
+            '오답': "{% static 'img/char_sad.png' %}"   // Custom for quiz
+        };
+
+        function updateCharacterEmotion(emotion) {
+            const characterImg = document.getElementById('chatbot-character');
+            if (characterImg && STATIC_URLS[emotion]) {
+                characterImg.src = STATIC_URLS[emotion];
+            }
+        }
+
+        // Initial character state (e.g., default or neutral)
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCharacterEmotion('중립');
+
+            // Apply emotion based on quiz feedback if available
+            const quizFeedbackElement = document.querySelector('.quiz-feedback');
+            if (quizFeedbackElement) {
+                if (quizFeedbackElement.classList.contains('correct')) {
+                    updateCharacterEmotion('행복'); // Or '정답' if you want a specific image
+                } else if (quizFeedbackElement.classList.contains('incorrect')) {
+                    updateCharacterEmotion('슬픔'); // Or '오답'
+                }
+            }
+        });
+    </script>
+</body>
