@@ -275,8 +275,10 @@
                             <option value="50">50개</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">퀴즈 시작</button>
-                    <a href="{% url 'quiz_history' %}" class="btn btn-secondary">퀴즈 기록 보기</a>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary">퀴즈 시작</button>
+                        <a href="{% url 'quiz_history' %}" class="btn btn-secondary">퀴즈 기록 보기</a>
+                    </div>
                 </form>
             {% endif %}
         </div>
