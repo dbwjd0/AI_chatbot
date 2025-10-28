@@ -177,6 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
             isWaitingForInput = true; // It is waiting for input, just not Enter to continue script
             dialogueText.innerHTML = details.warning ? `<span class="warning">${details.warning}</span>` : '';
             userInput.type = details.type === 'number' ? 'number' : 'text';
+            userInput.value = ''; // Clear the input field for the new question
             inputArea.style.display = 'flex';
             userInput.focus();
         } else if (details.action === 'show_choice') {

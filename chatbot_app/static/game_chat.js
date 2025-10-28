@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Show thinking character
         characterImage.src = STATIC_URLS['생각'];
-        speakerName.textContent = "AI 비서";
+        speakerName.textContent = CHATBOT_NAME;
         dialogueText.textContent = "... (생각 중) ...";
         userInput.disabled = true; // Disable input during thinking
         sendButton.disabled = true; // Disable send button during thinking
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
             isDisplayingMessage = true;
 
             const line = aiMessageQueue.shift();
-            speakerName.textContent = "AI 비서";
+            speakerName.textContent = CHATBOT_NAME;
             dialogueText.innerHTML = line; // Use innerHTML to render emoticons
             // Show a visual indicator that there's more to come
             if (aiMessageQueue.length > 0) {
@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
     prevDialogueButton.addEventListener('click', () => {
         if (displayedAiLinesHistory.length > 0) {
             const fullAiResponseToReview = displayedAiLinesHistory.pop();
-            speakerName.textContent = "AI 비서";
+            speakerName.textContent = CHATBOT_NAME;
             dialogueText.innerHTML = fullAiResponseToReview; // Use innerHTML
             
             // Clear the current queue as we are reviewing a past full message

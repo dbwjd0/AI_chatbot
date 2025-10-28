@@ -40,7 +40,7 @@
         </div>
 
         <div class="dialogue-box">
-            <div id="speaker-name">AI 비서</div>
+            <div id="speaker-name">{{ user_profile.chatbot_name }}</div>
             <div id="dialogue-text">... (삐빅) ... 흥, 드디어 왔네. 뭘 시킬 셈이야?</div>
             <button id="prev-dialogue-button" class="dialogue-nav-button hidden">▲</button>
         </div>
@@ -89,6 +89,7 @@
             'default': "{% static 'img/char_default.png' %}"
         };
         const USERNAME = "{{ user.username }}";
+        const CHATBOT_NAME = "{{ user_profile.chatbot_name|escapejs }}";
         const affinityScore = "{{ user_profile.affinity_score|default:0 }}";
     </script>
     <script src="{% static 'game_chat.js' %}"></script>
