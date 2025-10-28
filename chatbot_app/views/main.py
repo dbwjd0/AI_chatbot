@@ -4,76 +4,65 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.utils import timezone
 import re
+import json # json 모듈 임포트
 from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage
 from chatbot_app.services.proactive_service import generate_proactive_message
 
-QUESTIONS = [
-    {'step': 0, 'question': '안녕! 만나서 반가워. 너의 이름은 뭐야?', 'fact_type': '이름'},
-    {'step': 1, 'question': '너는 남자야, 여자야?', 'fact_type': '성별'},
-    {'step': 2, 'question': '몇 살이야?', 'fact_type': '나이'},
-    {'step': 3, 'question': 'MBTI는 뭐야? 알려줄 수 있어?', 'fact_type': 'mbti'},
-]
+@login_required
+def landing_view(request):
+    """사용자의 온보딩 완료 여부에 따라 적절한 페이지로 리디렉션합니다."""
+    if request.user.profile.is_onboarding_complete:
+        return redirect('game_start')
+    else:
+        return redirect('narrative_setup')
 
-def parse_onboarding_answer(answer, fact_type):
-    """온보딩 답변을 파싱하여 핵심 정보만 추출합니다."""
-    cleaned_answer = None
-
-    if fact_type == '이름':
-        cleaned_answer = answer.strip()
-    elif fact_type == '성별':
-        if '남자' in answer: cleaned_answer = '남자'
-        elif '여자' in answer: cleaned_answer = '여자'
-    elif fact_type == '나이':
-        match = re.search(r'\d+', answer)
-        if match: cleaned_answer = match.group(0)
-    elif fact_type == 'mbti':
-        match = re.search(r'[A-Z]{4}', answer.upper())
-        if match: cleaned_answer = match.group(0)
-    
-    # 파싱에 실패했거나 해당 fact_type에 대한 특정 로직이 없는 경우 원본 답변을 반환 (이름의 경우 이미 처리됨)
-    # 다른 fact_type의 경우, 파싱 실패 시 None을 반환하여 저장되지 않도록 하거나, 
-    # setup_view에서 cleaned_answer가 None일 경우 UserAttribute를 생성하지 않도록 처리해야 함.
-    # 여기서는 클라이언트 측 유효성 검사가 있으므로, 파싱 실패 시 None을 반환하는 것이 더 안전함.
-    return cleaned_answer if cleaned_answer is not None else ""
+PERSISTENT_ATTRIBUTES = ['성별', 'mbti', '나이']
 
 @login_required
-def setup_view(request):
-    onboarding_step = request.session.get('onboarding_step', 0)
-
+def narrative_setup_view(request):
+    """새로운 대화형 온보딩 페이지를 렌더링하고, 사용자 정보 제출을 처리합니다."""
     if request.method == 'POST':
-        answer = request.POST.get('answer', '').strip()
-        
-        if answer:
-            current_question = QUESTIONS[onboarding_step]
-            cleaned_answer = parse_onboarding_answer(answer, current_question['fact_type'])
+        data = json.loads(request.body)
+        fact_type = data.get('fact_type')
+        content = data.get('content')
+
+        if fact_type and content:
+            if fact_type == '이름':
+                request.user.first_name = content
+                request.user.save()
             
-            if cleaned_answer:
-                UserAttribute.objects.create(
+            elif fact_type == 'ai_name':
+                profile = request.user.profile
+                profile.chatbot_name = content
+                profile.save()
+
+            elif fact_type in PERSISTENT_ATTRIBUTES:
+                UserAttribute.objects.update_or_create(
                     user=request.user,
-                    fact_type=current_question['fact_type'],
-                    content=cleaned_answer
+                    fact_type=fact_type,
+                    defaults={'content': content}
                 )
-            
-            onboarding_step += 1
-            request.session['onboarding_step'] = onboarding_step
+            return JsonResponse({'status': 'success', 'message': f'{fact_type} 저장 완료'})
+        
+        if data.get('action') == 'complete':
+            profile = request.user.profile
+            profile.is_onboarding_complete = True
+            profile.save()
+            return JsonResponse({'status': 'success', 'message': '온보딩 완료'})
 
-    if onboarding_step >= len(QUESTIONS):
-        # 온보딩 완료
-        profile = request.user.profile
-        profile.is_onboarding_complete = True
-        profile.save()
-        del request.session['onboarding_step']
-        return redirect('opening')
+        return JsonResponse({'status': 'error', 'message': '데이터가 누락되었습니다.'}, status=400)
 
-    question_to_ask = QUESTIONS[onboarding_step]['question']
-    fact_type_for_validation = QUESTIONS[onboarding_step]['fact_type']
-    return render(request, 'setup.html', {'question': question_to_ask, 'fact_type': fact_type_for_validation})
+    # 온보딩을 이미 완료한 경우, 메인 페이지로 리디렉션
+    if request.user.profile.is_onboarding_complete:
+        return redirect('room')
+        
+    return render(request, 'narrative_setup.html')
 
 @login_required
 def room(request):
     """캐릭터가 있는 방 페이지를 렌더링합니다."""
     if not request.user.profile.is_onboarding_complete:
-        return redirect('setup')
+        return redirect('narrative_setup')
     return render(request, 'room.html')
 
 @login_required
@@ -100,7 +89,7 @@ def chat_view(request):
         for msg in messages_page.object_list
     ][::-1] # 시간순으로 뒤집기
 
-    return render(request, 'chat.html', {
+    return render(request, 'chat_history.html', {
         'user_profile': user_profile, 
         'chat_messages': chat_messages_data,
         'has_next_page': messages_page.has_next() # 다음 페이지가 있는지 여부
@@ -198,7 +187,7 @@ def get_proactive_message_view(request):
 def opening_view(request):
     """오프닝 비디오를 재생하는 페이지를 렌더링합니다."""
     if request.user.is_authenticated:
-        return redirect('game_start')
+        return redirect('landing')
     return render(request, 'opening.html')
 
 @login_required

@@ -12,20 +12,20 @@ from . import schedule_service # schedule_service 임포트
 
 def _check_upcoming_schedule(user):
     today = date.today()
-    schedule = schedule_service.get_or_create_schedule(user, today)
+    schedules = schedule_service.get_schedules_for_day(user, today)
+    now_korea = timezone.now().astimezone(timezone.get_default_timezone())
 
-    if schedule.schedule_time and schedule.content:
-        now_korea = timezone.now().astimezone(timezone.get_default_timezone())
-        
-        # Combine today's date with schedule_time to create a datetime object
-        schedule_datetime = datetime.combine(today, schedule.schedule_time)
-        schedule_datetime = timezone.make_aware(schedule_datetime, timezone.get_default_timezone())
+    for schedule in schedules:
+        if schedule.schedule_time and schedule.content:
+            # 오늘 날짜와 스케줄 시간을 결합하여 datetime 객체 생성
+            schedule_datetime = datetime.combine(today, schedule.schedule_time)
+            schedule_datetime = timezone.make_aware(schedule_datetime, timezone.get_default_timezone())
 
-        time_until_schedule = schedule_datetime - now_korea
+            time_until_schedule = schedule_datetime - now_korea
 
-        # Check if the schedule is within the next 10 minutes and not in the past
-        if timedelta(minutes=0) < time_until_schedule <= timedelta(minutes=5):
-            return schedule.content
+            # 스케줄이 10분 이내로 다가왔고 과거가 아닌지 확인
+            if timedelta(minutes=0) < time_until_schedule <= timedelta(minutes=10):
+                return schedule.content # 가장 빨리 다가오는 스케줄 내용 반환
     return None
 
 def _call_llm_for_proactive_message(user, system_prompt):
@@ -59,11 +59,17 @@ def _call_llm_for_proactive_message(user, system_prompt):
         
         content_from_llm = json.loads(response_json['choices'][0]['message']['content'])
         message_text = content_from_llm.get('answer', '').strip()
+        explanation = content_from_llm.get('explanation', '설명 없음.') # Extract explanation
         emotion = analyze_emotion(message_text) # emotion_service를 사용하여 감정 분석 
-        return message_text, emotion
+
+        print("\n" + "-"*20 + " [Debug] Proactive Message Explanation " + "-"*20)
+        print(explanation)
+        print("-"*66 + "\n")
+
+        return message_text, emotion, explanation # Return explanation
     except (requests.exceptions.RequestException, KeyError, IndexError, json.JSONDecodeError) as e:
         print(f"LLM 능동적 메시지 생성 오류: {e}")
-        return None, None
+        return None, None, None # Return None for explanation on error
 
 
 def generate_proactive_message(user):
@@ -98,7 +104,7 @@ def generate_proactive_message(user):
     upcoming_schedule_content = _check_upcoming_schedule(user)
     if upcoming_schedule_content:
         trigger_type = "upcoming_schedule"
-        proactive_instruction_base = f"{user.username}님, 곧 일정이 있어! '{upcoming_schedule_content}' 일정이 5분 이내로 다가왔으니, 일정을 상기시켜주거나, 준비를 돕는 메시지를 생성해줘. "
+        proactive_instruction_base = f"{user.username}님, 곧 일정이 있어! '{upcoming_schedule_content}' 일정이 10분 이내로 다가왔으니, 일정을 상기시켜주거나, 준비를 돕는 메시지를 생성해줘. "
 
     if trigger_type:
         persona_system_prompt = build_persona_system_prompt(user)
@@ -108,10 +114,10 @@ def generate_proactive_message(user):
         if assembled_contexts_str:
             assembled_contexts_str = "\n## 사용자 기억 컨텍스트 ##\n" + assembled_contexts_str
         
-        proactive_instruction = f"{proactive_instruction_base}제공된 사용자 정보와 기억 컨텍스트를 적극적으로 활용하여 메시지를 생성해줘. 너의 페르소나에 맞게 재치있고 흥미롭게 말을 걸어줘. 응답은 반드시 JSON 형식으로 'answer' 키를 포함해야 해."
+        proactive_instruction = f"{proactive_instruction_base}제공된 사용자 정보와 기억 컨텍스트를 적극적으로 활용하여 메시지를 생성해줘. 너의 페르소나에 맞게 재치있고 흥미롭게 말을 걸어줘. 응답은 반드시 JSON 형식으로 'answer' 키와 'explanation' 키를 포함해야 해."
         system_prompt = f"{persona_system_prompt}{rag_instructions_prompt}{assembled_contexts_str}\n\n## 능동적 대화 지시 ##\n{proactive_instruction}"
         
-        message_text, emotion = _call_llm_for_proactive_message(user, system_prompt)
+        message_text, emotion, explanation = _call_llm_for_proactive_message(user, system_prompt)
 
         # LLM 호출 실패 시 기본 메시지 설정
         if not message_text:

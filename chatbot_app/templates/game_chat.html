@@ -25,12 +25,7 @@
 <body>
     <button id="toggle-bgm-btn">BGM OFF</button>
     <div class="game-container">
-        <div class="top-menu">
-            <strong>{{ user.username }}</strong>님, 환영합니다.
-            <a href="{% url 'room' %}">방으로 돌아가기</a>
-            <a href="{% url 'ai_status' %}">아이 상태</a>
-            <a href="{% url 'logout' %}">로그아웃</a>
-        </div>
+        {% include 'includes/top_menu.html' with show_room_link=True %}
 
         <div class="character-container">
             <img id="chatbot-character" src="{% static 'img/char_default.png' %}" alt="AI 비서">
@@ -40,7 +35,7 @@
         </div>
 
         <div class="dialogue-box">
-            <div id="speaker-name">AI 비서</div>
+            <div id="speaker-name">{{ user_profile.chatbot_name }}</div>
             <div id="dialogue-text">... (삐빅) ... 흥, 드디어 왔네. 뭘 시킬 셈이야?</div>
             <button id="prev-dialogue-button" class="dialogue-nav-button hidden">▲</button>
         </div>
@@ -89,6 +84,7 @@
             'default': "{% static 'img/char_default.png' %}"
         };
         const USERNAME = "{{ user.username }}";
+        const CHATBOT_NAME = "{{ user_profile.chatbot_name|escapejs }}";
         const affinityScore = "{{ user_profile.affinity_score|default:0 }}";
     </script>
     <script src="{% static 'game_chat.js' %}"></script>

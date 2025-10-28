@@ -32,6 +32,12 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentSelectedEmoticon = null; // To store the selected emoticon URL
     let currentFullAiResponse = ""; // To store the full AI response for history
 
+    let typingSpeed = 50; // milliseconds per character
+    let isTyping = false;
+    let currentTypingLine = ''; // The full line currently being typed
+    let typingTimeout = null; // To store the timeout ID for clearing
+    let typingResolve = null; // To resolve the typing promise when skipped
+
     const emoticons = [
         '결제_이모티콘.png', '계략_이모티콘.png', '돌_이모티콘.png', '따봉_이모티콘.png',
         '밥_이모티콘.png', '슬픔_이모티콘.png', '의기양양_이모티콘.png', '주라_이모티콘.png',
@@ -171,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Show thinking character
         characterImage.src = STATIC_URLS['생각'];
-        speakerName.textContent = "AI 비서";
+        speakerName.textContent = CHATBOT_NAME;
         dialogueText.textContent = "... (생각 중) ...";
         userInput.disabled = true; // Disable input during thinking
         sendButton.disabled = true; // Disable send button during thinking
@@ -248,25 +254,51 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function displayNextAiLine() {
+    async function displayNextAiLine() {
         if (aiMessageQueue.length > 0) {
             isDisplayingMessage = true;
+            isTyping = true; // Set typing flag
+            speakerName.textContent = CHATBOT_NAME;
+            dialogueText.innerHTML = ''; // Clear previous text
 
-            const line = aiMessageQueue.shift();
-            speakerName.textContent = "AI 비서";
-            dialogueText.innerHTML = line; // Use innerHTML to render emoticons
-            // Show a visual indicator that there's more to come
+            currentTypingLine = aiMessageQueue.shift(); // Get the full line
+
+            // Create a promise for the typing animation
+            currentTypingPromise = new Promise(resolve => {
+                typingResolve = resolve; // Store resolve function to skip
+                let charIndex = 0;
+                function typeChar() {
+                    if (!isTyping) { // If typing was skipped
+                        dialogueText.innerHTML = currentTypingLine; // Display full line immediately
+                        resolve();
+                        return;
+                    }
+                    if (charIndex < currentTypingLine.length) {
+                        dialogueText.innerHTML += currentTypingLine.charAt(charIndex);
+                        charIndex++;
+                        typingTimeout = setTimeout(typeChar, typingSpeed);
+                    } else {
+                        isTyping = false;
+                        resolve();
+                    }
+                }
+                typeChar();
+            });
+
+            await currentTypingPromise; // Wait for typing to complete or be skipped
+
+            // After typing (or skipping), add the indicator if more lines exist
             if (aiMessageQueue.length > 0) {
                 dialogueText.innerHTML += ' ▾';
             }
             prevDialogueButton.classList.remove('hidden'); // Show button if there's history
         } else {
             isDisplayingMessage = false;
-            userInput.disabled = false; // Enable input after AI finishes
-            sendButton.disabled = false; // Enable send button after AI finishes
-            userInput.focus(); // Focus input for next message
+            userInput.disabled = false;
+            sendButton.disabled = false;
+            userInput.focus();
             if (displayedAiLinesHistory.length === 0) {
-                prevDialogueButton.classList.add('hidden'); // Hide button if no history
+                prevDialogueButton.classList.add('hidden');
             }
         }
     }
@@ -275,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function () {
     prevDialogueButton.addEventListener('click', () => {
         if (displayedAiLinesHistory.length > 0) {
             const fullAiResponseToReview = displayedAiLinesHistory.pop();
-            speakerName.textContent = "AI 비서";
+            speakerName.textContent = CHATBOT_NAME;
             dialogueText.innerHTML = fullAiResponseToReview; // Use innerHTML
             
             // Clear the current queue as we are reviewing a past full message
@@ -295,10 +327,24 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Listen for Enter key to advance dialogue
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && isDisplayingMessage && document.activeElement !== userInput) {
-            e.preventDefault();
-            displayNextAiLine();
+    document.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter') {
+            if (isTyping) { // If currently typing, skip the animation
+                e.preventDefault();
+                isTyping = false; // Signal the typing loop to stop
+                clearTimeout(typingTimeout); // Clear any pending timeout
+
+                dialogueText.innerHTML = currentTypingLine; // Display full line immediately
+
+                if (typingResolve) {
+                    typingResolve(); // Resolve the promise immediately
+                    typingResolve = null; // Clear it
+                }
+                // The rest of displayNextAiLine will continue after await
+            } else if (isDisplayingMessage && document.activeElement !== userInput) { // If message is fully displayed and not typing
+                e.preventDefault();
+                displayNextAiLine();
+            }
         }
     });
 

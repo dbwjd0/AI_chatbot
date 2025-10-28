@@ -1,8 +1,9 @@
 import json
 import requests
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from django.utils import timezone
 from ..models import UserAttribute, UserActivity, UserRelationship
+from . import schedule_service
 
 def extract_and_save_user_context_data(user, user_message, bot_message, recent_history, api_key):
     """
@@ -18,67 +19,77 @@ def extract_and_save_user_context_data(user, user_message, bot_message, recent_h
         existing_relationships_context = _get_existing_relationships_context(user)
 
         # 2. 통합 프롬프트 생성
-        extraction_prompt = f"""당신은 사용자 대화를 분석하여 세 가지 유형의 정보(사용자 속성, 활동, 인간관계)를 추출하는 고도로 지능적인 AI입니다.
-
---- 현재 대화 ---
-사용자: {user_message}
-AI: {bot_message}
-{conversation_history_context}---
-
-**[추출 작업]**
-다음 세 가지 정보 유형에 대해 주어진 규칙에 따라 정보를 추출하고, 하나의 JSON 객체로 반환하세요.
-
-**1. 사용자 속성 (User Attributes) 추출**
-- **설명**: 이름, 성격, 생일, MBTI 등 거의 변하지 않는 사용자의 핵심 정보입니다.
-- **컨텍스트**:
-{existing_attributes_context}
-- **규칙**:
-    1. **사용자 본인 정보만**: 사용자 자신의 고유 정보만 추출합니다.
-    2. **타인 정보 제외**: '가족', '친구' 등 다른 사람 정보는 절대 포함하지 마세요.
-    3. **신규 사실**: 기존에 없던 정보는 `action: "create"`로 설정합니다.
-    4. **업데이트/구체화**: 기존 사실을 수정/구체화하는 경우 `action: "update"`로 설정하고, **기존 내용을 포함한 완전한 정보**를 `content`에 담아주세요.
-    5. **중복/불필요 정보 무시**: 이미 기억된 내용, 단기 기억(예: 어제 점심)은 무시합니다.
-- **JSON 형식**: `{{ "action": "create" | "update", "fact_type": "유형", "content": "내용" }}`
-
-**2. 활동 (Activity) 추출**
-- **설명**: 사용자의 과거 활동이나 경험에 대한 보고입니다.
-- **규칙**:
-    1. **활동 보고만**: 메시지가 사용자의 과거 활동/경험 보고일 경우에만 추출합니다. (단순 질문, 명령어, 미래 계획 등은 제외)
-    2. **날짜**: 날짜가 명시되지 않으면 오늘 날짜인 '{today_str}'를 사용합니다.
-    3. **정보 식별**: 시간, 장소, 동행인, 메모 중 하나라도 식별될 경우에만 추출합니다.
-- **JSON 형식**: `{{ "activity_date": "YYYY-MM-DD", "activity_time": "HH:MM", "place": "장소", "companion": "동행인", "memo": "활동 요약" }}`
-
-**3. 인간관계 (Relationships) 추출**
-- **설명**: 대화에서 언급된 인물 정보입니다.
-- **컨텍스트**:
-{existing_relationships_context}
-- **규칙**:
-    1. **인물만 추출**: 'AI', '챗봇' 등 사람이 아닌 대상은 제외합니다.
-    2. **별명/애칭 처리**: 언급된 이름이 '현재 저장된 인물 목록'에 있는 사람의 별명으로 보이면, `name`은 반드시 목록의 **원래 이름**으로 사용합니다. (예: 민이 -> 석민)
-    3. **정보 통합**: 새로운 특징이 언급되면 `traits`에 추가합니다.
-- **JSON 형식**: `{{ "name": "원래 이름", "relationship_type": "관계 유형", "traits": "새로운 특징" }}`
-
-**[최종 반환 형식]**
-- 반드시 다음 세 개의 키를 가진 단일 JSON 객체로 반환하세요: `user_attributes`, `activity`, `relationships`.
-- 각 키의 값은 위에서 정의한 JSON 형식의 리스트 또는 객체입니다.
-- 추출할 정보가 없는 키는 빈 리스트 `[]` 또는 `null`을 값으로 가집니다.
-- 예시:
-  `{{
-    "user_attributes": [{{ "action": "update", "fact_type": "성격", "content": "똑똑하고 장난기 많음" }}],
-    "activity": {{ "activity_date": "{today_str}", "place": "강남역", "memo": "친구와 저녁 식사" }},
-    "relationships": [{{ "name": "석민", "relationship_type": "소꿉친구", "traits": "치위생사 준비중" }}]
-  }}`
-"""
+        extraction_prompt = f"""당신은 사용자 대화를 분석하여 네 가지 유형의 정보(사용자 속성, 활동, 인간관계, 일정)를 추출하는 고도로 지능적인 AI입니다.
+        
+        --- 현재 대화 ---
+        사용자: {user_message}
+        AI: {bot_message}
+        {conversation_history_context}---
+        
+        **[추출 작업]**
+        다음 네 가지 정보 유형에 대해 주어진 규칙에 따라 정보를 추출하고, 하나의 JSON 객체로 반환하세요.
+        
+        **1. 사용자 속성 (User Attributes) 추출**
+        - **설명**: 이름, 성격, 생일, MBTI 등 거의 변하지 않는 사용자의 핵심 정보입니다.
+        - **컨텍스트**:
+        {existing_attributes_context}
+        - **규칙**:
+            1. **사용자 본인 정보만**: 사용자 자신의 고유 정보만 추출합니다.
+            2. **타인 정보 제외**: '가족', '친구' 등 다른 사람 정보는 절대 포함하지 마세요.
+            3. **신규 사실**: 기존에 없던 정보는 `action: "create"`로 설정합니다.
+            4. **업데이트/구체화**: 기존 사실을 수정/구체화하는 경우 `action: "update"`로 설정하고, **기존 내용을 포함한 완전한 정보**를 `content`에 담아주세요.
+            5. **중복/불필요 정보 무시**: 이미 기억된 내용, 단기 기억(예: 어제 점심)은 무시합니다.
+        - **JSON 형식**: `{{"action": "create" | "update", "fact_type": "유형", "content": "내용"}}`
+        
+        **2. 활동 (Activity) 추출**
+        - **설명**: 사용자의 과거 활동이나 경험에 대한 보고입니다.
+        - **규칙**:
+            1. **활동 보고만**: 메시지가 사용자의 과거 활동/경험 보고일 경우에만 추출합니다. (단순 질문, 명령어, 미래 계획 등은 제외)
+            2. **날짜**: 날짜가 명시되지 않으면 오늘 날짜인 '{today_str}'를 사용합니다.
+            3. **정보 식별**: 시간, 장소, 동행인, 메모 중 하나라도 식별될 경우에만 추출합니다.
+        - **JSON 형식**: `{{"activity_date": "YYYY-MM-DD", "activity_time": "HH:MM", "place": "장소", "companion": "동행인", "memo": "활동 요약"}}`
+        
+        **3. 인간관계 (Relationships) 추출**
+        - **설명**: 대화에서 언급된 인물 정보입니다.
+        - **컨텍스트**:
+        {existing_relationships_context}
+        - **규칙**:
+            1. **인물만 추출**: 'AI', '챗봇' 등 사람이 아닌 대상은 제외합니다.
+            2. **별명/애칭 처리**: 언급된 이름이 '현재 저장된 인물 목록'에 있는 사람의 별명으로 보이면, `name`은 반드시 목록의 **원래 이름**으로 사용합니다. (예: 민이 -> 석민)
+            3. **정보 통합**: 새로운 특징이 언급되면 `traits`에 추가합니다.
+        - **JSON 형식**: `{{"name": "원래 이름", "relationship_type": "관계 유형", "traits": "새로운 특징"}}`
+        
+        **4. 일정 (Schedule) 추출**
+        - **설명**: 사용자가 특정 날짜와 시간에 수행할 예정인 계획이나 약속입니다.
+        - **규칙**:
+            1. **미래 또는 오늘 일정만**: 과거 일정은 추출하지 않습니다.
+            2. **날짜**: 날짜가 명시되지 않으면 오늘 날짜인 '{today_str}'를 사용합니다.
+            3. **시간**: 시간이 명시되지 않으면 `null`로 설정합니다.
+            4. **내용**: 일정을 명확히 설명하는 내용만 추출합니다.
+        - **JSON 형식**: `{{"schedule_date": "YYYY-MM-DD", "schedule_time": "HH:MM" | null, "content": "일정 내용"}}`
+        
+        **[최종 반환 형식]**
+        - 반드시 다음 네 개의 키를 가진 단일 JSON 객체로 반환하세요: `user_attributes`, `activity`, `relationships`, `schedule`.
+        - 각 키의 값은 위에서 정의한 JSON 형식의 리스트 또는 객체입니다.
+        - 추출할 정보가 없는 키는 빈 리스트 `[]` 또는 `null`을 값으로 가집니다.
+        - 예시:
+          `{{
+            "user_attributes": [{{"action": "update", "fact_type": "성격", "content": "똑똑하고 장난기 많음"}}],
+            "activity": {{"activity_date": "{today_str}", "place": "강남역", "memo": "친구와 저녁 식사"}},
+            "relationships": [{{"name": "석민", "relationship_type": "소꿉친구", "traits": "치위생사 준비중"}}],
+            "schedule": [{{"schedule_date": "{today_str}", "schedule_time": "15:00", "content": "팀 회의"}}]
+          }}`
+        """
         data = {
             "model": "gpt-4.1",
             "messages": [
-                {"role": "system", "content": "You are an AI that extracts structured information about a user's core facts, activities, and relationships from a conversation, returning a single JSON object."}, 
+                {"role": "system", "content": "You are an AI that extracts structured information about a user's core facts, activities, relationships, and schedules from a conversation, returning a single JSON object."}, 
                 {"role": "user", "content": extraction_prompt}
             ],
             "temperature": 0.0,
             "response_format": {"type": "json_object"},
         }
-        
+                
         response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=data)
         response.raise_for_status()
         
@@ -95,8 +106,11 @@ AI: {bot_message}
         if extracted_data.get("relationships"):
             _save_relationships(user, extracted_data["relationships"])
 
+        if extracted_data.get("schedule"): # 새 기능: 스케줄 데이터 저장
+            _save_schedule(user, extracted_data["schedule"], today_str)
+                
     except (requests.exceptions.RequestException, json.JSONDecodeError, KeyError, IndexError, ValueError) as e:
-        print(f"--- Could not extract or save attributes or activities due to an error: {e} ---")
+        print(f"--- 속성, 활동, 관계 또는 스케줄을 추출하거나 저장할 수 없습니다. 오류: {e} ---")
 
 def _get_existing_attributes_context(user):
     existing_attributes = UserAttribute.objects.filter(user=user)
@@ -130,14 +144,12 @@ def _save_user_attributes(user, attributes_data):
         if not (fact_type and content):
             continue
 
-        # 'create' 및 'update' 작업 모두에 대해 세 가지 필드를 모두 사용하여 update_or_create를 사용합니다.
-        # 이는 정확한 (사용자, 속성 유형, 내용) 조합이 고유하도록 보장합니다.
-        # 그리고 중복 없이 생성 및 존재 여부 확인을 모두 처리합니다.
+        # 'create' 및 'update' 작업 모두에 대해 'user'와 'fact_type'을 사용하여 기존 속성을 찾고 'content'를 업데이트합니다.
+        # 이는 각 (사용자, 속성 유형) 조합에 대해 하나의 고유한 항목만 존재하도록 보장합니다.
         UserAttribute.objects.update_or_create(
             user=user,
             fact_type=fact_type,
-            content=content,
-            defaults={} # 모든 필드가 조회에 사용되므로 기본값은 필요하지 않습니다.
+            defaults={'content': content}
         )
         # LLM의 'action' 필드는 이제 DB 메서드를 지시하는 것이 아니라 정보 제공용입니다.
         print(f"--- Ensured UserAttribute exists (action: {action}): {fact_type}: {content} for {user.username} ---")
@@ -222,3 +234,51 @@ def _save_relationships(user, relationships_data):
                 obj.traits = ", ".join(existing_traits)
                 obj.save()
                 print(f"--- Updated relationship: {name} ---")
+
+def _save_schedule(user, schedule_data, today_str):
+    print(f"--- {user.username}님을 위한 스케줄 생성 요청 발견: {schedule_data} ---")
+    schedules_to_save = []
+    if isinstance(schedule_data, list):
+        schedules_to_save = schedule_data
+    elif isinstance(schedule_data, dict):
+        schedules_to_save = [schedule_data]
+    else:
+        print(f"--- 잘못된 스케줄 데이터 형식: {type(schedule_data)} ---")
+        return
+
+    for single_schedule_data in schedules_to_save:
+        content = single_schedule_data.get('content')
+        schedule_date_str = single_schedule_data.get('schedule_date', today_str)
+        schedule_time_str = single_schedule_data.get('schedule_time')
+
+        if not content:
+            continue
+
+        parsed_date = None
+        try:
+            parsed_date = datetime.strptime(schedule_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            print(f"--- 잘못된 스케줄 날짜 형식: {schedule_date_str} ---")
+            continue
+
+        parsed_time = None
+        if schedule_time_str:
+            try:
+                parsed_time = datetime.strptime(schedule_time_str, '%H:%M').time()
+            except ValueError:
+                print(f"--- 잘못된 스케줄 시간 형식: {schedule_time_str} ---")
+                # Continue without time if invalid
+                pass
+
+        # 스케줄이 오늘 또는 미래인 경우에만 생성
+        if parsed_date >= date.today():
+            UserSchedule.objects.update_or_create(
+                user=user,
+                date=parsed_date,
+                schedule_time=parsed_time,
+                content=content, # Include content in lookup for exact match
+                defaults={} # No defaults needed as all fields are in lookup
+            )
+            print(f"--- {user.username}님을 위한 스케줄 저장/업데이트 완료: {single_schedule_data} ---")
+        else:
+            print(f"--- 과거 스케줄 건너뛰기: {single_schedule_data} ---")
