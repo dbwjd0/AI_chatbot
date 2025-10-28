@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 import re
 import json # json 모듈 임포트
-from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage
+from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage, QuizResult
 from chatbot_app.services.proactive_service import generate_proactive_message
 from ..quiz_data import QUIZ_QUESTIONS
 def landing_view(request):
@@ -230,6 +230,12 @@ def game_start_view(request):
     return render(request, 'game_start.html')
 
 @login_required
+def quiz_history_view(request):
+    """사용자의 퀴즈 기록을 표시합니다."""
+    quiz_results = QuizResult.objects.filter(user=request.user).order_by('-date_completed')
+    return render(request, 'quiz_history.html', {'quiz_results': quiz_results})
+
+@login_required
 def quiz_mode_view(request):
     """퀴즈 모드 설정 페이지를 렌더링합니다."""
     return render(request, 'quiz.html')
@@ -251,6 +257,7 @@ def start_quiz_view(request):
         random.shuffle(filtered_questions)
         selected_questions = filtered_questions[:num_questions]
         request.session['quiz_total_questions'] = len(selected_questions)
+        request.session['selected_genre'] = genre # Store selected genre
 
         request.session['quiz_questions'] = selected_questions
         request.session['current_question_index'] = 0
@@ -304,10 +311,22 @@ def quiz_question_view(request):
 
     if current_question_index >= quiz_total_questions:
         final_score = request.session['quiz_score']
+        selected_genre = request.session.get('selected_genre', 'all') # Retrieve selected genre
+
+        # Save quiz result
+        from ..models import QuizResult
+        QuizResult.objects.create(
+            user=request.user,
+            genre=selected_genre,
+            num_questions=quiz_total_questions,
+            score=final_score
+        )
+
         del request.session['quiz_questions']
         del request.session['current_question_index']
         del request.session['quiz_score']
         del request.session['quiz_total_questions']
+        del request.session['selected_genre'] # Clear selected genre from session
         return render(request, 'quiz.html', {'quiz_finished': True, 'final_score': final_score, 'total_questions': quiz_total_questions})
     else:
         current_question = quiz_questions[current_question_index]

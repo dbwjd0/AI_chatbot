@@ -19,6 +19,7 @@ urlpatterns = [
     path('quiz_mode/', main.quiz_mode_view, name='quiz_mode'),
     path('start_quiz/', main.start_quiz_view, name='start_quiz'),
     path('quiz_question/', main.quiz_question_view, name='quiz_question'),
+    path('quiz_history/', main.quiz_history_view, name='quiz_history'), # New URL pattern
     path('schedule/', schedule.schedule_view, name='schedule'),
     path('get_proactive_message/', main.get_proactive_message_view, name='get_proactive_message'),
     path('check-notification/', main.check_proactive_notification, name='check_notification'),
