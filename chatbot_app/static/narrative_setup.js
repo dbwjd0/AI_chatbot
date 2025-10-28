@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { action: 'play_video', video: 'intro', play_once: true, block_input_until_end: true, block_script: false },
         { action: 'play_video', video: 'discovery' },
         { speaker: '???', text: '...!!' },
-        { action: 'wait_for_enter', video_to_stop: 'discovery' },
+
         { action: 'play_video', video: 'dis_que', play_once: true, block_input_until_end: true },
         { action: 'play_video', video: 'question' },
         { speaker: '???', text: '...이곳에 누군가 오는 건 처음이야.' },
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isActive) {
             enterIndicator.style.opacity = '0.8';
         } else {
-            enterIndicator.style.opacity = '0.3';
+            enterIndicator.style.opacity = '0';
         }
     }
 
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (details.block_input_until_end) {
                     disableEnterKey();
                     isWaitingForInput = true; 
-                    updateEnterIndicator(true); // Show indicator
+                    updateEnterIndicator(false); // Hide indicator
                 }
 
                 if (details.play_once || !originalLoopState) { // This block waits for video to end
