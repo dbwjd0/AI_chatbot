@@ -196,7 +196,7 @@
         }
     </style>
 </head>
-<body>
+<body {% if quiz_feedback %}data-character-emotion="{{ quiz_feedback.character_emotion }}"{% endif %}>
     {% include 'includes/top_menu.html' with show_room_link=False %}
     <div class="quiz-layout-wrapper">
         <div class="character-container">
@@ -307,13 +307,10 @@
             updateCharacterEmotion('중립');
 
             // Apply emotion based on quiz feedback if available
-            const quizFeedbackElement = document.querySelector('.quiz-feedback');
-            if (quizFeedbackElement) {
-                if (quizFeedbackElement.classList.contains('correct')) {
-                    updateCharacterEmotion('행복'); // Or '정답' if you want a specific image
-                } else if (quizFeedbackElement.classList.contains('incorrect')) {
-                    updateCharacterEmotion('슬픔'); // Or '오답'
-                }
+            const bodyElement = document.body;
+            const characterEmotion = bodyElement.dataset.characterEmotion;
+            if (characterEmotion) {
+                updateCharacterEmotion(characterEmotion);
             }
         });
     </script>

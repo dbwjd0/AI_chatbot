@@ -285,7 +285,7 @@ def quiz_question_view(request):
             'is_correct': is_correct,
             'correct_answer': correct_answer,
             'user_answer': user_answer,
-            'character_emotion': '행복' if is_correct else '슬픔',
+            'character_emotion': '정답' if is_correct else '오답',
         }
         return redirect('quiz_question')
 
