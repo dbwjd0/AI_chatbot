@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Game State ---
     const playerState = {
-        x: room.offsetWidth / 2,
+        x: (room.offsetWidth / 2) - 200,
         y: room.offsetHeight / 2,
         speed: 3,
         currentAnimation: idleImg,
@@ -166,22 +166,20 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. Obstacle Collision Detection
         const playerWidth = player.offsetWidth;
         const playerHeight = player.offsetHeight;
-        const playerCollisionBuffer = 10; // Shrinks player's box
-        
         // Calculate player's half-dimensions
         const playerHalfWidth = playerWidth / 2;
         const playerHalfHeight = playerHeight / 2;
 
-        // Calculate the effective collision box dimensions
-        const collisionWidth = playerWidth - (2 * playerCollisionBuffer);
-        const collisionHeight = playerHeight - (2 * playerCollisionBuffer);
+        // Collision box at the feet
+        const collisionHeight = playerHeight * 0.2; // Use the bottom 20% of the player image for collision
+        const collisionWidth = playerWidth * 0.6; // Make it a bit narrower than the player
 
         let currentFrameCollision = false; // Flag for collision in this frame
 
         // Check X-axis collision
         const futurePlayerRectX = {
-            left: nextX - playerHalfWidth + playerCollisionBuffer, // Adjust left for center positioning and buffer
-            top: playerState.y - playerHalfHeight + playerCollisionBuffer, // Adjust top for center positioning and buffer
+            left: nextX - collisionWidth / 2,
+            top: playerState.y + playerHalfHeight - collisionHeight,
             width: collisionWidth,
             height: collisionHeight
         };
@@ -217,8 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Check Y-axis collision
         const futurePlayerRectY = {
-            left: playerState.x - playerHalfWidth + playerCollisionBuffer, // Adjust left for center positioning and buffer
-            top: nextY - playerHalfHeight + playerCollisionBuffer, // Adjust top for center positioning and buffer
+            left: playerState.x - collisionWidth / 2,
+            top: nextY + playerHalfHeight - collisionHeight,
             width: collisionWidth,
             height: collisionHeight
         };
@@ -311,8 +309,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- Update Debug Box for Player ---
         const playerCollisionRect = {
-            left: playerState.x - playerHalfWidth + playerCollisionBuffer,
-            top: playerState.y - playerHalfHeight + playerCollisionBuffer,
+            left: playerState.x - collisionWidth / 2,
+            top: playerState.y + playerHalfHeight - collisionHeight,
             width: collisionWidth,
             height: collisionHeight
         };
