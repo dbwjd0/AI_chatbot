@@ -59,11 +59,17 @@ def _call_llm_for_proactive_message(user, system_prompt):
         
         content_from_llm = json.loads(response_json['choices'][0]['message']['content'])
         message_text = content_from_llm.get('answer', '').strip()
+        explanation = content_from_llm.get('explanation', '설명 없음.') # Extract explanation
         emotion = analyze_emotion(message_text) # emotion_service를 사용하여 감정 분석 
-        return message_text, emotion
+
+        print("\n" + "-"*20 + " [Debug] Proactive Message Explanation " + "-"*20)
+        print(explanation)
+        print("-"*66 + "\n")
+
+        return message_text, emotion, explanation # Return explanation
     except (requests.exceptions.RequestException, KeyError, IndexError, json.JSONDecodeError) as e:
         print(f"LLM 능동적 메시지 생성 오류: {e}")
-        return None, None
+        return None, None, None # Return None for explanation on error
 
 
 def generate_proactive_message(user):
