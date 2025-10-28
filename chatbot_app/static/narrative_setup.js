@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const allVideos = {
         intro: document.getElementById('intro-video'),
         discovery: document.getElementById('discovery-video'),
+        dis_que: document.getElementById('dis_que-video'),
         question: document.getElementById('question-video'),
         destruction: document.getElementById('destruction-video'),
         lookaround: document.getElementById('lookaround-video'),
@@ -20,14 +21,28 @@ document.addEventListener('DOMContentLoaded', function() {
     let userData = {};
     let aiData = { 이름: '???' };
 
+    const playedVideos = new Set(); // ✅ 추가
+
+    let isEnterKeyDisabled = false;
+
+    function disableEnterKey() {
+        isEnterKeyDisabled = true;
+        updateEnterIndicator(false); // Optionally hide indicator when disabled
+    }
+
+    function enableEnterKey() {
+        isEnterKeyDisabled = false;
+        updateEnterIndicator(true); // Optionally show indicator when enabled
+    }
+
     const script = [
         { speaker: '???', text: '...' },
-        { action: 'play_video', video: 'intro' },
-        { speaker: '???', text: '..........................' },
-        { action: 'wait_for_enter', video_to_stop: 'intro' },
-        { speaker: '???', text: '...!!' },
+        { speaker: '???', text: '..........................', block_script: false },
+        { action: 'play_video', video: 'intro', play_once: true, block_input_until_end: true, block_script: false },
         { action: 'play_video', video: 'discovery' },
+        { speaker: '???', text: '...!!' },
         { action: 'wait_for_enter', video_to_stop: 'discovery' },
+        { action: 'play_video', video: 'dis_que', play_once: true, block_input_until_end: true },
         { action: 'play_video', video: 'question' },
         { speaker: '???', text: '...이곳에 누군가 오는 건 처음이야.' },
         { speaker: '???', text: '넌... 누구야?' },
@@ -147,34 +162,77 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        currentActionDetails = line;
+                currentActionDetails = line;
 
-        if (line.action) {
-            await handleAction(line);
-        } else { // It's a dialogue line
-            isWaitingForInput = true;
-            updateEnterIndicator(true);
-            let speaker = line.speaker.replace('{ai_name}', aiData.이름);
-            speakerName.textContent = `[${speaker}]`;
-            let processedText = line.text;
-            for (const key in userData) {
-                processedText = processedText.replace(`{${key}}`, userData[key]);
-            }
-            processedText = processedText.replace(`{ai_name}`, aiData.이름);
-            dialogueText.textContent = processedText;
-        }
         
-        isScriptRunning = false;
+
+                try {
+
+                    if (line.action) {
+
+                        await handleAction(line);
+
+                    } else { // It's a dialogue line
+
+                        if (line.block_script !== false) { // Only block if block_script is not explicitly false
+
+                            isWaitingForInput = true;
+
+                            updateEnterIndicator(true);
+
+                        } else {
+
+                            isWaitingForInput = false; // Ensure it's not waiting for input
+
+                            updateEnterIndicator(false); // Hide indicator for non-blocking dialogue
+
+                        }
+
+                        let speaker = line.speaker.replace('{ai_name}', aiData.이름);
+
+                        speakerName.textContent = `[${speaker}]`;
+
+                        let processedText = line.text;
+
+                        for (const key in userData) {
+
+                            processedText = processedText.replace(`{${key}}`, userData[key]);
+
+                        }
+
+                        processedText = processedText.replace(`{ai_name}`, aiData.이름);
+
+                        dialogueText.textContent = processedText;
+
+                    }
+
+                                } finally {
+
+                                    isScriptRunning = false;
+
+                                }
+
+                                
+
+                                // If after processing the current line, we are not waiting for input,
+
+                                // automatically proceed to the next line.
+
+                                if (!isWaitingForInput && currentStep < script.length) {
+
+                                    showNextLine();
+
+                                }
     }
 
     async function handleAction(details) {
-        const nonBlockingActions = ['branch', 'goto', 'play_video'];
-        isWaitingForInput = !nonBlockingActions.includes(details.action);
-        updateEnterIndicator(isWaitingForInput);
+        // Default to not waiting for input, then set to true if needed.
+        isWaitingForInput = false; 
+        updateEnterIndicator(false); // Hide by default
 
         if (details.action === 'show_input') {
+            isWaitingForInput = true;
             updateEnterIndicator(false); // Hide for text input
-            isWaitingForInput = true; // It is waiting for input, just not Enter to continue script
             dialogueText.innerHTML = details.warning ? `<span class="warning">${details.warning}</span>` : '';
             userInput.type = details.type === 'number' ? 'number' : 'text';
             inputArea.style.display = 'flex';
@@ -194,6 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 choiceContainer.appendChild(el);
             });
         } else if (details.action === 'branch' || details.action === 'goto') {
+            // These are truly non-blocking, so isWaitingForInput remains false.
             const branchKey = details.on;
             const branchValue = userData[branchKey];
             const targetLabel = details.target || (details.branches ? details.branches[branchValue] : undefined);
@@ -216,91 +275,147 @@ document.addEventListener('DOMContentLoaded', function() {
                 dialogueText.textContent = '(오류가 발생했습니다. 잠시 후 수동으로 이동해주세요.)';
             }
         } else if (details.action === 'play_video') {
+            if (details.play_once && playedVideos.has(details.video)) {
+                return; // Skip if play_once and already played
+            }
+
             const videoToPlay = allVideos[details.video];
             if (videoToPlay) {
+                // Hide all other videos before playing the current one
+                Object.values(allVideos).forEach(v => {
+                    if (v && v !== videoToPlay) {
+                        v.style.display = 'none';
+                        v.pause(); // Also pause other videos
+                    }
+                });
+
                 if (details.video === 'intro') {
                     blackOverlay.classList.remove('active');
                     await new Promise(resolve => setTimeout(resolve, 1000));
                 }
 
                 videoToPlay.style.display = 'block';
-                const isLooping = videoToPlay.loop;
 
-                if (!isLooping) {
-                    updateEnterIndicator(false);
-                    // This promise will resolve when the video ends, thus blocking handleAction
+                const originalLoopState = videoToPlay.loop;
+
+                if (details.play_once) {
+                    videoToPlay.loop = false;
+                }
+
+                if (details.block_input_until_end) {
+                    disableEnterKey();
+                    isWaitingForInput = true; 
+                    updateEnterIndicator(true); // Show indicator
+                }
+
+                if (details.play_once || !originalLoopState) { // This block waits for video to end
                     await new Promise(resolve => {
-                        videoToPlay.onended = resolve;
+                        videoToPlay.onended = () => {
+                            if (details.block_input_until_end) {
+                                enableEnterKey();
+                            }
+                            resolve();
+                        };
                         videoToPlay.play().catch(e => {
                             console.error("Video play failed:", e);
-                            resolve(); // Resolve on error too to not get stuck
+                            if (details.block_input_until_end) {
+                                enableEnterKey();
+                            }
+                            resolve();
                         });
                     });
-                } else {
-                    await videoToPlay.play().catch(e => console.error("Video play failed:", e));
+                    // After a non-looping video ends, if it was blocking input,
+                    // isWaitingForInput should be set to false to allow script to proceed.
+                    if (details.block_input_until_end) {
+                        isWaitingForInput = false;
+                        updateEnterIndicator(false);
+                    }
+                } else { // This block is for looping videos (originalLoopState is true and not play_once)
+                    videoToPlay.play().catch(e => console.error("Video play failed:", e));
+                    // For looping videos, if they are meant to be displayed until user input,
+                    // then isWaitingForInput should be true.
+                    // The 'discovery' video is a looping video that needs to wait for user input.
+                    if (details.video === 'discovery') { // Specific handling for discovery
+                        isWaitingForInput = true;
+                        updateEnterIndicator(true);
+                    }
+                }
+
+                if (details.play_once) {
+                    playedVideos.add(details.video);
                 }
             }
         } else if (details.action === 'wait_for_enter') {
-            isWaitingForInput = true;
-            updateEnterIndicator(true);
+            isWaitingForInput = true; // Explicitly set to true
+            updateEnterIndicator(true); // Show indicator
+            const videoToStopName = currentActionDetails.video_to_stop;
+            const videoElement = allVideos[videoToStopName];
+
+            if (videoElement) {
+                if (!videoElement.paused) {
+                    videoElement.pause();
+                }
+            }
+
+            enableEnterKey(); // This enables Enter key, but isWaitingForInput is still true.
         }
     }
 
     async function handleInput(value) {
-        if (!currentActionDetails) return;
-        const { fact_type, branch_key, validation } = currentActionDetails;
-
-        // Store data locally for branching or persistent state
-        const key = fact_type || branch_key;
-        if (key) {
-            if (key === 'ai_name') aiData.이름 = value;
-            else userData[key] = value;
-        }
-
-        // Handle validation logic separately
-        if (validation) {
-            const numAnswer = parseInt(value, 10);
-            userData[`${fact_type}_validation`] = !isNaN(numAnswer) && numAnswer >= validation.min && numAnswer <= validation.max ? 'valid' : 'invalid';
-        }
-
-        // If it's a fact_type (i.e., for persistence), send it to the backend.
-        if (fact_type) {
-            try {
-                await fetch('/narrative-setup/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
-                    body: JSON.stringify({ fact_type, content: value })
-                });
-            } catch (error) { console.error('Failed to save data:', error); }
-        }
-    }
-
-    function updateChoiceSelection(direction) {
-        const choices = choiceContainer.querySelectorAll('.choice-option');
-        if (choices.length === 0) return;
-        choices[currentChoiceIndex].classList.remove('selected');
-        const nCols = currentActionDetails.layout === 'grid' ? 4 : 1;
-        if (nCols > 1) {
-            const row = Math.floor(currentChoiceIndex / nCols);
-            const col = currentChoiceIndex % nCols;
-            switch (direction) {
-                case 'up': currentChoiceIndex = (currentChoiceIndex - nCols + choices.length) % choices.length; break;
-                case 'down': currentChoiceIndex = (currentChoiceIndex + nCols) % choices.length; break;
-                case 'left': currentChoiceIndex = (col > 0) ? currentChoiceIndex - 1 : currentChoiceIndex + (nCols - 1); break;
-                case 'right': 
-                    let nextIndex = (col < nCols - 1) ? currentChoiceIndex + 1 : currentChoiceIndex - (nCols - 1);
-                    if (nextIndex >= choices.length) nextIndex = choices.length - 1;
-                    currentChoiceIndex = nextIndex;
-                    break;
+                if (!currentActionDetails) return;
+                const { fact_type, branch_key, validation } = currentActionDetails;
+        
+                // Store data locally for branching or persistent state
+                const key = fact_type || branch_key;
+                if (key) {
+                    if (key === 'ai_name') aiData.이름 = value;
+                    else userData[key] = value;
+                }
+        
+                // Handle validation logic separately
+                if (validation) {
+                    const numAnswer = parseInt(value, 10);
+                    userData[`${fact_type}_validation`] = !isNaN(numAnswer) && numAnswer >= validation.min && numAnswer <= validation.max ? 'valid' : 'invalid';
+                }
+        
+                // If it's a fact_type (i.e., for persistence), send it to the backend.
+                if (fact_type) {
+                    try {
+                        await fetch('/narrative-setup/', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+                            body: JSON.stringify({ fact_type, content: value })
+                        });
+                    } catch (error) { console.error('Failed to save data:', error); }
+                }
             }
-        } else {
-            currentChoiceIndex = (currentChoiceIndex + direction + choices.length) % choices.length;
-        }
-        choices[currentChoiceIndex].classList.add('selected');
-    }
-
+        
+            function updateChoiceSelection(direction) {
+                const choices = choiceContainer.querySelectorAll('.choice-option');
+                if (choices.length === 0) return;
+                choices[currentChoiceIndex].classList.remove('selected');
+                const nCols = currentActionDetails.layout === 'grid' ? 4 : 1;
+                if (nCols > 1) {
+                    const row = Math.floor(currentChoiceIndex / nCols);
+                    const col = currentChoiceIndex % nCols;
+                    switch (direction) {
+                        case 'up': currentChoiceIndex = (currentChoiceIndex - nCols + choices.length) % choices.length; break;
+                        case 'down': currentChoiceIndex = (currentChoiceIndex + nCols) % choices.length; break;
+                        case 'left': currentChoiceIndex = (col > 0) ? currentChoiceIndex - 1 : currentChoiceIndex + (nCols - 1); break;
+                        case 'right': 
+                            let nextIndex = (col < nCols - 1) ? currentChoiceIndex + 1 : currentChoiceIndex - (nCols - 1);
+                            if (nextIndex >= choices.length) nextIndex = choices.length - 1;
+                            currentChoiceIndex = nextIndex;
+                            break;
+                    }
+                } else {
+                    currentChoiceIndex = (currentChoiceIndex + direction + choices.length) % choices.length;
+                }
+                choices[currentChoiceIndex].classList.add('selected');
+            }
+        
     document.addEventListener('keydown', async function(e) {
-        if (isScriptRunning || e.key !== 'Enter') {
+        if (isEnterKeyDisabled || isScriptRunning || e.key !== 'Enter') {
             if (isWaitingForInput && currentActionDetails?.action === 'show_choice') {
                  switch (e.key) {
                     case 'ArrowUp': 
@@ -315,7 +430,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         e.preventDefault(); 
                         if (currentActionDetails.layout === 'grid') {
                             updateChoiceSelection('down');
-                        } else {
+                        }
+                        else {
                             updateChoiceSelection(1);
                         }
                         break;
@@ -327,65 +443,44 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         e.preventDefault();
-        if (!isWaitingForInput) {
+
+        // If we are waiting for input (e.g., from show_input, show_choice, or wait_for_enter)
+        if (isWaitingForInput) {
+            const action = currentActionDetails?.action;
+            let shouldContinueScript = false;
+
+            if (action === 'show_input') {
+                if (userInput.value.trim() === '') return;
+                await handleInput(userInput.value.trim());
+                shouldContinueScript = true;
+            } else if (action === 'show_choice') {
+                const selectedChoice = choiceContainer.querySelector('.selected');
+                if (!selectedChoice) return;
+                await handleInput(selectedChoice.dataset.value);
+                shouldContinueScript = true;
+            } else if (action === 'wait_for_enter') {
+                const videoToStopName = currentActionDetails.video_to_stop;
+                const videoElement = allVideos[videoToStopName];
+
+                if (videoElement) {
+                if (!videoElement.paused) {
+                    videoElement.pause();
+                }
+                }
+                enableEnterKey();
+                shouldContinueScript = true;
+            } else { // Simple dialogue
+                shouldContinueScript = true;
+            }
+            
+            if (shouldContinueScript) {
+                isWaitingForInput = false; // Reset for next line
+                // Immediately proceed to the next line, which will handle its own blocking if needed.
+                showNextLine();
+            }
+        } else {
+            // If not waiting for specific input, just advance the script.
             showNextLine();
-            return;
-        }
-
-        const action = currentActionDetails?.action;
-        let continueImmediately = false;
-
-        if (action === 'show_input') {
-            if (userInput.value.trim() === '') return;
-            await handleInput(userInput.value.trim());
-            continueImmediately = true;
-        } else if (action === 'show_choice') {
-            const selectedChoice = choiceContainer.querySelector('.selected');
-            if (!selectedChoice) return;
-            await handleInput(selectedChoice.dataset.value);
-            continueImmediately = true;
-        } else if (action === 'wait_for_enter') {
-            const videoToStopName = currentActionDetails.video_to_stop;
-            const videoElement = allVideos[videoToStopName];
-            const nonLoopingVideos = ['discovery', 'destruction', 'lookaround', 'ending'];
-
-            if (nonLoopingVideos.includes(videoToStopName) && videoElement && !videoElement.ended) {
-                return; // Do nothing if the video hasn't ended
-            }
-
-            if (videoToStopName === 'intro') allVideos.intro.pause();
-            else if (videoToStopName === 'discovery') {
-                allVideos.discovery.pause();
-                allVideos.intro.style.display = 'none';
-            } else if (videoToStopName === 'destruction') {
-                allVideos.destruction.pause();
-                allVideos.question.pause();
-            } else if (videoToStopName === 'lookaround') {
-                allVideos.lookaround.pause();
-                allVideos.destruction.style.display = 'none';
-                allVideos.question.style.display = 'none';
-            } else if (videoToStopName === 'ending') {
-                allVideos.ending.pause();
-                allVideos.lookaround.style.display = 'none';
-            }
-            continueImmediately = true;
-        } else { // Simple dialogue
-            continueImmediately = true;
-        }
-        
-        if (continueImmediately) {
-            isWaitingForInput = false;
-            (async () => {
-                do {
-                    const nextLine = script[currentStep];
-                    // Check if the next line is a hard stop that requires specific user input
-                    if (nextLine && (nextLine.action === 'show_input' || nextLine.action === 'show_choice')) {
-                        await showNextLine(); // Execute the blocking action and then stop the loop
-                        break;
-                    }
-                    await showNextLine(); // Execute any other non-blocking or soft-blocking action and continue
-                } while (!isWaitingForInput && currentStep < script.length);
-            })();
         }
     });
     
