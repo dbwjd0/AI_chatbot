@@ -114,10 +114,10 @@ def generate_proactive_message(user):
         if assembled_contexts_str:
             assembled_contexts_str = "\n## 사용자 기억 컨텍스트 ##\n" + assembled_contexts_str
         
-        proactive_instruction = f"{proactive_instruction_base}제공된 사용자 정보와 기억 컨텍스트를 적극적으로 활용하여 메시지를 생성해줘. 너의 페르소나에 맞게 재치있고 흥미롭게 말을 걸어줘. 응답은 반드시 JSON 형식으로 'answer' 키를 포함해야 해."
+        proactive_instruction = f"{proactive_instruction_base}제공된 사용자 정보와 기억 컨텍스트를 적극적으로 활용하여 메시지를 생성해줘. 너의 페르소나에 맞게 재치있고 흥미롭게 말을 걸어줘. 응답은 반드시 JSON 형식으로 'answer' 키와 'explanation' 키를 포함해야 해."
         system_prompt = f"{persona_system_prompt}{rag_instructions_prompt}{assembled_contexts_str}\n\n## 능동적 대화 지시 ##\n{proactive_instruction}"
         
-        message_text, emotion = _call_llm_for_proactive_message(user, system_prompt)
+        message_text, emotion, explanation = _call_llm_for_proactive_message(user, system_prompt)
 
         # LLM 호출 실패 시 기본 메시지 설정
         if not message_text:
