@@ -509,3 +509,24 @@
     border-top: 10px solid #ffffff;
     z-index: 1;
 }
+
+.top-menu {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 15px;
+    border-radius: 10px;
+    color: white;
+    z-index: 100;
+}
+
+.top-menu a {
+    color: #a9d1ff;
+    text-decoration: none;
+    margin-left: 15px;
+}
+
+.top-menu a:hover {
+    text-decoration: underline;
+}

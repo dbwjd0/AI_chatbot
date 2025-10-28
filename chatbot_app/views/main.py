@@ -89,7 +89,7 @@ def chat_view(request):
         for msg in messages_page.object_list
     ][::-1] # 시간순으로 뒤집기
 
-    return render(request, 'chat.html', {
+    return render(request, 'chat_history.html', {
         'user_profile': user_profile, 
         'chat_messages': chat_messages_data,
         'has_next_page': messages_page.has_next() # 다음 페이지가 있는지 여부

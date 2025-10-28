@@ -93,9 +93,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleInteraction(object) {
         const target = object.dataset.interactionTarget;
-        if (target === 'chat') {
+        if (target === 'chat_history') {
             fadeOverlay.classList.add('visible');
-            setTimeout(() => { window.location.href = '/chat'; }, 300);
+            setTimeout(() => { window.location.href = '/chat_history/'; }, 300);
         } else if (target === 'game-chat') {
             fadeOverlay.classList.add('visible');
             setTimeout(() => { window.location.href = '/game-chat/'; }, 300);
