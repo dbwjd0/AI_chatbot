@@ -109,9 +109,26 @@
             font-size: 1.2em;
             transition: background-color 0.3s ease;
             margin-top: 20px;
+            text-decoration: none; /* Remove underline */
         }
         .btn-primary:hover {
             background-color: #fb8c00;
+        }
+        .btn-secondary {
+            background-color: #6c757d; /* Gray color for secondary button */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+            margin-left: 10px; /* Add some space between buttons */
+            text-decoration: none; /* Remove underline */
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
         }
         .top-menu {
             position: absolute;
@@ -202,7 +219,10 @@
                                 오답입니다. 정답은 '{{ quiz_feedback.correct_answer }}' 입니다.
                             {% endif %}
                         </div>
-                        <button type="button" class="btn btn-primary" data-next-url-base="{% url 'quiz_question' %}" onclick="window.location.href=this.dataset.nextUrlBase + '?next_question=true'">다음 문제</button>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                            <button type="button" class="btn btn-primary" data-next-url-base="{% url 'quiz_question' %}" onclick="window.location.href=this.dataset.nextUrlBase + '?next_question=true'">다음 문제</button>
+                            <a href="{% url 'quiz_mode' %}" class="btn btn-secondary">처음으로 돌아가기</a>
+                        </div>
                     {% else %}
                         <form action="{% url 'quiz_question' %}" method="post">
                             {% csrf_token %}
@@ -214,16 +234,20 @@
                                     </label>
                                 {% endfor %}
                             </div>
-                            <button type="submit" class="btn btn-primary">정답 제출</button>
-                        </form>
-                    {% endif %}
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                                <button type="submit" class="btn btn-primary">정답 제출</button>
+                                <a href="{% url 'quiz_mode' %}" class="btn btn-secondary">처음으로 돌아가기</a>
+                            </div>
+                        </form>                    {% endif %}
                 </div>
             {% elif quiz_finished %}
                 <h1>퀴즈 결과</h1>
                 <div class="quiz-results">
                     <h2>최종 점수: {{ final_score }} / {{ total_questions }}</h2>
                     <p>수고하셨습니다!</p>
+                    <div class="quiz-buttons-container" style="text-align: right;">
                     <a href="{% url 'quiz_mode' %}" class="btn btn-primary">다시 퀴즈 시작</a>
+                </div>
                 </div>
             {% else %}
                 <h1>퀴즈 모드</h1>
