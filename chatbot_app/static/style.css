@@ -97,21 +97,6 @@ body {
     display: flex;
     padding: 10px;
     border-top: 1px solid #eee;
-    position: relative; /* Ensure z-index works */
-    z-index: 10; /* Bring chat input to the front */
-}
-
-.chat-input button {
-    z-index: 1; /* Ensure button is clickable within chat-input */
-}
-
-.chat-input input {
-    flex-grow: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    margin-right: 10px;
-    outline: none;
 }
 
 .chat-input button {

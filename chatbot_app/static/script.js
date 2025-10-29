@@ -1,4 +1,155 @@
 document.addEventListener('DOMContentLoaded', function() {
+    const sendButton = document.getElementById('send-button');
+    const imageInput = document.getElementById('image-input');
+    const attachImageButton = document.getElementById('attach-image-button');
+    const imagePreview = document.getElementById('image-preview');
+    const clearImageButton = document.getElementById('clear-image-button');
+    const previewContainer = document.getElementById('preview-container');
+    
+    console.log('sendButton element:', sendButton);
+    console.log('userInput element:', userInput);
+    
+    let selectedImageFile = null; // 선택된 이미지 파일을 저장
+
+    const chatbotCharacter = document.getElementById('chatbot-character');
+
+    let currentPage = 2;
+    let isLoading = false;
+    let hasNextPage = chatLog.dataset.hasNextPage === 'true';
+
+    attachImageButton.addEventListener('click', () => imageInput.click());
+
+    clearImageButton.addEventListener('click', () => clearImageSelection());
+
+    imageInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            selectedImageFile = file; // 파일 객체 저장
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                previewContainer.style.display = 'block';
+            };
+            reader.readAsDataURL(file); // 미리보기용으로만 사용
+        } else {
+            clearImageSelection();
+        }
+    });
+
+    function clearImageSelection() {
+        imagePreview.src = '';
+        previewContainer.style.display = 'none';
+        selectedImageFile = null;
+        imageInput.value = '';
+    }
+
+    function getValidDate(timestamp) {
+        const date = new Date(timestamp);
+        return !isNaN(date.getTime()) ? date : null;
+    }
+    // --- 로직 함수 ---
+    function createMessageDiv(msg) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', msg.is_user ? 'user-message' : 'bot-message');
+        messageDiv.dataset.timestamp = msg.timestamp;
+
+        const contentWrapper = document.createElement('div');
+        contentWrapper.style.display = 'flex';
+        contentWrapper.style.flexDirection = 'column';
+        contentWrapper.style.alignItems = 'flex-start';
+
+        // image_url을 사용하여 이미지 렌더링
+        if (msg.image_url) {
+            const img = document.createElement('img');
+            img.src = msg.image_url;
+            img.style.maxWidth = '100%';
+            img.style.height = 'auto';
+            img.style.marginBottom = '5px';
+            img.style.borderRadius = '8px';
+            contentWrapper.appendChild(img);
+        }
+
+        const p = document.createElement('p');
+        p.textContent = msg.message;
+        contentWrapper.appendChild(p);
+
+        messageDiv.appendChild(contentWrapper);
+
+        const time = getValidDate(msg.timestamp);
+        let timeString = '';
+        if (time) {
+            timeString = `(${(time.getHours()).toString().padStart(2, '0')}:${(time.getMinutes()).toString().padStart(2, '0')})`;
+        }
+        const timeSpan = document.createElement('span');
+        timeSpan.classList.add('timestamp');
+        timeSpan.textContent = timeString;
+        messageDiv.appendChild(timeSpan);
+        
+        return messageDiv;
+    }
+
+    function updateDateSeparators() {
+        chatLog.querySelectorAll('.date-separator').forEach(el => el.remove());
+        let lastDate = null;
+        const messages = chatLog.querySelectorAll('.message');
+        messages.forEach(message => {
+            const msgTimestamp = message.dataset.timestamp;
+            const date = getValidDate(msgTimestamp);
+
+            if (!date) {
+                return;
+            }
+
+            let formattedDate = `[${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일]`;
+
+            if (lastDate !== formattedDate) {
+                const separatorDiv = document.createElement('div');
+                separatorDiv.classList.add('date-separator');
+                separatorDiv.textContent = formattedDate;
+                chatLog.insertBefore(separatorDiv, message);
+                lastDate = formattedDate;
+            }
+        });
+    }
+
+    function displayMessages(messages, prepend = false) {
+        const scrollHeightBefore = chatLog.scrollHeight;
+        messages.forEach(msg => {
+            const messageEl = createMessageDiv(msg);
+            if (prepend) {
+                chatLog.insertBefore(messageEl, chatLog.firstChild);
+            } else {
+                chatLog.appendChild(messageEl);
+            }
+        });
+        updateDateSeparators();
+        if (prepend) {
+            chatLog.scrollTop = chatLog.scrollHeight - scrollHeightBefore;
+        } else {
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+    }
+
+    // --- 이벤트 리스너 및 초기화 ---
+    chatLog.addEventListener('scroll', async () => {
+        if (chatLog.scrollTop === 0 && !isLoading && hasNextPage) {
+            isLoading = true;
+            try {
+                const response = await fetch(`/chat/load-messages/?page=${currentPage}`);
+                const data = await response.json();
+                if (data.messages.length > 0) {
+                    displayMessages(data.messages, true);
+                    currentPage++;
+                }
+                hasNextPage = data.has_next_page;
+            } catch (error) {
+                console.error('Error loading more messages:', error);
+            }
+            isLoading = false;
+        }
+    });
+
+document.addEventListener('DOMContentLoaded', function() {
     const chatLog = document.getElementById('chat-log');
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');

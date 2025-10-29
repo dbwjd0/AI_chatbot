@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const choiceContainer = document.getElementById('choice-container');
     const enterIndicator = document.getElementById('enter-indicator');
     const blackOverlay = document.getElementById('black-overlay');
+    const sendButton = document.getElementById('send-button'); // Re-inserted declaration
     const allVideos = {
         intro: document.getElementById('intro-video'),
         discovery: document.getElementById('discovery-video'),
@@ -23,8 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
         con_nor: document.getElementById('con_nor-video'),
         concern: document.getElementById('concern-video'),
         destruction: document.getElementById('destruction-video'),
-        lookaround: document.getElementById('lookaround-video'),
-        ending: document.getElementById('ending-video')
+        // lookaround: document.getElementById('lookaround-video'),
+        // ending: document.getElementById('ending-video')
     };
 
     let userData = {};
@@ -517,6 +518,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    sendButton.addEventListener('click', async function(e) {
+        if (isWaitingForInput && currentActionDetails?.action === 'show_input') {
+            e.preventDefault();
+            if (userInput.value.trim() === '') return;
+            await handleInput(userInput.value.trim());
+            isWaitingForInput = false;
+            showNextLine();
+        }
+    });
+
     userInput.addEventListener('input', function() {
         console.log('Input event fired. currentActionDetails?.fact_type:', currentActionDetails?.fact_type, 'userInput.type:', userInput.type); // ADDED LOG
         if (isWaitingForInput && currentActionDetails?.fact_type === '나이') {
