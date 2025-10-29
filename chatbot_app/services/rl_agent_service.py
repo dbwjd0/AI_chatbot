@@ -46,7 +46,15 @@ ACTION_MAP = {
     # --- 5. 일반적인 중간 전략 (범용) ---
     7: {'name': 'Standard_Tsundere', 
         'contexts': ['attributes', 'activity', 'vector_search'], 
-        'persona': '츤데레'}
+        'persona': '츤데레'},
+
+    # --- 6. 새로운 관계 기반 스타일 ---
+    8: {'name': 'Deep_Analysis_Senior',
+        'contexts': ['schedule', 'location', 'vector_search', 'attributes', 'activity', 'analytics', 'relationship'],
+        'persona': '선배'},
+    9: {'name': 'Chit_Chat_Younger_Sibling',
+        'contexts': ['attributes'],
+        'persona': '동생'}
 }
 NUM_ACTIONS = len(ACTION_MAP)
 
