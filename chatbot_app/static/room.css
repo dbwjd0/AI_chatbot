@@ -521,6 +521,16 @@
      visibility: hidden;
 }
 
+#Quiz-line {
+    position: absolute;
+    top: 40px;
+    left: 600px;
+    width: 120px;
+    height: 5px;
+    background-color: blue;
+    visibility: hidden;
+}
+
 #proactive-notification {
     position: absolute;
     /* 위치는 room.js에서 플레이어 위치에 따라 동적으로 설정됩니다. */
@@ -595,6 +605,24 @@
     margin-left: 15px;
 }
 
-.top-menu a:hover {
-    text-decoration: underline;
+.dialog-options {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+.dialog-options button {
+    background: none;
+    border: 2px solid #fff;
+    color: #fff;
+    padding: 10px 20px;
+    margin-left: 10px;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.dialog-options button.selected {
+    background-color: #fff;
+    color: #000;
 }

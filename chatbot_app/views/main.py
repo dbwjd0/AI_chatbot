@@ -339,3 +339,7 @@ def quiz_question_view(request):
             'quiz_feedback': quiz_feedback_for_template,
         }
         return render(request, 'quiz.html', context)
+
+@login_required
+def quiz_view(request):
+    return render(request, 'quiz.html')
