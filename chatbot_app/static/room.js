@@ -23,14 +23,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const idleUpImg = '/static/img/side_up_stand.png';
 
     // --- Audio Elements ---
-    const moveSound = new Audio('/static/audio/walking_bgm.mp3'); // Using walking_bgm.mp3
-    moveSound.volume = 0.5; // Reduced volume
+    const moveSound = new Audio('/static/audio/양말 걷기.mp3'); // Using walking_bgm.mp3
+    moveSound.volume = 1; // Reduced volume
     moveSound.loop = true; // Intended for continuous, infinite playback when playing
     let isMovingSoundPlaying = false;
 
-    const collisionSound = new Audio('/static/audio/crash_bgm.mp3'); // Using crash_bgm.mp3
+    const collisionSound = new Audio('/static/audio/부딪힘.mp3'); // Using crash_bgm.mp3
     collisionSound.volume = 0.5; // Reduced volume
     let isCurrentlyColliding = false; // New flag to track if player is currently colliding
+
+    const selectionSound = new Audio('/static/audio/선택지 좌우.mp3');
+    selectionSound.volume = 0.3;
+    const confirmationSound = new Audio('/static/audio/선택지 결정.mp3');
+    confirmationSound.volume = 0.5;
+    const yesConfirmationSound = new Audio('/static/audio/선택지 \'예\'.mp3');
+    yesConfirmationSound.volume = 0.5;
 
     // --- Game State ---
     const playerState = {
@@ -134,6 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
         if (isConfirmationActive) {
             if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                selectionSound.currentTime = 0;
+                selectionSound.play();
                 selectedConfirmationOption = selectedConfirmationOption === 'yes' ? 'no' : 'yes';
                 updateConfirmationSelection();
             }
@@ -244,9 +253,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleConfirmation() {
         if (selectedConfirmationOption === 'yes') {
+            yesConfirmationSound.play();
             fadeOverlay.classList.add('visible');
             setTimeout(() => { window.location.href = '/quiz/'; }, 300);
         } else {
+            confirmationSound.play();
             hideDialog();
             onQuizCooldown = true;
             setTimeout(() => { onQuizCooldown = false; }, 1000); // 1-second cooldown
