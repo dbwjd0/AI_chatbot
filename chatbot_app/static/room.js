@@ -53,6 +53,65 @@ document.addEventListener('DOMContentLoaded', () => {
     const obstacles = document.querySelectorAll('.furniture-object');
     const obstacleCollisionBuffer = 35; // Make sure this is defined before use
 
+    // --- 컴퓨터 오브젝트 충돌 상자 직접 설정 ---
+    // 아래 값을 조절하여 컴퓨터 오브젝트의 충돌 상자를 변경하세요.
+    const computerCollision = {
+        // x: 이미지 왼쪽을 기준으로 충돌 상자를 좌/우로 이동합니다. (양수: 오른쪽, 음수: 왼쪽)
+        x: 50, 
+        // y: 이미지 위쪽을 기준으로 충돌 상자를 위/아래로 이동합니다. (양수: 아래쪽, 음수: 위쪽)
+        y: 50,
+        // width: 충돌 상자의 너비
+        width: 280,
+        // height: 충돌 상자의 높이
+        height: 170 
+    };
+
+    // --- 티비 오브젝트 충돌 상자 직접 설정 ---
+    // 아래 값을 조절하여 티비 오브젝트의 충돌 상자를 변경하세요.
+    const tvCollision = {
+        // x: 이미지 왼쪽을 기준으로 충돌 상자를 좌/우로 이동합니다. (양수: 오른쪽, 음수: 왼쪽)
+        x: 20, 
+        // y: 이미지 위쪽을 기준으로 충돌 상자를 위/아래로 이동합니다. (양수: 아래쪽, 음수: 위쪽)
+        y: 70,
+        // width: 충돌 상자의 너비
+        width: 230,
+        // height: 충돌 상자의 높이
+        height: 150 
+    };
+
+    function getObstacleRect(obstacle) {
+        if (obstacle.id === 'computer-obj') {
+            return {
+                left: obstacle.offsetLeft + computerCollision.x,
+                top: obstacle.offsetTop + computerCollision.y,
+                width: computerCollision.width,
+                height: computerCollision.height
+            };
+        }
+        if (obstacle.id === 'tv') {
+            return {
+                left: obstacle.offsetLeft + tvCollision.x,
+                top: obstacle.offsetTop + tvCollision.y,
+                width: tvCollision.width,
+                height: tvCollision.height
+            };
+        }
+        if (obstacle.id.startsWith('invisible-wall-')) {
+            return {
+                left: obstacle.offsetLeft,
+                top: obstacle.offsetTop,
+                width: obstacle.offsetWidth,
+                height: obstacle.offsetHeight
+            };
+        }
+        return { 
+            left: obstacle.offsetLeft + obstacleCollisionBuffer,
+            top: obstacle.offsetTop + obstacleCollisionBuffer,
+            width: obstacle.offsetWidth - (2 * obstacleCollisionBuffer),
+            height: obstacle.offsetHeight - (2 * obstacleCollisionBuffer)
+        };
+    }
+
     obstacles.forEach(obstacle => {
         // 'invisible-wall-'로 시작하는 ID를 가진 요소는 디버그 상자를 그리지 않고 건너뜁니다.
         if (obstacle.id.startsWith('invisible-wall-')) {
@@ -60,12 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const debugBox = document.createElement('div');
         debugBox.className = 'debug-box';
-        const rect = {
-            left: obstacle.offsetLeft + obstacleCollisionBuffer,
-            top: obstacle.offsetTop + obstacleCollisionBuffer,
-            width: obstacle.offsetWidth - (2 * obstacleCollisionBuffer),
-            height: obstacle.offsetHeight - (2 * obstacleCollisionBuffer)
-        };
+        const rect = getObstacleRect(obstacle);
         debugBox.style.left = `${rect.left}px`;
         debugBox.style.top = `${rect.top}px`;
         debugBox.style.width = `${rect.width}px`;
@@ -185,24 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         let collisionX = false;
         for (const obstacle of obstacles) {
-            let obstacleRect;
-            if (obstacle.id.startsWith('invisible-wall-')) {
-                // For our wall, use the exact dimensions without a buffer
-                obstacleRect = {
-                    left: obstacle.offsetLeft,
-                    top: obstacle.offsetTop,
-                    width: obstacle.offsetWidth,
-                    height: obstacle.offsetHeight
-                };
-            } else {
-                // For all other obstacles, use the buffer as before
-                obstacleRect = { 
-                    left: obstacle.offsetLeft + obstacleCollisionBuffer,
-                    top: obstacle.offsetTop + obstacleCollisionBuffer,
-                    width: obstacle.offsetWidth - (2 * obstacleCollisionBuffer),
-                    height: obstacle.offsetHeight - (2 * obstacleCollisionBuffer)
-                };
-            }
+            const obstacleRect = getObstacleRect(obstacle);
             if (checkRectCollision(futurePlayerRectX, obstacleRect)) {
                 collisionX = true;
                 currentFrameCollision = true;
@@ -222,24 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         let collisionY = false;
         for (const obstacle of obstacles) {
-            let obstacleRect;
-            if (obstacle.id.startsWith('invisible-wall-')) {
-                // For our wall, use the exact dimensions without a buffer
-                obstacleRect = {
-                    left: obstacle.offsetLeft,
-                    top: obstacle.offsetTop,
-                    width: obstacle.offsetWidth,
-                    height: obstacle.offsetHeight
-                };
-            } else {
-                // For all other obstacles, use the buffer as before
-                obstacleRect = { 
-                    left: obstacle.offsetLeft + obstacleCollisionBuffer,
-                    top: obstacle.offsetTop + obstacleCollisionBuffer,
-                    width: obstacle.offsetWidth - (2 * obstacleCollisionBuffer),
-                    height: obstacle.offsetHeight - (2 * obstacleCollisionBuffer)
-                };
-            }
+            const obstacleRect = getObstacleRect(obstacle);
             if (checkRectCollision(futurePlayerRectY, obstacleRect)) {
                 collisionY = true;
                 currentFrameCollision = true;
