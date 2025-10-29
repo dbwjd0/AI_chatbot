@@ -96,6 +96,11 @@ document.addEventListener('DOMContentLoaded', function() {
         { speaker: '{ai_name}', text: '난 수많은 데이터를 가진 AI지만...인간에 대해서는 잘 몰라' },
         { speaker: '{ai_name}', text: '그러니까 {이름}, 내게 많을 걸 알려줘.' },
         { speaker: '{ai_name}', text: '나도 네게, 내가 가진 지식을 알려줄 테니까.' },
+        { speaker: '{ai_name}', text: '...저기, 일단 물어보는 건데' },
+        { speaker: '{ai_name}', text: '넌 어떤 유형의 사람과 가까워지고 싶어? 네게 필요한 사람은 어떤 사람이야?' },
+        { action: 'show_input', type: 'text', fact_type: 'persona_preference', warning: '*AI의 초기 페르소나 형성에 영향을 줍니다. 자유롭게 작성해주세요.*' },
+        { speaker: '{ai_name}', text: '...어렵네. 난 AI니까. 네가 바라는 사람처럼 될 수 있을 진 모르겠어.' },
+        { speaker: '{ai_name}', text: '하지만... 참고해둘게.' },
         { speaker: '{ai_name}', text: '일단 내 방을 보여줄게. 같이 가자.' },
         { action: 'complete_onboarding' }
     ];
