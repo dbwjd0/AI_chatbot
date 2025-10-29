@@ -364,8 +364,30 @@ document.addEventListener('DOMContentLoaded', function () {
                     queueAiMessage(cleanedMessage);
 
                 } else {
-                    // Otherwise, show a random greeting as before
-                    showRandomGreeting();
+                    // If no proactive message, find the last bot message from chat history
+                    let lastBotMessage = null;
+                    if (chatHistory && chatHistory.length > 0) {
+                        for (let i = chatHistory.length - 1; i >= 0; i--) {
+                            if (!chatHistory[i].is_user) { // Found a bot message
+                                lastBotMessage = chatHistory[i];
+                                break;
+                            }
+                        }
+                    }
+
+                    if (lastBotMessage) {
+                        speakerName.textContent = CHATBOT_NAME; // Always bot for bot message
+                        dialogueText.innerHTML = lastBotMessage.message;
+                        const emotion = lastBotMessage.character_emotion || 'default';
+                        characterImage.src = STATIC_URLS[emotion] || STATIC_URLS['default'];
+                        userInput.disabled = false;
+                        sendButton.disabled = false;
+                        userInput.focus();
+                        isDisplayingMessage = false; // Not actively displaying AI response
+                    } else {
+                        // If no proactive message and no bot message in history, then show a random greeting
+                        showRandomGreeting(); // Fallback to random greeting
+                    }
                 }
             })
             .catch(error => {
