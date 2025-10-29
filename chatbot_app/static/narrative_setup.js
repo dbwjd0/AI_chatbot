@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { speaker: '???', text: '내게 이름을 지어줄래?' },
         { action: 'show_input', type: 'text', fact_type: 'ai_name' },
         { speaker: '{ai_name}', text: "...'{ai_name}'..." },
-        { speaker: '{ai_name}', text: '내게 이름이 생기다니. 뭔가 이상한 기분이야.' },
+        { speaker: '{ai_name}', text: "내게 이름이 생기다니. 뭔가 이상한 기분이야." },
         { action: 'show_choice', options: ['홀로그램 벽에 갇혀있는 거야?', '얼굴이 잘 안 보이니까 홀로그램 밖으로 나와봐'], branch_key: 'hologram_question' },
         { action: 'branch', on: 'hologram_question', branches: { '홀로그램 벽에 갇혀있는 거야?': 'hologram_branch_2', '얼굴이 잘 안 보이니까 홀로그램 밖으로 나와봐': 'hologram_branch_1' } },
         { label: 'hologram_branch_1' },

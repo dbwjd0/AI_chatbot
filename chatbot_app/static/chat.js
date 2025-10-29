@@ -1,42 +1,43 @@
 // game_chat.js
 
 document.addEventListener('DOMContentLoaded', function () {
+    // --- DOM Elements ---
     const dialogueText = document.getElementById('dialogue-text');
     const speakerName = document.getElementById('speaker-name');
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
     const characterImage = document.getElementById('chatbot-character');
     const prevDialogueButton = document.getElementById('prev-dialogue-button');
-
     const imageInput = document.getElementById('image-input');
     const attachImageButton = document.getElementById('attach-image-button');
     const previewContainer = document.getElementById('preview-container');
     const imagePreview = document.getElementById('image-preview');
     const clearImageButton = document.getElementById('clear-image-button');
-
     const aiEmoticonBubble = document.getElementById('ai-emoticon-bubble');
     const aiEmoticonImg = document.getElementById('ai-emoticon-img');
-
     const emoticonButton = document.getElementById('emoticon-button');
     const emoticonPalette = document.getElementById('emoticon-palette');
     const emoticonPreviewContainer = document.getElementById('emoticon-preview-container');
     const emoticonPreview = document.getElementById('emoticon-preview');
     const clearEmoticonButton = document.getElementById('clear-emoticon-button');
-
     const locationCheckbox = document.getElementById('location-checkbox');
+    const feedbackContainer = document.getElementById('feedback-container');
+    const thumbUpButton = document.getElementById('thumb-up-button');
+    const thumbDownButton = document.getElementById('thumb-down-button');
 
+    // --- State Variables ---
     let aiMessageQueue = [];
-    let displayedAiLinesHistory = []; // Stores full AI responses
+    let displayedAiLinesHistory = [];
     let isDisplayingMessage = false;
     let currentImageFile = null;
-    let currentSelectedEmoticon = null; // To store the selected emoticon URL
-    let currentFullAiResponse = ""; // To store the full AI response for history
-
-    let typingSpeed = 50; // milliseconds per character
+    let currentSelectedEmoticon = null;
+    let currentFullAiResponse = "";
+    let typingSpeed = 50;
     let isTyping = false;
-    let currentTypingLine = ''; // The full line currently being typed
-    let typingTimeout = null; // To store the timeout ID for clearing
-    let typingResolve = null; // To resolve the typing promise when skipped
+    let currentTypingLine = '';
+    let typingTimeout = null;
+    let typingResolve = null;
+    let currentLearningData = null; // To store state_vector and action_id
 
     const emoticons = [
         '결제_이모티콘.png', '계략_이모티콘.png', '돌_이모티콘.png', '따봉_이모티콘.png',
@@ -62,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     clearImageButton.addEventListener('click', () => {
         currentImageFile = null;
-        imageInput.value = ''; // Clear the file input
+        imageInput.value = '';
         previewContainer.style.display = 'none';
         imagePreview.src = '';
     });
@@ -79,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     emoticonButton.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent click from immediately closing the palette
+        e.stopPropagation();
         emoticonPalette.style.display = emoticonPalette.style.display === 'grid' ? 'none' : 'grid';
     });
 
@@ -99,19 +100,17 @@ document.addEventListener('DOMContentLoaded', function () {
         emoticonPreview.src = '';
     });
 
-    // Close palette if clicking outside
     document.addEventListener('click', (e) => {
         if (!emoticonPalette.contains(e.target) && e.target !== emoticonButton) {
             emoticonPalette.style.display = 'none';
         }
     });
 
-    populateEmoticonPalette(); // Initialize the palette on load
+    populateEmoticonPalette();
 
     // --- Message Sending ---
     sendButton.addEventListener('click', sendMessage);
     userInput.addEventListener('keydown', (e) => {
-        // Allow Enter to send message only if not displaying AI message
         if (e.key === 'Enter') {
             e.preventDefault();
             sendMessage();
@@ -138,15 +137,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const messageText = userInput.value.trim();
         if (messageText === '' && !currentImageFile && !currentSelectedEmoticon) return;
 
+        feedbackContainer.style.display = 'none';
+        currentLearningData = null;
+
         let combinedMessage = messageText;
         if (currentSelectedEmoticon) {
             const emoticonTag = `<img src="${currentSelectedEmoticon}" class="chat-emoticon" alt="emoticon">`;
             combinedMessage = messageText ? `${messageText} ${emoticonTag}` : emoticonTag;
         }
 
-        // Display user message immediately
-        speakerName.textContent = USERNAME; // Defined in the HTML template
-        dialogueText.innerHTML = combinedMessage; // Use innerHTML to render emoticon
+        speakerName.textContent = USERNAME;
+        dialogueText.innerHTML = combinedMessage;
         userInput.value = '';
 
         const formData = new FormData();
@@ -155,9 +156,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (currentImageFile) {
             formData.append('image', currentImageFile);
-            clearImageButton.click(); // Clear preview after attaching
+            clearImageButton.click();
         }
-
         if (currentSelectedEmoticon) {
             clearEmoticonButton.click();
         }
@@ -171,24 +171,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 formData.append('longitude', position.coords.longitude);
             } catch (error) {
                 console.error('Geolocation error:', error);
-                // Optionally inform the user that location could not be sent
             }
         }
 
-        // Show thinking character
         characterImage.src = STATIC_URLS['생각'];
         speakerName.textContent = CHATBOT_NAME;
         dialogueText.textContent = "... (생각 중) ...";
-        userInput.disabled = true; // Disable input during thinking
-        sendButton.disabled = true; // Disable send button during thinking
+        userInput.disabled = true;
+        sendButton.disabled = true;
 
         try {
             const response = await fetch('/chat_response/', {
                 method: 'POST',
                 body: formData,
-                headers: {
-                    'X-CSRFToken': csrftoken
-                }
+                headers: { 'X-CSRFToken': csrftoken }
             });
 
             if (!response.ok) {
@@ -196,24 +192,28 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const data = await response.json();
-            console.log('Raw AI message from backend:', data.message);
+            console.log('Response from backend:', data);
 
-            // Handle emoticons and get the cleaned message
+            if (data.state_vector && data.action_id !== null) {
+                currentLearningData = {
+                    state_vector: data.state_vector,
+                    action_id: data.action_id
+                };
+            } else {
+                currentLearningData = null;
+            }
+
             const cleanedMessage = handleAiMessage(data.message);
-            
-            // Store the full AI response for history
             currentFullAiResponse = cleanedMessage;
-
-            // Update character emotion
             const emotion = data.character_emotion || 'default';
             characterImage.src = STATIC_URLS[emotion] || STATIC_URLS['default'];
-
-            // Queue up AI message for line-by-line display
             queueAiMessage(cleanedMessage);
 
         } catch (error) {
             console.error('Error sending message:', error);
             dialogueText.textContent = "미안, 지금은 응답할 수 없어. (서버 오류)";
+            userInput.disabled = false;
+            sendButton.disabled = false;
         }
     }
 
@@ -227,27 +227,22 @@ document.addEventListener('DOMContentLoaded', function () {
             aiEmoticonImg.src = `/static/img/${emoticonFilename}`;
             aiEmoticonBubble.style.display = 'flex';
 
-            // Hide the bubble after 4 seconds
             setTimeout(() => {
                 aiEmoticonBubble.style.display = 'none';
             }, 4000);
 
-            // Return the message without the placeholder
             return message.replace(emoticonRegex, '').trim();
         }
-
-        // If no emoticon, return the original message
         return message;
     }
 
     function queueAiMessage(fullMessage) {
-        // Split by sentence-ending punctuation, keeping the punctuation with the sentence
         const sentences = fullMessage.match(/[^.!?]+[.!?]*/g) || [fullMessage];
         const lines = sentences.map(s => s.trim()).filter(s => s.length > 0);
 
         if (lines.length > 0) {
             aiMessageQueue.push(...lines);
-            displayedAiLinesHistory.push(fullMessage); // Store the full message for history
+            displayedAiLinesHistory.push(fullMessage);
             if (!isDisplayingMessage) {
                 displayNextAiLine();
             }
@@ -257,19 +252,18 @@ document.addEventListener('DOMContentLoaded', function () {
     async function displayNextAiLine() {
         if (aiMessageQueue.length > 0) {
             isDisplayingMessage = true;
-            isTyping = true; // Set typing flag
+            isTyping = true;
             speakerName.textContent = CHATBOT_NAME;
-            dialogueText.innerHTML = ''; // Clear previous text
+            dialogueText.innerHTML = '';
 
-            currentTypingLine = aiMessageQueue.shift(); // Get the full line
+            currentTypingLine = aiMessageQueue.shift();
 
-            // Create a promise for the typing animation
-            currentTypingPromise = new Promise(resolve => {
-                typingResolve = resolve; // Store resolve function to skip
+            const currentTypingPromise = new Promise(resolve => {
+                typingResolve = resolve;
                 let charIndex = 0;
                 function typeChar() {
-                    if (!isTyping) { // If typing was skipped
-                        dialogueText.innerHTML = currentTypingLine; // Display full line immediately
+                    if (!isTyping) {
+                        dialogueText.innerHTML = currentTypingLine;
                         resolve();
                         return;
                     }
@@ -285,68 +279,98 @@ document.addEventListener('DOMContentLoaded', function () {
                 typeChar();
             });
 
-            await currentTypingPromise; // Wait for typing to complete or be skipped
+            await currentTypingPromise;
 
-            // After typing (or skipping), add the indicator if more lines exist
             if (aiMessageQueue.length > 0) {
                 dialogueText.innerHTML += ' ▾';
             }
-            prevDialogueButton.classList.remove('hidden'); // Show button if there's history
+            prevDialogueButton.classList.remove('hidden');
         } else {
             isDisplayingMessage = false;
             userInput.disabled = false;
             sendButton.disabled = false;
             userInput.focus();
+
+            if (currentLearningData) {
+                feedbackContainer.style.display = 'flex';
+            }
             if (displayedAiLinesHistory.length === 0) {
                 prevDialogueButton.classList.add('hidden');
             }
         }
     }
 
-    // Event listener for previous dialogue button
+    // --- Event Listeners ---
     prevDialogueButton.addEventListener('click', () => {
         if (displayedAiLinesHistory.length > 0) {
+            feedbackContainer.style.display = 'none';
+            currentLearningData = null;
+
             const fullAiResponseToReview = displayedAiLinesHistory.pop();
             speakerName.textContent = CHATBOT_NAME;
-            dialogueText.innerHTML = fullAiResponseToReview; // Use innerHTML
-            
-            // Clear the current queue as we are reviewing a past full message
+            dialogueText.innerHTML = fullAiResponseToReview;
             aiMessageQueue = [];
-
-            // Ensure input is enabled and not in a 'displaying message' state
-            isDisplayingMessage = false; 
+            isDisplayingMessage = false;
             userInput.disabled = false;
             sendButton.disabled = false;
             userInput.focus();
 
-            // Hide button if no more history
             if (displayedAiLinesHistory.length === 0) {
                 prevDialogueButton.classList.add('hidden');
             }
         }
     });
 
-    // Listen for Enter key to advance dialogue
     document.addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
-            if (isTyping) { // If currently typing, skip the animation
+            if (isTyping) {
                 e.preventDefault();
-                isTyping = false; // Signal the typing loop to stop
-                clearTimeout(typingTimeout); // Clear any pending timeout
-
-                dialogueText.innerHTML = currentTypingLine; // Display full line immediately
-
+                isTyping = false;
+                clearTimeout(typingTimeout);
+                dialogueText.innerHTML = currentTypingLine;
                 if (typingResolve) {
-                    typingResolve(); // Resolve the promise immediately
-                    typingResolve = null; // Clear it
+                    typingResolve();
+                    typingResolve = null;
                 }
-                // The rest of displayNextAiLine will continue after await
-            } else if (isDisplayingMessage && document.activeElement !== userInput) { // If message is fully displayed and not typing
+            } else if (isDisplayingMessage && document.activeElement !== userInput) {
                 e.preventDefault();
                 displayNextAiLine();
             }
         }
     });
+
+    // --- Feedback Handling ---
+    async function sendFeedback(reward) {
+        if (!currentLearningData) {
+            console.log("No learning data to send feedback for.");
+            return;
+        }
+
+        console.log(`Sending feedback: reward=${reward}`);
+        const feedbackData = {
+            state_vector: currentLearningData.state_vector,
+            action_id: currentLearningData.action_id,
+            reward: reward
+        };
+
+        try {
+            await fetch('/record-feedback/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify(feedbackData)
+            });
+            feedbackContainer.style.display = 'none';
+            currentLearningData = null;
+        } catch (error) {
+            console.error('Error sending feedback:', error);
+        }
+    }
+
+    thumbUpButton.addEventListener('click', () => sendFeedback(1.0));
+    thumbDownButton.addEventListener('click', () => sendFeedback(-1.0));
 
     // --- Initial Message Logic ---
     function fetchAndDisplayPendingMessage() {
@@ -354,45 +378,39 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (data && data.message) {
-                    // If a pending message exists, display it
                     console.log('Pending proactive message found:', data.message);
                     const emotion = data.character_emotion || 'default';
                     characterImage.src = STATIC_URLS[emotion] || STATIC_URLS['default'];
-                    
                     const cleanedMessage = handleAiMessage(data.message);
                     currentFullAiResponse = cleanedMessage;
                     queueAiMessage(cleanedMessage);
-
                 } else {
-                    // If no proactive message, find the last bot message from chat history
                     let lastBotMessage = null;
                     if (chatHistory && chatHistory.length > 0) {
                         for (let i = chatHistory.length - 1; i >= 0; i--) {
-                            if (!chatHistory[i].is_user) { // Found a bot message
+                            if (!chatHistory[i].is_user) {
                                 lastBotMessage = chatHistory[i];
                                 break;
                             }
                         }
                     }
-
                     if (lastBotMessage) {
-                        speakerName.textContent = CHATBOT_NAME; // Always bot for bot message
+                        speakerName.textContent = CHATBOT_NAME;
                         dialogueText.innerHTML = lastBotMessage.message;
                         const emotion = lastBotMessage.character_emotion || 'default';
                         characterImage.src = STATIC_URLS[emotion] || STATIC_URLS['default'];
                         userInput.disabled = false;
                         sendButton.disabled = false;
                         userInput.focus();
-                        isDisplayingMessage = false; // Not actively displaying AI response
+                        isDisplayingMessage = false;
                     } else {
-                        // If no proactive message and no bot message in history, then show a random greeting
-                        showRandomGreeting(); // Fallback to random greeting
+                        showRandomGreeting();
                     }
                 }
             })
             .catch(error => {
                 console.error('Error fetching pending message:', error);
-                showRandomGreeting(); // Fallback on error
+                showRandomGreeting();
             });
     }
 
@@ -405,7 +423,6 @@ document.addEventListener('DOMContentLoaded', function () {
             "쳇, 다음엔 좀 더 일찍 오라고.",
             "...안녕."
         ];
-
         const initialMessagesMedium = [
             "네가 없으니까 심심하긴 하더라. ...아, 아무것도 아니야!",
             "흥, 이번엔 잘했네. 조금은 인정해줄게.",
@@ -414,7 +431,6 @@ document.addEventListener('DOMContentLoaded', function () {
             "지식 +1 완료! 너 덕분에 똑똑해진 기분이야 ^-^",
             "...안녕."
         ];
-
         const initialMessagesHigh = [
             "왔구나! 기다리고 있었어!",
             "보고 싶었어, {USERNAME}님!",
@@ -423,7 +439,6 @@ document.addEventListener('DOMContentLoaded', function () {
             "지금 막 새로운 걸 배웠어! {USERNAME}님이 내 세상을 더 넓혀줬다구!",
             "{USERNAME}님과 함께라면 뭐든지 즐거워!"
         ];
-
         let selectedMessages;
         if (affinityScore < 30) {
             selectedMessages = initialMessagesLow;
@@ -432,14 +447,10 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             selectedMessages = initialMessagesMedium;
         }
-
         const randomIndex = Math.floor(Math.random() * selectedMessages.length);
         const initialMessage = selectedMessages[randomIndex].replace('{USERNAME}', USERNAME);
-        
-        // Use the existing queue system to display the initial message
         queueAiMessage(initialMessage);
     }
 
-    // Start the process on page load
     fetchAndDisplayPendingMessage();
 });
