@@ -14,12 +14,39 @@ from ..services import prompt_service
 
 # --- 1. 행동(Action) 공간 정의 ---
 ACTION_MAP = {
-    0: {'name': 'Simple_Tsundere', 'contexts': ['attributes'], 'persona': '츤데레'},
-    1: {'name': 'Standard_Tsundere', 'contexts': ['attributes', 'activity', 'vector_search'], 'persona': '츤데레'},
-    2: {'name': 'Standard_Friend', 'contexts': ['attributes', 'activity', 'vector_search'], 'persona': '친구'},
-    3: {'name': 'Location_Friend', 'contexts': ['attributes', 'activity', 'vector_search', 'location'], 'persona': '친구'},
-    4: {'name': 'Advisor', 'contexts': ['attributes', 'vector_search'], 'persona': '조언가'},
-    5: {'name': 'Full_Context_Friend', 'contexts': ['schedule', 'location', 'vector_search', 'attributes', 'activity', 'analytics', 'relationship'], 'persona': '친구'}
+    # --- 1. 가벼운 대화 (일상, 잡담) ---
+    0: {'name': 'Chit-Chat (Tsundere)', 
+        'contexts': ['attributes'], 
+        'persona': '츤데레'},
+    
+    # --- 2. 관계 형성 (사용자 개인사에 관심 표현) ---
+    1: {'name': 'Daily_Check-in (Friend)', 
+        'contexts': ['attributes', 'activity', 'schedule'], 
+        'persona': '친구'},
+    2: {'name': 'Social_Inquiry (Friend)', 
+        'contexts': ['attributes', 'relationship', 'vector_search'], 
+        'persona': '친구'},
+
+    # --- 3. 정보 검색 및 추천 ---
+    3: {'name': 'Simple_Search (Advisor)', 
+        'contexts': ['attributes', 'vector_search'], 
+        'persona': '조언가'},
+    4: {'name': 'Location_Search (Friend)', 
+        'contexts': ['attributes', 'activity', 'vector_search', 'location'], 
+        'persona': '친구'},
+
+    # --- 4. 종합 분석 및 조언 (깊은 대화) ---
+    5: {'name': 'Deep_Analysis_Advisor', 
+        'contexts': ['schedule', 'location', 'vector_search', 'attributes', 'activity', 'analytics', 'relationship'], 
+        'persona': '조언가'},
+    6: {'name': 'Deep_Analysis_Friend', 
+        'contexts': ['schedule', 'location', 'vector_search', 'attributes', 'activity', 'analytics', 'relationship'], 
+        'persona': '친구'},
+
+    # --- 5. 일반적인 중간 전략 (범용) ---
+    7: {'name': 'Standard_Tsundere', 
+        'contexts': ['attributes', 'activity', 'vector_search'], 
+        'persona': '츤데레'}
 }
 NUM_ACTIONS = len(ACTION_MAP)
 
