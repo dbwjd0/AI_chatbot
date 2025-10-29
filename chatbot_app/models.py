@@ -1,8 +1,8 @@
-import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import uuid
 
 # Create your models here.
 
@@ -142,3 +142,28 @@ class PendingProactiveMessage(models.Model):
 
     def __str__(self):
         return f"{self.user.username}의 읽지 않은 능동 메시지"
+
+class QuizResult(models.Model):
+    """
+    사용자의 퀴즈 결과를 저장하는 모델
+    """
+    QUIZ_GENRE_CHOICES = [
+        ('all', '랜덤'),
+        ('korean_history', '한국사'),
+        ('world_history', '세계사'),
+        ('science', '과학'),
+        ('literature', '문학'),
+        ('general', '상식'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quiz_results')
+    genre = models.CharField(max_length=100, choices=QUIZ_GENRE_CHOICES, help_text="퀴즈 장르")
+    num_questions = models.IntegerField(help_text="총 문제 수")
+    score = models.IntegerField(help_text="획득 점수")
+    date_completed = models.DateTimeField(auto_now_add=True, help_text="퀴즈 완료 시간")
+
+    class Meta:
+        ordering = ['-date_completed'] # 최신 결과부터 표시
+
+    def __str__(self):
+        return f"{self.user.username} - {self.genre} 퀴즈 ({self.score}/{self.num_questions}) on {self.date_completed.strftime('%Y-%m-%d')}"

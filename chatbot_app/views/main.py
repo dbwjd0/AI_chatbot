@@ -5,14 +5,13 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 import re
 import json # json 모듈 임포트
-from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage
+from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage, QuizResult
 from chatbot_app.services.proactive_service import generate_proactive_message
-
-@login_required
+from ..quiz_data import QUIZ_QUESTIONS
 def landing_view(request):
     """사용자의 온보딩 완료 여부에 따라 적절한 페이지로 리디렉션합니다."""
     if request.user.profile.is_onboarding_complete:
-        return redirect('game_start')
+        return redirect('start')
     else:
         return redirect('narrative_setup')
 
@@ -66,8 +65,8 @@ def room(request):
     return render(request, 'room.html')
 
 @login_required
-def chat_view(request):
-    """메인 채팅 페이지를 렌더링합니다. (페이지네이션 적용)"""
+def chat_history_view(request):
+    """채팅 기록 페이지를 렌더링합니다. (페이지네이션 적용)"""
     user_profile = UserProfile.objects.get(user=request.user)
     
     # 최신 메시지를 먼저 가져오기 위해 timestamp 내림차순으로 정렬
@@ -125,8 +124,8 @@ def load_more_messages(request):
     })
 
 @login_required
-def game_chat_view(request):
-    """미연시 스타일의 새로운 채팅 페이지를 렌더링합니다."""
+def chat_main_view(request):
+    """게임 스타일의 채팅 페이지를 렌더링합니다."""
     user_profile = UserProfile.objects.get(user=request.user)
     
     all_messages = ChatMessage.objects.filter(user=request.user).order_by('-timestamp')
@@ -145,7 +144,7 @@ def game_chat_view(request):
         for msg in messages_page.object_list
     ][::-1]
 
-    return render(request, 'game_chat.html', {
+    return render(request, 'chat.html', {
         'user_profile': user_profile, 
         'chat_messages': chat_messages_data,
         'has_next_page': messages_page.has_next()
@@ -226,6 +225,122 @@ def get_and_clear_pending_message(request):
     
     return JsonResponse({'message': None})
 
-def game_start_view(request):
+@login_required
+def start_view(request):
     """로그인 후 게임 시작 화면을 렌더링합니다."""
-    return render(request, 'game_start.html')
+    return render(request, 'start.html')
+
+@login_required
+def quiz_history_view(request):
+    """사용자의 퀴즈 기록을 표시합니다."""
+    quiz_results = QuizResult.objects.filter(user=request.user).order_by('-date_completed')
+    return render(request, 'quiz_history.html', {'quiz_results': quiz_results})
+
+@login_required
+def quiz_mode_view(request):
+    """퀴즈 모드 설정 페이지를 렌더링합니다."""
+    return render(request, 'quiz.html')
+
+@login_required
+def start_quiz_view(request):
+    """퀴즈 시작 요청을 처리하고 퀴즈 페이지로 리디렉션합니다."""
+    if request.method == 'POST':
+        genre = request.POST.get('genre')
+        difficulty = request.POST.get('difficulty')
+        num_questions = int(request.POST.get('num_questions'))
+
+        filtered_questions = [
+            q for q in QUIZ_QUESTIONS
+            if (genre == 'all' or q['genre'] == genre)
+        ]
+
+        import random
+        random.shuffle(filtered_questions)
+        selected_questions = filtered_questions[:num_questions]
+        request.session['quiz_total_questions'] = len(selected_questions)
+        request.session['selected_genre'] = genre # Store selected genre
+
+        request.session['quiz_questions'] = selected_questions
+        request.session['current_question_index'] = 0
+        request.session['quiz_score'] = 0
+        return redirect('quiz_question')
+    return redirect('quiz_mode')
+
+@login_required
+def quiz_question_view(request):
+    """현재 퀴즈 질문을 표시하고 답변을 처리합니다."""
+    quiz_questions = request.session.get('quiz_questions')
+    current_question_index = request.session.get('current_question_index')
+    quiz_score = request.session.get('quiz_score')
+    quiz_total_questions = request.session.get('quiz_total_questions')
+    
+    # Initialize quiz_feedback for this request
+    quiz_feedback_for_template = None
+
+    if not quiz_questions or current_question_index is None or quiz_total_questions is None:
+        return redirect('quiz_mode')
+
+    if request.method == 'POST':
+        user_answer = request.POST.get('answer')
+        current_question = quiz_questions[current_question_index]
+        correct_answer = current_question['answer']
+
+        is_correct = (user_answer == correct_answer)
+        if is_correct:
+            request.session['quiz_score'] += 1
+
+        request.session['quiz_feedback'] = {
+            'is_correct': is_correct,
+            'correct_answer': correct_answer,
+            'user_answer': user_answer,
+            'character_emotion': '정답' if is_correct else '오답',
+        }
+        return redirect('quiz_question')
+
+    # GET 요청 처리
+    if 'quiz_feedback' in request.session:
+        quiz_feedback_for_template = request.session['quiz_feedback']
+        
+        if request.GET.get('next_question') == 'true':
+            request.session['current_question_index'] += 1
+            current_question_index = request.session['current_question_index']
+            request.session.pop('quiz_feedback') # Clear feedback after advancing
+            quiz_feedback_for_template = None
+    else:
+        pass
+
+
+    if current_question_index >= quiz_total_questions:
+        final_score = request.session['quiz_score']
+        selected_genre = request.session.get('selected_genre', 'all') # Retrieve selected genre
+
+        # Save quiz result
+        from ..models import QuizResult
+        QuizResult.objects.create(
+            user=request.user,
+            genre=selected_genre,
+            num_questions=quiz_total_questions,
+            score=final_score
+        )
+
+        del request.session['quiz_questions']
+        del request.session['current_question_index']
+        del request.session['quiz_score']
+        del request.session['quiz_total_questions']
+        del request.session['selected_genre'] # Clear selected genre from session
+        return render(request, 'quiz.html', {'quiz_finished': True, 'final_score': final_score, 'total_questions': quiz_total_questions})
+    else:
+        current_question = quiz_questions[current_question_index]
+        context = {
+            'question': current_question['question'],
+            'options': current_question['options'],
+            'current_question_number': current_question_index + 1,
+            'total_questions': quiz_total_questions,
+            'quiz_active': True,
+            'quiz_feedback': quiz_feedback_for_template,
+        }
+        return render(request, 'quiz.html', context)
+
+@login_required
+def quiz_view(request):
+    return render(request, 'quiz.html')

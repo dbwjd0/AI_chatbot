@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 비서와의 대화</title>
-    <link rel="stylesheet" href="{% static 'game_chat.css' %}">
+    <link rel="stylesheet" href="{% static 'chat.css' %}">
     <style>
         #toggle-bgm-btn {
             position: absolute;
@@ -115,7 +115,7 @@
         const CHATBOT_NAME = "{{ user_profile.chatbot_name|escapejs }}";
         const affinityScore = "{{ user_profile.affinity_score|default:0 }}";
     </script>
-    <script src="{% static 'game_chat.js' %}"></script>
+    <script src="{% static 'chat.js' %}"></script>
 
     <!-- 게임 페이지용 BGM (login.html 제외) -->
     <audio id="bgm2" loop>
