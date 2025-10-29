@@ -95,7 +95,9 @@ html, body {
 }
 
 #send-button:hover {
-    background-color: #000000; /* A darker shade of blue */
+    background-color: #16ffff;
+    color: #fff;
+    border-color: #ff00aa;
 }
 
 /* Choice Selection Styles */
@@ -118,10 +120,16 @@ html, body {
     text-align: center;
 }
 
-.choice-option.selected {
-    background-color: #007bff;
+.choice-option:hover {
+    background-color: #000000; /* A slightly darker blue for hover */
     color: #fff;
-    border-color: #007bff;
+    border-color: #ff00aa;
+}
+
+.choice-option.selected {
+    background-color: #16ffff;
+    color: #fff;
+    border-color: #ff00aa;
 }
 
 #choice-container.grid {
