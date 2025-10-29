@@ -150,9 +150,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (target === 'chat_history') {
             fadeOverlay.classList.add('visible');
             setTimeout(() => { window.location.href = '/chat_history/'; }, 300);
-        } else if (target === 'game-chat') {
+        } else if (target === 'chat') {
             fadeOverlay.classList.add('visible');
-            setTimeout(() => { window.location.href = '/game-chat/'; }, 300);
+            setTimeout(() => { window.location.href = '/chat/'; }, 300);
         } else if (target === 'books') {
             showDialog('[아이]', '내가 좋아하는 책들이 꽂혀있다. 어려운 내용이 많아 보인다.');
         } else if (target === 'sofa') {

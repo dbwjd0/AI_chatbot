@@ -11,7 +11,7 @@ from ..quiz_data import QUIZ_QUESTIONS
 def landing_view(request):
     """사용자의 온보딩 완료 여부에 따라 적절한 페이지로 리디렉션합니다."""
     if request.user.profile.is_onboarding_complete:
-        return redirect('game_start')
+        return redirect('start')
     else:
         return redirect('narrative_setup')
 
@@ -65,8 +65,8 @@ def room(request):
     return render(request, 'room.html')
 
 @login_required
-def chat_view(request):
-    """메인 채팅 페이지를 렌더링합니다. (페이지네이션 적용)"""
+def chat_history_view(request):
+    """채팅 기록 페이지를 렌더링합니다. (페이지네이션 적용)"""
     user_profile = UserProfile.objects.get(user=request.user)
     
     # 최신 메시지를 먼저 가져오기 위해 timestamp 내림차순으로 정렬
@@ -124,8 +124,8 @@ def load_more_messages(request):
     })
 
 @login_required
-def game_chat_view(request):
-    """미연시 스타일의 새로운 채팅 페이지를 렌더링합니다."""
+def chat_main_view(request):
+    """게임 스타일의 채팅 페이지를 렌더링합니다."""
     user_profile = UserProfile.objects.get(user=request.user)
     
     all_messages = ChatMessage.objects.filter(user=request.user).order_by('-timestamp')
@@ -144,7 +144,7 @@ def game_chat_view(request):
         for msg in messages_page.object_list
     ][::-1]
 
-    return render(request, 'game_chat.html', {
+    return render(request, 'chat.html', {
         'user_profile': user_profile, 
         'chat_messages': chat_messages_data,
         'has_next_page': messages_page.has_next()
@@ -225,9 +225,10 @@ def get_and_clear_pending_message(request):
     
     return JsonResponse({'message': None})
 
-def game_start_view(request):
+@login_required
+def start_view(request):
     """로그인 후 게임 시작 화면을 렌더링합니다."""
-    return render(request, 'game_start.html')
+    return render(request, 'start.html')
 
 @login_required
 def quiz_history_view(request):
