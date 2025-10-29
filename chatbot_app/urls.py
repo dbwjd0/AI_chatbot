@@ -10,6 +10,7 @@ urlpatterns = [
     path('landing/', main.landing_view, name='landing'),
     path('narrative-setup/', main.narrative_setup_view, name='narrative_setup'),
     path('chat_response/', chatWithAi.chat_response, name='chat_response'),
+    path('record-feedback/', chatWithAi.record_feedback, name='record_feedback'),
     path('chat_history/load-messages/', main.load_more_messages, name='load_more_messages'),
     path('opening/', main.opening_view, name='opening'),
     path('signup/', auth.signup_view, name='signup'),
