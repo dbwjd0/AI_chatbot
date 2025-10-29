@@ -28,6 +28,7 @@
 </head>
 <body>
     <button id="toggle-bgm-btn">BGM OFF</button>
+    <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
     <div class="container">
     {% include 'includes/top_menu.html' with show_room_link=False %}
         <div class="chatbot-container" id="room">
@@ -63,6 +64,7 @@
             <div id="invisible-wall-15" class="furniture-object"></div>
             <div id="invisible-wall-16" class="furniture-object"></div>
             <div id="invisible-wall-17" class="furniture-object"></div>
+            <div id="Quiz-line" class="interactive-object" data-interaction-target="quiz"></div>
             <div id="player">
                 <img src="{% static 'img/char_dot.png' %}" alt="Player">
             </div>

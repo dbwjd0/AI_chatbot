@@ -23,14 +23,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const idleUpImg = '/static/img/side_up_stand.png';
 
     // --- Audio Elements ---
-    const moveSound = new Audio('/static/audio/walking_bgm.mp3'); // Using walking_bgm.mp3
-    moveSound.volume = 0.5; // Reduced volume
+    const moveSound = new Audio('/static/audio/양말 걷기.mp3'); // Using walking_bgm.mp3
+    moveSound.volume = 1; // Reduced volume
     moveSound.loop = true; // Intended for continuous, infinite playback when playing
     let isMovingSoundPlaying = false;
 
-    const collisionSound = new Audio('/static/audio/crash_bgm.mp3'); // Using crash_bgm.mp3
+    const collisionSound = new Audio('/static/audio/부딪힘.mp3'); // Using crash_bgm.mp3
     collisionSound.volume = 0.5; // Reduced volume
     let isCurrentlyColliding = false; // New flag to track if player is currently colliding
+
+    const selectionSound = new Audio('/static/audio/선택지 좌우.mp3');
+    selectionSound.volume = 0.3;
+    const confirmationSound = new Audio('/static/audio/선택지 결정.mp3');
+    confirmationSound.volume = 0.5;
+    const yesConfirmationSound = new Audio('/static/audio/선택지 \'예\'.mp3');
+    yesConfirmationSound.volume = 0.5;
 
     // --- Game State ---
     const playerState = {
@@ -43,6 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const keys = {};
     let activeInteraction = null;
     let isDialogActive = false;
+    let isConfirmationActive = false;
+    let selectedConfirmationOption = 'yes'; // 'yes' or 'no'
+    let onQuizCooldown = false; // Cooldown flag for the quiz interaction
     let lastFrameTime = 0; // For time-based movement
 
     // --- Debug Visualization ---
@@ -129,13 +139,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Input Handlers ---
     document.addEventListener('keydown', (e) => {
-        if (!isDialogActive) {
+        if (isConfirmationActive) {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                selectionSound.currentTime = 0;
+                selectionSound.play();
+                selectedConfirmationOption = selectedConfirmationOption === 'yes' ? 'no' : 'yes';
+                updateConfirmationSelection();
+            }
+        } else if (!isDialogActive) {
             keys[e.key] = true;
         }
     });
 
     document.addEventListener('keyup', (e) => {
         keys[e.key] = false;
+        if (isConfirmationActive) {
+            if (e.key === 'Enter') {
+                handleConfirmation();
+            }
+            return;
+        }
         if (isDialogActive) {
             hideDialog();
             return;
@@ -147,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleInteraction(object) {
         const target = object.dataset.interactionTarget;
-        if (target === 'chat_history') {
+        if (target === 'chat') {
             fadeOverlay.classList.add('visible');
             setTimeout(() => { window.location.href = '/chat_history/'; }, 300);
         } else if (target === 'chat') {
@@ -157,7 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
             showDialog('[아이]', '내가 좋아하는 책들이 꽂혀있다. 어려운 내용이 많아 보인다.');
         } else if (target === 'sofa') {
             showDialog('[아이]', '푹신한 소파에 앉아 잠시 쉬어볼까?');
-        } else if (target === 'bed') {
+        }
+        else if (target === 'bed') {
             showDialog('[아이]', '침대에 누우니 잠이 솔솔 오는걸?');
         } else if (target === 'schedule') {
             openModal();
@@ -176,6 +200,68 @@ document.addEventListener('DOMContentLoaded', () => {
     function hideDialog() {
         dialogBox.classList.add('hidden');
         isDialogActive = false;
+        isConfirmationActive = false;
+        // Remove confirmation buttons if they exist
+        const options = dialogBox.querySelector('.dialog-options');
+        if (options) {
+            options.remove();
+        }
+    }
+
+    function showConfirmationDialog() {
+        if (isConfirmationActive || onQuizCooldown) return; // Prevent multiple triggers
+
+        isDialogActive = true;
+        isConfirmationActive = true;
+        selectedConfirmationOption = 'yes';
+
+        dialogSpeaker.textContent = '[시스템]';
+        dialogText.textContent = '퀴즈 방으로 이동할까?';
+
+        const options = document.createElement('div');
+        options.className = 'dialog-options';
+
+        const yesButton = document.createElement('button');
+        yesButton.id = 'confirm-yes';
+        yesButton.textContent = '예';
+
+        const noButton = document.createElement('button');
+        noButton.id = 'confirm-no';
+        noButton.textContent = '아니요';
+
+        options.appendChild(yesButton);
+        options.appendChild(noButton);
+        dialogBox.appendChild(options);
+
+        updateConfirmationSelection();
+        dialogBox.classList.remove('hidden');
+    }
+
+    function updateConfirmationSelection() {
+        const yesButton = document.getElementById('confirm-yes');
+        const noButton = document.getElementById('confirm-no');
+        if (!yesButton || !noButton) return;
+
+        if (selectedConfirmationOption === 'yes') {
+            yesButton.classList.add('selected');
+            noButton.classList.remove('selected');
+        } else {
+            noButton.classList.add('selected');
+            yesButton.classList.remove('selected');
+        }
+    }
+
+    function handleConfirmation() {
+        if (selectedConfirmationOption === 'yes') {
+            yesConfirmationSound.play();
+            fadeOverlay.classList.add('visible');
+            setTimeout(() => { window.location.href = '/quiz/'; }, 300);
+        } else {
+            confirmationSound.play();
+            hideDialog();
+            onQuizCooldown = true;
+            setTimeout(() => { onQuizCooldown = false; }, 1000); // 1-second cooldown
+        }
     }
 
     // --- Game Loop (New Robust Logic) ---
@@ -212,7 +298,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             if (isMovingSoundPlaying) {
                 moveSound.pause();
-                // moveSound.currentTime = 0; // Removed again to allow continuous loop without reset
                 isMovingSoundPlaying = false;
             }
         }
@@ -220,17 +305,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. Obstacle Collision Detection
         const playerWidth = player.offsetWidth;
         const playerHeight = player.offsetHeight;
-        // Calculate player's half-dimensions
         const playerHalfWidth = playerWidth / 2;
         const playerHalfHeight = playerHeight / 2;
 
-        // Collision box at the feet
-        const collisionHeight = playerHeight * 0.2; // Use the bottom 20% of the player image for collision
-        const collisionWidth = playerWidth * 0.6; // Make it a bit narrower than the player
+        const collisionHeight = playerHeight * 0.2;
+        const collisionWidth = playerWidth * 0.6;
 
-        let currentFrameCollision = false; // Flag for collision in this frame
+        let currentFrameCollision = false;
 
-        // Check X-axis collision
         const futurePlayerRectX = {
             left: nextX - collisionWidth / 2,
             top: playerState.y + playerHalfHeight - collisionHeight,
@@ -250,7 +332,6 @@ document.addEventListener('DOMContentLoaded', () => {
             playerState.x = nextX;
         }
 
-        // Check Y-axis collision
         const futurePlayerRectY = {
             left: playerState.x - collisionWidth / 2,
             top: nextY + playerHalfHeight - collisionHeight,
@@ -270,60 +351,38 @@ document.addEventListener('DOMContentLoaded', () => {
             playerState.y = nextY;
         }
 
-        // Collision sound logic: Play only on initial impact
         if (currentFrameCollision && !isCurrentlyColliding) {
-            collisionSound.currentTime = 0; // Ensure it plays from the start
+            collisionSound.currentTime = 0;
             collisionSound.play();
         }
         isCurrentlyColliding = currentFrameCollision;
         
         // 4. Determine animation based on actual movement
         if (dx !== 0 || dy !== 0) {
-            // Animation decision (Y-axis priority)
-            if (dy === -1) { // Moving Up
-                newAnimation = walkUpImg;
-                playerState.lastDirection = 'up';
-            } else if (dy === 1) { // Moving Down
-                newAnimation = walkFrontGif;
-                playerState.lastDirection = 'down';
-            } else if (dx === -1) { // Moving Left
-                newAnimation = walkSideLeftGif;
-                playerState.lastDirection = 'left';
-            } else if (dx === 1) { // Moving Right
-                newAnimation = walkSideRightGif;
-                playerState.lastDirection = 'right';
-            }
+            if (dy === -1) { newAnimation = walkUpImg; playerState.lastDirection = 'up'; }
+            else if (dy === 1) { newAnimation = walkFrontGif; playerState.lastDirection = 'down'; }
+            else if (dx === -1) { newAnimation = walkSideLeftGif; playerState.lastDirection = 'left'; }
+            else if (dx === 1) { newAnimation = walkSideRightGif; playerState.lastDirection = 'right'; }
         } else {
-            // Select idle animation based on last direction
             switch (playerState.lastDirection) {
-                case 'up':
-                    newAnimation = idleUpImg;
-                    break;
-                case 'left':
-                    newAnimation = idleLeftImg;
-                    break;
-                case 'right':
-                    newAnimation = idleRightImg;
-                    break;
-                case 'down':
-                default:
-                    newAnimation = idleImg; // Default down-facing idle
-                    break;
+                case 'up': newAnimation = idleUpImg; break;
+                case 'left': newAnimation = idleLeftImg; break;
+                case 'right': newAnimation = idleRightImg; break;
+                default: newAnimation = idleImg; break;
             }
         }
 
-        // 5. Only update src if the animation has changed
         if (playerState.currentAnimation !== newAnimation) {
             playerImage.src = newAnimation;
             playerState.currentAnimation = newAnimation;
         }
 
-        // 6. Boundary Collision (redundant with walls, but good as a fallback)
+        // 6. Boundary Collision
         const roomRect = room.getBoundingClientRect();
         playerState.x = Math.max(playerWidth / 2, Math.min(roomRect.width - playerWidth / 2, playerState.x));
         playerState.y = Math.max(playerHeight / 2, Math.min(roomRect.height - playerHeight / 2, playerState.y));
 
-        // 7. Update Player Position on screen
+        // 7. Update Player Position
         player.style.left = `${playerState.x}px`;
         player.style.top = `${playerState.y}px`;
 
@@ -346,10 +405,15 @@ document.addEventListener('DOMContentLoaded', () => {
             for (const object of objects) {
                 const objectRect = { left: object.offsetLeft, top: object.offsetTop, width: object.offsetWidth, height: object.offsetHeight };
                 if (checkCollision(updatedPlayerRect, objectRect)) {
-                    interactionPrompt.textContent = object.dataset.interactionMessage;
-                    interactionPrompt.classList.remove('hidden');
-                    activeInteraction = object;
-                    canInteract = true;
+                    if (object.id === 'Quiz-line' && !onQuizCooldown) {
+                        showConfirmationDialog();
+                        canInteract = false; // No prompt for this one
+                    } else {
+                        interactionPrompt.textContent = object.dataset.interactionMessage;
+                        interactionPrompt.classList.remove('hidden');
+                        activeInteraction = object;
+                        canInteract = true;
+                    }
                     break;
                 }
             }
@@ -358,6 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 activeInteraction = null;
             }
         }
+
 
         // Update proactive notification position
         if (notificationBubble && notificationBubble.style.display !== 'none') {
