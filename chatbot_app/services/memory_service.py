@@ -144,14 +144,12 @@ def _save_user_attributes(user, attributes_data):
         if not (fact_type and content):
             continue
 
-        # 'create' 및 'update' 작업 모두에 대해 세 가지 필드를 모두 사용하여 update_or_create를 사용합니다.
-        # 이는 정확한 (사용자, 속성 유형, 내용) 조합이 고유하도록 보장합니다.
-        # 그리고 중복 없이 생성 및 존재 여부 확인을 모두 처리합니다.
+        # 'create' 및 'update' 작업 모두에 대해 'user'와 'fact_type'을 사용하여 기존 속성을 찾고 'content'를 업데이트합니다.
+        # 이는 각 (사용자, 속성 유형) 조합에 대해 하나의 고유한 항목만 존재하도록 보장합니다.
         UserAttribute.objects.update_or_create(
             user=user,
             fact_type=fact_type,
-            content=content,
-            defaults={} # 모든 필드가 조회에 사용되므로 기본값은 필요하지 않습니다.
+            defaults={'content': content}
         )
         # LLM의 'action' 필드는 이제 DB 메서드를 지시하는 것이 아니라 정보 제공용입니다.
         print(f"--- Ensured UserAttribute exists (action: {action}): {fact_type}: {content} for {user.username} ---")
@@ -274,7 +272,13 @@ def _save_schedule(user, schedule_data, today_str):
 
         # 스케줄이 오늘 또는 미래인 경우에만 생성
         if parsed_date >= date.today():
-            schedule_service.create_schedule(user, parsed_date, content, parsed_time)
-            print(f"--- {user.username}님을 위한 새 스케줄 저장 완료: {single_schedule_data} ---")
+            UserSchedule.objects.update_or_create(
+                user=user,
+                date=parsed_date,
+                schedule_time=parsed_time,
+                content=content, # Include content in lookup for exact match
+                defaults={} # No defaults needed as all fields are in lookup
+            )
+            print(f"--- {user.username}님을 위한 스케줄 저장/업데이트 완료: {single_schedule_data} ---")
         else:
             print(f"--- 과거 스케줄 건너뛰기: {single_schedule_data} ---")

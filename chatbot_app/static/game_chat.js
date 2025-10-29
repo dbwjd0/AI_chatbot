@@ -32,6 +32,12 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentSelectedEmoticon = null; // To store the selected emoticon URL
     let currentFullAiResponse = ""; // To store the full AI response for history
 
+    let typingSpeed = 50; // milliseconds per character
+    let isTyping = false;
+    let currentTypingLine = ''; // The full line currently being typed
+    let typingTimeout = null; // To store the timeout ID for clearing
+    let typingResolve = null; // To resolve the typing promise when skipped
+
     const emoticons = [
         '결제_이모티콘.png', '계략_이모티콘.png', '돌_이모티콘.png', '따봉_이모티콘.png',
         '밥_이모티콘.png', '슬픔_이모티콘.png', '의기양양_이모티콘.png', '주라_이모티콘.png',
@@ -248,25 +254,51 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function displayNextAiLine() {
+    async function displayNextAiLine() {
         if (aiMessageQueue.length > 0) {
             isDisplayingMessage = true;
-
-            const line = aiMessageQueue.shift();
+            isTyping = true; // Set typing flag
             speakerName.textContent = CHATBOT_NAME;
-            dialogueText.innerHTML = line; // Use innerHTML to render emoticons
-            // Show a visual indicator that there's more to come
+            dialogueText.innerHTML = ''; // Clear previous text
+
+            currentTypingLine = aiMessageQueue.shift(); // Get the full line
+
+            // Create a promise for the typing animation
+            currentTypingPromise = new Promise(resolve => {
+                typingResolve = resolve; // Store resolve function to skip
+                let charIndex = 0;
+                function typeChar() {
+                    if (!isTyping) { // If typing was skipped
+                        dialogueText.innerHTML = currentTypingLine; // Display full line immediately
+                        resolve();
+                        return;
+                    }
+                    if (charIndex < currentTypingLine.length) {
+                        dialogueText.innerHTML += currentTypingLine.charAt(charIndex);
+                        charIndex++;
+                        typingTimeout = setTimeout(typeChar, typingSpeed);
+                    } else {
+                        isTyping = false;
+                        resolve();
+                    }
+                }
+                typeChar();
+            });
+
+            await currentTypingPromise; // Wait for typing to complete or be skipped
+
+            // After typing (or skipping), add the indicator if more lines exist
             if (aiMessageQueue.length > 0) {
                 dialogueText.innerHTML += ' ▾';
             }
             prevDialogueButton.classList.remove('hidden'); // Show button if there's history
         } else {
             isDisplayingMessage = false;
-            userInput.disabled = false; // Enable input after AI finishes
-            sendButton.disabled = false; // Enable send button after AI finishes
-            userInput.focus(); // Focus input for next message
+            userInput.disabled = false;
+            sendButton.disabled = false;
+            userInput.focus();
             if (displayedAiLinesHistory.length === 0) {
-                prevDialogueButton.classList.add('hidden'); // Hide button if no history
+                prevDialogueButton.classList.add('hidden');
             }
         }
     }
@@ -295,10 +327,24 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Listen for Enter key to advance dialogue
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && isDisplayingMessage && document.activeElement !== userInput) {
-            e.preventDefault();
-            displayNextAiLine();
+    document.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter') {
+            if (isTyping) { // If currently typing, skip the animation
+                e.preventDefault();
+                isTyping = false; // Signal the typing loop to stop
+                clearTimeout(typingTimeout); // Clear any pending timeout
+
+                dialogueText.innerHTML = currentTypingLine; // Display full line immediately
+
+                if (typingResolve) {
+                    typingResolve(); // Resolve the promise immediately
+                    typingResolve = null; // Clear it
+                }
+                // The rest of displayNextAiLine will continue after await
+            } else if (isDisplayingMessage && document.activeElement !== userInput) { // If message is fully displayed and not typing
+                e.preventDefault();
+                displayNextAiLine();
+            }
         }
     });
 
@@ -318,8 +364,30 @@ document.addEventListener('DOMContentLoaded', function () {
                     queueAiMessage(cleanedMessage);
 
                 } else {
-                    // Otherwise, show a random greeting as before
-                    showRandomGreeting();
+                    // If no proactive message, find the last bot message from chat history
+                    let lastBotMessage = null;
+                    if (chatHistory && chatHistory.length > 0) {
+                        for (let i = chatHistory.length - 1; i >= 0; i--) {
+                            if (!chatHistory[i].is_user) { // Found a bot message
+                                lastBotMessage = chatHistory[i];
+                                break;
+                            }
+                        }
+                    }
+
+                    if (lastBotMessage) {
+                        speakerName.textContent = CHATBOT_NAME; // Always bot for bot message
+                        dialogueText.innerHTML = lastBotMessage.message;
+                        const emotion = lastBotMessage.character_emotion || 'default';
+                        characterImage.src = STATIC_URLS[emotion] || STATIC_URLS['default'];
+                        userInput.disabled = false;
+                        sendButton.disabled = false;
+                        userInput.focus();
+                        isDisplayingMessage = false; // Not actively displaying AI response
+                    } else {
+                        // If no proactive message and no bot message in history, then show a random greeting
+                        showRandomGreeting(); // Fallback to random greeting
+                    }
                 }
             })
             .catch(error => {
