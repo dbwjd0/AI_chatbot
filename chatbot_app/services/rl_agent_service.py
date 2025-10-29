@@ -1,5 +1,5 @@
 """
-강화학습(RL) 에이전트 서비스
+ 강화학습(RL) 에이전트 서비스
 이 서비스는 채팅 응답 생성을 위해 어떤 컨텍스트와 페르소나를 사용할지 결정합니다.
 """
 import os
@@ -76,7 +76,7 @@ class RLAgent:
     def __init__(self):
         if not hasattr(self, 'initialized'):
             model_name = "jhgan/ko-sbert-sts"
-            print(f"--- Initializing User-Aware RL Agent with model: {model_name} ---")
+            print(f"--- 사용자 인식 RL 에이전트 초기화 시작 (모델: {model_name}) ---")
             
             self.model_dir = os.path.join(settings.BASE_DIR, 'trained_models')
             self.model_path = os.path.join(self.model_dir, 'rl_agent_policy.pth')
@@ -85,8 +85,7 @@ class RLAgent:
             self.tokenizer = AutoTokenizer.from_pretrained(model_name)
             self.model = AutoModel.from_pretrained(model_name)
             
-            # [오류 수정] 고정된 크기의 사용자 임베딩 레이어 사용
-            self.max_users = 1000  # 시스템이 처리할 수 있는 최대 사용자 수 (이 수를 넘어도 모듈로 연산으로 처리)
+            self.max_users = 1000
             self.user_embedding_dim = 16
             self.user_embedding = nn.Embedding(self.max_users, self.user_embedding_dim)
 
@@ -97,24 +96,24 @@ class RLAgent:
             
             self._load_model()
             self.initialized = True
-            print(f"--- RL Agent Initialized (State Dimension: {self.state_dim}) ---")
+            print(f"--- RL 에이전트 초기화 완료 (상태 차원: {self.state_dim}) ---")
 
     def _save_model(self):
         try:
             torch.save(self.policy_network.state_dict(), self.model_path)
-            print(f"--- RL Agent model saved to {self.model_path} ---")
+            print(f"--- RL 에이전트 모델 저장 완료: {self.model_path} ---")
         except Exception as e:
-            print(f"--- Error saving RL Agent model: {e} ---")
+            print(f"--- RL 에이전트 모델 저장 오류: {e} ---")
 
     def _load_model(self):
         if not os.path.exists(self.model_path):
-            print(f"--- No saved model found at {self.model_path}. Starting with a new model. ---")
+            print(f"--- 저장된 모델 없음: {self.model_path}. 새 모델로 시작합니다. ---")
             return
         try:
             self.policy_network.load_state_dict(torch.load(self.model_path))
-            print(f"--- RL Agent model loaded from {self.model_path} ---")
+            print(f"--- RL 에이전트 모델 로드 완료: {self.model_path} ---")
         except Exception as e:
-            print(f"--- Error loading RL Agent model: {e}. Starting with a new model. ---")
+            print(f"--- RL 에이전트 모델 로드 오류: {e}. 새 모델로 시작합니다. ---")
 
     def _get_embedding(self, text):
         inputs = self.tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=512)
@@ -123,7 +122,6 @@ class RLAgent:
         return outputs.last_hidden_state.mean(dim=1)
 
     def _build_state_vector(self, user, user_message_text, history):
-        # [오류 수정] 사용자 ID를 모듈로 연산을 통해 안전한 인덱스로 변환
         user_index = user.id % self.max_users
         user_id_tensor = torch.tensor([user_index], dtype=torch.long)
         user_embed = self.user_embedding(user_id_tensor)
@@ -145,14 +143,14 @@ class RLAgent:
         return action_id
 
     def learn(self, state, action, reward):
-        print(f"--- [RL Agent] Learning step called. Action: {action}, Reward: {reward} ---")
+        print(f"--- [RL 에이전트] 학습 시작. 행동: {action}, 보상: {reward} ---")
         self.optimizer.zero_grad()
         probabilities = self.policy_network(state.squeeze(0))
         log_prob = torch.log(probabilities[action])
         loss = -log_prob * reward
         loss.backward()
         self.optimizer.step()
-        print(f"--- [RL Agent] Learning complete. Loss: {loss.item()} ---")
+        print(f"--- [RL 에이전트] 학습 완료. 손실: {loss.item()} ---")
         self._save_model()
 
 # --- 4. 서비스 메인 함수 ---
@@ -163,7 +161,7 @@ def decide_action(user, user_message_text: str, history, has_image: bool):
     action_id = agent.select_action(state_vector)
     chosen_action_info = ACTION_MAP.get(action_id)
 
-    print(f"--- [RL Agent] State built. Chosen Action ID: {action_id} ({chosen_action_info['name']}) ---")
+    print(f"--- [RL 에이전트] 상태 생성됨. 선택된 행동 ID: {action_id} ({chosen_action_info['name']}) ---")
 
     contexts_to_use = chosen_action_info['contexts']
     if has_image and 'vector_search' in contexts_to_use:
@@ -180,7 +178,6 @@ def decide_action(user, user_message_text: str, history, has_image: bool):
     }
     
     return action
-
 
 
 

@@ -141,7 +141,7 @@ def _assemble_context_data(user, user_message_text, contexts_to_use: list, latit
                 if schedule_contents:
                     contexts['schedule'] = f"[사용자의 오늘 일정 (참고용)]: {', '.join(schedule_contents)}"
         except Exception as e:
-            print(f"--- Could not build schedule context due to an error: {e} ---")
+            print(f"--- 스케줄 컨텍스트 생성 오류: {e} ---")
 
     # 1. 위치 컨텍스트 및 위치 기반 추천 컨텍스트
     if 'location' in contexts_to_use and latitude is not None and longitude is not None:
@@ -239,7 +239,7 @@ def _prepare_llm_messages(final_system_prompt, history, user_message_text):
 
 def _call_openai_api(client: OpenAI, model_to_use: str, messages: list) -> Dict[str, Any]:
     """OpenAI API를 호출하고 응답 JSON을 반환합니다."""
-    print(f"--- Using Model: {model_to_use} ---")
+    print(f"--- 사용 모델: {model_to_use} ---")
     response = client.chat.completions.create(
         model=model_to_use,
         messages=messages,
