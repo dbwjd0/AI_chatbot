@@ -59,7 +59,7 @@ ACTION_MAP = {
     # --- 7. 사용자 정의 스타일 ---
     10: {'name': 'User_Defined_Style',
          'contexts': ['schedule', 'location', 'vector_search', 'attributes', 'activity', 'analytics', 'relationship'],
-         'persona': '사용자 지정'}
+         'persona': '사용자 정의'}
 }
 NUM_ACTIONS = len(ACTION_MAP)
 
