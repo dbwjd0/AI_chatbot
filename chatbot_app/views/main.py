@@ -35,6 +35,11 @@ def narrative_setup_view(request):
                 profile.chatbot_name = content
                 profile.save()
 
+            elif fact_type == 'chatbot_style': # New condition
+                profile = request.user.profile
+                profile.chatbot_style = content
+                profile.save()
+
             elif fact_type in PERSISTENT_ATTRIBUTES:
                 UserAttribute.objects.update_or_create(
                     user=request.user,

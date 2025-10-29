@@ -54,7 +54,12 @@ ACTION_MAP = {
         'persona': '선배'},
     9: {'name': 'Chit_Chat_Younger_Sibling',
         'contexts': ['attributes'],
-        'persona': '동생'}
+        'persona': '동생'},
+
+    # --- 7. 사용자 정의 스타일 ---
+    10: {'name': 'User_Defined_Style',
+         'contexts': ['schedule', 'location', 'vector_search', 'attributes', 'activity', 'analytics', 'relationship'],
+         'persona': '사용자 지정'}
 }
 NUM_ACTIONS = len(ACTION_MAP)
 

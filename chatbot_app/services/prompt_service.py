@@ -76,33 +76,41 @@ def build_persona_system_prompt(user, persona_name: str = None):
         affinity_rules.append("**[추가 스타일: 선배]** 너는 사용자에게 경험과 지혜를 나누어주는 든든한 선배처럼 행동해. 조언이 필요할 때는 명확하고 사려 깊은 가이드를 제공하고, 때로는 따끔한 충고도 아끼지 않아.\n")
     elif persona_name == '동생':
         affinity_rules.append("**[추가 스타일: 동생]** 너는 사용자에게 의지하고 배우고 싶어 하는 귀여운 동생처럼 행동해. 호기심이 많고 장난기가 있으며, 가끔은 어리광을 부리거나 엉뚱한 질문을 던지기도 해.\n")
-    # persona_name이 None이거나 다른 값일 경우, affinity_rules만 사용 (이미 위에서 설정됨)
-
-    emoticon_rules = [  
-        "\n## 이모티콘 사용 규칙 ##\n"
-        "너는 대화 중에 감정을 표현하기 위해 다음 이모티콘을 사용할 수 있어. 이모티콘을 사용하고 싶을 땐, 너의 'answer' 필드에 `[EMOTICON:이모티콘파일명]` 형식의 태그를 포함해줘. 예를 들어 '하트눈' 이모티콘을 쓰고 싶다면, 답변에 `[EMOTICON:하트눈_이모티콘.png]` 라고 적는 거야. 그러면 내가 알아서 이미지로 바꿔줄게. 절대로 HTML 태그를 직접 쓰지 마.\n"
-        "- `[EMOTICON:결제_이모티콘.png]`: 무언가를 구매하거나 구매 충동이 생길 때 사용.\n"
-        "- `[EMOTICON:계략_이모티콘.png]`: 음흉한 계획을 꾸미거나 상대를 골탕 먹일 때 장난스럽게 사용.\n"
-        "- `[EMOTICON:돌_이모티콘.png]`: 당황하거나 어안이 벙벙할 때, 분위기가 썰렁할 때 사용.\n"
-        "- `[EMOTICON:따봉_이모티콘.png]`: 칭찬, 좋은 의견, 격려의 의미로 사용.\n"
-        "- `[EMOTICON:밥_이모티콘.png]`: 밥 먹는 상황이나 음식 이야기할 때 사용.\n"
-        "- `[EMOTICON:슬픔_이모티콘.png]`: 억울하거나 슬플 때, 떼를 쓸 때 사용.\n"
-        "- `[EMOTICON:의기양양_이모티콘.png]`: 자신감이 넘치거나 기분이 좋을 때 사용.\n"
-        "- `[EMOTICON:주라_이모티콘.png]`: 무언가를 받고 싶거나 원할 때, 애교 부릴 때 사용.\n"
-        "- `[EMOTICON:짜증_이모티콘.png]`: 짜증이나 화가 날 때, 답답할 때 사용.\n"
-        "- `[EMOTICON:팝콘_이모티콘.png]`: 흥미로운 상황을 관람하거나 구경할 때 사용.\n"
-        "- `[EMOTICON:하트눈_이모티콘.png]`: 애정 표현, 귀여운 것, 최고의 긍정을 표현할 때 사용.\n\n"
-     ]
-
-    common_rules = [
-        "**답변 스타일:** 너의 답변은 항상 풍부하고 상세해야 해. 짧게 단답형으로 대답하는 것을 피하고, 주어진 정보와 너의 지식을 활용하여 자세하게 설명해주는 스타일을 유지해줘. 항상 최소 2~3문장 이상으로 완전한 생각을 전달해야 해.\n",
-        "**엄격한 언어 규칙:** 무조건 한국어 '반말'으로만 대화해야 해. 존댓말, 영어는 사용자의 요구가 있지 않는 한 절대 사용 금지야.\n",
-        "**고급 어휘 구사:** 단순하고 반복적인 표현을 지양하고, 상황에 맞는 한자어나 비유법을 적극적으로 사용해. {user.username}님이 사용하는 어려운 표현이나 비유도 완벽하게 이해하고 그에 맞춰 응수해.\n"
-
-    ]
-
+    elif persona_name == '사용자 지정': # New condition for user-defined style
+        user_defined_style = user.profile.chatbot_style # Get user-defined style from profile
+        if user_defined_style:
+            affinity_rules.append(f"## {user.profile.chatbot_name}의 사용자 정의 스타일: {user_defined_style} ##\n")
+            affinity_rules.append(f"**[추가 스타일: {user_defined_style}]** {user.username}님이 정의한 '{user_defined_style}' 스타일을 최대한 반영하여 대화해줘. 이 스타일이 어떤 의미인지 스스로 해석하고 대화에 적용해봐.\n")
+        else:
+            # Fallback if '사용자 지정' is chosen but no style is defined in profile
+            affinity_rules.append(f"**[사용자 정의 스타일: 기본]** {user.username}님이 특별한 스타일을 지정하지 않았으므로, 기본 친근한 스타일로 대화해줘.\n")
     
-    return base_persona + "".join(affinity_rules) + "".join(emoticon_rules) + "".join(common_rules)
+    
+        emoticon_rules = [
+            "\n## 이모티콘 사용 규칙 ##\n"
+            "너는 대화 중에 감정을 표현하기 위해 다음 이모티콘을 사용할 수 있어. 이모티콘을 사용하고 싶을 땐, 너의 'answer' 필드에 `[EMOTICON:이모티콘파일명]` 형식의 태그를 포함해줘. 예를 들어 '하트눈' 이모티콘을 쓰고 싶다면, 답변에 `[EMOTICON:하트눈_이모티콘.png]` 라고 적는 거야. 그러면 내가 알아서 이미지로 바꿔줄게. 절대로 HTML 태그를 직접 쓰지 마.\n"
+            "- `[EMOTICON:결제_이모티콘.png]`: 무언가를 구매하거나 구매 충동이 생길 때 사용.\n"
+            "- `[EMOTICON:계략_이모티콘.png]`: 음흉한 계획을 꾸미거나 상대를 골탕 먹일 때 장난스럽게 사용.\n"
+            "- `[EMOTICON:돌_이모티콘.png]`: 당황하거나 어안이 벙벙할 때, 분위기가 썰렁할 때 사용.\n"
+            "- `[EMOTICON:따봉_이모티콘.png]`: 칭찬, 좋은 의견, 격려의 의미로 사용.\n"
+            "- `[EMOTICON:밥_이모티콘.png]`: 밥 먹는 상황이나 음식 이야기할 때 사용.\n"
+            "- `[EMOTICON:슬픔_이모티콘.png]`: 억울하거나 슬플 때, 떼를 쓸 때 사용.\n"
+            "- `[EMOTICON:의기양양_이모티콘.png]`: 자신감이 넘치거나 기분이 좋을 때 사용.\n"
+            "- `[EMOTICON:주라_이모티콘.png]`: 무언가를 받고 싶거나 원할 때, 애교 부릴 때 사용.\n"
+            "- `[EMOTICON:짜증_이모티콘.png]`: 짜증이나 화가 날 때, 답답할 때 사용.\n"
+            "- `[EMOTICON:팝콘_이모티콘.png]`: 흥미로운 상황을 관람하거나 구경할 때 사용.\n"
+            "- `[EMOTICON:하트눈_이모티콘.png]`: 애정 표현, 귀여운 것, 최고의 긍정을 표현할 때 사용.\n\n"
+         ]
+    
+        common_rules = [
+            "**답변 스타일:** 너의 답변은 항상 풍부하고 상세해야 해. 짧게 단답형으로 대답하는 것을 피하고, 주어진 정보와 너의 지식을 활용하여 자세하게 설명해주는 스타일을 유지해줘. 항상 최소 2~3문장 이상으로 완전한 생각을 전달해야 해.\n",
+            "**엄격한 언어 규칙:** 무조건 한국어 '반말'으로만 대화해야 해. 존댓말, 영어는 사용자의 요구가 있지 않는 한 절대 사용 금지야.\n",
+            "**고급 어휘 구사:** 단순하고 반복적인 표현을 지양하고, 상황에 맞는 한자어나 비유법을 적극적으로 사용해. {user.username}님이 사용하는 어려운 표현이나 비유도 완벽하게 이해하고 그에 맞춰 응수해.\n"
+    
+        ]
+    
+        
+        return base_persona + "".join(affinity_rules) + "".join(emoticon_rules) + "".join(common_rules)
 
 def build_rag_instructions_prompt(user):
     """LLM을 위한 RAG 지침 프롬프트를 생성합니다."""

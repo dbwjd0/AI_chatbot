@@ -18,6 +18,7 @@ class UserProfile(models.Model):
     affinity_score = models.IntegerField(default=0, help_text="AI '아이'와의 호감도 점수")
     memory = models.JSONField(default=dict, help_text="사용자에 대한 기억 저장소")
     chatbot_name = models.CharField(max_length=100, default='아이', help_text="사용자가 지정한 챗봇 이름")
+    chatbot_style = models.CharField(max_length=100, default='친근한', help_text="챗봇의 대화 스타일 (예: 친근한, 전문적인, 유머러스한)")
 
     def __str__(self):
         return f"{self.user.username}의 프로필"
