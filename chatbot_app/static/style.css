@@ -86,15 +86,6 @@ body {
     border-top: 1px solid #eee;
 }
 
-.chat-input input {
-    flex-grow: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    margin-right: 10px;
-    outline: none;
-}
-
 .chat-input button {
     padding: 10px 20px;
     background-color: #ff9800;
