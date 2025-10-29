@@ -9,6 +9,7 @@ from .chat_service import _assemble_context_data # 필요한 함수 임포트
 from .prompt_service import build_persona_system_prompt, build_rag_instructions_prompt
 from .emotion_service import analyze_emotion
 from . import schedule_service # schedule_service 임포트
+from .rl_agent_service import decide_action # RL 에이전트의 decide_action 함수 임포트
 
 def _check_upcoming_schedule(user):
     today = date.today()
@@ -59,11 +60,17 @@ def _call_llm_for_proactive_message(user, system_prompt):
         
         content_from_llm = json.loads(response_json['choices'][0]['message']['content'])
         message_text = content_from_llm.get('answer', '').strip()
+        explanation = content_from_llm.get('explanation', '설명 없음.') # Extract explanation
         emotion = analyze_emotion(message_text) # emotion_service를 사용하여 감정 분석 
-        return message_text, emotion
+
+        print("\n" + "-"*20 + " [Debug] Proactive Message Explanation " + "-"*20)
+        print(explanation)
+        print("-"*66 + "\n")
+
+        return message_text, emotion, explanation # Return explanation
     except (requests.exceptions.RequestException, KeyError, IndexError, json.JSONDecodeError) as e:
         print(f"LLM 능동적 메시지 생성 오류: {e}")
-        return None, None
+        return None, None, None # Return None for explanation on error
 
 
 def generate_proactive_message(user):
@@ -101,17 +108,29 @@ def generate_proactive_message(user):
         proactive_instruction_base = f"{user.username}님, 곧 일정이 있어! '{upcoming_schedule_content}' 일정이 10분 이내로 다가왔으니, 일정을 상기시켜주거나, 준비를 돕는 메시지를 생성해줘. "
 
     if trigger_type:
-        persona_system_prompt = build_persona_system_prompt(user)
-        rag_instructions_prompt = build_rag_instructions_prompt(user)
-        assembled_contexts_dict = _assemble_context_data(user, "")
+        # RL 에이전트에게 액션 결정 요청
+        # 능동적 메시지이므로 user_message_text는 트리거에 따른 설명을 제공
+        # history는 모든 채팅 기록을 넘겨주어 RL 에이전트가 판단할 수 있도록 함
+        all_chat_history = ChatMessage.objects.filter(user=user).order_by('-timestamp')
+        
+        # proactive_instruction_base를 user_message_text로 활용하여 RL 에이전트가 현재 상황을 인지하도록 함
+        rl_action = decide_action(user, proactive_instruction_base, all_chat_history, has_image=False)
+        
+        persona_prompt = rl_action['persona_prompt']
+        contexts_to_use = rl_action['contexts_to_use']
+
+        # RL 에이전트가 결정한 컨텍스트를 기반으로 데이터 조립
+        assembled_contexts_dict = _assemble_context_data(user, "", contexts_to_use)
         assembled_contexts_str = "\n".join([f"[{key.replace('_', ' ').capitalize()}]: {value}" for key, value in assembled_contexts_dict.items() if value])
         if assembled_contexts_str:
             assembled_contexts_str = "\n## 사용자 기억 컨텍스트 ##\n" + assembled_contexts_str
         
-        proactive_instruction = f"{proactive_instruction_base}제공된 사용자 정보와 기억 컨텍스트를 적극적으로 활용하여 메시지를 생성해줘. 너의 페르소나에 맞게 재치있고 흥미롭게 말을 걸어줘. 응답은 반드시 JSON 형식으로 'answer' 키를 포함해야 해."
-        system_prompt = f"{persona_system_prompt}{rag_instructions_prompt}{assembled_contexts_str}\n\n## 능동적 대화 지시 ##\n{proactive_instruction}"
+        rag_instructions_prompt = build_rag_instructions_prompt(user) # RAG 지침은 항상 포함
+
+        proactive_instruction = f"{proactive_instruction_base}제공된 사용자 정보와 기억 컨텍스트를 적극적으로 활용하여 메시지를 생성해줘. 너의 페르소나에 맞게 재치있고 흥미롭게 말을 걸어줘. 응답은 반드시 JSON 형식으로 'answer' 키와 'explanation' 키를 포함해야 해."
+        system_prompt = f"{persona_prompt}{rag_instructions_prompt}{assembled_contexts_str}\n\n## 능동적 대화 지시 ##\n{proactive_instruction}"
         
-        message_text, emotion = _call_llm_for_proactive_message(user, system_prompt)
+        message_text, emotion, explanation = _call_llm_for_proactive_message(user, system_prompt)
 
         # LLM 호출 실패 시 기본 메시지 설정
         if not message_text:

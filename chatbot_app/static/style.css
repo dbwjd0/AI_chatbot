@@ -14,7 +14,7 @@ body {
 }
 
 .chatbot-container {
-    display: flex;
+    display: block; /* Changed to block to allow chat-window to take full width */
     width: 1200px;
     max-width: 1200px;
     height: 800px;
@@ -28,26 +28,13 @@ body {
     overflow: hidden;
 }
 
-.character-display {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    padding: 20px;
-    background-color: rgba(240, 240, 240, 0.7);
-}
-
-.character-display img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
-
 .chat-window {
     flex: 1;
     display: flex;
     flex-direction: column;
     background-color: rgba(255, 255, 255, 0.9);
+    width: 100%; /* Ensure chat-window takes full width */
+    height: 100%; /* Ensure chat-window fills the height of its parent */
 }
 
 .chat-log {
@@ -188,7 +175,7 @@ body {
 
 .preview-container #clear-image-button:hover {
     background-color: transparent; /* 호버 시에도 배경 투명 유지 */
-    color: #000; /* 호버 시 아이콘 색상 진하게 */
+    color: #000; /* 호버 시 아이콘 색상 진하게 변경 */
 }
 
 .preview-container #clear-image-button svg {
@@ -199,4 +186,25 @@ body {
 
 .preview-container #clear-image-button:hover svg {
     fill: #000; /* 호버 시 아이콘 색상 진하게 변경 */
+}
+
+.top-menu {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 15px;
+    border-radius: 10px;
+    color: white;
+    z-index: 100;
+}
+
+.top-menu a {
+    color: #a9d1ff;
+    text-decoration: none;
+    margin-left: 15px;
+}
+
+.top-menu a:hover {
+    text-decoration: underline;
 }

@@ -10,7 +10,7 @@ from ..models import ChatMessage, UserAttribute, UserActivity, ActivityAnalytics
 from .context_service import get_activity_recommendation, search_activities_for_context
 from .memory_service import extract_and_save_user_context_data
 from .image_captioning_service import ImageCaptioningService
-from . import vector_service, location_service, schedule_service, emoticon_service, prompt_service # schedule_service, emoticon_service, prompt_service 추가
+from . import vector_service, location_service, schedule_service, emoticon_service, prompt_service, rl_agent_service # rl_agent_service 추가
 from datetime import date # date 추가
 
 
@@ -23,6 +23,7 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
     user_message_obj = None
 
     try:
+        action = {} # RL 에이전트의 행동을 저장할 변수
         api_key = os.environ.get("OPENAI_API_KEY")
         if not api_key:
             raise ValueError("OPENAI_API_KEY 환경 변수가 설정되지 않았습니다.")
@@ -54,14 +55,28 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
             else:
                 print("--- [경고] 1차 분석 실패 --- ")
 
-        # 2단계: 컨텍스트 생성
+        # 2단계: RL 에이전트를 통해 행동(컨텍스트, 페르소나) 결정
         history = ChatMessage.objects.filter(user=user).order_by('-timestamp')
-        time_contexts = _get_time_contexts(history)
-        # 벡터 검색은 이미지가 없을 때만 수행하여 효율성 증대
-        assembled_contexts = _assemble_context_data(user, user_message_for_llm, latitude, longitude, bool(image_file))
+        action = rl_agent_service.decide_action(user, user_message_for_llm, history, has_image=bool(image_file))
         
-        # 3단계: 최종 프롬프트 생성 (이미지 분석 결과 포함)
-        final_system_prompt = prompt_service.build_final_system_prompt(user, time_contexts, assembled_contexts, image_analysis_context)
+        # 3단계: 결정된 행동에 따라 컨텍스트 생성
+        time_contexts = _get_time_contexts(history)
+        assembled_contexts = _assemble_context_data(
+            user, 
+            user_message_for_llm, 
+            action['contexts_to_use'], # RL 에이전트가 선택한 컨텍스트 목록
+            latitude, 
+            longitude
+        )
+        
+        # 3단계: 최종 프롬프트 생성 (이미지 분석 결과 및 페르소나 포함)
+        final_system_prompt = prompt_service.build_final_system_prompt(
+            user, 
+            time_contexts, 
+            assembled_contexts, 
+            action['persona_prompt'], # RL 에이전트가 선택한 페르소나
+            image_analysis_context
+        )
         messages = _prepare_llm_messages(final_system_prompt, history, user_message_for_llm)
 
         # 4단계: 최종 LLM 호출 (파인튜닝된 모델)
@@ -85,8 +100,8 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
         traceback.print_exc()
         bot_message_text = f"예상치 못한 오류가 발생했습니다: {e}"
 
-    # user_message_obj를 반환하도록 수정
-    return bot_message_text, explanation, bot_message_obj, user_message_obj
+    # user_message_obj와 action을 반환하도록 수정
+    return bot_message_text, explanation, bot_message_obj, user_message_obj, action
 
 def _get_time_contexts(history):
     """현재 시간 및 마지막 대화와의 시간 간격에 대한 컨텍스트를 생성합니다."""
@@ -113,24 +128,23 @@ def _get_time_contexts(history):
 
     return current_time_context, time_awareness_context
 
-def _assemble_context_data(user, user_message_text, latitude=None, longitude=None, has_image=False):
-    """사용자의 기억과 관련된 모든 컨텍스트를 종합하여 반환합니다."""
+def _assemble_context_data(user, user_message_text, contexts_to_use: list, latitude=None, longitude=None):
+    """RL 에이전트가 선택한 컨텍스트 목록에 따라 필요한 사용자 기억 및 관련 정보를 수집합니다."""
     contexts = {}
-    # 0. 오늘의 일정 컨텍스트
-    schedule_context = ""
-    try:
-        today_schedules = schedule_service.get_schedules_for_day(user, date.today())
-        if today_schedules:
-            schedule_contents = [s.content.strip() for s in today_schedules if s.content and s.content.strip()]
-            if schedule_contents:
-                schedule_context = f"[사용자의 오늘 일정 (참고용)]: {', '.join(schedule_contents)}"
-                contexts['schedule'] = schedule_context
-    except Exception as e:
-        print(f"--- Could not build schedule context due to an error: {e} ---")
 
+    # 0. 오늘의 일정 컨텍스트
+    if 'schedule' in contexts_to_use:
+        try:
+            today_schedules = schedule_service.get_schedules_for_day(user, date.today())
+            if today_schedules:
+                schedule_contents = [s.content.strip() for s in today_schedules if s.content and s.content.strip()]
+                if schedule_contents:
+                    contexts['schedule'] = f"[사용자의 오늘 일정 (참고용)]: {', '.join(schedule_contents)}"
+        except Exception as e:
+            print(f"--- 스케줄 컨텍스트 생성 오류: {e} ---")
 
     # 1. 위치 컨텍스트 및 위치 기반 추천 컨텍스트
-    if latitude is not None and longitude is not None:
+    if 'location' in contexts_to_use and latitude is not None and longitude is not None:
         location_context = location_service.get_location_context(latitude, longitude)
         if location_context:
             contexts['location'] = location_context
@@ -139,8 +153,8 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
         if location_recommendation_result:
             contexts['location_recommendation'] = location_recommendation_result
 
-    # 2. 벡터 검색 컨텍스트 (이미지가 없을 때만 수행)
-    if not has_image:
+    # 2. 벡터 검색 컨텍스트
+    if 'vector_search' in contexts_to_use:
         try:
             collection = vector_service.get_or_create_collection()
             similar_results = vector_service.query_similar_messages(collection, user_message_text, user.id, n_results=5)
@@ -151,66 +165,61 @@ def _assemble_context_data(user, user_message_text, latitude=None, longitude=Non
             print(f"--- 벡터 검색 컨텍스트 생성 오류: {e} ---")
 
     # 3. 사용자 속성 컨텍스트
-    user_attributes = UserAttribute.objects.filter(user=user)
-    if user_attributes.exists():
-        attribute_strings = [f"{attr.fact_type}: {attr.content}" for attr in user_attributes]
-        contexts['attributes'] = "[사용자 속성]: " + ", ".join(attribute_strings)
+    if 'attributes' in contexts_to_use:
+        user_attributes = UserAttribute.objects.filter(user=user)
+        if user_attributes.exists():
+            attribute_strings = [f"{attr.fact_type}: {attr.content}" for attr in user_attributes]
+            contexts['attributes'] = "[사용자 속성]: " + ", ".join(attribute_strings)
 
     # 4. 사용자 활동 컨텍스트
-    activity_strings = []
-    try:
-        recent_activities = UserActivity.objects.filter(user=user).order_by('-activity_date', '-created_at')[:5]
-        if recent_activities:
-            activity_strings.extend([
-                f"{act.activity_date.strftime('%Y-%m-%d') if act.activity_date else '날짜 미상'} '{act.place}' 방문" +
-                (f" (동행: {act.companion})" if act.companion else "") +
-                (f" (메모: {act.memo})" if act.memo else "")
-                for act in recent_activities
-            ])
-    except Exception as e:
-        print(f"--- 활동 메모리 컨텍스트 생성 오류: {e} ---")
+    if 'activity' in contexts_to_use:
+        activity_strings = []
+        try:
+            recent_activities = UserActivity.objects.filter(user=user).order_by('-activity_date', '-created_at')[:5]
+            if recent_activities:
+                activity_strings.extend([
+                    f"{act.activity_date.strftime('%Y-%m-%d') if act.activity_date else '날짜 미상'} '{act.place}' 방문" +
+                    (f" (동행: {act.companion})" if act.companion else "") +
+                    (f" (메모: {act.memo})" if act.memo else "")
+                    for act in recent_activities
+                ])
+        except Exception as e:
+            print(f"--- 활동 메모리 컨텍스트 생성 오류: {e} ---")
 
-    search_context = search_activities_for_context(user, user_message_text)
-    if search_context:
-        activity_strings.append(search_context)
-    
-    recommendation_context = get_activity_recommendation(user, user_message_text)
-    if recommendation_context:
-        activity_strings.append(recommendation_context)
+        search_context = search_activities_for_context(user, user_message_text)
+        if search_context:
+            activity_strings.append(search_context)
+        
+        recommendation_context = get_activity_recommendation(user, user_message_text)
+        if recommendation_context:
+            activity_strings.append(recommendation_context)
 
-    if activity_strings:
-        contexts['activity'] = "[사용자 활동]: " + "\n".join(activity_strings)
+        if activity_strings:
+            contexts['activity'] = "[사용자 활동]: " + "\n".join(activity_strings)
 
     # 5. 활동 분석 컨텍스트
-    try:
-        recent_analytics = ActivityAnalytics.objects.filter(user=user).order_by('-period_start_date')[:3]
-        if recent_analytics.exists():
-            analytics_strings = [
-                f"'{an.period_start_date.strftime('%Y-%m-%d')}부터 {an.period_type} 동안 "
-                f"장소: {an.place}, 동행: {an.companion or '없음'}, 횟수: {an.count}회'"
-                for an in recent_analytics
-            ]
-            contexts['analytics'] = "[사용자 활동 분석]: " + "\n".join(analytics_strings)
-    except Exception as e:
-        print(f"--- 활동 분석 컨텍스트 생성 오류: {e} ---")
+    if 'analytics' in contexts_to_use:
+        try:
+            recent_analytics = ActivityAnalytics.objects.filter(user=user).order_by('-period_start_date')[:3]
+            if recent_analytics.exists():
+                analytics_strings = [
+                    f"'{an.period_start_date.strftime('%Y-%m-%d')}부터 {an.period_type} 동안 "
+                    f"장소: {an.place}, 동행: {an.companion or '없음'}, 횟수: {an.count}회'"
+                    for an in recent_analytics
+                ]
+                contexts['analytics'] = "[사용자 활동 분석]: " + "\n".join(analytics_strings)
+        except Exception as e:
+            print(f"--- 활동 분석 컨텍스트 생성 오류: {e} ---")
 
     # 6. 인간관계 컨텍스트
-    try:
-        user_relationships = UserRelationship.objects.filter(user=user)
-        if user_relationships.exists():
-            relationship_strings = []
-            for rel in user_relationships:
-                details = f"{rel.name} ({rel.relationship_type})"
-                if rel.position:
-                    details += f", 포지션: {rel.position}"
-                if rel.traits:
-                    details += f", 특징: {rel.traits}"
-                relationship_strings.append(details)
-            
-            relationship_strings = [f"{rel.name} ({rel.relationship_type}, 특징: {rel.traits})" for rel in user_relationships]
-            contexts['relationship'] = "[사용자의 인간관계]: " + "\n".join(relationship_strings)
-    except Exception as e:
-        print(f"--- 사용자 관계 컨텍스트 생성 오류: {e} ---")
+    if 'relationship' in contexts_to_use:
+        try:
+            user_relationships = UserRelationship.objects.filter(user=user)
+            if user_relationships.exists():
+                relationship_strings = [f"{rel.name} ({rel.relationship_type}, 특징: {rel.traits})" for rel in user_relationships]
+                contexts['relationship'] = "[사용자의 인간관계]: " + "\n".join(relationship_strings)
+        except Exception as e:
+            print(f"--- 사용자 관계 컨텍스트 생성 오류: {e} ---")
 
     # 디버깅을 위해 모든 수집된 컨텍스트를 마지막에 한번에 출력
     for key, value in contexts.items():
@@ -230,7 +239,7 @@ def _prepare_llm_messages(final_system_prompt, history, user_message_text):
 
 def _call_openai_api(client: OpenAI, model_to_use: str, messages: list) -> Dict[str, Any]:
     """OpenAI API를 호출하고 응답 JSON을 반환합니다."""
-    print(f"--- Using Model: {model_to_use} ---")
+    print(f"--- 사용 모델: {model_to_use} ---")
     response = client.chat.completions.create(
         model=model_to_use,
         messages=messages,

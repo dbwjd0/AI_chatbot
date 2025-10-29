@@ -23,18 +23,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const idleUpImg = '/static/img/side_up_stand.png';
 
     // --- Audio Elements ---
-    const moveSound = new Audio('/static/audio/walking_bgm.mp3'); // Using walking_bgm.mp3
-    moveSound.volume = 0.5; // Reduced volume
+    const moveSound = new Audio('/static/audio/양말 걷기.mp3'); // Using walking_bgm.mp3
+    moveSound.volume = 1; // Reduced volume
     moveSound.loop = true; // Intended for continuous, infinite playback when playing
     let isMovingSoundPlaying = false;
 
-    const collisionSound = new Audio('/static/audio/crash_bgm.mp3'); // Using crash_bgm.mp3
+    const collisionSound = new Audio('/static/audio/부딪힘.mp3'); // Using crash_bgm.mp3
     collisionSound.volume = 0.5; // Reduced volume
     let isCurrentlyColliding = false; // New flag to track if player is currently colliding
 
+    const selectionSound = new Audio('/static/audio/선택지 좌우.mp3');
+    selectionSound.volume = 0.3;
+    const confirmationSound = new Audio('/static/audio/선택지 결정.mp3');
+    confirmationSound.volume = 0.5;
+    const yesConfirmationSound = new Audio('/static/audio/선택지 \'예\'.mp3');
+    yesConfirmationSound.volume = 0.5;
+
     // --- Game State ---
     const playerState = {
-        x: room.offsetWidth / 2,
+        x: (room.offsetWidth / 2) - 200,
         y: room.offsetHeight / 2,
         speed: 3,
         currentAnimation: idleImg,
@@ -43,6 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const keys = {};
     let activeInteraction = null;
     let isDialogActive = false;
+    let isConfirmationActive = false;
+    let selectedConfirmationOption = 'yes'; // 'yes' or 'no'
+    let onQuizCooldown = false; // Cooldown flag for the quiz interaction
     let lastFrameTime = 0; // For time-based movement
 
     // --- Debug Visualization ---
@@ -53,6 +63,65 @@ document.addEventListener('DOMContentLoaded', () => {
     const obstacles = document.querySelectorAll('.furniture-object');
     const obstacleCollisionBuffer = 35; // Make sure this is defined before use
 
+    // --- 컴퓨터 오브젝트 충돌 상자 직접 설정 ---
+    // 아래 값을 조절하여 컴퓨터 오브젝트의 충돌 상자를 변경하세요.
+    const computerCollision = {
+        // x: 이미지 왼쪽을 기준으로 충돌 상자를 좌/우로 이동합니다. (양수: 오른쪽, 음수: 왼쪽)
+        x: 50, 
+        // y: 이미지 위쪽을 기준으로 충돌 상자를 위/아래로 이동합니다. (양수: 아래쪽, 음수: 위쪽)
+        y: 50,
+        // width: 충돌 상자의 너비
+        width: 280,
+        // height: 충돌 상자의 높이
+        height: 170 
+    };
+
+    // --- 티비 오브젝트 충돌 상자 직접 설정 ---
+    // 아래 값을 조절하여 티비 오브젝트의 충돌 상자를 변경하세요.
+    const tvCollision = {
+        // x: 이미지 왼쪽을 기준으로 충돌 상자를 좌/우로 이동합니다. (양수: 오른쪽, 음수: 왼쪽)
+        x: 20, 
+        // y: 이미지 위쪽을 기준으로 충돌 상자를 위/아래로 이동합니다. (양수: 아래쪽, 음수: 위쪽)
+        y: 70,
+        // width: 충돌 상자의 너비
+        width: 230,
+        // height: 충돌 상자의 높이
+        height: 150 
+    };
+
+    function getObstacleRect(obstacle) {
+        if (obstacle.id === 'computer-obj') {
+            return {
+                left: obstacle.offsetLeft + computerCollision.x,
+                top: obstacle.offsetTop + computerCollision.y,
+                width: computerCollision.width,
+                height: computerCollision.height
+            };
+        }
+        if (obstacle.id === 'tv') {
+            return {
+                left: obstacle.offsetLeft + tvCollision.x,
+                top: obstacle.offsetTop + tvCollision.y,
+                width: tvCollision.width,
+                height: tvCollision.height
+            };
+        }
+        if (obstacle.id.startsWith('invisible-wall-')) {
+            return {
+                left: obstacle.offsetLeft,
+                top: obstacle.offsetTop,
+                width: obstacle.offsetWidth,
+                height: obstacle.offsetHeight
+            };
+        }
+        return { 
+            left: obstacle.offsetLeft + obstacleCollisionBuffer,
+            top: obstacle.offsetTop + obstacleCollisionBuffer,
+            width: obstacle.offsetWidth - (2 * obstacleCollisionBuffer),
+            height: obstacle.offsetHeight - (2 * obstacleCollisionBuffer)
+        };
+    }
+
     obstacles.forEach(obstacle => {
         // 'invisible-wall-'로 시작하는 ID를 가진 요소는 디버그 상자를 그리지 않고 건너뜁니다.
         if (obstacle.id.startsWith('invisible-wall-')) {
@@ -60,12 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const debugBox = document.createElement('div');
         debugBox.className = 'debug-box';
-        const rect = {
-            left: obstacle.offsetLeft + obstacleCollisionBuffer,
-            top: obstacle.offsetTop + obstacleCollisionBuffer,
-            width: obstacle.offsetWidth - (2 * obstacleCollisionBuffer),
-            height: obstacle.offsetHeight - (2 * obstacleCollisionBuffer)
-        };
+        const rect = getObstacleRect(obstacle);
         debugBox.style.left = `${rect.left}px`;
         debugBox.style.top = `${rect.top}px`;
         debugBox.style.width = `${rect.width}px`;
@@ -75,13 +139,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Input Handlers ---
     document.addEventListener('keydown', (e) => {
-        if (!isDialogActive) {
+        if (isConfirmationActive) {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                selectionSound.currentTime = 0;
+                selectionSound.play();
+                selectedConfirmationOption = selectedConfirmationOption === 'yes' ? 'no' : 'yes';
+                updateConfirmationSelection();
+            }
+        } else if (!isDialogActive) {
             keys[e.key] = true;
         }
     });
 
     document.addEventListener('keyup', (e) => {
         keys[e.key] = false;
+        if (isConfirmationActive) {
+            if (e.key === 'Enter') {
+                handleConfirmation();
+            }
+            return;
+        }
         if (isDialogActive) {
             hideDialog();
             return;
@@ -93,17 +170,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleInteraction(object) {
         const target = object.dataset.interactionTarget;
-        if (target === 'chat') {
+        if (target === 'chat_history') {
             fadeOverlay.classList.add('visible');
-            setTimeout(() => { window.location.href = '/chat'; }, 300);
-        } else if (target === 'game-chat') {
+            setTimeout(() => { window.location.href = '/chat_history/'; }, 300);
+        } else if (target === 'chat') {
             fadeOverlay.classList.add('visible');
-            setTimeout(() => { window.location.href = '/game-chat/'; }, 300);
+            setTimeout(() => { window.location.href = '/chat/'; }, 300);
         } else if (target === 'books') {
             showDialog('[아이]', '내가 좋아하는 책들이 꽂혀있다. 어려운 내용이 많아 보인다.');
         } else if (target === 'sofa') {
             showDialog('[아이]', '푹신한 소파에 앉아 잠시 쉬어볼까?');
-        } else if (target === 'bed') {
+        }
+        else if (target === 'bed') {
             showDialog('[아이]', '침대에 누우니 잠이 솔솔 오는걸?');
         } else if (target === 'schedule') {
             openModal();
@@ -122,6 +200,68 @@ document.addEventListener('DOMContentLoaded', () => {
     function hideDialog() {
         dialogBox.classList.add('hidden');
         isDialogActive = false;
+        isConfirmationActive = false;
+        // Remove confirmation buttons if they exist
+        const options = dialogBox.querySelector('.dialog-options');
+        if (options) {
+            options.remove();
+        }
+    }
+
+    function showConfirmationDialog() {
+        if (isConfirmationActive || onQuizCooldown) return; // Prevent multiple triggers
+
+        isDialogActive = true;
+        isConfirmationActive = true;
+        selectedConfirmationOption = 'yes';
+
+        dialogSpeaker.textContent = '[시스템]';
+        dialogText.textContent = '퀴즈 방으로 이동할까?';
+
+        const options = document.createElement('div');
+        options.className = 'dialog-options';
+
+        const yesButton = document.createElement('button');
+        yesButton.id = 'confirm-yes';
+        yesButton.textContent = '예';
+
+        const noButton = document.createElement('button');
+        noButton.id = 'confirm-no';
+        noButton.textContent = '아니요';
+
+        options.appendChild(yesButton);
+        options.appendChild(noButton);
+        dialogBox.appendChild(options);
+
+        updateConfirmationSelection();
+        dialogBox.classList.remove('hidden');
+    }
+
+    function updateConfirmationSelection() {
+        const yesButton = document.getElementById('confirm-yes');
+        const noButton = document.getElementById('confirm-no');
+        if (!yesButton || !noButton) return;
+
+        if (selectedConfirmationOption === 'yes') {
+            yesButton.classList.add('selected');
+            noButton.classList.remove('selected');
+        } else {
+            noButton.classList.add('selected');
+            yesButton.classList.remove('selected');
+        }
+    }
+
+    function handleConfirmation() {
+        if (selectedConfirmationOption === 'yes') {
+            yesConfirmationSound.play();
+            fadeOverlay.classList.add('visible');
+            setTimeout(() => { window.location.href = '/quiz/'; }, 300);
+        } else {
+            confirmationSound.play();
+            hideDialog();
+            onQuizCooldown = true;
+            setTimeout(() => { onQuizCooldown = false; }, 1000); // 1-second cooldown
+        }
     }
 
     // --- Game Loop (New Robust Logic) ---
@@ -158,7 +298,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             if (isMovingSoundPlaying) {
                 moveSound.pause();
-                // moveSound.currentTime = 0; // Removed again to allow continuous loop without reset
                 isMovingSoundPlaying = false;
             }
         }
@@ -166,45 +305,23 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. Obstacle Collision Detection
         const playerWidth = player.offsetWidth;
         const playerHeight = player.offsetHeight;
-        const playerCollisionBuffer = 10; // Shrinks player's box
-        
-        // Calculate player's half-dimensions
         const playerHalfWidth = playerWidth / 2;
         const playerHalfHeight = playerHeight / 2;
 
-        // Calculate the effective collision box dimensions
-        const collisionWidth = playerWidth - (2 * playerCollisionBuffer);
-        const collisionHeight = playerHeight - (2 * playerCollisionBuffer);
+        const collisionHeight = playerHeight * 0.2;
+        const collisionWidth = playerWidth * 0.6;
 
-        let currentFrameCollision = false; // Flag for collision in this frame
+        let currentFrameCollision = false;
 
-        // Check X-axis collision
         const futurePlayerRectX = {
-            left: nextX - playerHalfWidth + playerCollisionBuffer, // Adjust left for center positioning and buffer
-            top: playerState.y - playerHalfHeight + playerCollisionBuffer, // Adjust top for center positioning and buffer
+            left: nextX - collisionWidth / 2,
+            top: playerState.y + playerHalfHeight - collisionHeight,
             width: collisionWidth,
             height: collisionHeight
         };
         let collisionX = false;
         for (const obstacle of obstacles) {
-            let obstacleRect;
-            if (obstacle.id.startsWith('invisible-wall-')) {
-                // For our wall, use the exact dimensions without a buffer
-                obstacleRect = {
-                    left: obstacle.offsetLeft,
-                    top: obstacle.offsetTop,
-                    width: obstacle.offsetWidth,
-                    height: obstacle.offsetHeight
-                };
-            } else {
-                // For all other obstacles, use the buffer as before
-                obstacleRect = { 
-                    left: obstacle.offsetLeft + obstacleCollisionBuffer,
-                    top: obstacle.offsetTop + obstacleCollisionBuffer,
-                    width: obstacle.offsetWidth - (2 * obstacleCollisionBuffer),
-                    height: obstacle.offsetHeight - (2 * obstacleCollisionBuffer)
-                };
-            }
+            const obstacleRect = getObstacleRect(obstacle);
             if (checkRectCollision(futurePlayerRectX, obstacleRect)) {
                 collisionX = true;
                 currentFrameCollision = true;
@@ -215,33 +332,15 @@ document.addEventListener('DOMContentLoaded', () => {
             playerState.x = nextX;
         }
 
-        // Check Y-axis collision
         const futurePlayerRectY = {
-            left: playerState.x - playerHalfWidth + playerCollisionBuffer, // Adjust left for center positioning and buffer
-            top: nextY - playerHalfHeight + playerCollisionBuffer, // Adjust top for center positioning and buffer
+            left: playerState.x - collisionWidth / 2,
+            top: nextY + playerHalfHeight - collisionHeight,
             width: collisionWidth,
             height: collisionHeight
         };
         let collisionY = false;
         for (const obstacle of obstacles) {
-            let obstacleRect;
-            if (obstacle.id.startsWith('invisible-wall-')) {
-                // For our wall, use the exact dimensions without a buffer
-                obstacleRect = {
-                    left: obstacle.offsetLeft,
-                    top: obstacle.offsetTop,
-                    width: obstacle.offsetWidth,
-                    height: obstacle.offsetHeight
-                };
-            } else {
-                // For all other obstacles, use the buffer as before
-                obstacleRect = { 
-                    left: obstacle.offsetLeft + obstacleCollisionBuffer,
-                    top: obstacle.offsetTop + obstacleCollisionBuffer,
-                    width: obstacle.offsetWidth - (2 * obstacleCollisionBuffer),
-                    height: obstacle.offsetHeight - (2 * obstacleCollisionBuffer)
-                };
-            }
+            const obstacleRect = getObstacleRect(obstacle);
             if (checkRectCollision(futurePlayerRectY, obstacleRect)) {
                 collisionY = true;
                 currentFrameCollision = true;
@@ -252,67 +351,45 @@ document.addEventListener('DOMContentLoaded', () => {
             playerState.y = nextY;
         }
 
-        // Collision sound logic: Play only on initial impact
         if (currentFrameCollision && !isCurrentlyColliding) {
-            collisionSound.currentTime = 0; // Ensure it plays from the start
+            collisionSound.currentTime = 0;
             collisionSound.play();
         }
         isCurrentlyColliding = currentFrameCollision;
         
         // 4. Determine animation based on actual movement
         if (dx !== 0 || dy !== 0) {
-            // Animation decision (Y-axis priority)
-            if (dy === -1) { // Moving Up
-                newAnimation = walkUpImg;
-                playerState.lastDirection = 'up';
-            } else if (dy === 1) { // Moving Down
-                newAnimation = walkFrontGif;
-                playerState.lastDirection = 'down';
-            } else if (dx === -1) { // Moving Left
-                newAnimation = walkSideLeftGif;
-                playerState.lastDirection = 'left';
-            } else if (dx === 1) { // Moving Right
-                newAnimation = walkSideRightGif;
-                playerState.lastDirection = 'right';
-            }
+            if (dy === -1) { newAnimation = walkUpImg; playerState.lastDirection = 'up'; }
+            else if (dy === 1) { newAnimation = walkFrontGif; playerState.lastDirection = 'down'; }
+            else if (dx === -1) { newAnimation = walkSideLeftGif; playerState.lastDirection = 'left'; }
+            else if (dx === 1) { newAnimation = walkSideRightGif; playerState.lastDirection = 'right'; }
         } else {
-            // Select idle animation based on last direction
             switch (playerState.lastDirection) {
-                case 'up':
-                    newAnimation = idleUpImg;
-                    break;
-                case 'left':
-                    newAnimation = idleLeftImg;
-                    break;
-                case 'right':
-                    newAnimation = idleRightImg;
-                    break;
-                case 'down':
-                default:
-                    newAnimation = idleImg; // Default down-facing idle
-                    break;
+                case 'up': newAnimation = idleUpImg; break;
+                case 'left': newAnimation = idleLeftImg; break;
+                case 'right': newAnimation = idleRightImg; break;
+                default: newAnimation = idleImg; break;
             }
         }
 
-        // 5. Only update src if the animation has changed
         if (playerState.currentAnimation !== newAnimation) {
             playerImage.src = newAnimation;
             playerState.currentAnimation = newAnimation;
         }
 
-        // 6. Boundary Collision (redundant with walls, but good as a fallback)
+        // 6. Boundary Collision
         const roomRect = room.getBoundingClientRect();
         playerState.x = Math.max(playerWidth / 2, Math.min(roomRect.width - playerWidth / 2, playerState.x));
         playerState.y = Math.max(playerHeight / 2, Math.min(roomRect.height - playerHeight / 2, playerState.y));
 
-        // 7. Update Player Position on screen
+        // 7. Update Player Position
         player.style.left = `${playerState.x}px`;
         player.style.top = `${playerState.y}px`;
 
         // --- Update Debug Box for Player ---
         const playerCollisionRect = {
-            left: playerState.x - playerHalfWidth + playerCollisionBuffer,
-            top: playerState.y - playerHalfHeight + playerCollisionBuffer,
+            left: playerState.x - collisionWidth / 2,
+            top: playerState.y + playerHalfHeight - collisionHeight,
             width: collisionWidth,
             height: collisionHeight
         };
@@ -328,10 +405,15 @@ document.addEventListener('DOMContentLoaded', () => {
             for (const object of objects) {
                 const objectRect = { left: object.offsetLeft, top: object.offsetTop, width: object.offsetWidth, height: object.offsetHeight };
                 if (checkCollision(updatedPlayerRect, objectRect)) {
-                    interactionPrompt.textContent = object.dataset.interactionMessage;
-                    interactionPrompt.classList.remove('hidden');
-                    activeInteraction = object;
-                    canInteract = true;
+                    if (object.id === 'Quiz-line' && !onQuizCooldown) {
+                        showConfirmationDialog();
+                        canInteract = false; // No prompt for this one
+                    } else {
+                        interactionPrompt.textContent = object.dataset.interactionMessage;
+                        interactionPrompt.classList.remove('hidden');
+                        activeInteraction = object;
+                        canInteract = true;
+                    }
                     break;
                 }
             }
@@ -340,6 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 activeInteraction = null;
             }
         }
+
 
         // Update proactive notification position
         if (notificationBubble && notificationBubble.style.display !== 'none') {

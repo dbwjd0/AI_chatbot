@@ -1,0 +1,9 @@
+{% load static %}
+<div class="top-menu">
+    <strong>{{ user.username }}</strong>님, 환영합니다.
+    {% if show_room_link %}
+        <a href="{% url 'room' %}">방으로 돌아가기</a>
+    {% endif %}
+    <a href="{% url 'ai_status' %}">아이 상태</a>
+    <a href="{% url 'logout' %}">로그아웃</a>
+</div>

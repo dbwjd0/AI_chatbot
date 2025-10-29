@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>츤데레 AI 비서</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <style>
+        #toggle-bgm-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            z-index: 101;
+        }
+    </style>
+</head>
+<body>
+    <button id="toggle-bgm-btn">BGM OFF</button>
+    <div class="container">
+    {% include 'includes/top_menu.html' with show_room_link=True %}
+        <div class="chatbot-container">
+            <div class="chat-window">
+                <div id="chat-log" class="chat-log" data-has-next-page="{{ has_next_page|yesno:'true,false' }}">
+                    {% for message in chat_messages %}
+                        <div class="message {% if message.is_user %}user-message{% else %}bot-message{% endif %}">
+                            {% if message.image %}
+                                <img src="{{ message.image.url }}" alt="User image" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 5px;">
+                            {% endif %}
+                            <p>{{ message.message }}</p>
+                        </div>
+                    {% empty %}
+                        <div class="message bot-message">
+                            <p>... (삐빅) ... 흥, 드디어 왔네. 뭘 시킬 셈이야?</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+        {{ chat_messages|json_script:"chat_messages_data" }}
+        <script>
+        const chatHistory = JSON.parse(document.getElementById('chat_messages_data').textContent);
+        const STATIC_URLS = {
+            '생각': "{% static 'img/char_thinking.png' %}",
+            '행복': "{% static 'img/char_happy.png' %}",
+            '슬픔': "{% static 'img/char_sad.png' %}",
+            '분노': "{% static 'img/char_angry.png' %}",
+            '놀람': "{% static 'img/char_surprise.png' %}",      // 임시 이미지
+            '공포': "{% static 'img/char_fear.png' %}",     // 임시 이미지 
+            '혐오': "{% static 'img/char_disgust.png' %}",  // 임시 이미지      
+            '중립': "{% static 'img/char_default.png' %}",
+            'default': "{% static 'img/char_default.png' %}" // 기본값
+        };
+    </script>
+    <script src="{% static 'chat_history.js' %}"></script>
+
+    <!-- 게임 페이지용 BGM (login.html 제외) -->
+    <audio id="bgm2" loop>
+        <source src="{% static 'music/game_bgm.mp3' %}" type="audio/mpeg">
+    </audio>
+
+    <script src="{% static 'bgm.js' %}"></script>
+</body>
+</html>

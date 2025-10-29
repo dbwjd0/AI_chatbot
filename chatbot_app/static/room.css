@@ -1,5 +1,5 @@
 #room {
-    background-image: url('img/베이스 배경.png'); /* Use the base background image */
+    background-image: url('img/베이스 배경2.png'); /* Use the base background image */
     background-size: cover;
     background-position: center;
     position: relative;
@@ -13,20 +13,20 @@
 }
 
 #stove { left: 130px; top: 20px; width: 200px; height: 250px; }
-#refrigerator { left: 70px; top: 530px; width: 250px; height: 120px; }
-#lamp { left: 740px; top: 80px; width: 130px; height: 170px; }
-#robot-vacuum { left: 520px; top: 200px; width: 50px; height: 50px; }
-#sofa { left: 70px; top: 300px; width: 130px; height: 250px; }
-#wardrobe { left: 1120px; top: 200px; width: 90px; height: 330px; }
-#books-desk { left: 330px; top: 100px; width: 180px; height: 150px; }
-#bed { left: 880px; top: 70px; width: 230px; height: 280px; }
-#computer-obj { left: 770px; top: 500px; width: 300px; height: 200px; }
-#tv { left: 370px; top: 590px; width: 220px; height: 150px; }
-#tea-table { left: 250px; top: 380px; width: 160px; height: 90px; }
+#refrigerator { left: 35px; top: 560px; width: 240px; height: 145px; }
+#lamp { left: 700px; top: 65px; width: 90px; height: 190px; }
+#robot-vacuum { left: 475px; top: 110px; width: 80px; height: 85px; }
+#sofa { left: 30px; top: 295px; width: 140px; height: 285px; }
+#wardrobe { left: 1070px; top: 180px; width: 100px; height: 330px; }
+#books-desk { left: 255px; top: 45px; width: 225px; height: 220px; }
+#bed { left: 810px; top: 25px; width: 275px; height: 410px; }
+#computer-obj { left: 695px; top: 425px; width: 380px; height: 315px; }
+#tv { left: 310px; top: 525px; width: 250px; height: 200px; }
+#tea-table { left: 220px; top: 375px; width: 155px; height: 100px; }
 #wall-clock { left: 480px; top: 50px; width: 80px; height: 80px; }
 #wall-plant { left: 70px; top: 18px; width: 250px; height: 80px; }
 #storage-cabinet { left: 70px; top: 70px; width: 70px; height: 300px; }
-#flower-pot { left: 500px; top: 515px; width: 80px; height: 100px; }
+#flower-pot { left: 765px; top: 130px; width: 75px; height:120px; }
 
 .wall {
     position: absolute;
@@ -68,8 +68,8 @@
     position: absolute;
     z-index: 9;
     /* Add a subtle glow or border to indicate interactivity */
-    box-shadow: 0 0 10px 5px rgba(255, 255, 0, 0.5);
-    border-radius: 5px;
+    /* box-shadow: 0 0 10px 5px rgba(255, 255, 0, 0.5); */
+    /* border-radius: 5px; */
 }
 
 #computer {
@@ -353,9 +353,9 @@
 /* 위치 조정을 위한 보이는 장애물 스타일 */
 #invisible-wall-1 {
      position: absolute;
-     top: 500px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 805px;   /* X 좌표 (왼쪽에서부터의 거리) */
-     width: 230px;  /* 장애물의 너비 */
+     top: 760px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 555px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 600px;  /* 장애물의 너비 */
      height: 5px;  /* 장애물의 높이 */
      background-color: green; /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
@@ -364,8 +364,8 @@
 #invisible-wall-2 {
      position: absolute;
      top: 450px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 600px;   /* X 좌표 (왼쪽에서부터의 거리) */
-     width: 5px;  /* 장애물의 너비 */
+     left: 580px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 13px;  /* 장애물의 너비 */
      height: 500px;  /* 장애물의 높이 */
      background-color: green; /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
@@ -373,9 +373,9 @@
 
 #invisible-wall-3 {
      position: absolute;
-     top: 50px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 600px;   /* X 좌표 (왼쪽에서부터의 거리) */
-     width: 5px;  /* 장애물의 너비 */
+     top: 80px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 570px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 9px;  /* 장애물의 너비 */
      height: 200px;  /* 장애물의 높이 */
      background-color: green; /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
@@ -394,40 +394,40 @@
 #invisible-wall-5 {
      position: absolute;
      top: 650px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 55px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     left: 330px;   /* X 좌표 (왼쪽에서부터의 거리) */
      width: 5px;  /* 장애물의 너비 */
      height: 150px;  /* 장애물의 높이 */
-     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     background-color: rgb(16, 59, 99); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
 }
 
 #invisible-wall-6 {
      position: absolute;
      top: 720px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 70px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     left: 55px;   /* X 좌표 (왼쪽에서부터의 거리) */
      width: 150px;  /* 장애물의 너비 */
      height: 5px;  /* 장애물의 높이 */
-     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     background-color: rgb(188, 224, 26); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
 }
 
 #invisible-wall-7 {
      position: absolute;
-     top: 380px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 284px;   /* X 좌표 (왼쪽에서부터의 거리) */
-     width: 93px;  /* 장애물의 너비 */
-     height: 5px;  /* 장애물의 높이 */
-     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     top: 390px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 240px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 5px;  /* 장애물의 너비 */
+     height: 50px;  /* 장애물의 높이 */
+     background-color: rgb(177, 40, 124); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
 } 
 
 #invisible-wall-8 {
      position: absolute;
-     top: 595px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 406px;   /* X 좌표 (왼쪽에서부터의 거리) */
-     width: 93px;  /* 장애물의 너비 */
-     height: 5px;  /* 장애물의 높이 */
-     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     top: 390px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 355px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 5px;  /* 장애물의 너비 */
+     height: 50px;  /* 장애물의 높이 */
+     background-color: rgb(95, 22, 129); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
 } 
 
@@ -437,29 +437,99 @@
      left: 500px;   /* X 좌표 (왼쪽에서부터의 거리) */
      width: 5px;  /* 장애물의 너비 */
      height: 50px;  /* 장애물의 높이 */
-     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     background-color: rgb(201, 157, 13); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
 } 
 
 #invisible-wall-10 {
      position: absolute;
-     top: 520px;    /* Y 좌표 (위에서부터의 거리) */
-     left: 520px;   /* X 좌표 (왼쪽에서부터의 거리) */
-     width: 40px;  /* 장애물의 너비 */
+     top: 450px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 800px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 190px;  /* 장애물의 너비 */
      height: 5px;  /* 장애물의 높이 */
-     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     background-color: rgb(75, 207, 157); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
 } 
 
 #invisible-wall-11 {
      position: absolute;
-     top: 540px;    /* Y 좌표 (위에서부터의 거리) */
+     top: 730px;    /* Y 좌표 (위에서부터의 거리) */
      left: 200px;   /* X 좌표 (왼쪽에서부터의 거리) */
-     width: 100px;  /* 장애물의 너비 */
-     height: 5px;  /* 장애물의 높이 */
-     background-color: green; /* 눈에 보이도록 녹색으로 설정 */
+     width: 5px;  /* 장애물의 너비 */
+     height: 100px;  /* 장애물의 높이 */
+     background-color: rgb(146, 127, 66); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
 } 
+
+#invisible-wall-12 {
+     position: absolute;
+     top: 600px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 840px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 100px;  /* 장애물의 너비 */
+     height: 100px;  /* 장애물의 높이 */
+     background-color: rgb(66, 146, 83); /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+}
+
+#invisible-wall-13 {
+     position: absolute;
+     top: 380px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 240px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 120px;  /* 장애물의 너비 */
+     height: 5px;  /* 장애물의 높이 */
+     background-color: rgb(163, 94, 38); /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+}
+
+#invisible-wall-14 {
+     position: absolute;
+     top: 10px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 600px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 120px;  /* 장애물의 너비 */
+     height: 5px;  /* 장애물의 높이 */
+     background-color: rgb(192, 30, 65); /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+}
+
+#invisible-wall-15 {
+     position: absolute;
+     top: 230px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 100px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 140px;  /* 장애물의 너비 */
+     height: 5px;  /* 장애물의 높이 */
+     background-color: rgb(247, 68, 127); /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+}
+
+#invisible-wall-16 {
+     position: absolute;
+     top: 230px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 50px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 5px;  /* 장애물의 너비 */
+     height: 80px;  /* 장애물의 높이 */
+     background-color: rgb(68, 247, 217); /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+}
+
+#invisible-wall-17 {
+     position: absolute;
+     top: 310px;    /* Y 좌표 (위에서부터의 거리) */
+     left: 50px;   /* X 좌표 (왼쪽에서부터의 거리) */
+     width: 80px;  /* 장애물의 너비 */
+     height: 5px;  /* 장애물의 높이 */
+     background-color: rgb(68, 80, 247); /* 눈에 보이도록 녹색으로 설정 */
+     visibility: hidden;
+}
+
+#Quiz-line {
+    position: absolute;
+    top: 40px;
+    left: 600px;
+    width: 120px;
+    height: 5px;
+    background-color: blue;
+    visibility: hidden;
+}
 
 #proactive-notification {
     position: absolute;
@@ -508,4 +578,100 @@
     border-right: 8px solid transparent;
     border-top: 10px solid #ffffff;
     z-index: 1;
+}
+
+/* .debug-box {
+    position: absolute;
+    border: 2px solid red;
+    box-sizing: border-box;
+    pointer-events: none; #(설명주석필요) So it doesn't interfere with mouse events
+} */
+
+
+.top-menu {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 15px;
+    border-radius: 10px;
+    color: white;
+    z-index: 100;
+}
+
+.top-menu a {
+    color: #a9d1ff;
+    text-decoration: none;
+    margin-left: 15px;
+}
+
+#toggle-bgm-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 101;
+    padding: 8px 12px;
+    background: none;
+    color: white;
+    border: 2px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'VT323', monospace;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+#bgm-volume-slider {
+    position: absolute;
+    top: 30px;
+    left: 110px; /* Position to the right of the button */
+    z-index: 101;
+    width: 120px; /* Increase width for easier control */
+    -webkit-appearance: none; /* Remove default styling for better customization */
+    appearance: none;
+    height: 8px;
+    background: #36518b;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    border-radius: 4px;
+}
+
+#bgm-volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+}
+
+#bgm-volume-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+}
+
+.dialog-options {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+.dialog-options button {
+    background: none;
+    border: 2px solid #fff;
+    color: #fff;
+    padding: 10px 20px;
+    margin-left: 10px;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.dialog-options button.selected {
+    background-color: #fff;
+    color: #000;
 }

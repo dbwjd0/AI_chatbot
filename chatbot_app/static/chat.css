@@ -12,8 +12,9 @@ body, html {
 .game-container {
     width: 100%;
     height: 100%;
-    background-image: url('/static/img/pixel_room_bg.png');
-    background-size: cover;
+    background-image: url('/static/img/집 내부 고화질.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
     background-position: center;
     position: relative;
     display: flex;
@@ -44,10 +45,10 @@ body, html {
 
 .character-container {
     position: absolute;
-    bottom: 0;
+    bottom: -30%;
     left: 50%;
     transform: translateX(-50%);
-    height: 80%;
+    height: 130%;
     z-index: 10;
 }
 
@@ -68,8 +69,8 @@ body, html {
     left: 50%;
     transform: translateX(-50%);
     width: 80%;
-    max-width: 900px;
-    height: 150px;
+    max-width: 1000px;
+    height: 170px;
     background-color: rgba(0, 0, 0, 0.75);
     border: 2px solid #a9d1ff;
     border-radius: 15px;
