@@ -91,6 +91,11 @@ html, body {
     cursor: pointer;
     font-size: 1em;
     margin-left: 10px;
+    transition: background-color 0.2s ease; /* Added transition for smooth hover */
+}
+
+#send-button:hover {
+    background-color: #000000; /* A darker shade of blue */
 }
 
 /* Choice Selection Styles */

@@ -97,6 +97,12 @@ body {
     display: flex;
     padding: 10px;
     border-top: 1px solid #eee;
+    position: relative; /* Ensure z-index works */
+    z-index: 10; /* Bring chat input to the front */
+}
+
+.chat-input button {
+    z-index: 1; /* Ensure button is clickable within chat-input */
 }
 
 .chat-input input {
