@@ -684,5 +684,5 @@
     box-sizing: border-box;
     pointer-events: none; /* 마우스 이벤트를 방해하지 않도록 설정 */
     z-index: 99; /* 다른 요소들 위에 보이도록 설정 */
-    /* display: none; 기본적으로 숨김 */
+    display: none; /*기본적으로 숨김*/
 }
