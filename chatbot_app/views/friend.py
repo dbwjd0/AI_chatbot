@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.db.models import Q
 from django.utils import timezone
-from ..models import UserFriendship
+from ..models import UserFriendship, FriendMessage # FriendMessage 모델 추가
 
 # ----------------------------------------------------
 # 1. 친구 목록 및 받은 요청 조회 (GET /friends/)
@@ -179,3 +179,77 @@ def delete_friend(request, friendship_id):
             return JsonResponse({'status': 'error', 'message': '친구 삭제 처리 중 오류가 발생했습니다.'}, status=500)
             
     return JsonResponse({'status': 'error', 'message': '잘못된 접근입니다.'}, status=400)
+
+# ----------------------------------------------------
+# 6. 친구에게 쪽지 보내기 (POST /friends/message/send/)
+# ----------------------------------------------------
+@login_required
+def send_friend_message(request):
+    if request.method == 'POST':
+        receiver_username = request.POST.get('receiver_username')
+        message_content = request.POST.get('message_content')
+        
+        if not receiver_username or not message_content:
+            return JsonResponse({'status': 'error', 'message': '수신자 이름과 메시지 내용을 모두 입력해 주세요.'}, status=400)
+
+        sender = request.user
+        
+        try:
+            receiver = User.objects.get(username=receiver_username)
+        except User.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': f'사용자 "{receiver_username}"를 찾을 수 없습니다.'}, status=404)
+
+        # 친구 관계 확인
+        if not UserFriendship.objects.filter(
+            Q(from_user=sender, to_user=receiver, status=UserFriendship.STATUS_ACCEPTED) |
+            Q(from_user=receiver, to_user=sender, status=UserFriendship.STATUS_ACCEPTED)
+        ).exists():
+            return JsonResponse({'status': 'error', 'message': f'"{receiver_username}"님은 당신의 친구가 아닙니다.'}, status=403)
+
+        # 발신자의 챗봇 이름과 페르소나 가져오기
+        sender_profile = sender.profile
+        sender_chatbot_name = sender_profile.chatbot_name
+        sender_persona = sender_profile.persona_preference
+
+        try:
+            FriendMessage.objects.create(
+                sender=sender,
+                receiver=receiver,
+                sender_chatbot_name=sender_chatbot_name,
+                sender_persona=sender_persona,
+                message_content=message_content
+            )
+            return JsonResponse({'status': 'success', 'message': f'"{receiver_username}"님에게 쪽지를 보냈습니다.'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': f'쪽지 전송 중 오류가 발생했습니다: {str(e)}'}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': '잘못된 접근입니다.'}, status=400)
+
+# ----------------------------------------------------
+# 7. 읽지 않은 친구 쪽지 하나 가져오기 및 읽음 처리 (GET /friends/message/unread/get/)
+# ----------------------------------------------------
+@login_required
+def get_and_mark_read_friend_message(request):
+    current_user = request.user
+    
+    # 가장 오래된 읽지 않은 메시지 하나를 가져옵니다.
+    unread_message = FriendMessage.objects.filter(receiver=current_user, is_read=False).order_by('timestamp').first()
+
+    if unread_message:
+        # 메시지를 읽음으로 표시
+        unread_message.is_read = True
+        unread_message.save()
+
+        return JsonResponse({
+            'status': 'success',
+            'message': {
+                'id': unread_message.id,
+                'sender_username': unread_message.sender.username,
+                'sender_chatbot_name': unread_message.sender_chatbot_name,
+                'sender_persona': unread_message.sender_persona,
+                'message_content': unread_message.message_content,
+                'timestamp': unread_message.timestamp.isoformat(),
+            }
+        })
+    else:
+        return JsonResponse({'status': 'no_messages', 'message': '읽지 않은 쪽지가 없습니다.'})

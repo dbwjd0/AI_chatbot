@@ -6,9 +6,59 @@ from django.utils import timezone
 import re
 import json # json 모듈 임포트
 from django.db.models import Q
-from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage, QuizResult, UserFriendship
+from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage, QuizResult, UserFriendship, FriendMessage # FriendMessage 모델 추가
 from chatbot_app.services.proactive_service import generate_proactive_message
 from ..quiz_data import QUIZ_QUESTIONS
+from . import friend
+from ..services import friend_message_service
+
+
+@login_required
+def check_unread_friend_messages(request):
+    """현재 사용자에게 읽지 않은 쪽지가 있는지 확인합니다."""
+    user = request.user
+    has_unread = FriendMessage.objects.filter(receiver=user, is_read=False).exists()
+    return JsonResponse({'has_unread_messages': has_unread})
+
+@login_required
+def get_processed_unread_friend_message(request):
+    current_user = request.user
+    
+    # 1. Get all unread messages
+    unread_messages = FriendMessage.objects.filter(receiver=current_user, is_read=False).order_by('timestamp')
+    
+    if not unread_messages:
+        return JsonResponse({'status': 'no_messages', 'messages': []})
+
+    processed_messages = []
+    message_ids_to_mark_read = []
+
+    for message in unread_messages:
+        # 2. Process each message using the service
+        processed_content, explanation = friend_message_service.process_friend_message_for_recipient(
+            current_user, 
+            message.sender_chatbot_name, 
+            message.sender_persona, 
+            message.message_content
+        )
+        
+        processed_messages.append({
+            'sender': message.sender.username,
+            'content': processed_content
+        })
+        
+        message_ids_to_mark_read.append(message.id)
+
+    # 3. Mark all processed messages as read in a single query
+    if message_ids_to_mark_read:
+        FriendMessage.objects.filter(id__in=message_ids_to_mark_read).update(is_read=True)
+
+    # 4. Return the list of processed messages, matching frontend expectations
+    return JsonResponse({
+        'status': 'success',
+        'messages': processed_messages
+    })
+
 def landing_view(request):
     """사용자의 온보딩 완료 여부에 따라 적절한 페이지로 리디렉션합니다."""
     if request.user.profile.is_onboarding_complete:
@@ -150,10 +200,13 @@ def chat_main_view(request):
         for msg in messages_page.object_list
     ][::-1]
 
+    has_unread_friend_messages = FriendMessage.objects.filter(receiver=request.user, is_read=False).exists()
+
     return render(request, 'chat.html', {
         'user_profile': user_profile, 
         'chat_messages': chat_messages_data,
-        'has_next_page': messages_page.has_next()
+        'has_next_page': messages_page.has_next(),
+        'has_unread_friend_messages': has_unread_friend_messages,
     })
 
 @login_required

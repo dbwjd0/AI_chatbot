@@ -24,6 +24,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const feedbackContainer = document.getElementById('feedback-container');
     const thumbUpButton = document.getElementById('thumb-up-button');
     const thumbDownButton = document.getElementById('thumb-down-button');
+    const friendMessageInput = document.getElementById('friend-message-input');
+    const messageButton = document.getElementById('message-button');
+    const sendFriendMessageButton = document.getElementById('send-friend-message-button');
+    const friendReceiverSelect = document.getElementById('friend-receiver-select'); // New DOM element
+    const unreadMessagesButton = document.getElementById('unread-messages-button'); // New DOM element
 
     // --- State Variables ---
     let aiMessageQueue = [];
@@ -38,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let typingTimeout = null;
     let typingResolve = null;
     let currentLearningData = null; // To store state_vector and action_id
+    let isFriendMessageMode = false; // New state variable
 
     const emoticons = [
         '결제_이모티콘.png', '계략_이모티콘.png', '돌_이모티콘.png', '따봉_이모티콘.png',
@@ -107,6 +113,54 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     populateEmoticonPalette();
+
+    // --- Friend List for Messaging ---
+    async function loadFriendsIntoDropdown() {
+        try {
+            const response = await fetch('/api/friends/');
+            const data = await response.json();
+            if (data.status === 'success') {
+                friendReceiverSelect.innerHTML = '<option value="">친구 선택</option>'; // Clear and add default
+                data.accepted_friends.forEach(friend => {
+                    const option = document.createElement('option');
+                    option.value = friend.username;
+                    option.textContent = friend.username;
+                    friendReceiverSelect.appendChild(option);
+                });
+            } else {
+                console.error('친구 목록을 불러오는 데 실패했습니다:', data.message);
+            }
+        } catch (error) {
+            console.error('친구 목록 API 호출 중 오류 발생:', error);
+        }
+    }
+
+    // --- Message/Friend Message Toggle ---
+    messageButton.addEventListener('click', () => {
+        console.log('Message button clicked!');
+        toggleFriendMessageMode();
+    });
+
+    function toggleFriendMessageMode() {
+        isFriendMessageMode = !isFriendMessageMode;
+        if (isFriendMessageMode) {
+            userInput.style.display = 'none';
+            sendButton.style.display = 'none';
+            friendReceiverSelect.style.display = 'block'; // Show dropdown
+            friendMessageInput.style.display = 'block';
+            sendFriendMessageButton.style.display = 'block';
+            loadFriendsIntoDropdown(); // Load friends when entering message mode
+            friendMessageInput.focus();
+        }
+        else {
+            userInput.style.display = 'block';
+            sendButton.style.display = 'block';
+            friendReceiverSelect.style.display = 'none'; // Hide dropdown
+            friendMessageInput.style.display = 'none';
+            sendFriendMessageButton.style.display = 'none';
+            userInput.focus();
+        }
+    }
 
     // --- Message Sending ---
     sendButton.addEventListener('click', sendMessage);
@@ -371,6 +425,146 @@ document.addEventListener('DOMContentLoaded', function () {
 
     thumbUpButton.addEventListener('click', () => sendFeedback(1.0));
     thumbDownButton.addEventListener('click', () => sendFeedback(-1.0));
+
+    // --- Friend Message Sending ---
+    sendFriendMessageButton.addEventListener('click', sendFriendMessage);
+    friendMessageInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            sendFriendMessage();
+        }
+    });
+
+    async function sendFriendMessage() {
+        const messageContent = friendMessageInput.value.trim();
+        const receiverUsername = friendReceiverSelect.value; // Get selected friend
+
+        if (messageContent === '') {
+            alert("쪽지 내용을 입력해 주세요.");
+            return;
+        }
+        if (!receiverUsername) {
+            alert("쪽지를 받을 친구를 선택해 주세요.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('receiver_username', receiverUsername);
+        formData.append('message_content', messageContent);
+        formData.append('csrfmiddlewaretoken', csrftoken);
+
+        try {
+            const response = await fetch('/friends/message/send/', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-CSRFToken': csrftoken }
+            });
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                alert(data.message);
+                friendMessageInput.value = '';
+                // Optionally switch back to chat mode
+                toggleFriendMessageMode(); 
+            } else {
+                alert(`쪽지 전송 실패: ${data.message}`);
+            }
+        } catch (error) {
+            console.error('Error sending friend message:', error);
+            alert('쪽지 전송 중 오류가 발생했습니다.');
+        }
+    }
+
+    // --- Unread Message Indicator ---
+    async function checkUnreadMessages() {
+        try {
+            const response = await fetch('/friends/message/unread/');
+            const data = await response.json();
+            if (data.has_unread_messages) {
+                unreadMessagesButton.style.display = 'block';
+            } else {
+                unreadMessagesButton.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error checking unread messages:', error);
+        }
+    }
+
+    // Check for unread messages on load and every 15 seconds
+    checkUnreadMessages();
+    setInterval(checkUnreadMessages, 15000); // Every 15 seconds
+
+        async function fetchAndDisplayUnreadFriendMessage() {
+
+            // If a message is already being displayed, wait a bit and retry.
+
+            if (isDisplayingMessage) {
+
+                setTimeout(fetchAndDisplayUnreadFriendMessage, 1000);
+
+                return;
+
+            }
+
+    
+
+            try {
+
+                const response = await fetch('/friends/message/unread/get_processed/');
+
+                const data = await response.json();
+
+    
+
+                if (data.status === 'success' && data.messages && data.messages.length > 0) {
+
+                    // Hide the button immediately as we are processing the messages.
+
+                    unreadMessagesButton.style.display = 'none';
+
+    
+
+                    // Queue each friend message to be displayed in the chat window.
+
+                    data.messages.forEach(msg => {
+
+                        const formattedMessage = `[${msg.sender}님이 보낸 쪽지] ${msg.content}`;
+
+                        queueAiMessage(formattedMessage);
+
+                    });
+
+                    
+
+                    // After processing, re-check for any other unread messages.
+
+                    checkUnreadMessages();
+
+                } else {
+
+                    // If the button was visible but there are no messages, hide it and inform the user.
+
+                    unreadMessagesButton.style.display = 'none';
+
+                    queueAiMessage("새로운 쪽지가 없는 것 같아.");
+
+                }
+
+            } catch (error) {
+
+                console.error('Error fetching unread messages:', error);
+
+                queueAiMessage("이런, 쪽지를 가져오는 중에 문제가 생겼어.");
+
+            }
+
+        }
+
+    // --- Handle Unread Messages Button Click ---
+    unreadMessagesButton.addEventListener('click', async () => {
+        console.log('Unread messages button clicked!');
+        await fetchAndDisplayUnreadFriendMessage();
+    });
 
     // --- Initial Message Logic ---
     function fetchAndDisplayPendingMessage() {
