@@ -111,6 +111,11 @@ class RLAgent:
             self.gamma = 0.99
             self.eps_clip = 0.2
             self.K_epochs = 4
+            self.gae_lambda = 0.95 # GAE 람다 값 추가
+
+            # 확신도 기반 질문을 위한 하이퍼파라미터
+            self.CONFIDENCE_THRESHOLD = 0.0 # 이 값보다 낮으면 질문을 강제
+            self.ENTROPY_WEIGHT = 0.01 # 엔트로피가 확신도에 미치는 영향
 
             self._load_model()
             self.initialized = True
@@ -208,34 +213,66 @@ def decide_action(user, user_message_text: str, history, has_image: bool, user_e
     with torch.no_grad():
         persona_probs, context_probs, special_probs, state_value = agent.ac_network(state_vector)
     
-    # 각 분포에서 행동 샘플링
+    # 각 분포에서 행동 샘플링을 위한 분포 객체 생성
     persona_dist = torch.distributions.Categorical(persona_probs)
     context_dist = torch.distributions.Bernoulli(context_probs)
     special_dist = torch.distributions.Categorical(special_probs)
 
-    persona_action = persona_dist.sample()
-    context_actions = context_dist.sample()
-    special_action = special_dist.sample()
+    # 전체 엔트로피 계산 (확신도 측정용)
+    total_entropy = persona_dist.entropy() + context_dist.entropy().sum() + special_dist.entropy()
 
-    # 로그 확률 결합
-    log_prob = persona_dist.log_prob(persona_action) + context_dist.log_prob(context_actions).sum() + special_dist.log_prob(special_action)
+    # 확신도 점수 계산: 상태 가치 - 엔트로피 가중치 * 전체 엔트로피
+    # state_value는 스칼라, total_entropy도 스칼라
+    confidence_score = state_value.item() - agent.ENTROPY_WEIGHT * total_entropy.item()
+
+    # 'Ask_Question' 행동의 인덱스 찾기
+    ask_question_idx = next((idx for idx, name in SPECIAL_ACTION_MAP.items() if name == 'Ask_Question'), None)
+    if ask_question_idx is None: # 안전 장치
+        raise ValueError("Ask_Question action not found in SPECIAL_ACTION_MAP")
+
+    # 확신도 기반 게이팅 로직
+    if confidence_score < agent.CONFIDENCE_THRESHOLD:
+        # 확신도가 낮으면 '질문하기' 행동 강제
+        special_action = torch.tensor(ask_question_idx)
+        # 강제된 행동에 대한 log_prob 재계산
+        # 다른 행동들은 원래대로 샘플링
+        persona_action = persona_dist.sample()
+        context_actions = context_dist.sample()
+        log_prob = persona_dist.log_prob(persona_action) + context_dist.log_prob(context_actions).sum() + special_dist.log_prob(special_action)
+
+    else:
+        # 확신도가 높으면 '질문하기' 행동 마스킹 (선택 불가)
+        masked_special_probs = special_probs.clone()
+        masked_special_probs[:, ask_question_idx] = 0.0 # '질문하기' 확률을 0으로
+        masked_special_probs = masked_special_probs / masked_special_probs.sum(dim=-1, keepdim=True) # 재정규화
+        
+        # 마스킹된 분포에서 다시 샘플링
+        special_dist_masked = torch.distributions.Categorical(masked_special_probs)
+        special_action = special_dist_masked.sample()
+
+        # 다른 행동들은 원래대로 샘플링
+        persona_action = persona_dist.sample()
+        context_actions = context_dist.sample()
+
+        # 마스킹된 행동에 대한 log_prob 재계산
+        log_prob = persona_dist.log_prob(persona_action) + context_dist.log_prob(context_actions).sum() + special_dist_masked.log_prob(special_action)
 
     chosen_special_action_name = SPECIAL_ACTION_MAP[special_action.item()]
 
-    # 특별 행동 처리
+    # 특별 행동 처리 (이전 로직 유지)
     if chosen_special_action_name == 'Ask_Question':
         chosen_persona_name = 'Questioner'
         persona_prompt = ""  # 프롬프트 생성 생략
         contexts_to_use = []
     else:
-        # 일반 행동 처리
+        # 일반 행동 처리 (이전 로직 유지)
         chosen_persona_name = PERSONA_MAP[persona_action.item()]
         persona_prompt = prompt_service.build_persona_system_prompt(user, persona_name=chosen_persona_name)
         contexts_to_use = [CONTEXT_LIST[i] for i, val in enumerate(context_actions.squeeze().tolist()) if val == 1]
         if has_image and 'vector_search' in contexts_to_use:
             contexts_to_use.remove('vector_search')
 
-    print(f"--- [PPO 에이전트] 페르소나: {chosen_persona_name}, 컨텍스트: {contexts_to_use}, 특별 행동: {chosen_special_action_name} ---")
+    print(f"--- [PPO 에이전트] 페르소나: {chosen_persona_name}, 컨텍스트: {contexts_to_use}, 특별 행동: {chosen_special_action_name}, 확신도: {confidence_score:.2f} ---")
 
     action_data = {
         'contexts_to_use': contexts_to_use,
@@ -248,7 +285,8 @@ def decide_action(user, user_message_text: str, history, has_image: bool, user_e
         },
         'state_vector': state_vector.detach().numpy().tolist(),
         'log_prob': log_prob.item(),
-        'state_value': state_value.item()
+        'state_value': state_value.item(),
+        'confidence_score': confidence_score # 확신도 점수 추가
     }
     
     return action_data
