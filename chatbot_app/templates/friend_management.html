@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ 친구 관리 센터 | NeoVerse</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'friend_management.css' %}">
+</head>
+<body>
+    <div class="friend-container">
+        <header class="header-bar">
+            <h1>🎮 친구 관리 센터</h1>
+            <a href="{% url 'chat' %}" class="back-link">
+                ← AI 비서 대화로 돌아가기
+            </a>
+        </header>
+
+        
+
+        <section class="friend-section glass-card">
+            <h2 class="section-title">🔍 친구 찾기 및 신청</h2>
+            <div class="search-box">
+                <input type="text" id="search-user-input" placeholder="친구의 고유 ID 또는 사용자 이름 입력..." class="neon-input">
+                <button id="send-request-btn" class="action-btn primary-btn">
+                    <span class="emoji">🚀</span> 요청 보내기
+                </button>
+            </div>
+            <p id="search-message" class="info-text"></p>
+        </section>
+
+        <section class="friend-section glass-card">
+            <h2 class="section-title">💌 받은 친구 요청 <span id="request-count" class="notification-count">{{ pending_requests|length }}</span></h2>
+            <ul id="pending-requests-list" class="user-list">
+                {% for req in pending_requests %}
+                <li class="user-item request-item">
+                    <span class="user-name">{{ req.from_user_username }}</span>
+                    <div class="actions">
+                        <button class="action-btn accept-btn" data-request-id="{{ req.id }}"><span class="emoji">✅</span> 수락</button>
+                        <button class="action-btn reject-btn" data-request-id="{{ req.id }}"><span class="emoji">✖️</span> 거절</button>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="info-text">받은 친구 요청이 없습니다.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section class="friend-section glass-card">
+            <h2 class="section-title">🤝 내 친구 목록 <span id="friend-count" class="notification-count">{{ friends|length }}</span></h2>
+            <ul id="accepted-friends-list" class="user-list">
+                {% for friend in accepted_friends %}
+                <li class="user-item friend-item">
+                    <span class="user-name">{{ friend.username }}</span>
+                    <div class="actions">
+                        <button class="action-btn secondary-btn"><span class="emoji">💔</span> 삭제</button>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="info-text">현재 등록된 친구가 없습니다.</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
+
+    <script src="{% static 'friend_management.js' %}"></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import main, chatWithAi, auth, schedule
+from .views import main, chatWithAi, auth, schedule, friend
 
 urlpatterns = [
     path('', main.opening_view, name='opening'),
@@ -26,4 +26,11 @@ urlpatterns = [
     path('check-notification/', main.check_proactive_notification, name='check_notification'),
     path('get-and-clear-pending-message/', main.get_and_clear_pending_message, name='get_and_clear_pending_message'),
     path('quiz/', main.quiz_view, name='quiz'),
+    # 🌟 친구 기능 URL 패턴 추가 🌟
+    path('friends/', main.friend_management_view, name='friend_management'),
+    path('api/friends/', friend.friend_list_view, name='api_friend_list'), 
+    path('friends/request/', friend.send_friend_request, name='send_friend_request'), 
+    path('friends/accept/<int:request_id>/', friend.accept_friend_request, name='accept_friend_request'),
+    path('friends/reject/<int:request_id>/', friend.reject_friend_request, name='reject_friend_request'),
+    path('friends/delete/<int:friendship_id>/', friend.delete_friend, name='delete_friend'),
 ]
