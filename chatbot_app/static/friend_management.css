@@ -176,6 +176,12 @@ body {
     font-size: 1.1em;
 }
 
+.action-btn.secondary-btn.delete-btn {
+    padding: 5px 10px; /* 버튼 크기 줄임 */
+    font-size: 0.9em; /* 폰트 크기 조정 */
+    width: fit-content; /* 내용에 맞게 너비 조정 */
+}
+
 .actions {
     display: flex;
     gap: 8px;

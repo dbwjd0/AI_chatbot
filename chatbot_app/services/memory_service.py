@@ -2,7 +2,7 @@ import json
 import requests
 from datetime import datetime, timedelta, date
 from django.utils import timezone
-from ..models import UserAttribute, UserActivity, UserRelationship
+from ..models import UserAttribute, UserActivity, UserRelationship, UserSchedule
 from . import schedule_service
 
 def extract_and_save_user_context_data(user, user_message, bot_message, recent_history, api_key):

@@ -12,8 +12,8 @@
     <div class="friend-container">
         <header class="header-bar">
             <h1>🎮 친구 관리 센터</h1>
-            <a href="{% url 'chat' %}" class="back-link">
-                ← AI 비서 대화로 돌아가기
+            <a href="{% url 'room' %}" class="back-link">
+                ← 방으로 돌아가기
             </a>
         </header>
 
@@ -53,9 +53,7 @@
                 {% for friend in accepted_friends %}
                 <li class="user-item friend-item">
                     <span class="user-name">{{ friend.username }}</span>
-                    <div class="actions">
-                        <button class="action-btn secondary-btn"><span class="emoji">💔</span> 삭제</button>
-                    </div>
+                    <button class="action-btn secondary-btn delete-btn" data-friendship-id="{{ friend.id }}"><span class="emoji">💔</span> 삭제</button>
                 </li>
                 {% empty %}
                 <li class="info-text">현재 등록된 친구가 없습니다.</li>

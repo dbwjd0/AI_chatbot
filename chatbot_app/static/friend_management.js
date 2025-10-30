@@ -159,6 +159,10 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             // 받은 친구 요청 목록 렌더링
             pendingList.innerHTML = '';
+            const requestCountSpan = document.getElementById('request-count');
+            if (requestCountSpan) {
+                requestCountSpan.textContent = data.pending_requests ? data.pending_requests.length : 0;
+            }
             if (data.pending_requests && data.pending_requests.length > 0) {
                 data.pending_requests.forEach(req => {
                     const li = document.createElement('li');
@@ -190,10 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const li = document.createElement('li');
                     li.innerHTML = `
                         <span class="user-name">${friend.username}</span>
-                        <div class="actions">
-                            <button class="action-btn message-btn" data-friend-username="${friend.username}"><span class="emoji">💬</span> 대화</button>
-                            <button class="action-btn secondary-btn delete-btn" data-friendship-id="${friend.id}"><span class="emoji">💔</span> 삭제</button>
-                        </div>
+                        <button class="action-btn secondary-btn delete-btn" data-friendship-id="${friend.id}"><span class="emoji">💔</span> 삭제</button>
                     `;
                     acceptedList.appendChild(li);
                 });
