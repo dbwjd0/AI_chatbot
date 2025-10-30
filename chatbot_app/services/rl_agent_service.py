@@ -114,7 +114,7 @@ class RLAgent:
             self.gae_lambda = 0.95 # GAE 람다 값 추가
 
             # 확신도 기반 질문을 위한 하이퍼파라미터
-            self.CONFIDENCE_THRESHOLD = -0.1 # 이 값보다 낮으면 질문을 강제
+            self.CONFIDENCE_THRESHOLD = -0.5 # 이 값보다 낮으면 질문을 강제
             self.ENTROPY_WEIGHT = 0.01 # 엔트로피가 확신도에 미치는 영향
 
             self._load_model()

@@ -114,7 +114,7 @@ def generate_proactive_message(user):
         all_chat_history = ChatMessage.objects.filter(user=user).order_by('-timestamp')
         
         # proactive_instruction_base를 user_message_text로 활용하여 RL 에이전트가 현재 상황을 인지하도록 함
-        rl_action = decide_action(user, proactive_instruction_base, all_chat_history, has_image=False)
+        rl_action = decide_action(user, proactive_instruction_base, all_chat_history, has_image=False, user_emotion="중립")
         
         persona_prompt = rl_action['persona_prompt']
         contexts_to_use = rl_action['contexts_to_use']
