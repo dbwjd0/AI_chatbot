@@ -28,11 +28,11 @@ def chat_response(request):
         if trajectory: # 이전 턴의 데이터가 있다면
             try:
                 implicit_reward = 0.0
-                if current_user_emotion in ['행복', '중립']:
+                if current_user_emotion in ['행복', '중립', '놀람']:
                     implicit_reward = 0.3
-                elif current_user_emotion in ['슬픔', '놀람', '공포']:
+                elif current_user_emotion in ['슬픔', '공포', '분노']:
                     implicit_reward = -0.3
-                elif current_user_emotion in ['분노', '혐오']:
+                elif current_user_emotion in ['혐오']:
                     implicit_reward = -0.5
                 
                 if implicit_reward != 0.0:
