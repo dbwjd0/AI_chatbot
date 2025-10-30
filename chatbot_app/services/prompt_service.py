@@ -83,6 +83,11 @@ def build_persona_system_prompt(user, persona_name: str = None):
         else:
             # Fallback if '사용자 지정' is chosen but no style is defined in profile
             affinity_rules.append(f"**[사용자 정의 스타일]** {user.username}님이 특별한 스타일을 지정하지 않았으므로, 기본 스타일로 대화해줘.\n")
+    elif persona_name == 'Questioner':
+        # 이 페르소나는 chat_service에서 특별 처리되므로, 별도의 상세 규칙이 필요 없습니다.
+        # 시스템 프롬프트에 포함될 최소한의 기본 페르소나만 반환합니다.
+        return base_persona
+
     
     
     emoticon_rules = [

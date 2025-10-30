@@ -57,33 +57,49 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
 
         # 2단계: RL 에이전트를 통해 행동(컨텍스트, 페르소나) 결정
         history = ChatMessage.objects.filter(user=user).order_by('-timestamp')
-        action = rl_agent_service.decide_action(user, user_message_for_llm, history, has_image=bool(image_file))
+        action_data = rl_agent_service.decide_action(user, user_message_for_llm, history, has_image=bool(image_file))
         
+        # "질문하기" 행동 특별 처리
+        if action_data.get('chosen_persona_name') == 'Questioner':
+            bot_message_text = "무슨 말인지 잘 모르겠어. 조금 더 자세히 설명해 줄래?"
+            explanation = "에이전트가 사용자 의도를 명확히 하기 위해 질문을 선택했습니다."
+            
+            # 대화 저장
+            user_message_obj = ChatMessage.objects.create(user=user, message=user_message_text, image=image_file, is_user=True)
+            bot_message_obj = ChatMessage.objects.create(user=user, message=bot_message_text, is_user=False)
+            
+            # 벡터 DB에도 저장
+            collection = vector_service.get_or_create_collection()
+            vector_service.upsert_message(collection, user_message_obj)
+            vector_service.upsert_message(collection, bot_message_obj)
+
+            return bot_message_text, explanation, bot_message_obj, user_message_obj, action_data
+
         # 3단계: 결정된 행동에 따라 컨텍스트 생성
         time_contexts = _get_time_contexts(history)
         assembled_contexts = _assemble_context_data(
             user, 
             user_message_for_llm, 
-            action['contexts_to_use'], # RL 에이전트가 선택한 컨텍스트 목록
+            action_data['contexts_to_use'], # RL 에이전트가 선택한 컨텍스트 목록
             latitude, 
             longitude
         )
         
-        # 3단계: 최종 프롬프트 생성 (이미지 분석 결과 및 페르소나 포함)
+        # 4단계: 최종 프롬프트 생성 (이미지 분석 결과 및 페르소나 포함)
         final_system_prompt = prompt_service.build_final_system_prompt(
             user, 
             time_contexts, 
             assembled_contexts, 
-            action['persona_prompt'], # RL 에이전트가 선택한 페르소나
+            action_data['persona_prompt'], # RL 에이전트가 선택한 페르소나
             image_analysis_context
         )
         messages = _prepare_llm_messages(final_system_prompt, history, user_message_for_llm)
 
-        # 4단계: 최종 LLM 호출 (파인튜닝된 모델)
+        # 5단계: 최종 LLM 호출 (파인튜닝된 모델)
         model_to_use = os.getenv("FINETUNED_MODEL_ID", "gpt-4.1")
         response_json = _call_openai_api(client, model_to_use, messages)
         
-        # 5단계: 응답 처리 및 저장
+        # 6단계: 응답 처리 및 저장
         bot_message_text, explanation, bot_message_obj, user_message_obj = _finalize_chat_interaction(
             request, user_message_text, response_json, history, api_key, image_file
         )
