@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (target === 'books') {
             showDialog(`[${chatbotName}]`, '내가 좋아하는 책들이 꽂혀있다. 어려운 내용이 많아 보인다.');
         } else if (target === 'sofa') {
-            showDialog(`[${chatbotName}]`, '푹신한 소파에 앉아 잠시 쉬어볼까?');
+            showDialog(`[${chatbotName}]`, '푹신한 소파에 앉아 잠시 쉬어볼까?', '/static/img/char_thinking.png');
         }
         else if (target === 'bed') {
             showDialog(`[${chatbotName}]`, '침대에 누우니 잠이 솔솔 오는걸?');
@@ -226,9 +226,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Dialog Functions ---
-    function showDialog(speaker, text) {
-        dialogSpeaker.textContent = speaker;
-        dialogText.textContent = text;
+    function showDialog(speaker, text, imageUrl = null) {
+        const dialogImage = document.getElementById('dialog-character-image');
+        const dialogSpeaker = document.getElementById('dialog-speaker');
+        const dialogText = document.getElementById('dialog-text');
+
+        // Ensure elements exist before using them
+        if (dialogSpeaker) dialogSpeaker.textContent = speaker;
+        if (dialogText) dialogText.textContent = text;
+
+        if (imageUrl && dialogImage) {
+            dialogImage.src = imageUrl;
+            dialogImage.style.display = 'block';
+        } else if (dialogImage) {
+            dialogImage.style.display = 'none';
+        }
+
         dialogBox.classList.remove('hidden');
         isDialogActive = true;
         interactionPrompt.classList.add('hidden');
@@ -238,6 +251,11 @@ document.addEventListener('DOMContentLoaded', () => {
         dialogBox.classList.add('hidden');
         isDialogActive = false;
         isConfirmationActive = false;
+
+        // Hide the image as well
+        const dialogImage = document.getElementById('dialog-character-image');
+        dialogImage.style.display = 'none';
+
         // Remove confirmation buttons if they exist
         const options = dialogBox.querySelector('.dialog-options');
         if (options) {
