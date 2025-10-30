@@ -26,4 +26,5 @@ urlpatterns = [
     path('check-notification/', main.check_proactive_notification, name='check_notification'),
     path('get-and-clear-pending-message/', main.get_and_clear_pending_message, name='get_and_clear_pending_message'),
     path('quiz/', main.quiz_view, name='quiz'),
+    path('api/get-interaction-dialog/', main.get_interaction_dialog_view, name='get_interaction_dialog'),
 ]

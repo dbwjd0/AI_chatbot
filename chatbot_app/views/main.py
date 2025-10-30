@@ -7,6 +7,7 @@ import re
 import json # json 모듈 임포트
 from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage, QuizResult
 from chatbot_app.services.proactive_service import generate_proactive_message
+from chatbot_app.services import chat_service
 from ..quiz_data import QUIZ_QUESTIONS
 def landing_view(request):
     """사용자의 온보딩 완료 여부에 따라 적절한 페이지로 리디렉션합니다."""
@@ -353,3 +354,19 @@ def quiz_question_view(request):
 @login_required
 def quiz_view(request):
     return render(request, 'quiz.html')
+
+@login_required
+def get_interaction_dialog_view(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        target = data.get('target')
+
+        if not target:
+            return JsonResponse({'error': 'Target not provided'}, status=400)
+
+        # AI가 생성한 동적 독백을 가져옴
+        message = chat_service.generate_object_monologue(request.user, target)
+
+        return JsonResponse({'message': message})
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)

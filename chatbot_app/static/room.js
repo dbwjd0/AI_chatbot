@@ -196,10 +196,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return;
         }
+
+        // 대화창이 활성화된 상태에서 Enter를 누르면, 후속 동작을 처리
         if (isDialogActive) {
-            hideDialog();
+            const interactionTarget = activeInteraction ? activeInteraction.dataset.interactionTarget : null;
+            
+            hideDialog(); // 먼저 대화창을 닫고
+
+            // 후속 동작으로 페이지 이동이 필요한 경우 처리
+            if (interactionTarget === 'chat' || interactionTarget === 'chat_history') {
+                fadeOverlay.classList.add('visible');
+                setTimeout(() => { window.location.href = `/${interactionTarget}/`; }, 300);
+            }
             return;
         }
+
         if (e.key === 'Enter' && activeInteraction) {
             handleInteraction(activeInteraction);
         }
@@ -207,22 +218,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleInteraction(object) {
         const target = object.dataset.interactionTarget;
-        if (target === 'chat_history') {
-            fadeOverlay.classList.add('visible');
-            setTimeout(() => { window.location.href = '/chat_history/'; }, 300);
-        } else if (target === 'chat') {
-            fadeOverlay.classList.add('visible');
-            setTimeout(() => { window.location.href = '/chat/'; }, 300);
-        } else if (target === 'books') {
-            showDialog(`[${chatbotName}]`, '내가 좋아하는 책들이 꽂혀있다. 어려운 내용이 많아 보인다.');
-        } else if (target === 'sofa') {
-            showDialog(`[${chatbotName}]`, '푹신한 소파에 앉아 잠시 쉬어볼까?', '/static/img/char_thinking.png');
-        }
-        else if (target === 'bed') {
-            showDialog(`[${chatbotName}]`, '침대에 누우니 잠이 솔솔 오는걸?');
-        } else if (target === 'schedule') {
-            openModal();
-        }
+        const csrftoken = getCookie('csrftoken');
+
+        // API 요청을 통해 동적 대사를 가져옴
+        fetch('/api/get-interaction-dialog/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({ target: target })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                const imageUrl = (target === 'sofa') ? '/static/img/char_thinking.png' : null;
+                showDialog(`[${chatbotName}]`, data.message, imageUrl);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching interaction dialog:', error);
+            // 에러 발생 시 기본 대사 출력
+            showDialog(`[${chatbotName}]`, '...');
+        });
     }
 
     // --- Dialog Functions ---

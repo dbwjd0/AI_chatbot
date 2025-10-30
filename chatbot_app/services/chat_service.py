@@ -115,6 +115,51 @@ def process_chat_interaction(request, user_message_text: str, user_emotion: str,
 
     return bot_message_text, explanation, bot_message_obj, user_message_obj, action_data
 
+def generate_object_monologue(user, target: str) -> str:
+    """오브젝트 상호작용 시 AI의 동적 독백을 생성합니다."""
+    try:
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY가 설정되지 않았습니다.")
+        client = OpenAI()
+
+        # 1. 페르소나 프롬프트 빌드
+        persona_prompt = prompt_service.build_persona_system_prompt(user, user.profile.persona_preference)
+
+        # 2. 독백 생성을 위한 특별 지시사항 추가
+        monologue_instruction = (
+            f"\n## 추가 임무: 사물에 대한 독백 생성 ##\n"
+            f"너는 지금 '{target}'을(를) 보고 있어. 이 사물에 대해 너의 현재 페르소나와 감정, 그리고 {user.username}님과의 관계를 바탕으로 짧은 독백을 해줘."
+            f"이 독백은 너 혼자 생각하는 것이며, 사용자에게 질문하거나 답변을 요구해서는 안 돼."
+            f"반드시 1~2문장의 짧고 간결한 생각으로 표현해야 해."
+            f"답변은 다른 어떤 설명도 없이, 오직 독백 내용만 일반 텍스트로 반환해야 해. JSON 형식이 아니야."
+        )
+
+        final_prompt = persona_prompt + monologue_instruction
+        
+        messages = [
+            {'role': 'system', 'content': final_prompt},
+        ]
+
+        # 3. LLM 호출
+        model_to_use = os.getenv("FINETUNED_MODEL_ID", "gpt-4.1")
+        response = client.chat.completions.create(
+            model=model_to_use,
+            messages=messages,
+            temperature=0.8, # 약간 더 창의적인 답변을 위해 온도 조절
+            top_p=0.9,
+            max_tokens=100,
+            frequency_penalty=0.3,
+            presence_penalty=0.2,
+        )
+        
+        monologue = response.choices[0].message.content.strip()
+        return monologue
+
+    except Exception as e:
+        print(f"독백 생성 중 오류 발생: {e}")
+        return "..."
+
 def _get_time_contexts(history):
     """현재 시간 및 마지막 대화와의 시간 간격에 대한 컨텍스트를 생성합니다."""
     now_utc = timezone.now()
