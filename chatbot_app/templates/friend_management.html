@@ -17,51 +17,41 @@
             </a>
         </header>
 
-        
+        <nav class="friend-nav">
+            <button class="nav-btn active" data-target="search-section">🔍 친구 찾기</button>
+            <button class="nav-btn" data-target="requests-section">💌 받은 요청 <span id="nav-request-count" class="notification-badge"></span></button>
+            <button class="nav-btn" data-target="friends-list-section">🤝 내 친구 <span id="nav-friend-count" class="notification-badge"></span></button>
+        </nav>
 
-        <section class="friend-section glass-card">
+        <div id="search-section" class="friend-section-wrapper active">
             <h2 class="section-title">🔍 친구 찾기 및 신청</h2>
             <div class="search-box">
                 <input type="text" id="search-user-input" placeholder="친구의 고유 ID 또는 사용자 이름 입력..." class="neon-input">
+                <button id="search-btn" class="action-btn primary-btn">
+                    <span class="emoji">🔍</span> 검색
+                </button>
                 <button id="send-request-btn" class="action-btn primary-btn">
                     <span class="emoji">🚀</span> 요청 보내기
                 </button>
             </div>
             <p id="search-message" class="info-text"></p>
-        </section>
+            <div id="search-results" class="user-list"></div>
+        </div>
 
-        <section class="friend-section glass-card">
-            <h2 class="section-title">💌 받은 친구 요청 <span id="request-count" class="notification-count">{{ pending_requests|length }}</span></h2>
+        <div id="requests-section" class="friend-section-wrapper">
+            <h2 class="section-title">💌 받은 친구 요청 <span id="request-count-section" class="notification-count"></span></h2>
             <ul id="pending-requests-list" class="user-list">
-                {% for req in pending_requests %}
-                <li class="user-item request-item">
-                    <span class="user-name">{{ req.from_user_username }}</span>
-                    <div class="actions">
-                        <button class="action-btn accept-btn" data-request-id="{{ req.id }}"><span class="emoji">✅</span> 수락</button>
-                        <button class="action-btn reject-btn" data-request-id="{{ req.id }}"><span class="emoji">✖️</span> 거절</button>
-                    </div>
-                </li>
-                {% empty %}
                 <li class="info-text">받은 친구 요청이 없습니다.</li>
-                {% endfor %}
             </ul>
-        </section>
+        </div>
 
-        <section class="friend-section glass-card">
-            <h2 class="section-title">🤝 내 친구 목록 <span id="friend-count" class="notification-count">{{ friends|length }}</span></h2>
+        <div id="friends-list-section" class="friend-section-wrapper">
+            <h2 class="section-title">🤝 내 친구 목록 <span id="friend-count-section" class="notification-count"></span></h2>
             <ul id="accepted-friends-list" class="user-list">
-                {% for friend in accepted_friends %}
-                <li class="user-item friend-item">
-                    <span class="user-name">{{ friend.username }}</span>
-                    <button class="action-btn secondary-btn delete-btn" data-friendship-id="{{ friend.id }}"><span class="emoji"></span> 삭제</button>
-                </li>
-                {% empty %}
                 <li class="info-text">현재 등록된 친구가 없습니다.</li>
-                {% endfor %}
             </ul>
-        </section>
+        </div>
     </div>
-
     <script src="{% static 'friend_management.js' %}"></script>
 </body>
 </html>

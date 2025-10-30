@@ -179,3 +179,70 @@ def delete_friend(request, friendship_id):
             return JsonResponse({'status': 'error', 'message': '친구 삭제 처리 중 오류가 발생했습니다.'}, status=500)
             
     return JsonResponse({'status': 'error', 'message': '잘못된 접근입니다.'}, status=400)
+
+# ----------------------------------------------------
+# 6. 사용자 검색 (GET /friends/search/?query=<username_query>)
+# ----------------------------------------------------
+@login_required
+def search_users(request):
+    if request.method == 'GET':
+        query = request.GET.get('query', '')
+        current_user = request.user
+
+        if not query:
+            return JsonResponse({'status': 'success', 'users': []})
+
+        # 현재 사용자를 제외하고, 쿼리에 사용자 이름이 포함된 사용자 검색
+        # 대소문자 구분 없이 검색 (icontains)
+        found_users = User.objects.filter(
+            username__icontains=query
+        ).exclude(id=current_user.id).values('id', 'username')
+
+        # 이미 친구이거나 요청을 보냈거나 받은 사용자 필터링
+        # 1. 내가 요청을 보낸 경우 (from_user=current_user, to_user=found_user, status=PENDING)
+        # 2. 내가 요청을 받은 경우 (from_user=found_user, to_user=current_user, status=PENDING)
+        # 3. 이미 친구인 경우 (status=ACCEPTED)
+        existing_relationships = UserFriendship.objects.filter(
+            Q(from_user=current_user, to_user__in=found_users.values('id')) |
+            Q(to_user=current_user, from_user__in=found_users.values('id'))
+        )
+
+        existing_users_ids = set()
+        for rel in existing_relationships:
+            if rel.from_user.id == current_user.id:
+                existing_users_ids.add(rel.to_user.id)
+            else:
+                existing_users_ids.add(rel.from_user.id)
+
+        search_results = []
+        for user in found_users:
+            is_friend = False
+            has_pending_request_from_me = False
+            has_pending_request_to_me = False
+
+            # 관계 상태 확인
+            rel = existing_relationships.filter(
+                Q(from_user=current_user, to_user=user['id']) |
+                Q(from_user=user['id'], to_user=current_user)
+            ).first()
+
+            if rel:
+                if rel.status == UserFriendship.STATUS_ACCEPTED:
+                    is_friend = True
+                elif rel.status == UserFriendship.STATUS_PENDING:
+                    if rel.from_user.id == current_user.id:
+                        has_pending_request_from_me = True
+                    else:
+                        has_pending_request_to_me = True
+
+            search_results.append({
+                'id': user['id'],
+                'username': user['username'],
+                'is_friend': is_friend,
+                'has_pending_request_from_me': has_pending_request_from_me,
+                'has_pending_request_to_me': has_pending_request_to_me,
+            })
+
+        return JsonResponse({'status': 'success', 'users': search_results})
+
+    return JsonResponse({'status': 'error', 'message': '잘못된 접근입니다.'}, status=400)
