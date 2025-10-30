@@ -281,13 +281,13 @@ body, html {
 /* AI Emoticon Bubble */
 .ai-emoticon-bubble {
     position: absolute;
-    top: calc(40% - 150px); /* 50px 추가로 위로 이동 */
-    left: calc(85% + 30px); /* 30px 오른쪽으로 이동 */
+    top: calc(40% - 230px); /* 50px 추가로 위로 이동 */
+    left: calc(85% + 50px); /* 30px 오른쪽으로 이동 */
     transform: translateY(-50%);
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 15px; /* 네모난 말풍선 */
+    border-radius: 20px; /* 네모난 말풍선 */
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     z-index: 15; /* 캐릭터와 대화창 사이 */
     border: 2px solid #a9d1ff;
