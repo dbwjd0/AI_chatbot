@@ -61,7 +61,7 @@ def _call_llm_for_proactive_message(user, system_prompt):
         content_from_llm = json.loads(response_json['choices'][0]['message']['content'])
         message_text = content_from_llm.get('answer', '').strip()
         explanation = content_from_llm.get('explanation', '설명 없음.') # Extract explanation
-        emotion = analyze_emotion(message_text) # emotion_service를 사용하여 감정 분석 
+        emotion = analyze_emotion(message_text, speaker="Bot") # emotion_service를 사용하여 감정 분석 
 
         print("\n" + "-"*20 + " [Debug] Proactive Message Explanation " + "-"*20)
         print(explanation)
