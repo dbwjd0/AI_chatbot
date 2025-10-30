@@ -14,7 +14,7 @@ from . import vector_service, location_service, schedule_service, emoticon_servi
 from datetime import date # date 추가
 
 
-def process_chat_interaction(request, user_message_text: str, latitude: Optional[float] = None, longitude: Optional[float] = None, image_file: Optional[UploadedFile] = None):
+def process_chat_interaction(request, user_message_text: str, user_emotion: str, latitude: Optional[float] = None, longitude: Optional[float] = None, image_file: Optional[UploadedFile] = None):
     """사용자 메시지를 처리하고 AI 응답을 생성하는 전체 프로세스를 조율합니다."""
     user = request.user
     bot_message_text = "죄송합니다. API 응답을 가져오는 데 실패했습니다."
@@ -23,7 +23,7 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
     user_message_obj = None
 
     try:
-        action = {} # RL 에이전트의 행동을 저장할 변수
+        action_data = {} # RL 에이전트의 행동을 저장할 변수
         api_key = os.environ.get("OPENAI_API_KEY")
         if not api_key:
             raise ValueError("OPENAI_API_KEY 환경 변수가 설정되지 않았습니다.")
@@ -35,19 +35,16 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
 
         # 1단계: 이미지 분석 (이미지가 있는 경우)
         image_analysis_context = None
-        image_b64_data = None
         if image_file:
             print("--- [디버그] 이미지 파일 감지됨. 1차 분석 시작 ---")
             
             # 추가된 디버깅 로그
             print(f"--- [디버그] 파일명: {image_file.name}, Content-Type: {image_file.content_type} ---")
-
             # ImageCaptioningService가 Base64를 사용하므로, 파일 내용을 인코딩하여 전달
             image_b64_data = base64.b64encode(image_file.read()).decode('utf-8')
             image_file.seek(0) # 파일을 다시 읽을 수 있도록 포인터를 처음으로 되돌림
-
             analyzer = ImageCaptioningService()
-            # 업로드된 파일의 content_type을 함께 전달
+             # 업로드된 파일의 content_type을 함께 전달
             analysis_result = analyzer.analyze_image(image_b64_data, user_message_text, image_file.content_type)
             if analysis_result:
                 image_analysis_context = analysis_result
@@ -57,33 +54,49 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
 
         # 2단계: RL 에이전트를 통해 행동(컨텍스트, 페르소나) 결정
         history = ChatMessage.objects.filter(user=user).order_by('-timestamp')
-        action = rl_agent_service.decide_action(user, user_message_for_llm, history, has_image=bool(image_file))
+        action_data = rl_agent_service.decide_action(user, user_message_for_llm, history, has_image=bool(image_file), user_emotion=user_emotion)
         
+        # "질문하기" 행동 특별 처리
+        if action_data.get('chosen_persona_name') == 'Questioner':
+            bot_message_text = "무슨 말인지 잘 모르겠어. 조금 더 자세히 설명해 줄래?"
+            explanation = "에이전트가 사용자 의도를 명확히 하기 위해 질문을 선택했습니다."
+            
+            # 대화 저장
+            user_message_obj = ChatMessage.objects.create(user=user, message=user_message_text, image=image_file, is_user=True)
+            bot_message_obj = ChatMessage.objects.create(user=user, message=bot_message_text, is_user=False)
+            
+            # 벡터 DB에도 저장
+            collection = vector_service.get_or_create_collection()
+            vector_service.upsert_message(collection, user_message_obj)
+            vector_service.upsert_message(collection, bot_message_obj)
+
+            return bot_message_text, explanation, bot_message_obj, user_message_obj, action_data
+
         # 3단계: 결정된 행동에 따라 컨텍스트 생성
         time_contexts = _get_time_contexts(history)
         assembled_contexts = _assemble_context_data(
             user, 
             user_message_for_llm, 
-            action['contexts_to_use'], # RL 에이전트가 선택한 컨텍스트 목록
+            action_data['contexts_to_use'], # RL 에이전트가 선택한 컨텍스트 목록
             latitude, 
             longitude
         )
         
-        # 3단계: 최종 프롬프트 생성 (이미지 분석 결과 및 페르소나 포함)
+        # 4단계: 최종 프롬프트 생성 (이미지 분석 결과 및 페르소나 포함)
         final_system_prompt = prompt_service.build_final_system_prompt(
             user, 
             time_contexts, 
             assembled_contexts, 
-            action['persona_prompt'], # RL 에이전트가 선택한 페르소나
+            action_data['persona_prompt'], # RL 에이전트가 선택한 페르소나
             image_analysis_context
         )
         messages = _prepare_llm_messages(final_system_prompt, history, user_message_for_llm)
 
-        # 4단계: 최종 LLM 호출 (파인튜닝된 모델)
+        # 5단계: 최종 LLM 호출 (파인튜닝된 모델)
         model_to_use = os.getenv("FINETUNED_MODEL_ID", "gpt-4.1")
         response_json = _call_openai_api(client, model_to_use, messages)
         
-        # 5단계: 응답 처리 및 저장
+        # 6단계: 응답 처리 및 저장
         bot_message_text, explanation, bot_message_obj, user_message_obj = _finalize_chat_interaction(
             request, user_message_text, response_json, history, api_key, image_file
         )
@@ -100,8 +113,7 @@ def process_chat_interaction(request, user_message_text: str, latitude: Optional
         traceback.print_exc()
         bot_message_text = f"예상치 못한 오류가 발생했습니다: {e}"
 
-    # user_message_obj와 action을 반환하도록 수정
-    return bot_message_text, explanation, bot_message_obj, user_message_obj, action
+    return bot_message_text, explanation, bot_message_obj, user_message_obj, action_data
 
 def _get_time_contexts(history):
     """현재 시간 및 마지막 대화와의 시간 간격에 대한 컨텍스트를 생성합니다."""
