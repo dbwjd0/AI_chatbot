@@ -675,3 +675,14 @@
     background-color: #fff;
     color: #000;
 }
+
+/* --- 상호작용 영역 디버깅 --- */
+/* 아래 'display: none;'을 주석 처리하면 상호작용 영역이 노란색으로 표시됩니다. */
+.interaction-area-visualization {
+    position: absolute;
+    border: 2px solid yellow;
+    box-sizing: border-box;
+    pointer-events: none; /* 마우스 이벤트를 방해하지 않도록 설정 */
+    z-index: 99; /* 다른 요소들 위에 보이도록 설정 */
+    display: none; /*기본적으로 숨김*/
+}
