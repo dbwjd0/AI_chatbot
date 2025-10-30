@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dialogBox = document.getElementById('dialog-box');
     const dialogSpeaker = document.getElementById('dialog-speaker');
     const dialogText = document.getElementById('dialog-text');
+    const chatbotName = document.querySelector('.container').dataset.chatbotName || '아이';
 
     // --- Image Paths ---
     const idleImg = '/static/img/char_idle.png';
@@ -213,12 +214,12 @@ document.addEventListener('DOMContentLoaded', () => {
             fadeOverlay.classList.add('visible');
             setTimeout(() => { window.location.href = '/chat/'; }, 300);
         } else if (target === 'books') {
-            showDialog('[아이]', '내가 좋아하는 책들이 꽂혀있다. 어려운 내용이 많아 보인다.');
+            showDialog(`[${chatbotName}]`, '내가 좋아하는 책들이 꽂혀있다. 어려운 내용이 많아 보인다.');
         } else if (target === 'sofa') {
-            showDialog('[아이]', '푹신한 소파에 앉아 잠시 쉬어볼까?');
+            showDialog(`[${chatbotName}]`, '푹신한 소파에 앉아 잠시 쉬어볼까?');
         }
         else if (target === 'bed') {
-            showDialog('[아이]', '침대에 누우니 잠이 솔솔 오는걸?');
+            showDialog(`[${chatbotName}]`, '침대에 누우니 잠이 솔솔 오는걸?');
         } else if (target === 'schedule') {
             openModal();
         }

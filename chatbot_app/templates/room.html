@@ -29,7 +29,7 @@
 <body>
     <button id="toggle-bgm-btn">BGM OFF</button>
     <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
-    <div class="container">
+    <div class="container" data-chatbot-name="{{ chatbot_name|default:'아이' }}">
     {% include 'includes/top_menu.html' with show_room_link=False %}
         <div class="chatbot-container" id="room">
             <!-- <img id="stove" class="furniture-object" src="{% static 'img/난로.png' %}" alt="Stove"> -->

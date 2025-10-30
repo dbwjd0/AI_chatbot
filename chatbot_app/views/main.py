@@ -67,7 +67,11 @@ def room(request):
     """캐릭터가 있는 방 페이지를 렌더링합니다."""
     if not request.user.profile.is_onboarding_complete:
         return redirect('narrative_setup')
-    return render(request, 'room.html')
+    
+    context = {
+        'chatbot_name': request.user.profile.chatbot_name
+    }
+    return render(request, 'room.html', context)
 
 @login_required
 def chat_history_view(request):
