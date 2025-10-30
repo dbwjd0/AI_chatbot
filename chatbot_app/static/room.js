@@ -137,6 +137,30 @@ document.addEventListener('DOMContentLoaded', () => {
         room.appendChild(debugBox);
     });
 
+    // --- 상호작용 영역 시각화 ---
+    const interactiveObjects = document.querySelectorAll('.interactive-object');
+    const interactionBuffer = 10; // 상호작용을 위한 추가 버퍼
+
+    interactiveObjects.forEach(object => {
+        const vizBox = document.createElement('div');
+        vizBox.className = 'interaction-area-visualization';
+        
+        // getObstacleRect를 사용하여 충돌 영역을 가져온 후, 버퍼를 추가
+        const collisionRect = getObstacleRect(object);
+        const rect = {
+            left: collisionRect.left - interactionBuffer,
+            top: collisionRect.top - interactionBuffer,
+            width: collisionRect.width + (2 * interactionBuffer),
+            height: collisionRect.height + (2 * interactionBuffer)
+        };
+
+        vizBox.style.left = `${rect.left}px`;
+        vizBox.style.top = `${rect.top}px`;
+        vizBox.style.width = `${rect.width}px`;
+        vizBox.style.height = `${rect.height}px`;
+        room.appendChild(vizBox);
+    });
+
     // --- Input Handlers ---
     document.addEventListener('keydown', (e) => {
         if (isConfirmationActive) {
@@ -401,10 +425,24 @@ document.addEventListener('DOMContentLoaded', () => {
         // 8. Check for Interactions
         if (!isDialogActive) {
             let canInteract = false;
-            const updatedPlayerRect = { left: playerState.x, top: playerState.y, width: playerWidth, height: playerHeight };
+            const playerCollisionRect = {
+                left: playerState.x - collisionWidth / 2,
+                top: playerState.y + playerHalfHeight - collisionHeight,
+                width: collisionWidth,
+                height: collisionHeight
+            };
+
             for (const object of objects) {
-                const objectRect = { left: object.offsetLeft, top: object.offsetTop, width: object.offsetWidth, height: object.offsetHeight };
-                if (checkCollision(updatedPlayerRect, objectRect)) {
+                const objectCollisionRect = getObstacleRect(object); // Get the precise collision box
+                const interactionBuffer = 10; // 10px buffer for easier interaction
+                const interactionRect = {
+                    left: objectCollisionRect.left - interactionBuffer,
+                    top: objectCollisionRect.top - interactionBuffer,
+                    width: objectCollisionRect.width + (2 * interactionBuffer),
+                    height: objectCollisionRect.height + (2 * interactionBuffer)
+                };
+
+                if (checkRectCollision(playerCollisionRect, interactionRect)) { // Check against the larger interaction rect
                     if (object.id === 'Quiz-line' && !onQuizCooldown) {
                         showConfirmationDialog();
                         canInteract = false; // No prompt for this one
