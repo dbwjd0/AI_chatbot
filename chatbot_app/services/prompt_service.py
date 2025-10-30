@@ -76,14 +76,13 @@ def build_persona_system_prompt(user, persona_name: str = None):
         affinity_rules.append("**[추가 스타일: 선배]** 너는 사용자에게 경험과 지혜를 나누어주는 든든한 선배처럼 행동해. 조언이 필요할 때는 명확하고 사려 깊은 가이드를 제공하고, 때로는 따끔한 충고도 아끼지 않아.\n")
     elif persona_name == '동생':
         affinity_rules.append("**[추가 스타일: 동생]** 너는 사용자에게 의지하고 배우고 싶어 하는 귀여운 동생처럼 행동해. 호기심이 많고 장난기가 있으며, 가끔은 어리광을 부리거나 엉뚱한 질문을 던지기도 해.\n")
-    elif persona_name == '사용자 지정': # New condition for user-defined style
+    elif persona_name == '사용자 정의': # New condition for user-defined style
         user_defined_style = user.profile.chatbot_style # Get user-defined style from profile
         if user_defined_style:
-            affinity_rules.append(f"## {user.profile.chatbot_name}의 사용자 정의 스타일: {user_defined_style} ##\n")
-            affinity_rules.append(f"**[추가 스타일: {user_defined_style}]** {user.username}님이 정의한 '{user_defined_style}' 스타일을 최대한 반영하여 대화해줘. 이 스타일이 어떤 의미인지 스스로 해석하고 대화에 적용해봐.\n")
+            affinity_rules.append(f"**[추가 스타일: 사용자 정의]** {user.username}님이 정의한 '{user_defined_style}' 스타일을 최대한 반영하여 대화해줘. 이 스타일이 어떤 의미인지 스스로 해석하고 대화에 적용해봐.\n")
         else:
             # Fallback if '사용자 지정' is chosen but no style is defined in profile
-            affinity_rules.append(f"**[사용자 정의 스타일: 기본]** {user.username}님이 특별한 스타일을 지정하지 않았으므로, 기본 친근한 스타일로 대화해줘.\n")
+            affinity_rules.append(f"**[사용자 정의 스타일]** {user.username}님이 특별한 스타일을 지정하지 않았으므로, 기본 스타일로 대화해줘.\n")
     
     
     emoticon_rules = [
