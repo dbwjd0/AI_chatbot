@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const dialogText = document.getElementById('dialog-text');
     const chatbotName = document.querySelector('.container').dataset.chatbotName || '아이';
 
+    let processingBubble; // 처리 중 말풍선
+    let processingAnimationInterval; // 애니메이션 인터벌 ID
+    let processingDotCount = 0; // 점 개수
+
     // --- Image Paths ---
     const idleImg = '/static/img/char_idle.png';
     const walkFrontGif = '/static/img/walk_front.gif';
@@ -60,6 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const playerDebugBox = document.createElement('div');
     playerDebugBox.className = 'debug-box';
     room.appendChild(playerDebugBox);
+
+    // --- 처리 중 말풍선 초기화 ---
+    processingBubble = document.createElement('div');
+    processingBubble.id = 'processing-bubble';
+    processingBubble.textContent = '.'; // 초기 텍스트
+    room.appendChild(processingBubble);
 
     const obstacles = document.querySelectorAll('.furniture-object');
     const obstacleCollisionBuffer = 35; // Make sure this is defined before use
@@ -220,6 +230,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const target = object.dataset.interactionTarget;
         const csrftoken = getCookie('csrftoken');
 
+        startProcessingAnimation(); // 로딩 인디케이터 시작
+
         // API 요청을 통해 동적 대사를 가져옴
         fetch('/api/get-interaction-dialog/', {
             method: 'POST',
@@ -231,12 +243,14 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(data => {
+            stopProcessingAnimation(); // 로딩 인디케이터 중지
             if (data.message) {
                 const imageUrl = (target === 'sofa') ? '/static/img/char_thinking.png' : null;
                 showDialog(`[${chatbotName}]`, data.message, imageUrl);
             }
         })
         .catch(error => {
+            stopProcessingAnimation(); // 로딩 인디케이터 중지
             console.error('Error fetching interaction dialog:', error);
             // 에러 발생 시 기본 대사 출력
             showDialog(`[${chatbotName}]`, '...');
@@ -335,6 +349,21 @@ document.addEventListener('DOMContentLoaded', () => {
             onQuizCooldown = true;
             setTimeout(() => { onQuizCooldown = false; }, 1000); // 1-second cooldown
         }
+    }
+
+    function startProcessingAnimation() {
+        processingDotCount = 0;
+        processingBubble.textContent = '.';
+        processingBubble.style.display = 'flex'; // Show the bubble
+        processingAnimationInterval = setInterval(() => {
+            processingDotCount = (processingDotCount % 3) + 1;
+            processingBubble.textContent = '.'.repeat(processingDotCount);
+        }, 300); // Update every 300ms
+    }
+
+    function stopProcessingAnimation() {
+        clearInterval(processingAnimationInterval);
+        processingBubble.style.display = 'none'; // Hide the bubble
     }
 
     // --- Game Loop (New Robust Logic) ---
@@ -540,6 +569,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const playerHeight = 120;
             notificationBubble.style.left = `${playerState.x - bubbleWidth / 2}px`;
             notificationBubble.style.top = `${playerState.y - playerHeight / 2 - bubbleHeight - 20}px`;
+        }
+
+        // Update processing bubble position
+        if (processingBubble && processingBubble.style.display !== 'none') {
+            const bubbleWidth = 40;
+            const bubbleHeight = 40;
+            const playerHeight = 120;
+            processingBubble.style.left = `${playerState.x - bubbleWidth / 2}px`;
+            processingBubble.style.top = `${playerState.y - playerHeight / 2 - bubbleHeight - 20}px`;
         }
 
         // 9. Continue Loop

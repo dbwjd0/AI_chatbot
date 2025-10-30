@@ -419,7 +419,7 @@
      height: 50px;  /* 장애물의 높이 */
      background-color: rgb(177, 40, 124); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
-} 
+}
 
 #invisible-wall-8 {
      position: absolute;
@@ -429,7 +429,7 @@
      height: 50px;  /* 장애물의 높이 */
      background-color: rgb(95, 22, 129); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
-} 
+}
 
 #invisible-wall-9 {
      position: absolute;
@@ -439,7 +439,7 @@
      height: 50px;  /* 장애물의 높이 */
      background-color: rgb(201, 157, 13); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
-} 
+}
 
 #invisible-wall-10 {
      position: absolute;
@@ -449,7 +449,7 @@
      height: 5px;  /* 장애물의 높이 */
      background-color: rgb(75, 207, 157); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
-} 
+}
 
 #invisible-wall-11 {
      position: absolute;
@@ -459,7 +459,7 @@
      height: 100px;  /* 장애물의 높이 */
      background-color: rgb(146, 127, 66); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
-} 
+}
 
 #invisible-wall-12 {
      position: absolute;
@@ -714,4 +714,53 @@
     object-fit: contain; /* 이미지 비율을 유지하며 맞춤 */
     /* z-index: 대화창(200)보다 낮게 설정하여 뒤에 표시되도록 함 */
     z-index: 199;
+}
+
+/* --- 처리 중 말풍선 스타일 --- */
+#processing-bubble {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: #ffffff;
+    border: 2px solid #a9d1ff;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    z-index: 11; /* 플레이어 위에 표시 */
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000;
+    font-family: 'VT323', monospace;
+    display: none; /* 기본적으로 숨김 */
+}
+
+#processing-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 12px solid #a9d1ff;
+    z-index: 0;
+}
+
+#processing-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 10px solid #ffffff;
+    z-index: 1;
 }
