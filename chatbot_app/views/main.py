@@ -5,7 +5,8 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 import re
 import json # json 모듈 임포트
-from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage, QuizResult
+from django.db.models import Q
+from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage, QuizResult, UserFriendship
 from chatbot_app.services.proactive_service import generate_proactive_message
 from ..quiz_data import QUIZ_QUESTIONS
 def landing_view(request):
@@ -349,3 +350,40 @@ def quiz_question_view(request):
 @login_required
 def quiz_view(request):
     return render(request, 'quiz.html')
+
+@login_required
+def friend_management_view(request):
+    """친구 관리 페이지 (friend_management.html)를 렌더링합니다."""
+    current_user = request.user
+
+    # 1. 현재 친구 목록 (status=ACCEPTED) 검색
+    accepted_friendships = UserFriendship.objects.filter(
+        (Q(from_user=current_user) | Q(to_user=current_user)),
+        status=UserFriendship.STATUS_ACCEPTED
+    ).select_related('from_user', 'to_user')
+
+    accepted_friends_list = []
+    for friendship in accepted_friendships:
+        friend_user = friendship.to_user if friendship.from_user == current_user else friendship.from_user
+        accepted_friends_list.append({
+            'username': friend_user.username
+        })
+
+    # 2. 받은 친구 요청 목록 (to_user=나 AND status=PENDING) 검색
+    pending_requests = UserFriendship.objects.filter(
+        to_user=current_user,
+        status=UserFriendship.STATUS_PENDING
+    ).select_related('from_user')
+
+    pending_requests_list = []
+    for request_obj in pending_requests:
+        pending_requests_list.append({
+            'id': request_obj.id,
+            'from_user_username': request_obj.from_user.username,
+        })
+    
+    context = {
+        'accepted_friends': accepted_friends_list,
+        'pending_requests': pending_requests_list,
+    }
+    return render(request, 'friend_management.html', context)
