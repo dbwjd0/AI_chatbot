@@ -53,7 +53,7 @@
                 {% for friend in accepted_friends %}
                 <li class="user-item friend-item">
                     <span class="user-name">{{ friend.username }}</span>
-                    <button class="action-btn secondary-btn delete-btn" data-friendship-id="{{ friend.id }}"><span class="emoji">💔</span> 삭제</button>
+                    <button class="action-btn secondary-btn delete-btn" data-friendship-id="{{ friend.id }}"><span class="emoji"></span> 삭제</button>
                 </li>
                 {% empty %}
                 <li class="info-text">현재 등록된 친구가 없습니다.</li>

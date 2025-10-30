@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const li = document.createElement('li');
                     li.innerHTML = `
                         <span class="user-name">${friend.username}</span>
-                        <button class="action-btn secondary-btn delete-btn" data-friendship-id="${friend.id}"><span class="emoji">💔</span> 삭제</button>
+                        <button class="action-btn secondary-btn delete-btn" data-friendship-id="${friend.id}">삭제</button>
                     `;
                     acceptedList.appendChild(li);
                 });
