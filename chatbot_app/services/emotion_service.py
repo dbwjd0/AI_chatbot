@@ -33,14 +33,14 @@ class EmotionAnalyzer:
 # Django 앱이 로드될 때 단 하나의 분석기 인스턴스만 생성하고 재사용합니다.
 emotion_analyzer_instance = EmotionAnalyzer()
 
-def analyze_emotion(bot_message_text: str) -> str:
+def analyze_emotion(text: str, speaker: str = "System") -> str:
     """
     AI의 메시지를 분석하여 모델이 예측한 최종 감정 라벨(문자열)을 반환합니다.
     """
     default_model_label = "중립"
 
     try:
-        emotion_results = emotion_analyzer_instance.analyze(bot_message_text)
+        emotion_results = emotion_analyzer_instance.analyze(text)
 
         if not emotion_results:
             return default_model_label
@@ -58,8 +58,8 @@ def analyze_emotion(bot_message_text: str) -> str:
         # 맵을 사용해 최종 감정 문자열을 찾습니다.
         final_label = ID_TO_LABEL_MAP.get(top_label_int, default_model_label)
 
-        print(f"\n--- Emotion Analysis (Refactored) ---")
-        print(f"Message: {bot_message_text}")
+        print(f"\n--- Emotion Analysis for [{speaker}] ---")
+        print(f"Message: {text}")
         print(f"Top Emotion ID: {top_label_int} -> Final Label: {final_label}")
         print(f"---------------------------------")
 

@@ -19,12 +19,14 @@ def chat_response(request):
         longitude = request.POST.get('longitude')
         image_file = request.FILES.get('image')
 
+        # 1. 사용자 메시지 감정 분석 (최적화: 한번만 실행)
+        current_user_emotion = emotion_service.analyze_emotion(user_message_text, speaker="User")
+
         # --- PPO Trajectory 수집 및 암시적 보상 계산 --- #
         trajectory = request.session.get('ppo_trajectory', [])
         
         if trajectory: # 이전 턴의 데이터가 있다면
             try:
-                current_user_emotion = emotion_service.analyze_emotion(user_message_text)
                 implicit_reward = 0.0
                 if current_user_emotion in ['행복', '중립']:
                     implicit_reward = 0.3
@@ -33,10 +35,8 @@ def chat_response(request):
                 elif current_user_emotion in ['분노', '혐오']:
                     implicit_reward = -0.5
                 
-                # 이전 턴의 경험에 보상(reward)과 다음 상태 가치(next_value)를 업데이트
-                # 이 부분은 learn 메소드에서 GAE 계산을 위해 사용될 수 있음
-                trajectory[-1]['reward'] = implicit_reward
-                # trajectory[-1]['done'] = False # 대화가 계속되므로 done은 False
+                if implicit_reward != 0.0:
+                    trajectory[-1]['reward'] = implicit_reward
 
             except Exception as e:
                 print(f"--- [PPO] 암시적 보상 계산 중 오류: {e} ---")
@@ -50,12 +50,16 @@ def chat_response(request):
         action_data = {} 
 
         try:
+            # 2. 채팅 상호작용 (RL 에이전트의 결정 포함) - 분석된 사용자 감정 전달
             bot_message_text, explanation, bot_message_obj, user_message_obj, action_data = chat_service.process_chat_interaction(
-                request, user_message_text, latitude, longitude, image_file
+                request, user_message_text, user_emotion=current_user_emotion, latitude=latitude, longitude=longitude, image_file=image_file
             )
             finetuning_service.anonymize_and_log_finetuning_data(request, user_message_text, bot_message_text, explanation)
-            character_emotion = emotion_service.analyze_emotion(bot_message_text)
+            
+            # 3. 봇 메시지 감정 분석
+            character_emotion = emotion_service.analyze_emotion(bot_message_text, speaker="Bot")
 
+            # 4. 호감도 증감
             user_profile = request.user.profile
             AFFINITY_CHANGE_MAP = {"공포": -1, "놀람": -1, "분노": -3, "슬픔": 0, "중립": +3, "행복": +5, "혐오": -10}
             user_profile.affinity_score += AFFINITY_CHANGE_MAP.get(character_emotion, 0)
@@ -70,11 +74,11 @@ def chat_response(request):
         if action_data:
             experience = {
                 'state': action_data.get('state_vector'),
-                'action': action_data.get('action_id'),
+                'action': action_data.get('action'),
                 'log_prob': action_data.get('action_log_prob'),
                 'value': action_data.get('state_value'),
                 'reward': 0, # 다음 턴에 채워짐
-                'done': False # 대화 종료 시 True로 설정 필요
+                'done': False
             }
             trajectory.append(experience)
 
@@ -103,7 +107,7 @@ def chat_response(request):
             'user_image_url': image_url,
             'bot_message_id': bot_message_obj.id if bot_message_obj else None,
             # 프론트엔드 피드백용 데이터는 마지막 경험의 데이터를 사용
-            'action_id': trajectory[-1]['action'] if trajectory else None,
+            'action': trajectory[-1]['action'] if trajectory else None,
             'state_vector': trajectory[-1]['state'] if trajectory else None,
         })
 

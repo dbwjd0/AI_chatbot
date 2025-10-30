@@ -202,8 +202,7 @@ class RLAgent:
 # --- 4. 서비스 메인 함수 ---
 agent = RLAgent()
 
-def decide_action(user, user_message_text: str, history, has_image: bool):
-    user_emotion = emotion_service.analyze_emotion(user_message_text)
+def decide_action(user, user_message_text: str, history, has_image: bool, user_emotion: str):
     state_vector = agent._build_state_vector(user, user_message_text, history, user_emotion)
     
     with torch.no_grad():
