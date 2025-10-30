@@ -209,34 +209,35 @@ def decide_action(user, user_message_text: str, history, has_image: bool):
     with torch.no_grad():
         persona_probs, context_probs, special_probs, state_value = agent.ac_network(state_vector)
     
-    # Sample from each distribution
+    # 각 분포에서 행동 샘플링
     persona_dist = torch.distributions.Categorical(persona_probs)
-    context_dist = torch.distributions.Bernoulli(context_probs) # Use Bernoulli for on/off
+    context_dist = torch.distributions.Bernoulli(context_probs)
     special_dist = torch.distributions.Categorical(special_probs)
 
     persona_action = persona_dist.sample()
-    context_actions = context_dist.sample() # Vector of 0s and 1s
+    context_actions = context_dist.sample()
     special_action = special_dist.sample()
 
-    # Combine log probabilities
+    # 로그 확률 결합
     log_prob = persona_dist.log_prob(persona_action) + context_dist.log_prob(context_actions).sum() + special_dist.log_prob(special_action)
 
-    # Assemble chosen contexts
-    contexts_to_use = [CONTEXT_LIST[i] for i, val in enumerate(context_actions.squeeze().tolist()) if val == 1]
-    if has_image and 'vector_search' in contexts_to_use:
-        contexts_to_use.remove('vector_search')
-
-    chosen_persona_name = PERSONA_MAP[persona_action.item()]
     chosen_special_action_name = SPECIAL_ACTION_MAP[special_action.item()]
+
+    # 특별 행동 처리
+    if chosen_special_action_name == 'Ask_Question':
+        chosen_persona_name = 'Questioner'
+        persona_prompt = ""  # 프롬프트 생성 생략
+        contexts_to_use = []
+    else:
+        # 일반 행동 처리
+        chosen_persona_name = PERSONA_MAP[persona_action.item()]
+        persona_prompt = prompt_service.build_persona_system_prompt(user, persona_name=chosen_persona_name)
+        contexts_to_use = [CONTEXT_LIST[i] for i, val in enumerate(context_actions.squeeze().tolist()) if val == 1]
+        if has_image and 'vector_search' in contexts_to_use:
+            contexts_to_use.remove('vector_search')
 
     print(f"--- [PPO 에이전트] 페르소나: {chosen_persona_name}, 컨텍스트: {contexts_to_use}, 특별 행동: {chosen_special_action_name} ---")
 
-    # Handle special action
-    if chosen_special_action_name == 'Ask_Question':
-        chosen_persona_name = 'Questioner' # Override persona for chat_service
-
-    persona_prompt = prompt_service.build_persona_system_prompt(user, persona_name=chosen_persona_name)
-    
     action_data = {
         'contexts_to_use': contexts_to_use,
         'persona_prompt': persona_prompt,
