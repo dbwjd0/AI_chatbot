@@ -427,7 +427,7 @@ body, html {
      height: 50px;  /* 장애물의 높이 */
      background-color: rgb(177, 40, 124); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
-} 
+}
 
 #invisible-wall-8 {
      position: absolute;
@@ -437,7 +437,7 @@ body, html {
      height: 50px;  /* 장애물의 높이 */
      background-color: rgb(95, 22, 129); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
-} 
+}
 
 #invisible-wall-9 {
      position: absolute;
@@ -447,7 +447,7 @@ body, html {
      height: 50px;  /* 장애물의 높이 */
      background-color: rgb(201, 157, 13); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
-} 
+}
 
 #invisible-wall-10 {
      position: absolute;
@@ -457,7 +457,7 @@ body, html {
      height: 5px;  /* 장애물의 높이 */
      background-color: rgb(75, 207, 157); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
-} 
+}
 
 #invisible-wall-11 {
      position: absolute;
@@ -467,7 +467,7 @@ body, html {
      height: 100px;  /* 장애물의 높이 */
      background-color: rgb(146, 127, 66); /* 눈에 보이도록 녹색으로 설정 */
      visibility: hidden;
-} 
+}
 
 #invisible-wall-12 {
      position: absolute;
@@ -588,14 +588,6 @@ body, html {
     z-index: 1;
 }
 
-/* .debug-box {
-    position: absolute;
-    border: 2px solid red;
-    box-sizing: border-box;
-    pointer-events: none; #(설명주석필요) So it doesn't interfere with mouse events
-} */
-
-
 .top-menu {
     position: absolute;
     top: 15px;
@@ -625,16 +617,16 @@ body, html {
     border-radius: 5px;
     cursor: pointer;
     font-family: 'VT323', monospace;
-    white-space: nowrap; /* Prevent text wrapping */
+    white-space: nowrap;
 }
 
 #bgm-volume-slider {
     position: absolute;
     top: 30px;
-    left: 110px; /* Position to the right of the button */
+    left: 110px;
     z-index: 101;
-    width: 120px; /* Increase width for easier control */
-    -webkit-appearance: none; /* Remove default styling for better customization */
+    width: 120px;
+    -webkit-appearance: none;
     appearance: none;
     height: 8px;
     background: #36518b;
@@ -693,4 +685,171 @@ body, html {
     pointer-events: none; /* 마우스 이벤트를 방해하지 않도록 설정 */
     z-index: 99; /* 다른 요소들 위에 보이도록 설정 */
     display: none; /*기본적으로 숨김*/
+}
+#dialog-speaker-container {
+    position: absolute;
+    top: -45px;
+    left: 20px;
+    background-color: #333;
+    border: 4px solid #555;
+    padding: 5px 20px;
+    border-radius: 10px;
+    z-index: 2; /* 이미지가 뒤에 위치하도록 z-index 추가 */
+}
+
+#dialog-speaker {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+}
+
+#dialog-text {
+    font-size: 22px;
+    padding-top: 10px;
+}
+
+/* --- 대화창 캐릭터 이미지 스타일 --- */
+#dialog-character-image {
+    /* 위치 조절: bottom, left 값을 변경하여 이미지 위치를 조정하세요. */
+    position: absolute;
+    bottom: -80%; /* 화면 하단으로부터의 거리 */
+    left: 100px;   /* 화면 좌측으로부터의 거리 */
+
+    /* 크기 조절: width, height 값을 변경하여 이미지 크기를 조정하세요. */
+    width: 1500px;
+    height: 1400px;
+
+    object-fit: contain; /* 이미지 비율을 유지하며 맞춤 */
+    /* z-index: 대화창(200)보다 낮게 설정하여 뒤에 표시되도록 함 */
+    z-index: 199;
+}
+
+#bed-character-image {
+    /* 위치 조절: bottom, left 값을 변경하여 이미지 위치를 조정하세요. */
+    position: absolute;
+    bottom: -80%; /* 화면 하단으로부터의 거리 */
+    left: -500px;   /* 화면 좌측으로부터의 거리 */
+
+    /* 크기 조절: width, height 값을 변경하여 이미지 크기를 조정하세요. */
+    width: 1500px;
+    height: 1400px;
+
+    object-fit: contain; /* 이미지 비율을 유지하며 맞춤 */
+    /* z-index: 대화창(200)보다 낮게 설정하여 뒤에 표시되도록 함 */
+    z-index: 199;
+}
+
+/* --- 처리 중 말풍선 스타일 --- */
+#processing-bubble {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: #ffffff;
+    border: 2px solid #a9d1ff;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    z-index: 11; /* 플레이어 위에 표시 */
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000;
+    font-family: 'VT323', monospace;
+    display: none; /* 기본적으로 숨김 */
+}
+
+#processing-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 12px solid #a9d1ff;
+    z-index: 0;
+}
+
+#processing-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 10px solid #ffffff;
+    z-index: 1;
+}
+
+.feedback-bubble {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: #ffffff;
+    border: 2px solid #a9d1ff;
+    border-radius: 20px; /* 둥근 사각형 */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    z-index: 11; /* 플레이어 위에 표시 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-family: 'VT323', monospace;
+}
+
+.feedback-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 12px solid #a9d1ff;
+    z-index: 0;
+}
+
+.feedback-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 10px solid #ffffff;
+    z-index: 1;
+}
+
+/* Refrigerator Modal Styles */
+#refrigerator-modal .modal-content {
+    background-color: #e0e0e0; /* Light gray background */
+    border: 5px solid #a0a0a0;
+    border-radius: 10px;
+}
+
+#refrigerator-items {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+}
+
+#refrigerator-items img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border: 2px solid #fff;
+    border-radius: 5px;
 }

@@ -8,6 +8,7 @@ import json # json 모듈 임포트
 from django.db.models import Q
 from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage, QuizResult, UserFriendship, FriendMessage # FriendMessage 모델 추가
 from chatbot_app.services.proactive_service import generate_proactive_message
+from chatbot_app.services import chat_service
 from ..services import friend_message_service
 
 
@@ -71,7 +72,11 @@ def room(request):
     """캐릭터가 있는 방 페이지를 렌더링합니다."""
     if not request.user.profile.is_onboarding_complete:
         return redirect('narrative_setup')
-    return render(request, 'room.html')
+    
+    context = {
+        'chatbot_name': request.user.profile.chatbot_name
+    }
+    return render(request, 'room.html', context)
 
 @login_required
 def chat_history_view(request):
@@ -246,3 +251,49 @@ def start_view(request):
 from ..services import friend_message_service
 
 
+@login_required
+def get_interaction_dialog_view(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        target = data.get('target')
+
+        if not target:
+            return JsonResponse({'error': 'Target not provided'}, status=400)
+
+        # AI가 생성한 동적 독백을 가져옴
+        message = chat_service.generate_object_monologue(request.user, target)
+        
+        return JsonResponse({'message': message})
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+def refrigerator_contents_view(request):
+    """세션에 저장된 음식 목록을 반환합니다."""
+    eaten_foods = request.session.get('eaten_foods', [])
+    return JsonResponse({'foods': eaten_foods})
+
+@login_required
+def consume_food_view(request):
+    """세션에서 특정 음식을 제거합니다."""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            food_name = data.get('food_name')
+
+            if not food_name:
+                return JsonResponse({'status': 'error', 'message': 'Food name not provided'}, status=400)
+
+            eaten_foods = request.session.get('eaten_foods', [])
+            
+            # 해당 음식을 목록에서 제거
+            foods_to_keep = [food for food in eaten_foods if food.get('name') != food_name]
+            
+            request.session['eaten_foods'] = foods_to_keep
+            
+            return JsonResponse({'status': 'success', 'message': f'{food_name} consumed.'})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
