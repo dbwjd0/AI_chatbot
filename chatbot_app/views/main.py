@@ -5,9 +5,13 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 import re
 import json # json 모듈 임포트
-from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage, QuizResult
+from django.db.models import Q
+from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage, QuizResult, UserFriendship, FriendMessage # FriendMessage 모델 추가
 from chatbot_app.services.proactive_service import generate_proactive_message
-from ..quiz_data import QUIZ_QUESTIONS
+from chatbot_app.services import chat_service
+from ..services import friend_message_service
+
+
 def landing_view(request):
     """사용자의 온보딩 완료 여부에 따라 적절한 페이지로 리디렉션합니다."""
     if request.user.profile.is_onboarding_complete:
@@ -27,12 +31,18 @@ def narrative_setup_view(request):
 
         if fact_type and content:
             if fact_type == '이름':
-                request.user.first_name = content
-                request.user.save()
+                profile = request.user.profile
+                profile.nickname = content
+                profile.save()
             
             elif fact_type == 'ai_name':
                 profile = request.user.profile
                 profile.chatbot_name = content
+                profile.save()
+
+            elif fact_type == 'persona_preference': # New condition
+                profile = request.user.profile
+                profile.persona_preference = content
                 profile.save()
 
             elif fact_type in PERSISTENT_ATTRIBUTES:
@@ -62,7 +72,11 @@ def room(request):
     """캐릭터가 있는 방 페이지를 렌더링합니다."""
     if not request.user.profile.is_onboarding_complete:
         return redirect('narrative_setup')
-    return render(request, 'room.html')
+    
+    context = {
+        'chatbot_name': request.user.profile.chatbot_name
+    }
+    return render(request, 'room.html', context)
 
 @login_required
 def chat_history_view(request):
@@ -144,10 +158,13 @@ def chat_main_view(request):
         for msg in messages_page.object_list
     ][::-1]
 
+    unread_friend_messages_count = FriendMessage.objects.filter(receiver=request.user, is_read=False).count()
+
     return render(request, 'chat.html', {
         'user_profile': user_profile, 
         'chat_messages': chat_messages_data,
-        'has_next_page': messages_page.has_next()
+        'has_next_page': messages_page.has_next(),
+        'unread_friend_messages_count': unread_friend_messages_count,
     })
 
 @login_required
@@ -182,6 +199,7 @@ def get_proactive_message_view(request):
             'timestamp': proactive_chat_message.timestamp.isoformat()
         })
     return JsonResponse({'message': None})
+
 
 def opening_view(request):
     """오프닝 비디오를 재생하는 페이지를 렌더링합니다."""
@@ -230,113 +248,52 @@ def start_view(request):
     """로그인 후 게임 시작 화면을 렌더링합니다."""
     return render(request, 'start.html')
 
-@login_required
-def quiz_history_view(request):
-    """사용자의 퀴즈 기록을 표시합니다."""
-    quiz_results = QuizResult.objects.filter(user=request.user).order_by('-date_completed')
-    return render(request, 'quiz_history.html', {'quiz_results': quiz_results})
+from ..services import friend_message_service
+
 
 @login_required
-def quiz_mode_view(request):
-    """퀴즈 모드 설정 페이지를 렌더링합니다."""
-    return render(request, 'quiz.html')
-
-@login_required
-def start_quiz_view(request):
-    """퀴즈 시작 요청을 처리하고 퀴즈 페이지로 리디렉션합니다."""
+def get_interaction_dialog_view(request):
     if request.method == 'POST':
-        genre = request.POST.get('genre')
-        difficulty = request.POST.get('difficulty')
-        num_questions = int(request.POST.get('num_questions'))
+        data = json.loads(request.body)
+        target = data.get('target')
 
-        filtered_questions = [
-            q for q in QUIZ_QUESTIONS
-            if (genre == 'all' or q['genre'] == genre)
-        ]
+        if not target:
+            return JsonResponse({'error': 'Target not provided'}, status=400)
 
-        import random
-        random.shuffle(filtered_questions)
-        selected_questions = filtered_questions[:num_questions]
-        request.session['quiz_total_questions'] = len(selected_questions)
-        request.session['selected_genre'] = genre # Store selected genre
-
-        request.session['quiz_questions'] = selected_questions
-        request.session['current_question_index'] = 0
-        request.session['quiz_score'] = 0
-        return redirect('quiz_question')
-    return redirect('quiz_mode')
-
-@login_required
-def quiz_question_view(request):
-    """현재 퀴즈 질문을 표시하고 답변을 처리합니다."""
-    quiz_questions = request.session.get('quiz_questions')
-    current_question_index = request.session.get('current_question_index')
-    quiz_score = request.session.get('quiz_score')
-    quiz_total_questions = request.session.get('quiz_total_questions')
-    
-    # Initialize quiz_feedback for this request
-    quiz_feedback_for_template = None
-
-    if not quiz_questions or current_question_index is None or quiz_total_questions is None:
-        return redirect('quiz_mode')
-
-    if request.method == 'POST':
-        user_answer = request.POST.get('answer')
-        current_question = quiz_questions[current_question_index]
-        correct_answer = current_question['answer']
-
-        is_correct = (user_answer == correct_answer)
-        if is_correct:
-            request.session['quiz_score'] += 1
-
-        request.session['quiz_feedback'] = {
-            'is_correct': is_correct,
-            'correct_answer': correct_answer,
-            'user_answer': user_answer,
-            'character_emotion': '정답' if is_correct else '오답',
-        }
-        return redirect('quiz_question')
-
-    # GET 요청 처리
-    if 'quiz_feedback' in request.session:
-        quiz_feedback_for_template = request.session['quiz_feedback']
+        # AI가 생성한 동적 독백을 가져옴
+        message = chat_service.generate_object_monologue(request.user, target)
         
-        if request.GET.get('next_question') == 'true':
-            request.session['current_question_index'] += 1
-            current_question_index = request.session['current_question_index']
-            request.session.pop('quiz_feedback') # Clear feedback after advancing
-            quiz_feedback_for_template = None
-    else:
-        pass
+        return JsonResponse({'message': message})
 
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
-    if current_question_index >= quiz_total_questions:
-        final_score = request.session['quiz_score']
-        selected_genre = request.session.get('selected_genre', 'all') # Retrieve selected genre
+@login_required
+def refrigerator_contents_view(request):
+    """세션에 저장된 음식 목록을 반환합니다."""
+    eaten_foods = request.session.get('eaten_foods', [])
+    return JsonResponse({'foods': eaten_foods})
 
-        # Save quiz result
-        from ..models import QuizResult
-        QuizResult.objects.create(
-            user=request.user,
-            genre=selected_genre,
-            num_questions=quiz_total_questions,
-            score=final_score
-        )
+@login_required
+def consume_food_view(request):
+    """세션에서 특정 음식을 제거합니다."""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            food_name = data.get('food_name')
 
-        del request.session['quiz_questions']
-        del request.session['current_question_index']
-        del request.session['quiz_score']
-        del request.session['quiz_total_questions']
-        del request.session['selected_genre'] # Clear selected genre from session
-        return render(request, 'quiz.html', {'quiz_finished': True, 'final_score': final_score, 'total_questions': quiz_total_questions})
-    else:
-        current_question = quiz_questions[current_question_index]
-        context = {
-            'question': current_question['question'],
-            'options': current_question['options'],
-            'current_question_number': current_question_index + 1,
-            'total_questions': quiz_total_questions,
-            'quiz_active': True,
-            'quiz_feedback': quiz_feedback_for_template,
-        }
-        return render(request, 'quiz.html', context)
+            if not food_name:
+                return JsonResponse({'status': 'error', 'message': 'Food name not provided'}, status=400)
+
+            eaten_foods = request.session.get('eaten_foods', [])
+            
+            # 해당 음식을 목록에서 제거
+            foods_to_keep = [food for food in eaten_foods if food.get('name') != food_name]
+            
+            request.session['eaten_foods'] = foods_to_keep
+            
+            return JsonResponse({'status': 'success', 'message': f'{food_name} consumed.'})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)

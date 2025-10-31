@@ -1,12 +1,11 @@
 Django
 requests
-konlpy
-JPype1
 python-dotenv
 openai
 chromadb
 django-apscheduler
 
-# For Hugging Face transformer-based emotion analysis
-transformers
+# For Reinforcement Learning Agent and NLP tasks
+numpy
 torch
+transformers

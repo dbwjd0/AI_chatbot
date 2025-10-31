@@ -28,19 +28,20 @@
 </head>
 <body>
     <button id="toggle-bgm-btn">BGM OFF</button>
-    <div class="container">
+    <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
+    <div class="container" data-chatbot-name="{{ chatbot_name|default:'아이' }}">
     {% include 'includes/top_menu.html' with show_room_link=False %}
         <div class="chatbot-container" id="room">
             <!-- <img id="stove" class="furniture-object" src="{% static 'img/난로.png' %}" alt="Stove"> -->
-            <img id="refrigerator" class="furniture-object" src="{% static 'img/냉장고.png' %}" alt="Refrigerator">
+            <img id="refrigerator" class="furniture-object interactive-object" data-interaction-target="refrigerator" data-interaction-message="냉장고 확인하기 (Enter)" src="{% static 'img/냉장고.png' %}" alt="Refrigerator">
             <img id="lamp" class="furniture-object" src="{% static 'img/램프.png' %}" alt="Lamp">
             <img id="robot-vacuum" class="furniture-object" src="{% static 'img/로봇청소기.png' %}" alt="Robot Vacuum">
             <img id="sofa" class="furniture-object interactive-object" data-interaction-target="sofa" data-interaction-message="푹신한 소파에 앉아 휴식하기 (Enter)" src="{% static 'img/소파.png' %}" alt="Sofa">
             <img id="wardrobe" class="furniture-object" src="{% static 'img/옷장.png' %}" alt="Wardrobe">
             <img id="books-desk" class="furniture-object interactive-object" data-interaction-target="schedule" data-interaction-message="일정 확인 및 추가하기 (Enter)" src="{% static 'img/책과 책상.png' %}" alt="Books and Desk">
             <img id="bed" class="furniture-object interactive-object" data-interaction-target="bed" data-interaction-message="침대에 누워 쉬기 (Enter)" src="{% static 'img/침대.png' %}" alt="Bed">
-            <img id="computer-obj" class="furniture-object interactive-object" data-interaction-target="chat_history" data-interaction-message="컴퓨터를 사용해 채팅하기 (Enter)" src="{% static 'img/컴퓨터.png' %}" alt="Computer">
-            <img id="tv" class="furniture-object interactive-object" data-interaction-target="chat" data-interaction-message="TV를 켜서 대화하기 (Enter)" src="{% static 'img/티비.png' %}" alt="TV">
+            <img id="computer-obj" class="furniture-object interactive-object" data-interaction-target="chat" data-interaction-message="컴퓨터를 사용해 채팅하기 (Enter)" src="{% static 'img/컴퓨터.png' %}" alt="Computer">
+            <img id="tv" class="furniture-object interactive-object" data-interaction-target="chat_history" data-interaction-message="TV를 켜서 대화하기 (Enter)" src="{% static 'img/티비.png' %}" alt="TV">
             <img id="tea-table" class="furniture-object" src="{% static 'img/티테이블.png' %}" alt="Tea Table">
             <!-- <img id="wall-clock" class="furniture-object" src="{% static 'img/벽시계.png' %}" alt="Wall Clock"> -->
             <!-- <img id="wall-plant" class="furniture-object" src="{% static 'img/벽식물.png' %}" alt="Wall Plant"> -->
@@ -63,6 +64,7 @@
             <div id="invisible-wall-15" class="furniture-object"></div>
             <div id="invisible-wall-16" class="furniture-object"></div>
             <div id="invisible-wall-17" class="furniture-object"></div>
+            <div id="Quiz-line" class="interactive-object" data-interaction-target="quiz"></div>
             <div id="player">
                 <img src="{% static 'img/char_dot.png' %}" alt="Player">
             </div>
@@ -71,6 +73,8 @@
             <div id="proactive-notification" style="display: none;">!</div>
 
             <div id="interaction-prompt"></div>
+            <img id="dialog-character-image" src="" alt="Character Image" style="display: none;">
+            <img id="bed-character-image" src="" alt="Bed Character Image" style="display: none;">
             <div id="dialog-box" class="hidden">
                 <div id="dialog-speaker-container">
                     <span id="dialog-speaker"></span>
@@ -95,6 +99,19 @@
                     <textarea id="new-schedule-textarea" placeholder="새 일정을 입력하세요." rows="2"></textarea>
                 </div>
                 <button id="add-schedule-btn">일정 추가</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Refrigerator Modal -->
+    <div id="refrigerator-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>냉장고</h2>
+            <div id="refrigerator-items">
+                <img src="{% static 'img/카레.png' %}" alt="카레">
+                <img src="{% static 'img/햄버거.png' %}" alt="햄버거">
+                <img src="{% static 'img/콜라.png' %}" alt="콜라">
             </div>
         </div>
     </div>

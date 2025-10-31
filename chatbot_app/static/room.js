@@ -9,6 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const dialogBox = document.getElementById('dialog-box');
     const dialogSpeaker = document.getElementById('dialog-speaker');
     const dialogText = document.getElementById('dialog-text');
+    const chatbotName = document.querySelector('.container').dataset.chatbotName || '아이';
+
+    const refrigeratorModal = document.getElementById('refrigerator-modal');
+    const refrigeratorCloseButton = refrigeratorModal.querySelector('.close-button');
+
+    let processingBubble; // 처리 중 말풍선
+    let processingAnimationInterval; // 애니메이션 인터벌 ID
+    let processingDotCount = 0; // 점 개수
 
     // --- Image Paths ---
     const idleImg = '/static/img/char_idle.png';
@@ -23,14 +31,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const idleUpImg = '/static/img/side_up_stand.png';
 
     // --- Audio Elements ---
-    const moveSound = new Audio('/static/audio/walking_bgm.mp3'); // Using walking_bgm.mp3
-    moveSound.volume = 0.5; // Reduced volume
+    const moveSound = new Audio('/static/audio/양말 걷기.mp3'); // Using walking_bgm.mp3
+    moveSound.volume = 1; // Reduced volume
     moveSound.loop = true; // Intended for continuous, infinite playback when playing
     let isMovingSoundPlaying = false;
 
-    const collisionSound = new Audio('/static/audio/crash_bgm.mp3'); // Using crash_bgm.mp3
+    const collisionSound = new Audio('/static/audio/부딪힘.mp3'); // Using crash_bgm.mp3
     collisionSound.volume = 0.5; // Reduced volume
     let isCurrentlyColliding = false; // New flag to track if player is currently colliding
+
+    const selectionSound = new Audio('/static/audio/선택지 좌우.mp3');
+    selectionSound.volume = 0.3;
+    const confirmationSound = new Audio('/static/audio/선택지 결정.mp3');
+    confirmationSound.volume = 0.5;
+    const yesConfirmationSound = new Audio('/static/audio/선택지 \'예\'.mp3');
+    yesConfirmationSound.volume = 0.5;
 
     // --- Game State ---
     const playerState = {
@@ -43,12 +58,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const keys = {};
     let activeInteraction = null;
     let isDialogActive = false;
+    let isConfirmationActive = false;
+    let isRefrigeratorConfirmationActive = false; // Add this line
+    let selectedConfirmationOption = 'yes'; // 'yes' or 'no'
+    let onQuizCooldown = false; // Cooldown flag for the quiz interaction
     let lastFrameTime = 0; // For time-based movement
 
     // --- Debug Visualization ---
     const playerDebugBox = document.createElement('div');
     playerDebugBox.className = 'debug-box';
     room.appendChild(playerDebugBox);
+
+    // --- 처리 중 말풍선 초기화 ---
+    processingBubble = document.createElement('div');
+    processingBubble.id = 'processing-bubble';
+    processingBubble.textContent = '.'; // 초기 텍스트
+    room.appendChild(processingBubble);
 
     const obstacles = document.querySelectorAll('.furniture-object');
     const obstacleCollisionBuffer = 35; // Make sure this is defined before use
@@ -127,19 +152,94 @@ document.addEventListener('DOMContentLoaded', () => {
         room.appendChild(debugBox);
     });
 
+    // --- 상호작용 영역 시각화 ---
+    const interactiveObjects = document.querySelectorAll('.interactive-object');
+
+    interactiveObjects.forEach(object => {
+        const vizBox = document.createElement('div');
+        vizBox.className = 'interaction-area-visualization';
+        
+        let rect;
+        if (object.id === 'Quiz-line') {
+            // Quiz-line은 넓은 상호작용 범위를 가짐
+            const interactionBuffer = 20; 
+            rect = {
+                left: object.offsetLeft - interactionBuffer,
+                top: object.offsetTop - interactionBuffer,
+                width: object.offsetWidth + (2 * interactionBuffer),
+                height: object.offsetHeight + (2 * interactionBuffer)
+            };
+        } else {
+            // 다른 오브젝트들은 충돌 범위 + 10px 버퍼를 가짐
+            const interactionBuffer = 10; 
+            const collisionRect = getObstacleRect(object);
+            rect = {
+                left: collisionRect.left - interactionBuffer,
+                top: collisionRect.top - interactionBuffer,
+                width: collisionRect.width + (2 * interactionBuffer),
+                height: collisionRect.height + (2 * interactionBuffer)
+            };
+        }
+
+        vizBox.style.left = `${rect.left}px`;
+        vizBox.style.top = `${rect.top}px`;
+        vizBox.style.width = `${rect.width}px`;
+        vizBox.style.height = `${rect.height}px`;
+        room.appendChild(vizBox);
+    });
+
     // --- Input Handlers ---
     document.addEventListener('keydown', (e) => {
-        if (!isDialogActive) {
+        if (isRefrigeratorConfirmationActive) { // Add this block
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                selectionSound.currentTime = 0;
+                selectionSound.play();
+                selectedConfirmationOption = selectedConfirmationOption === 'yes' ? 'no' : 'yes';
+                updateConfirmationSelection();
+            }
+            return; // Prevent movement keys from being processed
+        }
+        if (isConfirmationActive) {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                selectionSound.currentTime = 0;
+                selectionSound.play();
+                selectedConfirmationOption = selectedConfirmationOption === 'yes' ? 'no' : 'yes';
+                updateConfirmationSelection();
+            }
+        } else if (!isDialogActive) {
             keys[e.key] = true;
         }
     });
 
     document.addEventListener('keyup', (e) => {
         keys[e.key] = false;
-        if (isDialogActive) {
-            hideDialog();
+        if (isRefrigeratorConfirmationActive) { // Add this block
+            if (e.key === 'Enter') {
+                handleRefrigeratorConfirmation();
+            }
             return;
         }
+        if (isConfirmationActive) {
+            if (e.key === 'Enter') {
+                handleConfirmation();
+            }
+            return;
+        }
+
+        // 대화창이 활성화된 상태에서 Enter를 누르면, 후속 동작을 처리
+        if (isDialogActive) {
+            const interactionTarget = activeInteraction ? activeInteraction.dataset.interactionTarget : null;
+            
+            hideDialog(); // 먼저 대화창을 닫고
+
+            // 후속 동작으로 페이지 이동이 필요한 경우 처리
+            if (interactionTarget === 'chat' || interactionTarget === 'chat_history') {
+                fadeOverlay.classList.add('visible');
+                setTimeout(() => { window.location.href = `/${interactionTarget}/`; }, 300);
+            }
+            return;
+        }
+
         if (e.key === 'Enter' && activeInteraction) {
             handleInteraction(activeInteraction);
         }
@@ -147,27 +247,82 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleInteraction(object) {
         const target = object.dataset.interactionTarget;
-        if (target === 'chat_history') {
-            fadeOverlay.classList.add('visible');
-            setTimeout(() => { window.location.href = '/chat_history/'; }, 300);
-        } else if (target === 'chat') {
-            fadeOverlay.classList.add('visible');
-            setTimeout(() => { window.location.href = '/chat/'; }, 300);
-        } else if (target === 'books') {
-            showDialog('[아이]', '내가 좋아하는 책들이 꽂혀있다. 어려운 내용이 많아 보인다.');
-        } else if (target === 'sofa') {
-            showDialog('[아이]', '푹신한 소파에 앉아 잠시 쉬어볼까?');
-        } else if (target === 'bed') {
-            showDialog('[아이]', '침대에 누우니 잠이 솔솔 오는걸?');
-        } else if (target === 'schedule') {
+
+        if (target === 'schedule') {
             openModal();
+            return;
         }
+
+        if (target === 'refrigerator') { // Add this block
+            showRefrigeratorConfirmationDialog();
+            return;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        startProcessingAnimation(); // 로딩 인디케이터 시작
+
+        // API 요청을 통해 동적 대사를 가져옴
+        fetch('/api/get-interaction-dialog/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({ target: target })
+        })
+        .then(response => response.json())
+        .then(data => {
+            stopProcessingAnimation(); // 로딩 인디케이터 중지
+            if (data.message) {
+                if (target === 'bed') {
+                    showBedDialog(data.message);
+                } else {
+                    const imageUrl = (target === 'sofa') ? '/static/img/char_thinking.png' : null;
+                    showDialog(`[${chatbotName}]`, data.message, imageUrl);
+                }
+            }
+        })
+        .catch(error => {
+            stopProcessingAnimation(); // 로딩 인디케이터 중지
+            console.error('Error fetching interaction dialog:', error);
+            // 에러 발생 시 기본 대사 출력
+            showDialog(`[${chatbotName}]`, '...');
+        });
     }
 
     // --- Dialog Functions ---
-    function showDialog(speaker, text) {
-        dialogSpeaker.textContent = speaker;
+    function showBedDialog(text) {
+        const bedImage = document.getElementById('bed-character-image');
+        dialogSpeaker.textContent = `[${chatbotName}]`;
         dialogText.textContent = text;
+
+        if (bedImage) {
+            bedImage.src = '/static/img/char_happy_left.png';
+            bedImage.style.display = 'block';
+        }
+
+        dialogBox.classList.remove('hidden');
+        isDialogActive = true;
+        interactionPrompt.classList.add('hidden');
+    }
+
+    function showDialog(speaker, text, imageUrl = null) {
+        const dialogImage = document.getElementById('dialog-character-image');
+        const dialogSpeaker = document.getElementById('dialog-speaker');
+        const dialogText = document.getElementById('dialog-text');
+
+        // Ensure elements exist before using them
+        if (dialogSpeaker) dialogSpeaker.textContent = speaker;
+        if (dialogText) dialogText.textContent = text;
+
+        if (imageUrl && dialogImage) {
+            dialogImage.src = imageUrl;
+            dialogImage.style.display = 'block';
+        } else if (dialogImage) {
+            dialogImage.style.display = 'none';
+        }
+
         dialogBox.classList.remove('hidden');
         isDialogActive = true;
         interactionPrompt.classList.add('hidden');
@@ -176,6 +331,221 @@ document.addEventListener('DOMContentLoaded', () => {
     function hideDialog() {
         dialogBox.classList.add('hidden');
         isDialogActive = false;
+        isConfirmationActive = false;
+        isRefrigeratorConfirmationActive = false; // Add this line
+
+        // Hide the image as well
+        const dialogImage = document.getElementById('dialog-character-image');
+        const bedImage = document.getElementById('bed-character-image');
+        if (dialogImage) dialogImage.style.display = 'none';
+        if (bedImage) bedImage.style.display = 'none';
+
+        // Remove confirmation buttons if they exist
+        const options = dialogBox.querySelector('.dialog-options');
+        if (options) {
+            options.remove();
+        }
+    }
+
+    function showRefrigeratorConfirmationDialog() {
+        if (isDialogActive) return;
+
+        isDialogActive = true;
+        isRefrigeratorConfirmationActive = true;
+        selectedConfirmationOption = 'yes';
+
+        dialogSpeaker.textContent = `[${chatbotName}]`;
+        dialogText.textContent = '맛있는 냄새가 나는데, 냉장고를 열어볼까?';
+
+        const options = document.createElement('div');
+        options.className = 'dialog-options';
+
+        const yesButton = document.createElement('button');
+        yesButton.id = 'confirm-yes';
+        yesButton.textContent = '예';
+
+        const noButton = document.createElement('button');
+        noButton.id = 'confirm-no';
+        noButton.textContent = '아니요';
+
+        options.appendChild(yesButton);
+        options.appendChild(noButton);
+        dialogBox.appendChild(options);
+
+        updateConfirmationSelection();
+        dialogBox.classList.remove('hidden');
+    }
+
+    function handleRefrigeratorConfirmation() {
+        if (selectedConfirmationOption === 'yes') {
+            yesConfirmationSound.play();
+            hideDialog();
+            openRefrigeratorModal();
+        } else {
+            confirmationSound.play();
+            hideDialog();
+        }
+    }
+
+    function openRefrigeratorModal() {
+        fetch('/api/refrigerator-contents/')
+            .then(response => response.json())
+            .then(data => {
+                displayRefrigeratorContents(data.foods);
+                refrigeratorModal.style.display = 'block';
+                isDialogActive = true; // Prevent player movement
+            })
+            .catch(error => {
+                console.error('Error fetching refrigerator contents:', error);
+            });
+    }
+
+    function displayRefrigeratorContents(foods) {
+        const itemsContainer = document.getElementById('refrigerator-items');
+        itemsContainer.innerHTML = ''; // 기존 아이템 삭제
+
+        if (foods.length === 0) {
+            itemsContainer.innerHTML = '<p>냉장고가 비어있습니다.</p>';
+            return;
+        }
+
+        foods.forEach(food => {
+            const foodImg = document.createElement('img');
+            foodImg.src = `/static/img/${food.image}`;
+            foodImg.alt = food.name;
+            foodImg.dataset.foodName = food.name; // 음식 이름 저장
+            foodImg.style.cursor = 'pointer';
+            foodImg.addEventListener('click', () => {
+                playEatingAnimation(food.name);
+            });
+            itemsContainer.appendChild(foodImg);
+        });
+    }
+
+    function playEatingAnimation(foodName) {
+        closeRefrigeratorModal();
+
+        // 서버에 음식 소비 사실을 알림
+        const csrftoken = getCookie('csrftoken');
+        fetch('/api/consume-food/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({ food_name: foodName })
+        })
+        .catch(error => console.error('Error consuming food:', error));
+        
+        const originalAnimation = playerImage.src; // 현재 애니메이션 저장
+        isDialogActive = true; // 먹는 동안 움직임 방지
+
+        playerImage.src = '/static/img/먹는 모션.gif';
+
+        // 먹는 모션 시간을 2초로 변경
+        setTimeout(() => {
+            playerImage.src = originalAnimation;
+            isDialogActive = false; // 움직임 다시 허용
+            showHeartBubble(); // 하트 말풍선 표시 함수 호출
+        }, 2000);
+    }
+
+    function showHeartBubble() {
+        const heartBubble = document.createElement('div');
+        heartBubble.className = 'feedback-bubble'; // 새로운 CSS 클래스 적용
+        heartBubble.textContent = '❤️';
+
+        // 플레이어 머리 위에 위치 설정
+        const bubbleWidth = 40;
+        const bubbleHeight = 40;
+        const playerHeight = 120;
+        heartBubble.style.left = `${playerState.x - bubbleWidth / 2}px`;
+        heartBubble.style.top = `${playerState.y - playerHeight / 2 - bubbleHeight - 10}px`;
+
+        room.appendChild(heartBubble);
+
+        // 2초 후에 말풍선 제거
+        setTimeout(() => {
+            if (heartBubble.parentNode) {
+                heartBubble.parentNode.removeChild(heartBubble);
+            }
+        }, 2000);
+    }
+
+    function closeRefrigeratorModal() {
+        refrigeratorModal.style.display = 'none';
+        isDialogActive = false; // Allow player movement
+    }
+
+    function showConfirmationDialog() {
+        if (isConfirmationActive || onQuizCooldown) return; // Prevent multiple triggers
+
+        isDialogActive = true;
+        isConfirmationActive = true;
+        selectedConfirmationOption = 'yes';
+
+        dialogSpeaker.textContent = '[시스템]';
+        dialogText.textContent = '퀴즈 방으로 이동할까?';
+
+        const options = document.createElement('div');
+        options.className = 'dialog-options';
+
+        const yesButton = document.createElement('button');
+        yesButton.id = 'confirm-yes';
+        yesButton.textContent = '예';
+
+        const noButton = document.createElement('button');
+        noButton.id = 'confirm-no';
+        noButton.textContent = '아니요';
+
+        options.appendChild(yesButton);
+        options.appendChild(noButton);
+        dialogBox.appendChild(options);
+
+        updateConfirmationSelection();
+        dialogBox.classList.remove('hidden');
+    }
+
+    function updateConfirmationSelection() {
+        const yesButton = document.getElementById('confirm-yes');
+        const noButton = document.getElementById('confirm-no');
+        if (!yesButton || !noButton) return;
+
+        if (selectedConfirmationOption === 'yes') {
+            yesButton.classList.add('selected');
+            noButton.classList.remove('selected');
+        } else {
+            noButton.classList.add('selected');
+            yesButton.classList.remove('selected');
+        }
+    }
+
+    function handleConfirmation() {
+        if (selectedConfirmationOption === 'yes') {
+            yesConfirmationSound.play();
+            fadeOverlay.classList.add('visible');
+            setTimeout(() => { window.location.href = '/quiz/'; }, 300);
+        } else {
+            confirmationSound.play();
+            hideDialog();
+            onQuizCooldown = true;
+            setTimeout(() => { onQuizCooldown = false; }, 1000); // 1-second cooldown
+        }
+    }
+
+    function startProcessingAnimation() {
+        processingDotCount = 0;
+        processingBubble.textContent = '.';
+        processingBubble.style.display = 'flex'; // Show the bubble
+        processingAnimationInterval = setInterval(() => {
+            processingDotCount = (processingDotCount % 3) + 1;
+            processingBubble.textContent = '.'.repeat(processingDotCount);
+        }, 300); // Update every 300ms
+    }
+
+    function stopProcessingAnimation() {
+        clearInterval(processingAnimationInterval);
+        processingBubble.style.display = 'none'; // Hide the bubble
     }
 
     // --- Game Loop (New Robust Logic) ---
@@ -212,7 +582,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             if (isMovingSoundPlaying) {
                 moveSound.pause();
-                // moveSound.currentTime = 0; // Removed again to allow continuous loop without reset
                 isMovingSoundPlaying = false;
             }
         }
@@ -220,17 +589,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. Obstacle Collision Detection
         const playerWidth = player.offsetWidth;
         const playerHeight = player.offsetHeight;
-        // Calculate player's half-dimensions
         const playerHalfWidth = playerWidth / 2;
         const playerHalfHeight = playerHeight / 2;
 
-        // Collision box at the feet
-        const collisionHeight = playerHeight * 0.2; // Use the bottom 20% of the player image for collision
-        const collisionWidth = playerWidth * 0.6; // Make it a bit narrower than the player
+        const collisionHeight = playerHeight * 0.2;
+        const collisionWidth = playerWidth * 0.6;
 
-        let currentFrameCollision = false; // Flag for collision in this frame
+        let currentFrameCollision = false;
 
-        // Check X-axis collision
         const futurePlayerRectX = {
             left: nextX - collisionWidth / 2,
             top: playerState.y + playerHalfHeight - collisionHeight,
@@ -250,7 +616,6 @@ document.addEventListener('DOMContentLoaded', () => {
             playerState.x = nextX;
         }
 
-        // Check Y-axis collision
         const futurePlayerRectY = {
             left: playerState.x - collisionWidth / 2,
             top: nextY + playerHalfHeight - collisionHeight,
@@ -270,60 +635,38 @@ document.addEventListener('DOMContentLoaded', () => {
             playerState.y = nextY;
         }
 
-        // Collision sound logic: Play only on initial impact
         if (currentFrameCollision && !isCurrentlyColliding) {
-            collisionSound.currentTime = 0; // Ensure it plays from the start
+            collisionSound.currentTime = 0;
             collisionSound.play();
         }
         isCurrentlyColliding = currentFrameCollision;
         
         // 4. Determine animation based on actual movement
         if (dx !== 0 || dy !== 0) {
-            // Animation decision (Y-axis priority)
-            if (dy === -1) { // Moving Up
-                newAnimation = walkUpImg;
-                playerState.lastDirection = 'up';
-            } else if (dy === 1) { // Moving Down
-                newAnimation = walkFrontGif;
-                playerState.lastDirection = 'down';
-            } else if (dx === -1) { // Moving Left
-                newAnimation = walkSideLeftGif;
-                playerState.lastDirection = 'left';
-            } else if (dx === 1) { // Moving Right
-                newAnimation = walkSideRightGif;
-                playerState.lastDirection = 'right';
-            }
+            if (dy === -1) { newAnimation = walkUpImg; playerState.lastDirection = 'up'; }
+            else if (dy === 1) { newAnimation = walkFrontGif; playerState.lastDirection = 'down'; }
+            else if (dx === -1) { newAnimation = walkSideLeftGif; playerState.lastDirection = 'left'; }
+            else if (dx === 1) { newAnimation = walkSideRightGif; playerState.lastDirection = 'right'; }
         } else {
-            // Select idle animation based on last direction
             switch (playerState.lastDirection) {
-                case 'up':
-                    newAnimation = idleUpImg;
-                    break;
-                case 'left':
-                    newAnimation = idleLeftImg;
-                    break;
-                case 'right':
-                    newAnimation = idleRightImg;
-                    break;
-                case 'down':
-                default:
-                    newAnimation = idleImg; // Default down-facing idle
-                    break;
+                case 'up': newAnimation = idleUpImg; break;
+                case 'left': newAnimation = idleLeftImg; break;
+                case 'right': newAnimation = idleRightImg; break;
+                default: newAnimation = idleImg; break;
             }
         }
 
-        // 5. Only update src if the animation has changed
         if (playerState.currentAnimation !== newAnimation) {
             playerImage.src = newAnimation;
             playerState.currentAnimation = newAnimation;
         }
 
-        // 6. Boundary Collision (redundant with walls, but good as a fallback)
+        // 6. Boundary Collision
         const roomRect = room.getBoundingClientRect();
         playerState.x = Math.max(playerWidth / 2, Math.min(roomRect.width - playerWidth / 2, playerState.x));
         playerState.y = Math.max(playerHeight / 2, Math.min(roomRect.height - playerHeight / 2, playerState.y));
 
-        // 7. Update Player Position on screen
+        // 7. Update Player Position
         player.style.left = `${playerState.x}px`;
         player.style.top = `${playerState.y}px`;
 
@@ -342,14 +685,55 @@ document.addEventListener('DOMContentLoaded', () => {
         // 8. Check for Interactions
         if (!isDialogActive) {
             let canInteract = false;
-            const updatedPlayerRect = { left: playerState.x, top: playerState.y, width: playerWidth, height: playerHeight };
+            const playerCollisionRect = {
+                left: playerState.x - collisionWidth / 2,
+                top: playerState.y + playerHalfHeight - collisionHeight,
+                width: collisionWidth,
+                height: collisionHeight
+            };
+
             for (const object of objects) {
-                const objectRect = { left: object.offsetLeft, top: object.offsetTop, width: object.offsetWidth, height: object.offsetHeight };
-                if (checkCollision(updatedPlayerRect, objectRect)) {
-                    interactionPrompt.textContent = object.dataset.interactionMessage;
-                    interactionPrompt.classList.remove('hidden');
-                    activeInteraction = object;
-                    canInteract = true;
+                let interactionTriggered = false;
+
+                if (object.id === 'Quiz-line') {
+                    // Quiz-line은 예전처럼 넓은 범위의 상호작용을 사용
+                    const interactionBuffer = 20;
+                    const playerRect = { left: playerState.x, top: playerState.y, width: playerWidth, height: playerHeight };
+                    const objectRect = { 
+                        left: object.offsetLeft - interactionBuffer,
+                        top: object.offsetTop - interactionBuffer,
+                        width: object.offsetWidth + (2 * interactionBuffer),
+                        height: object.offsetHeight + (2 * interactionBuffer)
+                    };
+                    // checkRectCollision을 사용하여 플레이어의 전체 박스와 확장된 오브젝트 박스를 비교
+                    if (checkRectCollision(playerRect, objectRect)) {
+                        interactionTriggered = true;
+                    }
+                } else {
+                    // 다른 오브젝트들은 충돌 범위 + 10px 버퍼를 사용
+                    const interactionBuffer = 10; 
+                    const objectCollisionRect = getObstacleRect(object);
+                    const interactionRect = {
+                        left: objectCollisionRect.left - interactionBuffer,
+                        top: objectCollisionRect.top - interactionBuffer,
+                        width: objectCollisionRect.width + (2 * interactionBuffer),
+                        height: objectCollisionRect.height + (2 * interactionBuffer)
+                    };
+                    if (checkRectCollision(playerCollisionRect, interactionRect)) {
+                        interactionTriggered = true;
+                    }
+                }
+
+                if (interactionTriggered) {
+                    if (object.id === 'Quiz-line' && !onQuizCooldown) {
+                        showConfirmationDialog();
+                        canInteract = false; // No prompt for this one
+                    } else {
+                        interactionPrompt.textContent = object.dataset.interactionMessage;
+                        interactionPrompt.classList.remove('hidden');
+                        activeInteraction = object;
+                        canInteract = true;
+                    }
                     break;
                 }
             }
@@ -359,6 +743,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+
         // Update proactive notification position
         if (notificationBubble && notificationBubble.style.display !== 'none') {
             const bubbleWidth = 40;
@@ -366,6 +751,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const playerHeight = 120;
             notificationBubble.style.left = `${playerState.x - bubbleWidth / 2}px`;
             notificationBubble.style.top = `${playerState.y - playerHeight / 2 - bubbleHeight - 20}px`;
+        }
+
+        // Update processing bubble position
+        if (processingBubble && processingBubble.style.display !== 'none') {
+            const bubbleWidth = 40;
+            const bubbleHeight = 40;
+            const playerHeight = 120;
+            processingBubble.style.left = `${playerState.x - bubbleWidth / 2}px`;
+            processingBubble.style.top = `${playerState.y - playerHeight / 2 - bubbleHeight - 20}px`;
         }
 
         // 9. Continue Loop
@@ -565,6 +959,13 @@ document.addEventListener('DOMContentLoaded', () => {
     addScheduleBtn.addEventListener('click', handleAddUpdateSchedule);
     window.addEventListener('click', (event) => {
         if (event.target == scheduleModal) closeModal();
+    });
+
+    refrigeratorCloseButton.addEventListener('click', closeRefrigeratorModal);
+    window.addEventListener('click', (event) => {
+        if (event.target == refrigeratorModal) {
+            closeRefrigeratorModal();
+        }
     });
 
     function getCookie(name) {

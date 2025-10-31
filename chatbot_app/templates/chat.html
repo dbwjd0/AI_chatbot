@@ -20,6 +20,29 @@
             font-family: 'VT323', monospace;
             z-index: 101;
         }
+        #feedback-container {
+            position: absolute;
+            bottom: 240px; /* Position above the dialogue box */
+            left: 50%;
+            transform: translateX(460px); /* Move it to the right of the dialogue box */
+            z-index: 25;
+            display: flex;
+            gap: 10px;
+        }
+        .feedback-button {
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 1px solid #a9d1ff;
+            color: white;
+            font-size: 1.5em;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .feedback-button:hover {
+            background-color: rgba(40, 40, 40, 0.9);
+        }
     </style>
 </head>
 <body>
@@ -40,6 +63,11 @@
             <button id="prev-dialogue-button" class="dialogue-nav-button hidden">▲</button>
         </div>
 
+        <div id="feedback-container" style="display: none;">
+            <button id="thumb-up-button" class="feedback-button">👍</button>
+            <button id="thumb-down-button" class="feedback-button">👎</button>
+        </div>
+
         <div id="preview-container" class="preview-container" style="display: none;">
             <img id="image-preview" src="" alt="Image Preview">
             <button id="clear-image-button" class="icon-button" title="이미지 지우기">&times;</button>
@@ -57,10 +85,19 @@
         <div id="chat-input-container" class="chat-input-container">
             <div class="chat-input">
                 <input type="file" id="image-input" accept="image/*" style="display: none;">
+                <button id="message-button" class="icon-button" title="쪽지 보내기">✉️</button>
+                <button id="unread-messages-button" class="icon-button" title="읽지 않은 쪽지">
+                    <span class="unread-indicator">{{ unread_friend_messages_count }}</span>
+                </button>
                 <button id="attach-image-button" class="icon-button" title="이미지 첨부">📎</button>
                 <button id="emoticon-button" class="icon-button" title="이모티콘 선택">😊</button>
                 <input type="text" id="user-input" placeholder="메시지를 입력하세요...">
+                <select id="friend-receiver-select" style="display: none;">
+                    <option value="">친구 선택</option>
+                </select>
+                <input type="text" id="friend-message-input" placeholder="친구에게 쪽지를 보내세요..." style="display: none;">
                 <button id="send-button">전송</button>
+                <button id="send-friend-message-button" style="display: none;">쪽지 전송</button>
                 <div class="location-permission">
                     <input type="checkbox" id="location-checkbox">
                     <label for="location-checkbox">위치 정보 사용</label>
@@ -84,8 +121,10 @@
             'default': "{% static 'img/char_default.png' %}"
         };
         const USERNAME = "{{ user.username }}";
+        const USER_NICKNAME = "{{ user_profile.nickname|default:user.username|escapejs }}"; // Add this line
         const CHATBOT_NAME = "{{ user_profile.chatbot_name|escapejs }}";
         const affinityScore = "{{ user_profile.affinity_score|default:0 }}";
+        const UNREAD_MESSAGE_COUNT = {{ unread_friend_messages_count }};
     </script>
     <script src="{% static 'chat.js' %}"></script>
 
