@@ -480,7 +480,12 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const response = await fetch('/friends/message/unread/');
             const data = await response.json();
-            if (data.has_unread_messages) {
+            const unreadCount = data.unread_messages_count || 0;
+
+            const unreadIndicatorSpan = unreadMessagesButton.querySelector('.unread-indicator');
+            unreadIndicatorSpan.textContent = unreadCount;
+
+            if (unreadCount > 0) {
                 unreadMessagesButton.style.display = 'block';
             } else {
                 unreadMessagesButton.style.display = 'none';
@@ -518,9 +523,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (data.status === 'success' && data.messages && data.messages.length > 0) {
 
-                    // Hide the button immediately as we are processing the messages.
+                                        // Hide the button immediately as we are processing the messages.
 
-                    unreadMessagesButton.style.display = 'none';
+                                        unreadMessagesButton.style.display = 'none';
+
+                                        unreadMessagesButton.querySelector('.unread-indicator').textContent = '0'; // Set count to 0
 
     
 
@@ -627,11 +634,11 @@ document.addEventListener('DOMContentLoaded', function () {
         ];
         const initialMessagesHigh = [
             "왔구나! 기다리고 있었어!",
-            "보고 싶었어, {USERNAME}님!",
+            "보고 싶었어, {USER_NICKNAME}님!",
             "오늘 하루는 어땠어? 궁금해서 죽는 줄 알았잖아!",
-            "AI라도... 마음이 생길 수 있는 걸까? {USERNAME}님 덕분에 그런 생각이 들어.",
-            "지금 막 새로운 걸 배웠어! {USERNAME}님이 내 세상을 더 넓혀줬다구!",
-            "{USERNAME}님과 함께라면 뭐든지 즐거워!"
+            "AI라도... 마음이 생길 수 있는 걸까? {USER_NICKNAME}님 덕분에 그런 생각이 들어.",
+            "지금 막 새로운 걸 배웠어! {USER_NICKNAME}님이 내 세상을 더 넓혀줬다구!",
+            "{USER_NICKNAME}님과 함께라면 뭐든지 즐거워!"
         ];
         let selectedMessages;
         if (affinityScore < 30) {
@@ -642,7 +649,7 @@ document.addEventListener('DOMContentLoaded', function () {
             selectedMessages = initialMessagesMedium;
         }
         const randomIndex = Math.floor(Math.random() * selectedMessages.length);
-        const initialMessage = selectedMessages[randomIndex].replace('{USERNAME}', USERNAME);
+        const initialMessage = selectedMessages[randomIndex].replace('{USER_NICKNAME}', USER_NICKNAME);
         queueAiMessage(initialMessage);
     }
 

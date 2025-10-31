@@ -15,8 +15,8 @@ from ..services import friend_message_service # friend_message_service 추가
 def check_unread_friend_messages(request):
     """현재 사용자에게 읽지 않은 쪽지가 있는지 확인합니다."""
     user = request.user
-    has_unread = FriendMessage.objects.filter(receiver=user, is_read=False).exists()
-    return JsonResponse({'has_unread_messages': has_unread})
+    unread_count = FriendMessage.objects.filter(receiver=user, is_read=False).count()
+    return JsonResponse({'unread_messages_count': unread_count})
 
 @login_required
 def get_processed_unread_friend_message(request):

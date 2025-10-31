@@ -153,13 +153,13 @@ def chat_main_view(request):
         for msg in messages_page.object_list
     ][::-1]
 
-    has_unread_friend_messages = FriendMessage.objects.filter(receiver=request.user, is_read=False).exists()
+    unread_friend_messages_count = FriendMessage.objects.filter(receiver=request.user, is_read=False).count()
 
     return render(request, 'chat.html', {
         'user_profile': user_profile, 
         'chat_messages': chat_messages_data,
         'has_next_page': messages_page.has_next(),
-        'has_unread_friend_messages': has_unread_friend_messages,
+        'unread_friend_messages_count': unread_friend_messages_count,
     })
 
 @login_required

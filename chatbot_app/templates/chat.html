@@ -86,8 +86,8 @@
             <div class="chat-input">
                 <input type="file" id="image-input" accept="image/*" style="display: none;">
                 <button id="message-button" class="icon-button" title="쪽지 보내기">✉️</button>
-                <button id="unread-messages-button" class="icon-button" title="읽지 않은 쪽지" style="display: none;">
-                    <span class="unread-indicator">!</span>
+                <button id="unread-messages-button" class="icon-button" title="읽지 않은 쪽지">
+                    <span class="unread-indicator">{{ unread_friend_messages_count }}</span>
                 </button>
                 <button id="attach-image-button" class="icon-button" title="이미지 첨부">📎</button>
                 <button id="emoticon-button" class="icon-button" title="이모티콘 선택">😊</button>
@@ -121,8 +121,10 @@
             'default': "{% static 'img/char_default.png' %}"
         };
         const USERNAME = "{{ user.username }}";
+        const USER_NICKNAME = "{{ user_profile.nickname|default:user.username|escapejs }}"; // Add this line
         const CHATBOT_NAME = "{{ user_profile.chatbot_name|escapejs }}";
         const affinityScore = "{{ user_profile.affinity_score|default:0 }}";
+        const UNREAD_MESSAGE_COUNT = {{ unread_friend_messages_count }};
     </script>
     <script src="{% static 'chat.js' %}"></script>
 
