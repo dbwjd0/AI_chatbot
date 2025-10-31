@@ -11,7 +11,8 @@ from ..models import ChatMessage, UserAttribute, UserActivity, ActivityAnalytics
 from .context_service import get_activity_recommendation, search_activities_for_context
 from .memory_service import extract_and_save_user_context_data
 from .image_captioning_service import ImageCaptioningService
-from . import vector_service, location_service, schedule_service, emoticon_service, prompt_service, rl_agent_service # rl_agent_service 추가
+from . import vector_service, location_service, schedule_service, emoticon_service, prompt_service, rl_agent_service, friend_message_service # rl_agent_service, friend_message_service 추가
+from .llm_utils import call_openai_api # _call_openai_api 함수를 llm_utils로 이동
 from datetime import date # date 추가
 
 FOOD_CATEGORIES = {
@@ -189,7 +190,7 @@ def process_chat_interaction(request, user_message_text: str, user_emotion: str,
 
         # 5단계: 최종 LLM 호출 (파인튜닝된 모델)
         model_to_use = os.getenv("FINETUNED_MODEL_ID", "gpt-4.1")
-        response_json = _call_openai_api(client, model_to_use, messages)
+        response_json = call_openai_api(client, model_to_use, messages)
         
         # 6단계: 응답 처리 및 저장
         bot_message_text, explanation, bot_message_obj, user_message_obj = _finalize_chat_interaction(

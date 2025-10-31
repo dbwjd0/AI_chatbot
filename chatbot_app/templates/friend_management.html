@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ 친구 관리 센터 | NeoVerse</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'friend_management.css' %}">
+</head>
+<body>
+    <div class="friend-container">
+        <header class="header-bar">
+            <h1>🎮 친구 관리 센터</h1>
+            <a href="{% url 'room' %}" class="back-link">
+                ← 방으로 돌아가기
+            </a>
+        </header>
+
+        <nav class="friend-nav">
+            <button class="nav-btn active" data-target="search-section">🔍 친구 찾기</button>
+            <button class="nav-btn" data-target="requests-section">💌 받은 요청 <span id="nav-request-count" class="notification-badge"></span></button>
+            <button class="nav-btn" data-target="friends-list-section">🤝 내 친구 <span id="nav-friend-count" class="notification-badge"></span></button>
+        </nav>
+
+        <div id="search-section" class="friend-section-wrapper active">
+            <h2 class="section-title">🔍 친구 찾기 및 신청</h2>
+            <div class="search-box">
+                <input type="text" id="search-user-input" placeholder="친구의 고유 ID 또는 사용자 이름 입력..." class="neon-input">
+                <button id="search-btn" class="action-btn primary-btn">
+                    <span class="emoji">🔍</span> 검색
+                </button>
+                <button id="send-request-btn" class="action-btn primary-btn">
+                    <span class="emoji">🚀</span> 요청 보내기
+                </button>
+            </div>
+            <p id="search-message" class="info-text"></p>
+            <div id="search-results" class="user-list"></div>
+        </div>
+
+        <div id="requests-section" class="friend-section-wrapper">
+            <h2 class="section-title">💌 받은 친구 요청 <span id="request-count-section" class="notification-count"></span></h2>
+            <ul id="pending-requests-list" class="user-list">
+                <li class="info-text">받은 친구 요청이 없습니다.</li>
+            </ul>
+        </div>
+
+        <div id="friends-list-section" class="friend-section-wrapper">
+            <h2 class="section-title">🤝 내 친구 목록 <span id="friend-count-section" class="notification-count"></span></h2>
+            <ul id="accepted-friends-list" class="user-list">
+                <li class="info-text">현재 등록된 친구가 없습니다.</li>
+            </ul>
+        </div>
+    </div>
+    <!-- Friend Profile Modal -->
+    <div id="friend-profile-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="profile-header">
+                <img id="modal-profile-pic" src="" alt="프로필 사진" class="modal-profile-picture">
+                <h2 id="modal-username"></h2>
+            </div>
+            <div id="modal-profile-details" class="modal-profile-details"></div>
+        </div>
+    </div>
+    <script src="{% static 'friend_management.js' %}"></script>
+</body>
+</html>

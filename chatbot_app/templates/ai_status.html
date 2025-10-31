@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>아이의 상태</title>
+    <title>{{ user.profile.chatbot_name }}의 상태</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <style>
@@ -168,7 +168,8 @@
 <body>
     <button id="toggle-bgm-btn">BGM OFF</button>
     <div class="status-container">
-        <h1>아이의 현재 상태</h1>
+        <a href="{% url 'edit_profile' %}" class="edit-profile-link">프로필 수정</a>
+        <h1>{{ user.profile.chatbot_name }}의 현재 상태</h1>
 
         <div class="status-item">
             <h2>호감도</h2>

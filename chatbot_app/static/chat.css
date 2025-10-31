@@ -5,7 +5,7 @@ body, html {
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: hidden; /* Temporarily removed for testing */
     font-family: 'Malgun Gothic', sans-serif;
 }
 
@@ -20,6 +20,7 @@ body, html {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    /* overflow: hidden; */ /* Temporarily removed for testing */
 }
 
 .top-menu {
@@ -144,21 +145,93 @@ body, html {
     margin: 0 10px;
 }
 
-.icon-button, #send-button {
+#friend-message-input {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #555;
+    background-color: #333;
+    color: white;
+    margin: 0 10px;
+}
+
+#friend-receiver-select {
+    width: 150px; /* 친구 선택 드롭다운 너비 */
+    flex-grow: 0; /* 고정 너비 설정 시 flex-grow 비활성화 */
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #555;
+    background-color: #333;
+    color: white;
+    margin: 0 10px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23a9d1ff%22%20d%3D%22M287%20197.3L159.9%2069.8c-4.8-4.8-12.5-4.8-17.3%200L5.4%20197.3c-3.6%203.6-5.4%208.4-5.4%2013.1%200%204.7%201.8%209.2%205.4%2012.9l12.9%2012.9c3.6%203.6%208.1%205.4%2012.9%205.4%204.7%200%209.2-1.8%2012.9-5.4L146%20127.2l110.2%20110.2c3.6%203.6%208.1%205.4%2012.9%205.4%204.7%200%209.2-1.8%2012.9-5.4l12.9-12.9c3.7-3.6%205.5-8.1%205.5-12.9.1-4.7-1.7-9.2-5.3-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    padding-right: 30px; /* Ensure text doesn't overlap with arrow */
+}
+
+.icon-button, #send-button, #send-friend-message-button {
     background: none;
     border: none;
     color: #a9d1ff;
     cursor: pointer;
     font-size: 1.5em;
     padding: 5px;
+    /* position: relative; /* For unread indicator positioning */
 }
 
-#send-button {
+#unread-messages-button {
+    background-color: #dc3545; /* Red background for attention */
+    color: white;
+    border-radius: 50%;
+    width: 30px; /* Smaller, more icon-like */
+    height: 30px;
+    font-size: 1.2em;
+    display: flex; /* Use flexbox for centering content */
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px; /* Space from message button */
+    border: none; /* Remove default button border */
+    cursor: pointer;
+}
+
+#unread-messages-button .unread-indicator {
+    position: static; /* Remove absolute positioning */
+    display: block; /* Ensure it takes up space */
+    width: auto;
+    height: auto;
+    font-size: 1em; /* Adjust font size relative to button */
+    line-height: 1; /* Reset line height */
+    text-align: center;
+    background-color: transparent; /* No background for the span itself */
+    color: white; /* Ensure the '!' is white */
+}
+
+#send-button, #send-friend-message-button {
     font-size: 1em;
     background-color: #007bff;
     color: white;
     padding: 10px 20px;
     border-radius: 20px;
+}
+
+.unread-indicator {
+    position: absolute;
+    top: -5px; /* Adjust position slightly */
+    right: -5px; /* Adjust position slightly */
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    width: 20px; /* Increased size */
+    height: 20px; /* Increased size */
+    font-size: 0.9em; /* Slightly larger font */
+    line-height: 20px; /* Match height for vertical centering */
+    text-align: center;
+    display: block;
 }
 
 .location-permission {

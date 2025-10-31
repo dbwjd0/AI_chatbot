@@ -1,7 +1,12 @@
-body {
+html, body {
     margin: 0;
     font-family: Arial, sans-serif;
-    overflow: hidden; /* Prevent scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+body { /* Remove overflow: hidden from body specifically */
+    margin: 0;
+    font-family: Arial, sans-serif;
 }
 
 .container {
@@ -205,6 +210,38 @@ body {
     margin-left: 15px;
 }
 
-.top-menu a:hover {
-    text-decoration: underline;
+    .top-menu a:hover {
+        text-decoration: underline;
+    }
+
+.status-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+    text-align: left;
+    position: relative; /* Add this */
 }
+
+    .edit-profile-link {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        left: auto;
+        display: inline-block;
+        padding: 6px 12px;
+        background-color: #5E35B1; /* A purple color, similar to pagination buttons */
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 0.8em;
+        font-weight: bold;
+        transition: background-color 0.3s;
+        z-index: 10;
+    }
+
+    .edit-profile-link:hover {
+        background-color: #4527a0; /* Darker purple on hover */
+    }
