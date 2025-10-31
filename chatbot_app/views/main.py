@@ -30,8 +30,9 @@ def narrative_setup_view(request):
 
         if fact_type and content:
             if fact_type == '이름':
-                request.user.first_name = content
-                request.user.save()
+                profile = request.user.profile
+                profile.nickname = content
+                profile.save()
             
             elif fact_type == 'ai_name':
                 profile = request.user.profile

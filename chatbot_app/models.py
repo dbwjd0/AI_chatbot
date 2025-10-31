@@ -14,6 +14,7 @@ class UserProfile(models.Model):
     - memory: 사용자에 대한 정보를 JSON 형태로 저장 (예: {"facts": ["사용자는 고양이를 좋아한다"], "name": "홍길동"})
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    nickname = models.CharField(max_length=100, null=True, blank=True, help_text="사용자 닉네임")
     is_onboarding_complete = models.BooleanField(default=False, help_text="사용자 초기 설정(온보딩) 완료 여부")
     affinity_score = models.IntegerField(default=0, help_text="AI '아이'와의 호감도 점수")
     memory = models.JSONField(default=dict, help_text="사용자에 대한 기억 저장소")
@@ -21,7 +22,7 @@ class UserProfile(models.Model):
     persona_preference = models.CharField(max_length=100, default='친근한', help_text="챗봇의 스타일")
 
     def __str__(self):
-        return f"{self.user.username}의 프로필"
+        return f"{self.nickname or self.user.username}의 프로필"
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
