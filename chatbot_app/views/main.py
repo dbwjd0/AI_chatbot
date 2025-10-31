@@ -10,7 +10,7 @@ from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, 
 from chatbot_app.services.proactive_service import generate_proactive_message
 from ..quiz_data import QUIZ_QUESTIONS
 from . import friend
-from ..services import friend_message_service
+from ..services import friend_message_service, quiz_service
 
 
 @login_required
@@ -253,6 +253,7 @@ def get_proactive_message_view(request):
         })
     return JsonResponse({'message': None})
 
+
 def opening_view(request):
     """오프닝 비디오를 재생하는 페이지를 렌더링합니다."""
     if request.user.is_authenticated:
@@ -319,97 +320,47 @@ def start_quiz_view(request):
         difficulty = request.POST.get('difficulty')
         num_questions = int(request.POST.get('num_questions'))
 
-        filtered_questions = [
-            q for q in QUIZ_QUESTIONS
-            if (genre == 'all' or q['genre'] == genre)
-        ]
-
-        import random
-        random.shuffle(filtered_questions)
-        selected_questions = filtered_questions[:num_questions]
-        request.session['quiz_total_questions'] = len(selected_questions)
-        request.session['selected_genre'] = genre # Store selected genre
-
-        request.session['quiz_questions'] = selected_questions
-        request.session['current_question_index'] = 0
-        request.session['quiz_score'] = 0
+        quiz_service.start_quiz(request.session, genre, difficulty, num_questions)
+        
         return redirect('quiz_question')
     return redirect('quiz_mode')
 
 @login_required
 def quiz_question_view(request):
-    """현재 퀴즈 질문을 표시하고 답변을 처리합니다."""
-    quiz_questions = request.session.get('quiz_questions')
-    current_question_index = request.session.get('current_question_index')
-    quiz_score = request.session.get('quiz_score')
-    quiz_total_questions = request.session.get('quiz_total_questions')
-    
-    # Initialize quiz_feedback for this request
-    quiz_feedback_for_template = None
-
-    if not quiz_questions or current_question_index is None or quiz_total_questions is None:
-        return redirect('quiz_mode')
-
+    """현재 퀴즈 질문을 표시하고, 답변을 처리하며, 퀴즈 흐름을 관리합니다."""
+    # POST 요청 처리 (답변 제출)
     if request.method == 'POST':
         user_answer = request.POST.get('answer')
-        current_question = quiz_questions[current_question_index]
-        correct_answer = current_question['answer']
-
-        is_correct = (user_answer == correct_answer)
-        if is_correct:
-            request.session['quiz_score'] += 1
-
-        request.session['quiz_feedback'] = {
-            'is_correct': is_correct,
-            'correct_answer': correct_answer,
-            'user_answer': user_answer,
-            'character_emotion': '정답' if is_correct else '오답',
-        }
+        if user_answer:
+            quiz_service.process_answer(request.session, user_answer)
         return redirect('quiz_question')
 
-    # GET 요청 처리
+    # GET 요청 처리 (질문 또는 피드백 표시)
+    context = {}
+    feedback = None
+
+    # 이전 답변에 대한 피드백이 있는지 확인하고, 있으면 다음 문제로 넘어감
     if 'quiz_feedback' in request.session:
-        quiz_feedback_for_template = request.session['quiz_feedback']
+        feedback = quiz_service.get_feedback_and_advance(request.session)
+        context['quiz_feedback'] = feedback
+
+    # 퀴즈가 끝났는지 확인
+    if quiz_service.is_quiz_finished(request.session):
+        # 피드백이 마지막 문제에 대한 것이었다면, 결과 페이지 전에 잠시 보여줌
+        if feedback:
+            return render(request, 'quiz.html', context)
         
-        if request.GET.get('next_question') == 'true':
-            request.session['current_question_index'] += 1
-            current_question_index = request.session['current_question_index']
-            request.session.pop('quiz_feedback') # Clear feedback after advancing
-            quiz_feedback_for_template = None
-    else:
-        pass
-
-
-    if current_question_index >= quiz_total_questions:
-        final_score = request.session['quiz_score']
-        selected_genre = request.session.get('selected_genre', 'all') # Retrieve selected genre
-
-        # Save quiz result
-        from ..models import QuizResult
-        QuizResult.objects.create(
-            user=request.user,
-            genre=selected_genre,
-            num_questions=quiz_total_questions,
-            score=final_score
-        )
-
-        del request.session['quiz_questions']
-        del request.session['current_question_index']
-        del request.session['quiz_score']
-        del request.session['quiz_total_questions']
-        del request.session['selected_genre'] # Clear selected genre from session
-        return render(request, 'quiz.html', {'quiz_finished': True, 'final_score': final_score, 'total_questions': quiz_total_questions})
-    else:
-        current_question = quiz_questions[current_question_index]
-        context = {
-            'question': current_question['question'],
-            'options': current_question['options'],
-            'current_question_number': current_question_index + 1,
-            'total_questions': quiz_total_questions,
-            'quiz_active': True,
-            'quiz_feedback': quiz_feedback_for_template,
-        }
+        result_data = quiz_service.save_quiz_result_and_cleanup(request.session, request.user)
+        context.update({'quiz_finished': True, **result_data})
         return render(request, 'quiz.html', context)
+    
+    # 다음 문제 표시
+    question_context = quiz_service.get_current_question_context(request.session)
+    if not question_context:
+        return redirect('quiz_mode') # 퀴즈가 시작되지 않은 경우
+
+    context.update(question_context)
+    return render(request, 'quiz.html', context)
 
 @login_required
 def quiz_view(request):
