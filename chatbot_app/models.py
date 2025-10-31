@@ -191,3 +191,21 @@ class UserFriendship(models.Model):
 
     def __str__(self):
         return f"요청: {self.from_user.username} -> {self.to_user.username} ({self.get_status_display()})"
+
+class FriendMessage(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_friend_messages')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_friend_messages')
+    sender_chatbot_name = models.CharField(max_length=100, help_text="보낸 사람 챗봇 이름")
+    sender_persona = models.CharField(max_length=100, help_text="보낸 사람 챗봇 페르소나")
+    message_content = models.TextField(help_text="쪽지 내용")
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['receiver', 'is_read']),
+        ]
+
+    def __str__(self):
+        return f"{self.sender.username}님이 {self.receiver.username}님에게 보낸 쪽지: {self.message_content[:50]}... (읽음: {self.is_read})"
