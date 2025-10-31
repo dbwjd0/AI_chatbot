@@ -168,3 +168,44 @@ class QuizResult(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.genre} 퀴즈 ({self.score}/{self.num_questions}) on {self.date_completed.strftime('%Y-%m-%d')}"
+
+
+# 쪽지 기능 - 친구 관계 모델 (UserFriendship)
+# ----------------------------------------------------
+class UserFriendship(models.Model):
+    STATUS_PENDING = 1  # 신청 대기 중
+    STATUS_ACCEPTED = 2 # 친구 수락 완료
+
+    STATUS_CHOICES = (
+        (STATUS_PENDING, '대기 중'),
+        (STATUS_ACCEPTED, '친구'),
+    )
+
+    from_user = models.ForeignKey(User, related_name='friendship_requests_sent', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name='friendship_requests_received', on_delete=models.CASCADE)
+    status = models.IntegerField(choices=STATUS_CHOICES, default=STATUS_PENDING)
+    
+    class Meta:
+        # 🌟 친구 요청 중복 방지 (필수)
+        unique_together = ('from_user', 'to_user')
+
+    def __str__(self):
+        return f"요청: {self.from_user.username} -> {self.to_user.username} ({self.get_status_display()})"
+
+class FriendMessage(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_friend_messages')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_friend_messages')
+    sender_chatbot_name = models.CharField(max_length=100, help_text="보낸 사람 챗봇 이름")
+    sender_persona = models.CharField(max_length=100, help_text="보낸 사람 챗봇 페르소나")
+    message_content = models.TextField(help_text="쪽지 내용")
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['receiver', 'is_read']),
+        ]
+
+    def __str__(self):
+        return f"{self.sender.username}님이 {self.receiver.username}님에게 보낸 쪽지: {self.message_content[:50]}... (읽음: {self.is_read})"

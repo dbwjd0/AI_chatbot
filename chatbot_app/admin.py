@@ -1,5 +1,9 @@
 from django.contrib import admin
-from .models import ChatMessage, UserAttribute, UserActivity, UserProfile, ActivityAnalytics, UserRelationship, UserSchedule, PendingProactiveMessage
+from .models import (
+    ChatMessage, UserAttribute, UserActivity, UserProfile, 
+    ActivityAnalytics, UserRelationship, UserSchedule, 
+    PendingProactiveMessage, UserFriendship, FriendMessage
+)
 
 # Register your models here.
 
@@ -49,6 +53,17 @@ class PendingProactiveMessageAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'message__message')
     list_per_page = 20
 
+class UserFriendshipAdmin(admin.ModelAdmin):
+    list_display = ('from_user', 'to_user', 'status')
+    list_filter = ('status',)
+    search_fields = ('from_user__username', 'to_user__username')
+
+class FriendMessageAdmin(admin.ModelAdmin):
+    list_display = ('sender', 'receiver', 'is_read', 'timestamp')
+    list_filter = ('is_read', 'sender', 'receiver')
+    search_fields = ('sender__username', 'receiver__username', 'message_content')
+    readonly_fields = ('timestamp',)
+
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(ChatMessage, ChatMessageAdmin)
 admin.site.register(UserAttribute, UserAttributeAdmin)
@@ -57,3 +72,5 @@ admin.site.register(ActivityAnalytics, ActivityAnalyticsAdmin)
 admin.site.register(UserRelationship, UserRelationshipAdmin)
 admin.site.register(UserSchedule, UserScheduleAdmin)
 admin.site.register(PendingProactiveMessage, PendingProactiveMessageAdmin)
+admin.site.register(UserFriendship, UserFriendshipAdmin)
+admin.site.register(FriendMessage, FriendMessageAdmin)
