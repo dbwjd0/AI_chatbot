@@ -8,67 +8,12 @@ import json # json 모듈 임포트
 from django.db.models import Q
 from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage, QuizResult, UserFriendship, FriendMessage # FriendMessage 모델 추가
 from chatbot_app.services.proactive_service import generate_proactive_message
-from ..quiz_data import QUIZ_QUESTIONS
-from . import friend
 from ..services import friend_message_service
 
 
-@login_required
-def check_unread_friend_messages(request):
-    """현재 사용자에게 읽지 않은 쪽지가 있는지 확인합니다."""
-    user = request.user
-    has_unread = FriendMessage.objects.filter(receiver=user, is_read=False).exists()
-    return JsonResponse({'has_unread_messages': has_unread})
 
-@login_required
-def get_processed_unread_friend_message(request):
-    current_user = request.user
-    
-    # 1. 읽지 않은 모든 메시지를 리스트로 가져옵니다.
-    unread_messages = list(FriendMessage.objects.filter(receiver=current_user, is_read=False).order_by('timestamp'))
-    
-    if not unread_messages:
-        return JsonResponse({'status': 'no_messages', 'messages': []})
 
-    # 2. 단일 배치 호출로 모든 메시지를 처리합니다.
-    processed_results = friend_message_service.process_friend_messages_in_batch(current_user, unread_messages)
 
-    if not processed_results:
-        return JsonResponse({'status': 'error', 'message': '메시지 처리에 실패했습니다.'}, status=500)
-
-    # 쉽게 조회할 수 있도록 원본 메시지를 ID별로 매핑합니다.
-    unread_messages_map = {msg.id: msg for msg in unread_messages}
-    
-    final_messages = []
-    processed_message_ids = []
-
-    for result in processed_results:
-        original_message = unread_messages_map.get(result.get('id'))
-        if original_message:
-            # 디버깅을 위한 터미널 출력 추가
-            print("-" * 20)
-            print(f"[디버그] 메시지 처리 정보 (ID: {original_message.id})")
-            print(f"  - 수신자 페르소나: {current_user.profile.persona_preference}")
-            print(f"  - 원본 메시지: {original_message.message_content}")
-            print(f"  - LLM 생성 설명: {result.get('explanation', '설명 없음.')}")
-            print(f"  - 최종 가공 메시지: {result.get('answer', '오류')}")
-            print("-" * 20)
-
-            final_messages.append({
-                'sender': original_message.sender.username,
-                'content': result.get('answer', '오류: 메시지 내용을 처리할 수 없습니다.')
-            })
-            processed_message_ids.append(original_message.id)
-
-    # 3. 성공적으로 처리된 모든 메시지를 읽음으로 표시합니다.
-    if processed_message_ids:
-        FriendMessage.objects.filter(id__in=processed_message_ids).update(is_read=True)
-
-    # 4. 처리된 메시지 목록을 반환합니다.
-    return JsonResponse({
-        'status': 'success',
-        'messages': final_messages
-    })
 
 def landing_view(request):
     """사용자의 온보딩 완료 여부에 따라 적절한 페이지로 리디렉션합니다."""
@@ -253,6 +198,7 @@ def get_proactive_message_view(request):
         })
     return JsonResponse({'message': None})
 
+
 def opening_view(request):
     """오프닝 비디오를 재생하는 페이지를 렌더링합니다."""
     if request.user.is_authenticated:
@@ -300,154 +246,6 @@ def start_view(request):
     """로그인 후 게임 시작 화면을 렌더링합니다."""
     return render(request, 'start.html')
 
-@login_required
-def quiz_history_view(request):
-    """사용자의 퀴즈 기록을 표시합니다."""
-    quiz_results = QuizResult.objects.filter(user=request.user).order_by('-date_completed')
-    return render(request, 'quiz_history.html', {'quiz_results': quiz_results})
-
-@login_required
-def quiz_mode_view(request):
-    """퀴즈 모드 설정 페이지를 렌더링합니다."""
-    return render(request, 'quiz.html')
-
-@login_required
-def start_quiz_view(request):
-    """퀴즈 시작 요청을 처리하고 퀴즈 페이지로 리디렉션합니다."""
-    if request.method == 'POST':
-        genre = request.POST.get('genre')
-        difficulty = request.POST.get('difficulty')
-        num_questions = int(request.POST.get('num_questions'))
-
-        filtered_questions = [
-            q for q in QUIZ_QUESTIONS
-            if (genre == 'all' or q['genre'] == genre)
-        ]
-
-        import random
-        random.shuffle(filtered_questions)
-        selected_questions = filtered_questions[:num_questions]
-        request.session['quiz_total_questions'] = len(selected_questions)
-        request.session['selected_genre'] = genre # Store selected genre
-
-        request.session['quiz_questions'] = selected_questions
-        request.session['current_question_index'] = 0
-        request.session['quiz_score'] = 0
-        return redirect('quiz_question')
-    return redirect('quiz_mode')
-
-@login_required
-def quiz_question_view(request):
-    """현재 퀴즈 질문을 표시하고 답변을 처리합니다."""
-    quiz_questions = request.session.get('quiz_questions')
-    current_question_index = request.session.get('current_question_index')
-    quiz_score = request.session.get('quiz_score')
-    quiz_total_questions = request.session.get('quiz_total_questions')
-    
-    # Initialize quiz_feedback for this request
-    quiz_feedback_for_template = None
-
-    if not quiz_questions or current_question_index is None or quiz_total_questions is None:
-        return redirect('quiz_mode')
-
-    if request.method == 'POST':
-        user_answer = request.POST.get('answer')
-        current_question = quiz_questions[current_question_index]
-        correct_answer = current_question['answer']
-
-        is_correct = (user_answer == correct_answer)
-        if is_correct:
-            request.session['quiz_score'] += 1
-
-        request.session['quiz_feedback'] = {
-            'is_correct': is_correct,
-            'correct_answer': correct_answer,
-            'user_answer': user_answer,
-            'character_emotion': '정답' if is_correct else '오답',
-        }
-        return redirect('quiz_question')
-
-    # GET 요청 처리
-    if 'quiz_feedback' in request.session:
-        quiz_feedback_for_template = request.session['quiz_feedback']
-        
-        if request.GET.get('next_question') == 'true':
-            request.session['current_question_index'] += 1
-            current_question_index = request.session['current_question_index']
-            request.session.pop('quiz_feedback') # Clear feedback after advancing
-            quiz_feedback_for_template = None
-    else:
-        pass
+from ..services import friend_message_service
 
 
-    if current_question_index >= quiz_total_questions:
-        final_score = request.session['quiz_score']
-        selected_genre = request.session.get('selected_genre', 'all') # Retrieve selected genre
-
-        # Save quiz result
-        from ..models import QuizResult
-        QuizResult.objects.create(
-            user=request.user,
-            genre=selected_genre,
-            num_questions=quiz_total_questions,
-            score=final_score
-        )
-
-        del request.session['quiz_questions']
-        del request.session['current_question_index']
-        del request.session['quiz_score']
-        del request.session['quiz_total_questions']
-        del request.session['selected_genre'] # Clear selected genre from session
-        return render(request, 'quiz.html', {'quiz_finished': True, 'final_score': final_score, 'total_questions': quiz_total_questions})
-    else:
-        current_question = quiz_questions[current_question_index]
-        context = {
-            'question': current_question['question'],
-            'options': current_question['options'],
-            'current_question_number': current_question_index + 1,
-            'total_questions': quiz_total_questions,
-            'quiz_active': True,
-            'quiz_feedback': quiz_feedback_for_template,
-        }
-        return render(request, 'quiz.html', context)
-
-@login_required
-def quiz_view(request):
-    return render(request, 'quiz.html')
-
-@login_required
-def friend_management_view(request):
-    """친구 관리 페이지 (friend_management.html)를 렌더링합니다."""
-    current_user = request.user
-
-    # 1. 현재 친구 목록 (status=ACCEPTED) 검색
-    accepted_friendships = UserFriendship.objects.filter(
-        (Q(from_user=current_user) | Q(to_user=current_user)),
-        status=UserFriendship.STATUS_ACCEPTED
-    ).select_related('from_user', 'to_user')
-
-    accepted_friends_list = []
-    for friendship in accepted_friendships:
-        friend_user = friendship.to_user if friendship.from_user == current_user else friendship.from_user
-        accepted_friends_list.append({
-            'username': friend_user.username
-        })
-
-    # 2. 받은 친구 요청 목록 (to_user=나 AND status=PENDING) 검색
-    pending_requests = UserFriendship.objects.filter(
-        to_user=current_user,
-        status=UserFriendship.STATUS_PENDING
-    ).select_related('from_user')
-
-    pending_requests_list = []
-    for request_obj in pending_requests:
-        pending_requests_list.append({
-            'id': request_obj.id,
-            'from_user_username': request_obj.from_user.username,
-        })
-    
-    context = {
-        'accepted_friends': accepted_friends_list,
-        'pending_requests': pending_requests_list,
-    }
-    return render(request, 'friend_management.html', context)
