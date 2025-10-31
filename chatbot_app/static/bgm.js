@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggleBgmBtn = document.getElementById('toggle-bgm-btn');
     const volumeSlider = document.getElementById('bgm-volume-slider');
 
+    console.log('BGM element:', bgm);
+    console.log('Toggle BGM Button:', toggleBgmBtn);
+    console.log('Volume Slider:', volumeSlider);
+
     if (bgm && toggleBgmBtn && volumeSlider) {
         // --- Volume Control ---
         const savedVolume = localStorage.getItem('bgmVolume');

@@ -6,6 +6,46 @@
 {% block extra_head %}
     {# <link rel="stylesheet" href="{% static 'setup.css' %}"> #} {# 기존 스타일 재활용 또는 새 스타일 추가 #}
     <style>
+        #toggle-bgm-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            z-index: 101;
+        }
+        #bgm-volume-slider {
+            position: absolute;
+            top: 20px;
+            left: 120px; /* Adjust as needed to position next to the button */
+            width: 100px;
+            z-index: 101;
+            -webkit-appearance: none;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            height: 10px;
+            outline: none;
+        }
+        #bgm-volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
+        #bgm-volume-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
         .profile-edit-container {
             max-width: 600px;
             margin: 50px auto;
@@ -90,6 +130,16 @@
 {% endblock %}
 
 {% block content %}
+    <button id="toggle-bgm-btn">BGM OFF</button>
+    <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
+
+    <!-- 게임 페이지용 BGM (login.html 제외) -->
+    <audio id="bgm2" loop>
+        <source src="{% static 'music/game_bgm.mp3' %}" type="audio/mpeg">
+    </audio>
+
+    <script src="{% static 'bgm.js' %}"></script>
+
     <div class="profile-edit-container">
         <h1>프로필 편집</h1>
 
