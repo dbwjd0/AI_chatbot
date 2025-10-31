@@ -203,6 +203,9 @@ class FriendMessage(models.Model):
 
     class Meta:
         ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['receiver', 'is_read']),
+        ]
 
     def __str__(self):
         return f"{self.sender.username}님이 {self.receiver.username}님에게 보낸 쪽지: {self.message_content[:50]}... (읽음: {self.is_read})"

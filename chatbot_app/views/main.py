@@ -24,39 +24,50 @@ def check_unread_friend_messages(request):
 def get_processed_unread_friend_message(request):
     current_user = request.user
     
-    # 1. Get all unread messages
-    unread_messages = FriendMessage.objects.filter(receiver=current_user, is_read=False).order_by('timestamp')
+    # 1. 읽지 않은 모든 메시지를 리스트로 가져옵니다.
+    unread_messages = list(FriendMessage.objects.filter(receiver=current_user, is_read=False).order_by('timestamp'))
     
     if not unread_messages:
         return JsonResponse({'status': 'no_messages', 'messages': []})
 
-    processed_messages = []
-    message_ids_to_mark_read = []
+    # 2. 단일 배치 호출로 모든 메시지를 처리합니다.
+    processed_results = friend_message_service.process_friend_messages_in_batch(current_user, unread_messages)
 
-    for message in unread_messages:
-        # 2. Process each message using the service
-        processed_content, explanation = friend_message_service.process_friend_message_for_recipient(
-            current_user, 
-            message.sender_chatbot_name, 
-            message.sender_persona, 
-            message.message_content
-        )
-        
-        processed_messages.append({
-            'sender': message.sender.username,
-            'content': processed_content
-        })
-        
-        message_ids_to_mark_read.append(message.id)
+    if not processed_results:
+        return JsonResponse({'status': 'error', 'message': '메시지 처리에 실패했습니다.'}, status=500)
 
-    # 3. Mark all processed messages as read in a single query
-    if message_ids_to_mark_read:
-        FriendMessage.objects.filter(id__in=message_ids_to_mark_read).update(is_read=True)
+    # 쉽게 조회할 수 있도록 원본 메시지를 ID별로 매핑합니다.
+    unread_messages_map = {msg.id: msg for msg in unread_messages}
+    
+    final_messages = []
+    processed_message_ids = []
 
-    # 4. Return the list of processed messages, matching frontend expectations
+    for result in processed_results:
+        original_message = unread_messages_map.get(result.get('id'))
+        if original_message:
+            # 디버깅을 위한 터미널 출력 추가
+            print("-" * 20)
+            print(f"[디버그] 메시지 처리 정보 (ID: {original_message.id})")
+            print(f"  - 수신자 페르소나: {current_user.profile.persona_preference}")
+            print(f"  - 원본 메시지: {original_message.message_content}")
+            print(f"  - LLM 생성 설명: {result.get('explanation', '설명 없음.')}")
+            print(f"  - 최종 가공 메시지: {result.get('answer', '오류')}")
+            print("-" * 20)
+
+            final_messages.append({
+                'sender': original_message.sender.username,
+                'content': result.get('answer', '오류: 메시지 내용을 처리할 수 없습니다.')
+            })
+            processed_message_ids.append(original_message.id)
+
+    # 3. 성공적으로 처리된 모든 메시지를 읽음으로 표시합니다.
+    if processed_message_ids:
+        FriendMessage.objects.filter(id__in=processed_message_ids).update(is_read=True)
+
+    # 4. 처리된 메시지 목록을 반환합니다.
     return JsonResponse({
         'status': 'success',
-        'messages': processed_messages
+        'messages': final_messages
     })
 
 def landing_view(request):
