@@ -1,6 +1,7 @@
 import json
 import os
 import base64
+import re
 from django.utils import timezone
 from typing import Optional, Dict, Any, Tuple
 from openai import OpenAI, APIError
@@ -12,6 +13,57 @@ from .memory_service import extract_and_save_user_context_data
 from .image_captioning_service import ImageCaptioningService
 from . import vector_service, location_service, schedule_service, emoticon_service, prompt_service, rl_agent_service # rl_agent_service 추가
 from datetime import date # date 추가
+
+FOOD_CATEGORIES = {
+    # 직접 일치
+    "카레": "카레.png",
+    "햄버거": "햄버거.png",
+    "콜라": "콜라.png",
+
+    # '탕류' 카테고리
+    "짬뽕": "탕류.png",
+    "짜글이": "탕류.png",
+    "김치찌개": "탕류.png",
+    "된장찌개": "탕류.png",
+    "부대찌개": "탕류.png",
+    "국밥": "탕류.png",
+    "갈비탕": "탕류.png",
+    "설렁탕": "탕류.png",
+    "육개장": "탕류.png",
+    "감자탕": "탕류.png",
+
+    # '과자류' 카테고리
+    "과자": "과자류.png",
+    "감자칩": "과자류.png",
+    "팝콘": "과자류.png",
+    "새우깡": "과자류.png",
+}
+
+def _handle_food_memory(request, user_message: str):
+    """사용자 메시지에서 음식 언급을 감지하고 세션에 저장합니다."""
+    # 간단한 정규 표현식으로 "음식 먹었어"와 같은 패턴 감지
+    for food_name, image_file in FOOD_CATEGORIES.items():
+        # 더 유연한 감지를 위해 "먹었"과 유사한 단어들을 포함
+        patterns = [
+            rf"{food_name}.*(먹었|먹고|먹는|먹었다|먹으니|먹으니까|먹어서)",
+            rf".*{food_name}.*(먹었|먹고|먹는|먹었다|먹으니|먹으니까|먹어서)"
+        ]
+        if any(re.search(pattern, user_message) for pattern in patterns):
+            eaten_foods = request.session.get('eaten_foods', [])
+            
+            # 중복 확인
+            is_duplicate = any(food['name'] == food_name for food in eaten_foods)
+            
+            if not is_duplicate:
+                food_data = {'name': food_name, 'image': image_file}
+                eaten_foods.append(food_data)
+                request.session['eaten_foods'] = eaten_foods
+                print(f"--- [음식 기억] '{food_name}'을(를) 세션에 저장했습니다. 이미지: {image_file} ---")
+            else:
+                print(f"--- [음식 기억] '{food_name}'은(는) 이미 세션에 존재합니다. ---")
+            
+            # 하나의 음식만 처리하고 함수 종료
+            return
 
 
 def process_chat_interaction(request, user_message_text: str, user_emotion: str, latitude: Optional[float] = None, longitude: Optional[float] = None, image_file: Optional[UploadedFile] = None):
@@ -310,6 +362,7 @@ def _call_openai_api(client: OpenAI, model_to_use: str, messages: list) -> Dict[
 
 def _finalize_chat_interaction(request, user_message_text, response_json, history, api_key, image_file: Optional[UploadedFile] = None):
     """성공적인 LLM 응답을 처리하고 관련 데이터를 RDB와 벡터 DB에 저장합니다."""
+    _handle_food_memory(request, user_message_text)
     user = request.user
     bot_message_text = "음... 생각을 정리하는 데 시간이 좀 걸리네. 다시 한번 말해줄래?"
     explanation = "AI 응답 처리 중 오류 발생."

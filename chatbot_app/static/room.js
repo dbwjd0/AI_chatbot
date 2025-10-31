@@ -367,8 +367,88 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function openRefrigeratorModal() {
-        refrigeratorModal.style.display = 'block';
-        isDialogActive = true; // Prevent player movement
+        fetch('/api/refrigerator-contents/')
+            .then(response => response.json())
+            .then(data => {
+                displayRefrigeratorContents(data.foods);
+                refrigeratorModal.style.display = 'block';
+                isDialogActive = true; // Prevent player movement
+            })
+            .catch(error => {
+                console.error('Error fetching refrigerator contents:', error);
+            });
+    }
+
+    function displayRefrigeratorContents(foods) {
+        const itemsContainer = document.getElementById('refrigerator-items');
+        itemsContainer.innerHTML = ''; // 기존 아이템 삭제
+
+        if (foods.length === 0) {
+            itemsContainer.innerHTML = '<p>냉장고가 비어있습니다.</p>';
+            return;
+        }
+
+        foods.forEach(food => {
+            const foodImg = document.createElement('img');
+            foodImg.src = `/static/img/${food.image}`;
+            foodImg.alt = food.name;
+            foodImg.dataset.foodName = food.name; // 음식 이름 저장
+            foodImg.style.cursor = 'pointer';
+            foodImg.addEventListener('click', () => {
+                playEatingAnimation(food.name);
+            });
+            itemsContainer.appendChild(foodImg);
+        });
+    }
+
+    function playEatingAnimation(foodName) {
+        closeRefrigeratorModal();
+
+        // 서버에 음식 소비 사실을 알림
+        const csrftoken = getCookie('csrftoken');
+        fetch('/api/consume-food/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({ food_name: foodName })
+        })
+        .catch(error => console.error('Error consuming food:', error));
+        
+        const originalAnimation = playerImage.src; // 현재 애니메이션 저장
+        isDialogActive = true; // 먹는 동안 움직임 방지
+
+        playerImage.src = '/static/img/먹는 모션.gif';
+
+        // 먹는 모션 시간을 2초로 변경
+        setTimeout(() => {
+            playerImage.src = originalAnimation;
+            isDialogActive = false; // 움직임 다시 허용
+            showHeartBubble(); // 하트 말풍선 표시 함수 호출
+        }, 2000);
+    }
+
+    function showHeartBubble() {
+        const heartBubble = document.createElement('div');
+        heartBubble.className = 'feedback-bubble'; // 새로운 CSS 클래스 적용
+        heartBubble.textContent = '❤️';
+
+        // 플레이어 머리 위에 위치 설정
+        const bubbleWidth = 40;
+        const bubbleHeight = 40;
+        const playerHeight = 120;
+        heartBubble.style.left = `${playerState.x - bubbleWidth / 2}px`;
+        heartBubble.style.top = `${playerState.y - playerHeight / 2 - bubbleHeight - 10}px`;
+
+        room.appendChild(heartBubble);
+
+        // 2초 후에 말풍선 제거
+        setTimeout(() => {
+            if (heartBubble.parentNode) {
+                heartBubble.parentNode.removeChild(heartBubble);
+            }
+        }, 2000);
     }
 
     function closeRefrigeratorModal() {

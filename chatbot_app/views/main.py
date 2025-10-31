@@ -370,3 +370,34 @@ def get_interaction_dialog_view(request):
         return JsonResponse({'message': message})
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+def refrigerator_contents_view(request):
+    """세션에 저장된 음식 목록을 반환합니다."""
+    eaten_foods = request.session.get('eaten_foods', [])
+    return JsonResponse({'foods': eaten_foods})
+
+@login_required
+def consume_food_view(request):
+    """세션에서 특정 음식을 제거합니다."""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            food_name = data.get('food_name')
+
+            if not food_name:
+                return JsonResponse({'status': 'error', 'message': 'Food name not provided'}, status=400)
+
+            eaten_foods = request.session.get('eaten_foods', [])
+            
+            # 해당 음식을 목록에서 제거
+            foods_to_keep = [food for food in eaten_foods if food.get('name') != food_name]
+            
+            request.session['eaten_foods'] = foods_to_keep
+            
+            return JsonResponse({'status': 'success', 'message': f'{food_name} consumed.'})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)

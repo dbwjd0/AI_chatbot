@@ -27,4 +27,6 @@ urlpatterns = [
     path('get-and-clear-pending-message/', main.get_and_clear_pending_message, name='get_and_clear_pending_message'),
     path('quiz/', main.quiz_view, name='quiz'),
     path('api/get-interaction-dialog/', main.get_interaction_dialog_view, name='get_interaction_dialog'),
+    path('api/refrigerator-contents/', main.refrigerator_contents_view, name='refrigerator_contents'),
+    path('api/consume-food/', main.consume_food_view, name='consume_food'),
 ]
