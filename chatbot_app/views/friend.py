@@ -305,7 +305,9 @@ def search_users(request):
         return JsonResponse({'status': 'success', 'users': search_results})
 
     return JsonResponse({'status': 'error', 'message': '잘못된 접근입니다.'}, status=400)
-# 6. 친구에게 쪽지 보내기 (POST /friends/message/send/)
+
+# ----------------------------------------------------
+# 7. 친구에게 쪽지 보내기 (POST /friends/message/send/)
 # ----------------------------------------------------
 @login_required
 def send_friend_message(request):
@@ -350,7 +352,7 @@ def send_friend_message(request):
     return JsonResponse({'status': 'error', 'message': '잘못된 접근입니다.'}, status=400)
 
 # ----------------------------------------------------
-# 7. 읽지 않은 친구 쪽지 하나 가져오기 및 읽음 처리 (GET /friends/message/unread/get/)
+# 8. 읽지 않은 친구 쪽지 하나 가져오기 및 읽음 처리 (GET /friends/message/unread/get/)
 # ----------------------------------------------------
 @login_required
 def get_and_mark_read_friend_message(request):

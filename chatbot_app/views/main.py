@@ -11,10 +11,6 @@ from chatbot_app.services.proactive_service import generate_proactive_message
 from ..services import friend_message_service
 
 
-
-
-
-
 def landing_view(request):
     """사용자의 온보딩 완료 여부에 따라 적절한 페이지로 리디렉션합니다."""
     if request.user.profile.is_onboarding_complete:
