@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const dialogText = document.getElementById('dialog-text');
     const chatbotName = document.querySelector('.container').dataset.chatbotName || '아이';
 
+    const refrigeratorModal = document.getElementById('refrigerator-modal');
+    const refrigeratorCloseButton = refrigeratorModal.querySelector('.close-button');
+
     let processingBubble; // 처리 중 말풍선
     let processingAnimationInterval; // 애니메이션 인터벌 ID
     let processingDotCount = 0; // 점 개수
@@ -56,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeInteraction = null;
     let isDialogActive = false;
     let isConfirmationActive = false;
+    let isRefrigeratorConfirmationActive = false; // Add this line
     let selectedConfirmationOption = 'yes'; // 'yes' or 'no'
     let onQuizCooldown = false; // Cooldown flag for the quiz interaction
     let lastFrameTime = 0; // For time-based movement
@@ -186,6 +190,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Input Handlers ---
     document.addEventListener('keydown', (e) => {
+        if (isRefrigeratorConfirmationActive) { // Add this block
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                selectionSound.currentTime = 0;
+                selectionSound.play();
+                selectedConfirmationOption = selectedConfirmationOption === 'yes' ? 'no' : 'yes';
+                updateConfirmationSelection();
+            }
+            return; // Prevent movement keys from being processed
+        }
         if (isConfirmationActive) {
             if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
                 selectionSound.currentTime = 0;
@@ -200,6 +213,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('keyup', (e) => {
         keys[e.key] = false;
+        if (isRefrigeratorConfirmationActive) { // Add this block
+            if (e.key === 'Enter') {
+                handleRefrigeratorConfirmation();
+            }
+            return;
+        }
         if (isConfirmationActive) {
             if (e.key === 'Enter') {
                 handleConfirmation();
@@ -228,6 +247,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleInteraction(object) {
         const target = object.dataset.interactionTarget;
+
+        if (target === 'schedule') {
+            openModal();
+            return;
+        }
+
+        if (target === 'refrigerator') { // Add this block
+            showRefrigeratorConfirmationDialog();
+            return;
+        }
+
         const csrftoken = getCookie('csrftoken');
 
         startProcessingAnimation(); // 로딩 인디케이터 시작
@@ -283,6 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dialogBox.classList.add('hidden');
         isDialogActive = false;
         isConfirmationActive = false;
+        isRefrigeratorConfirmationActive = false; // Add this line
 
         // Hide the image as well
         const dialogImage = document.getElementById('dialog-character-image');
@@ -293,6 +324,56 @@ document.addEventListener('DOMContentLoaded', () => {
         if (options) {
             options.remove();
         }
+    }
+
+    function showRefrigeratorConfirmationDialog() {
+        if (isDialogActive) return;
+
+        isDialogActive = true;
+        isRefrigeratorConfirmationActive = true;
+        selectedConfirmationOption = 'yes';
+
+        dialogSpeaker.textContent = `[${chatbotName}]`;
+        dialogText.textContent = '맛있는 냄새가 나는데, 냉장고를 열어볼까?';
+
+        const options = document.createElement('div');
+        options.className = 'dialog-options';
+
+        const yesButton = document.createElement('button');
+        yesButton.id = 'confirm-yes';
+        yesButton.textContent = '예';
+
+        const noButton = document.createElement('button');
+        noButton.id = 'confirm-no';
+        noButton.textContent = '아니요';
+
+        options.appendChild(yesButton);
+        options.appendChild(noButton);
+        dialogBox.appendChild(options);
+
+        updateConfirmationSelection();
+        dialogBox.classList.remove('hidden');
+    }
+
+    function handleRefrigeratorConfirmation() {
+        if (selectedConfirmationOption === 'yes') {
+            yesConfirmationSound.play();
+            hideDialog();
+            openRefrigeratorModal();
+        } else {
+            confirmationSound.play();
+            hideDialog();
+        }
+    }
+
+    function openRefrigeratorModal() {
+        refrigeratorModal.style.display = 'block';
+        isDialogActive = true; // Prevent player movement
+    }
+
+    function closeRefrigeratorModal() {
+        refrigeratorModal.style.display = 'none';
+        isDialogActive = false; // Allow player movement
     }
 
     function showConfirmationDialog() {
@@ -777,6 +858,13 @@ document.addEventListener('DOMContentLoaded', () => {
     addScheduleBtn.addEventListener('click', handleAddUpdateSchedule);
     window.addEventListener('click', (event) => {
         if (event.target == scheduleModal) closeModal();
+    });
+
+    refrigeratorCloseButton.addEventListener('click', closeRefrigeratorModal);
+    window.addEventListener('click', (event) => {
+        if (event.target == refrigeratorModal) {
+            closeRefrigeratorModal();
+        }
     });
 
     function getCookie(name) {

@@ -33,7 +33,7 @@
     {% include 'includes/top_menu.html' with show_room_link=False %}
         <div class="chatbot-container" id="room">
             <!-- <img id="stove" class="furniture-object" src="{% static 'img/난로.png' %}" alt="Stove"> -->
-            <img id="refrigerator" class="furniture-object" src="{% static 'img/냉장고.png' %}" alt="Refrigerator">
+            <img id="refrigerator" class="furniture-object interactive-object" data-interaction-target="refrigerator" data-interaction-message="냉장고 확인하기 (Enter)" src="{% static 'img/냉장고.png' %}" alt="Refrigerator">
             <img id="lamp" class="furniture-object" src="{% static 'img/램프.png' %}" alt="Lamp">
             <img id="robot-vacuum" class="furniture-object" src="{% static 'img/로봇청소기.png' %}" alt="Robot Vacuum">
             <img id="sofa" class="furniture-object interactive-object" data-interaction-target="sofa" data-interaction-message="푹신한 소파에 앉아 휴식하기 (Enter)" src="{% static 'img/소파.png' %}" alt="Sofa">
@@ -98,6 +98,19 @@
                     <textarea id="new-schedule-textarea" placeholder="새 일정을 입력하세요." rows="2"></textarea>
                 </div>
                 <button id="add-schedule-btn">일정 추가</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Refrigerator Modal -->
+    <div id="refrigerator-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>냉장고</h2>
+            <div id="refrigerator-items">
+                <img src="{% static 'img/카레.png' %}" alt="카레">
+                <img src="{% static 'img/햄버거.png' %}" alt="햄버거">
+                <img src="{% static 'img/콜라.png' %}" alt="콜라">
             </div>
         </div>
     </div>
