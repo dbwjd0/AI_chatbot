@@ -13,62 +13,9 @@ from . import friend
 from ..services import friend_message_service, quiz_service
 
 
-@login_required
-def check_unread_friend_messages(request):
-    """현재 사용자에게 읽지 않은 쪽지가 있는지 확인합니다."""
-    user = request.user
-    has_unread = FriendMessage.objects.filter(receiver=user, is_read=False).exists()
-    return JsonResponse({'has_unread_messages': has_unread})
 
-@login_required
-def get_processed_unread_friend_message(request):
-    current_user = request.user
-    
-    # 1. 읽지 않은 모든 메시지를 리스트로 가져옵니다.
-    unread_messages = list(FriendMessage.objects.filter(receiver=current_user, is_read=False).order_by('timestamp'))
-    
-    if not unread_messages:
-        return JsonResponse({'status': 'no_messages', 'messages': []})
 
-    # 2. 단일 배치 호출로 모든 메시지를 처리합니다.
-    processed_results = friend_message_service.process_friend_messages_in_batch(current_user, unread_messages)
 
-    if not processed_results:
-        return JsonResponse({'status': 'error', 'message': '메시지 처리에 실패했습니다.'}, status=500)
-
-    # 쉽게 조회할 수 있도록 원본 메시지를 ID별로 매핑합니다.
-    unread_messages_map = {msg.id: msg for msg in unread_messages}
-    
-    final_messages = []
-    processed_message_ids = []
-
-    for result in processed_results:
-        original_message = unread_messages_map.get(result.get('id'))
-        if original_message:
-            # 디버깅을 위한 터미널 출력 추가
-            print("-" * 20)
-            print(f"[디버그] 메시지 처리 정보 (ID: {original_message.id})")
-            print(f"  - 수신자 페르소나: {current_user.profile.persona_preference}")
-            print(f"  - 원본 메시지: {original_message.message_content}")
-            print(f"  - LLM 생성 설명: {result.get('explanation', '설명 없음.')}")
-            print(f"  - 최종 가공 메시지: {result.get('answer', '오류')}")
-            print("-" * 20)
-
-            final_messages.append({
-                'sender': original_message.sender.username,
-                'content': result.get('answer', '오류: 메시지 내용을 처리할 수 없습니다.')
-            })
-            processed_message_ids.append(original_message.id)
-
-    # 3. 성공적으로 처리된 모든 메시지를 읽음으로 표시합니다.
-    if processed_message_ids:
-        FriendMessage.objects.filter(id__in=processed_message_ids).update(is_read=True)
-
-    # 4. 처리된 메시지 목록을 반환합니다.
-    return JsonResponse({
-        'status': 'success',
-        'messages': final_messages
-    })
 
 def landing_view(request):
     """사용자의 온보딩 완료 여부에 따라 적절한 페이지로 리디렉션합니다."""
@@ -366,39 +313,4 @@ def quiz_question_view(request):
 def quiz_view(request):
     return render(request, 'quiz.html')
 
-@login_required
-def friend_management_view(request):
-    """친구 관리 페이지 (friend_management.html)를 렌더링합니다."""
-    current_user = request.user
 
-    # 1. 현재 친구 목록 (status=ACCEPTED) 검색
-    accepted_friendships = UserFriendship.objects.filter(
-        (Q(from_user=current_user) | Q(to_user=current_user)),
-        status=UserFriendship.STATUS_ACCEPTED
-    ).select_related('from_user', 'to_user')
-
-    accepted_friends_list = []
-    for friendship in accepted_friendships:
-        friend_user = friendship.to_user if friendship.from_user == current_user else friendship.from_user
-        accepted_friends_list.append({
-            'username': friend_user.username
-        })
-
-    # 2. 받은 친구 요청 목록 (to_user=나 AND status=PENDING) 검색
-    pending_requests = UserFriendship.objects.filter(
-        to_user=current_user,
-        status=UserFriendship.STATUS_PENDING
-    ).select_related('from_user')
-
-    pending_requests_list = []
-    for request_obj in pending_requests:
-        pending_requests_list.append({
-            'id': request_obj.id,
-            'from_user_username': request_obj.from_user.username,
-        })
-    
-    context = {
-        'accepted_friends': accepted_friends_list,
-        'pending_requests': pending_requests_list,
-    }
-    return render(request, 'friend_management.html', context)

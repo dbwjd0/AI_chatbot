@@ -27,14 +27,14 @@ urlpatterns = [
     path('get-and-clear-pending-message/', main.get_and_clear_pending_message, name='get_and_clear_pending_message'),
     path('quiz/', main.quiz_view, name='quiz'),
     # 🌟 친구 기능 URL 패턴 추가 🌟
-    path('friends/', main.friend_management_view, name='friend_management'),
+    path('friends/', friend.friend_management_view, name='friend_management'),
     path('api/friends/', friend.friend_list_view, name='api_friend_list'), 
     path('friends/request/', friend.send_friend_request, name='send_friend_request'), 
     path('friends/accept/<int:request_id>/', friend.accept_friend_request, name='accept_friend_request'),
     path('friends/reject/<int:request_id>/', friend.reject_friend_request, name='reject_friend_request'),
     path('friends/delete/<int:friendship_id>/', friend.delete_friend, name='delete_friend'),
     path('friends/message/send/', friend.send_friend_message, name='send_friend_message'), # 쪽지 보내기
-    path('friends/message/unread/', main.check_unread_friend_messages, name='check_unread_friend_messages'), # 읽지 않은 쪽지 확인
+    path('friends/message/unread/', friend.check_unread_friend_messages, name='check_unread_friend_messages'), # 읽지 않은 쪽지 확인
     path('friends/message/unread/get/', friend.get_and_mark_read_friend_message, name='get_and_mark_read_friend_message'), # 읽지 않은 쪽지 하나 가져오기 및 읽음 처리
-    path('friends/message/unread/get_processed/', main.get_processed_unread_friend_message, name='get_processed_unread_friend_message'), # 처리된 읽지 않은 쪽지 가져오기
+    path('friends/message/unread/get_processed/', friend.get_processed_unread_friend_message, name='get_processed_unread_friend_message'), # 처리된 읽지 않은 쪽지 가져오기
 ]
