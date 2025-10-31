@@ -22,5 +22,5 @@ class UserProfileForm(forms.ModelForm):
                 old_picture_path = self.instance.profile_picture.path
                 if os.path.exists(old_picture_path):
                     os.remove(old_picture_path)
-            return None # Return None to clear the field in the model
+            return False # Return False to clear the field in the model
         return self.cleaned_data.get('profile_picture') # Otherwise, return the new picture or existing one
