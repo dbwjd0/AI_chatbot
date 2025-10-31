@@ -275,8 +275,12 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             stopProcessingAnimation(); // 로딩 인디케이터 중지
             if (data.message) {
-                const imageUrl = (target === 'sofa') ? '/static/img/char_thinking.png' : null;
-                showDialog(`[${chatbotName}]`, data.message, imageUrl);
+                if (target === 'bed') {
+                    showBedDialog(data.message);
+                } else {
+                    const imageUrl = (target === 'sofa') ? '/static/img/char_thinking.png' : null;
+                    showDialog(`[${chatbotName}]`, data.message, imageUrl);
+                }
             }
         })
         .catch(error => {
@@ -288,6 +292,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Dialog Functions ---
+    function showBedDialog(text) {
+        const bedImage = document.getElementById('bed-character-image');
+        dialogSpeaker.textContent = `[${chatbotName}]`;
+        dialogText.textContent = text;
+
+        if (bedImage) {
+            bedImage.src = '/static/img/char_happy_left.png';
+            bedImage.style.display = 'block';
+        }
+
+        dialogBox.classList.remove('hidden');
+        isDialogActive = true;
+        interactionPrompt.classList.add('hidden');
+    }
+
     function showDialog(speaker, text, imageUrl = null) {
         const dialogImage = document.getElementById('dialog-character-image');
         const dialogSpeaker = document.getElementById('dialog-speaker');
@@ -317,7 +336,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Hide the image as well
         const dialogImage = document.getElementById('dialog-character-image');
-        dialogImage.style.display = 'none';
+        const bedImage = document.getElementById('bed-character-image');
+        if (dialogImage) dialogImage.style.display = 'none';
+        if (bedImage) bedImage.style.display = 'none';
 
         // Remove confirmation buttons if they exist
         const options = dialogBox.querySelector('.dialog-options');
