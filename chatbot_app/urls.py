@@ -26,7 +26,6 @@ urlpatterns = [
     path('get_proactive_message/', main.get_proactive_message_view, name='get_proactive_message'),
     path('check-notification/', main.check_proactive_notification, name='check_notification'),
     path('get-and-clear-pending-message/', main.get_and_clear_pending_message, name='get_and_clear_pending_message'),
-    path('quiz/', main.quiz_view, name='quiz'),
     # 🌟 친구 기능 URL 패턴 추가 🌟
     path('friends/', friend.friend_management_view, name='friend_management'),
     path('api/friends/', friend.friend_list_view, name='api_friend_list'), 
