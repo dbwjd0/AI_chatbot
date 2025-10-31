@@ -305,6 +305,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     li.innerHTML = `
                         <span class="user-name">${req.from_user}</span>
                         <div class="actions">
+                            <button class="action-btn secondary-btn view-profile-btn" 
+                                data-username="${req.from_user}"
+                                data-profile-pic="${req.profile_picture_url}"
+                                data-status-message="${req.status_message}"
+                                data-chatbot-name="${req.chatbot_name}"
+                                data-age="${req.age}"
+                                data-mbti="${req.mbti}"
+                                data-gender="${req.gender}">
+                                프로필 보기
+                            </button>
                             <button class="action-btn accept-btn" data-request-id="${req.id}"><span class="emoji">✅</span> 수락</button>
                             <button class="action-btn reject-btn" data-request-id="${req.id}"><span class="emoji">✖️</span> 거절</button>
                         </div>
@@ -333,7 +343,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     const li = document.createElement('li');
                     li.innerHTML = `
                         <span class="user-name">${friend.username}</span>
-                        <button class="action-btn secondary-btn delete-btn" data-friendship-id="${friend.id}"><span class="emoji">❌</span></button>
+                        <div class="actions">
+                            <button class="action-btn secondary-btn view-profile-btn" 
+                                data-username="${friend.username}"
+                                data-profile-pic="${friend.profile_picture_url}"
+                                data-status-message="${friend.status_message}"
+                                data-chatbot-name="${friend.chatbot_name}"
+                                data-age="${friend.age}"
+                                data-mbti="${friend.mbti}"
+                                data-gender="${friend.gender}">
+                                프로필 보기
+                            </button>
+                            <button class="action-btn secondary-btn delete-btn" data-friendship-id="${friend.id}"><span class="emoji">❌</span></button>
+                        </div>
                     `;
                     acceptedList.appendChild(li);
                 });
@@ -345,6 +367,32 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 acceptedList.innerHTML = '<li>현재 등록된 친구가 없습니다.</li>';
             }
+
+            // 동적으로 생성된 '프로필 보기' 버튼에 이벤트 리스너 할당
+            document.querySelectorAll('.view-profile-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const username = this.dataset.username;
+                    const profilePic = this.dataset.profilePic;
+                    const statusMessage = this.dataset.statusMessage;
+                    const chatbotName = this.dataset.chatbotName;
+                    const age = this.dataset.age;
+                    const mbti = this.dataset.mbti;
+                    const gender = this.dataset.gender;
+                    
+                    document.getElementById('modal-username').textContent = `닉네임: ${username}`; // 닉네임 표시
+                    document.getElementById('modal-profile-pic').src = profilePic;
+                    
+                    let profileDetails = ``;
+                    if (chatbotName) profileDetails += `챗봇 이름: ${chatbotName}<br>`;
+                    if (age) profileDetails += `나이: ${age}<br>`;
+                    if (mbti) profileDetails += `MBTI: ${mbti}<br>`;
+                    if (gender) profileDetails += `성별: ${gender}<br>`;
+                    if (statusMessage) profileDetails += `상태 메시지: ${statusMessage}<br>`;
+
+                    document.getElementById('modal-profile-details').innerHTML = profileDetails; // 새로운 요소에 상세 정보 표시
+                    document.getElementById('friend-profile-modal').style.display = 'flex'; // flex로 변경하여 중앙 정렬
+                });
+            });
         })
         .catch(error => {
             console.error('친구 데이터 로드 오류:', error);
@@ -352,6 +400,19 @@ document.addEventListener('DOMContentLoaded', function () {
             acceptedList.innerHTML = '<li>친구 데이터를 불러오는 데 실패했습니다.</li>';
         });
     }
+
+    // 모달 닫기 버튼 이벤트 리스너
+    document.querySelector('#friend-profile-modal .close-button').addEventListener('click', function() {
+        document.getElementById('friend-profile-modal').style.display = 'none';
+    });
+
+    // 모달 외부 클릭 시 닫기
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('friend-profile-modal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    });
 
     // ----------------------------------------------------
     // 4. 내부 네비게이션 (친구 찾기, 받은 요청, 내 친구) 처리

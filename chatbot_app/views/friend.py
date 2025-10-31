@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.db.models import Q
 from django.utils import timezone
-from ..models import UserFriendship
+from ..models import UserFriendship, UserProfile, UserAttribute # UserProfile, UserAttribute 임포트
 
 # ----------------------------------------------------
 # 1. 친구 목록 및 받은 요청 조회 (GET /friends/)
@@ -20,33 +20,74 @@ def friend_list_view(request):
     """
     current_user = request.user
 
+    # 기본 프로필 사진 URL
+    default_profile_pic_url = '/static/img/cute_pig.jpg' # 적절한 기본 이미지 경로로 변경하세요.
+
     # 1.1. 현재 친구 목록 (status=ACCEPTED) 검색
     # 내가 from_user이거나 to_user인 모든 수락된 관계를 찾습니다.
+    # UserProfile 정보를 함께 가져오도록 select_related 추가
     accepted_friendships = UserFriendship.objects.filter(
         (Q(from_user=current_user) | Q(to_user=current_user)),
         status=UserFriendship.STATUS_ACCEPTED
-    ).select_related('from_user', 'to_user')
+    ).select_related('from_user__profile', 'to_user__profile')
 
     accepted_friends_list = []
     for friendship in accepted_friendships:
-        # '나'를 제외한 상대방의 username만 리스트에 담습니다.
         friend_user = friendship.to_user if friendship.from_user == current_user else friendship.from_user
+        
+        # 친구의 프로필 정보 가져오기
+        friend_profile = getattr(friend_user, 'profile', None)
+        profile_picture_url = friend_profile.profile_picture.url if friend_profile and friend_profile.profile_picture else default_profile_pic_url
+        status_message = friend_profile.status_message if friend_profile and friend_profile.status_message else ''
+        chatbot_name = friend_profile.chatbot_name if friend_profile else ''
+
+        # 친구의 UserAttribute 정보 가져오기
+        friend_attributes = {
+            attr.fact_type: attr.content
+            for attr in UserAttribute.objects.filter(user=friend_user, fact_type__in=['나이', 'mbti', '성별'])
+        }
+
         accepted_friends_list.append({
-            'id': friendship.id, # Add friendship ID
-            'username': friend_user.username
+            'id': friendship.id,
+            'username': friend_user.username,
+            'profile_picture_url': profile_picture_url,
+            'status_message': status_message,
+            'chatbot_name': chatbot_name,
+            'age': friend_attributes.get('나이', ''),
+            'mbti': friend_attributes.get('mbti', ''),
+            'gender': friend_attributes.get('성별', ''),
         })
 
     # 1.2. 받은 친구 요청 목록 (to_user=나 AND status=PENDING) 검색
+    # 요청을 보낸 사용자의 프로필 정보도 함께 가져오도록 select_related 추가
     pending_requests = UserFriendship.objects.filter(
         to_user=current_user,
         status=UserFriendship.STATUS_PENDING
-    ).select_related('from_user')
+    ).select_related('from_user__profile')
 
     pending_requests_list = []
     for request_obj in pending_requests:
+        sender_user = request_obj.from_user
+        sender_profile = getattr(sender_user, 'profile', None)
+        profile_picture_url = sender_profile.profile_picture.url if sender_profile and sender_profile.profile_picture else default_profile_pic_url
+        status_message = sender_profile.status_message if sender_profile and sender_profile.status_message else ''
+        chatbot_name = sender_profile.chatbot_name if sender_profile else ''
+
+        # 요청을 보낸 사용자의 UserAttribute 정보 가져오기
+        sender_attributes = {
+            attr.fact_type: attr.content
+            for attr in UserAttribute.objects.filter(user=sender_user, fact_type__in=['나이', 'mbti', '성별'])
+        }
+
         pending_requests_list.append({
             'id': request_obj.id,
-            'from_user': request_obj.from_user.username,
+            'from_user': sender_user.username,
+            'profile_picture_url': profile_picture_url,
+            'status_message': status_message,
+            'chatbot_name': chatbot_name,
+            'age': sender_attributes.get('나이', ''),
+            'mbti': sender_attributes.get('mbti', ''),
+            'gender': sender_attributes.get('성별', ''),
         })
 
     return JsonResponse({

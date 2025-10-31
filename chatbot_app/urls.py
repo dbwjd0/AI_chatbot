@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import main, chatWithAi, auth, schedule, friend
+from .views import main, chatWithAi, auth, schedule, friend, profile # profile 임포트
 
 urlpatterns = [
     path('', main.opening_view, name='opening'),
@@ -17,6 +17,7 @@ urlpatterns = [
     path('login/', auth.login_view, name='login'),
     path('logout/', auth.logout_view, name='logout'),
     path('ai_status/', main.ai_status, name='ai_status'),
+    path('profile/edit/', profile.edit_profile_view, name='edit_profile'), # 프로필 편집 URL 추가
     path('quiz_mode/', main.quiz_mode_view, name='quiz_mode'),
     path('start_quiz/', main.start_quiz_view, name='start_quiz'),
     path('quiz_question/', main.quiz_question_view, name='quiz_question'),

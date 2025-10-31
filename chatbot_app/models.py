@@ -19,6 +19,8 @@ class UserProfile(models.Model):
     memory = models.JSONField(default=dict, help_text="사용자에 대한 기억 저장소")
     chatbot_name = models.CharField(max_length=100, default='아이', help_text="사용자가 지정한 챗봇 이름")
     persona_preference = models.CharField(max_length=100, default='친근한', help_text="챗봇의 스타일")
+    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True, help_text="사용자 프로필 사진")
+    status_message = models.CharField(max_length=255, null=True, blank=True, help_text="사용자 상태 메시지")
 
     def __str__(self):
         return f"{self.user.username}의 프로필"
