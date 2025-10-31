@@ -168,6 +168,7 @@
 <body>
     <button id="toggle-bgm-btn">BGM OFF</button>
     <div class="status-container">
+        <a href="{% url 'edit_profile' %}" class="edit-profile-link">프로필 수정</a>
         <h1>{{ user.profile.chatbot_name }}의 현재 상태</h1>
 
         <div class="status-item">

@@ -52,6 +52,17 @@
             </ul>
         </div>
     </div>
+    <!-- Friend Profile Modal -->
+    <div id="friend-profile-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="profile-header">
+                <img id="modal-profile-pic" src="" alt="프로필 사진" class="modal-profile-picture">
+                <h2 id="modal-username"></h2>
+            </div>
+            <div id="modal-profile-details" class="modal-profile-details"></div>
+        </div>
+    </div>
     <script src="{% static 'friend_management.js' %}"></script>
 </body>
 </html>
