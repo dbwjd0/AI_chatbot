@@ -154,13 +154,12 @@
         const affinityScore = "{{ user_profile.affinity_score|default:0 }}";
         const UNREAD_MESSAGE_COUNT = {{ unread_friend_messages_count }};
     </script>
-    <script src="{% static 'chat.js' %}"></script>
-
-    <!-- 게임 페이지용 BGM (login.html 제외) -->
     <audio id="bgm2" loop>
         <source src="{% static 'music/game_bgm.mp3' %}" type="audio/mpeg">
     </audio>
 
     <script src="{% static 'bgm.js' %}"></script>
+    <script src="{% static 'chat.js' %}"></script>
+
 </body>
 </html>
