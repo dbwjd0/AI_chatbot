@@ -30,33 +30,46 @@ def start_quiz_view(request):
 @login_required
 def quiz_question_view(request):
     """현재 퀴즈 질문을 표시하고, 답변을 처리하며, 퀴즈 흐름을 관리합니다."""
-    # POST 요청 처리 (답변 제출)
+    context = {}
+    
     if request.method == 'POST':
-        user_answer = request.POST.get('answer')
-        if user_answer:
-            quiz_service.process_answer(request.session, user_answer)
-        return redirect('quiz_question')
+        action = request.POST.get('action')
+        if action == 'submit_answer':
+            user_answer = request.POST.get('answer')
+            if user_answer:
+                quiz_service.process_answer(request.session, user_answer)
+            # After processing answer, redirect to show feedback for the current question
+            return redirect('quiz_question')
+        elif action == 'next_question':
+            # Advance to the next question
+            quiz_service.advance_question(request.session)
+            # Clear feedback from session as we are moving to next question
+            request.session.pop('quiz_feedback', None)
+            return redirect('quiz_question')
 
     # GET 요청 처리 (질문 또는 피드백 표시)
-    context = {}
+    # 또는 POST 요청 후 리디렉션되어 다시 GET으로 들어온 경우
+    
     feedback = None
-
-    # 이전 답변에 대한 피드백이 있는지 확인하고, 있으면 다음 문제로 넘어감
     if 'quiz_feedback' in request.session:
-        feedback = quiz_service.get_feedback_and_advance(request.session)
+        feedback = quiz_service.get_feedback(request.session) # Use the new get_feedback
         context['quiz_feedback'] = feedback
 
     # 퀴즈가 끝났는지 확인
     if quiz_service.is_quiz_finished(request.session):
-        # 피드백이 마지막 문제에 대한 것이었다면, 결과 페이지 전에 잠시 보여줌
-        if feedback:
+        # 퀴즈가 끝났고, 마지막 문제에 대한 피드백이 있다면 먼저 보여줌
+        if feedback and not request.POST.get('action') == 'next_question': # Only show feedback if not explicitly advancing
+            # This case handles showing feedback for the very last question before showing results
+            question_context = quiz_service.get_current_question_context(request.session)
+            if question_context:
+                context.update(question_context)
             return render(request, 'quiz.html', context)
         
         result_data = quiz_service.save_quiz_result_and_cleanup(request.session, request.user)
         context.update({'quiz_finished': True, **result_data})
         return render(request, 'quiz.html', context)
     
-    # 다음 문제 표시
+    # 다음 문제 표시 (또는 피드백과 함께 현재 문제 표시)
     question_context = quiz_service.get_current_question_context(request.session)
     if not question_context:
         return redirect('quiz_mode') # 퀴즈가 시작되지 않은 경우

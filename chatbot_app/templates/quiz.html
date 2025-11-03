@@ -269,13 +269,18 @@
                                 오답입니다. 정답은 '{{ quiz_feedback.correct_answer }}' 입니다.
                             {% endif %}
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                            <button type="button" class="btn btn-primary" data-next-url-base="{% url 'quiz_question' %}" onclick="window.location.href=this.dataset.nextUrlBase + '?next_question=true'">다음 문제</button>
-                            <a href="{% url 'quiz_mode' %}" class="btn btn-secondary">처음으로 돌아가기</a>
-                        </div>
+                        <form action="{% url 'quiz_question' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="next_question">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                                <button type="submit" class="btn btn-primary">다음 문제</button>
+                                <a href="{% url 'quiz_mode' %}" class="btn btn-secondary">처음으로 돌아가기</a>
+                            </div>
+                        </form>
                     {% else %}
                         <form action="{% url 'quiz_question' %}" method="post">
                             {% csrf_token %}
+                            <input type="hidden" name="action" value="submit_answer">
                             <div class="options-group">
                                 {% for option in options %}
                                     <label>
