@@ -9,6 +9,67 @@ document.addEventListener('DOMContentLoaded', function() {
     const enterIndicator = document.getElementById('enter-indicator');
     const blackOverlay = document.getElementById('black-overlay');
     const sendButton = document.getElementById('send-button'); // Re-inserted declaration
+
+    // BGM Controls
+    const bgm = document.getElementById('narrative-bgm');
+    const toggleBgmBtn = document.getElementById('toggle-bgm-btn');
+    const bgmVolumeSlider = document.getElementById('bgm-volume-slider');
+
+    let isBgmPlaying = true;
+
+    // Initialize BGM volume and state
+    bgm.volume = bgmVolumeSlider.value / 100;
+    bgm.play().then(() => {
+        toggleBgmBtn.textContent = 'BGM OFF';
+    }).catch(error => {
+        console.log('BGM autoplay prevented:', error);
+        // If autoplay is prevented, keep paused and button as 'BGM ON'
+        bgm.pause();
+        isBgmPlaying = false;
+        toggleBgmBtn.textContent = 'BGM ON';
+    });
+
+    toggleBgmBtn.addEventListener('click', () => {
+        if (isBgmPlaying) {
+            bgm.pause();
+            toggleBgmBtn.textContent = 'BGM ON';
+        } else {
+            bgm.play().then(() => {
+                toggleBgmBtn.textContent = 'BGM OFF';
+            }).catch(error => {
+                console.log('BGM play prevented:', error);
+                // If play is prevented, keep paused and button as 'BGM ON'
+                bgm.pause();
+                toggleBgmBtn.textContent = 'BGM ON';
+            });
+        }
+        isBgmPlaying = !isBgmPlaying;
+    });
+
+    bgmVolumeSlider.addEventListener('input', () => {
+        bgm.volume = bgmVolumeSlider.value / 100;
+        if (bgm.muted && bgm.volume > 0) {
+            bgm.muted = false;
+            if (!isBgmPlaying) {
+                bgm.play().then(() => {
+                    isBgmPlaying = true;
+                    toggleBgmBtn.textContent = 'BGM OFF';
+                }).catch(error => {
+                    console.log('BGM play prevented:', error);
+                    bgm.pause();
+                    isBgmPlaying = false;
+                    toggleBgmBtn.textContent = 'BGM ON';
+                });
+            }
+        } else if (bgm.volume === 0) {
+            bgm.muted = true;
+            if (isBgmPlaying) {
+                bgm.pause();
+                isBgmPlaying = false;
+                toggleBgmBtn.textContent = 'BGM ON';
+            }
+        }
+    });
     const allVideos = {
         intro: document.getElementById('intro-video'),
         discovery: document.getElementById('discovery-video'),
