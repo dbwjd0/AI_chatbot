@@ -162,9 +162,9 @@ def process_chat_interaction(request, user_message_text: str, user_emotion: str,
             bot_message_obj = ChatMessage.objects.create(user=user, message=bot_message_text, is_user=False)
             
             # 벡터 DB에도 저장
-            collection = vector_service.get_or_create_collection()
-            vector_service.upsert_message(collection, user_message_obj)
-            vector_service.upsert_message(collection, bot_message_obj)
+            collection_name = vector_service.get_or_create_collection()
+            vector_service.upsert_message(collection_name, user_message_obj)
+            vector_service.upsert_message(collection_name, bot_message_obj)
 
             return bot_message_text, explanation, bot_message_obj, user_message_obj, action_data
 
@@ -309,8 +309,8 @@ def _assemble_context_data(user, user_message_text, contexts_to_use: list, latit
     # 2. 벡터 검색 컨텍스트
     if 'vector_search' in contexts_to_use:
         try:
-            collection = vector_service.get_or_create_collection()
-            similar_results = vector_service.query_similar_messages(collection, user_message_text, user.id, n_results=5)
+            collection_name = vector_service.get_or_create_collection()
+            similar_results = vector_service.query_similar_messages(collection_name, user_message_text, user.id, n_results=5)
             if similar_results and isinstance(similar_results, dict) and similar_results.get('documents'):
                 past_conversations = [f"{meta.get('speaker', '알수없음')}: {doc}" for doc, meta in zip(similar_results['documents'], similar_results['metadatas'])]
                 contexts['vector_search'] = "[과거 유사한 대화 내용(벡터DB)]: " + " | ".join(past_conversations)
@@ -478,14 +478,14 @@ def _finalize_chat_interaction(request, user_message_text, response_json, histor
         explanation = f"예상치 못한 오류 발생: {e}"
 
     # ChromaDB 컬렉션 가져오기
-    collection = vector_service.get_or_create_collection()
+    collection_name = vector_service.get_or_create_collection()
 
     # ChatMessage 저장 시 image_file을 직접 사용
     user_message_obj = ChatMessage.objects.create(user=user, message=user_message_text, image=image_file, is_user=True)
-    vector_service.upsert_message(collection, user_message_obj)
+    vector_service.upsert_message(collection_name, user_message_obj)
 
     bot_message_obj = ChatMessage.objects.create(user=user, message=bot_message_text, is_user=False)
-    vector_service.upsert_message(collection, bot_message_obj)
+    vector_service.upsert_message(collection_name, bot_message_obj)
     
     recent_history_for_extraction = history[:5]
     extract_and_save_user_context_data(user, user_message_text, bot_message_text, recent_history_for_extraction, api_key)
