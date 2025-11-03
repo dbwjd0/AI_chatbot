@@ -8,10 +8,6 @@
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <style>
         body {
-            background-image: url('{% static "img/quiz_mode.png" %}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
             height: 100vh;
             color: white;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -19,6 +15,18 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden; /* Prevent scrollbars due to video */
+        }
+        .background-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -100;
+            background-size: cover;
         }
         .quiz-layout-wrapper {
             display: flex;
@@ -36,11 +44,13 @@
             text-align: center;
             flex: 1; /* Allow quiz container to take available space */
             max-width: 600px; /* Adjust max-width for quiz content */
+            margin-top: 100px;            
         }
         .character-container {
             position: relative; /* Added for absolute positioning of emoticon bubble */
             text-align: center;
             max-width: 300px; /* Max width for the character container */
+            margin-top: 300px;
         }
         .character-container img {
             width: 80%; /* Reduce image size to 80% */
@@ -197,10 +207,14 @@
     </style>
 </head>
 <body {% if quiz_feedback %}data-character-emotion="{{ quiz_feedback.character_emotion }}"{% endif %}>
+    <video autoplay muted loop class="background-video">
+        <source src="{% static 'img/Quiz Room.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
     {% include 'includes/top_menu.html' with show_room_link=True %}
     <div class="quiz-layout-wrapper">
         <div class="character-container">
-            <img id="chatbot-character" src="{% static 'img/quiz_mode.png' %}" alt="AI 비서">
+            <img id="chatbot-character" src="{% static 'img/quiz_girl.png' %}" alt="AI 비서">
             <div id="ai-emoticon-bubble" class="ai-emoticon-bubble" style="display: none;">
                 <img id="ai-emoticon-img" src="" alt="AI Emoticon">
             </div>
@@ -295,8 +309,8 @@
             '혐오': "{% static 'img/char_disgust.png' %}",
             '중립': "{% static 'img/quiz_girl.png' %}",
             'default': "{% static 'img/char_default.png' %}",
-            '정답': "{% static 'img/char_happy.png' %}", // Custom for quiz
-            '오답': "{% static 'img/char_sad.png' %}"   // Custom for quiz
+            '정답': "{% static 'img/Thumbs Up.png' %}", // Custom for quiz
+            '오답': "{% static 'img/Thumbs Down.png' %}"   // Custom for quiz
         };
 
         function updateCharacterEmotion(emotion) {

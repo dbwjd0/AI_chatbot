@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         thi_nor: document.getElementById('thi_nor-video'), // 영상 디테일 수정 필요
         thinking: document.getElementById('thinking-video'),
         ang_thi: document.getElementById('ang_thi-video'),
-        // thi_ang: document.getElementById('thi_ang-video'), // 영상 다시 출력 필요
+        thi_ang: document.getElementById('thi_ang-video'), // 영상 다시 출력 필요
         angry: document.getElementById('angry-video'),
         thi_con: document.getElementById('thi_con-video'),
         nor_con: document.getElementById('nor_con-video'), // 영상 디테일 수정 필요
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { speaker: '???', text: '{나이}살...알려줘서 고마워.' },
         { action: 'goto', target: 'end_of_age' },
         { label: 'invalid_age' },
-        // { action: 'play_video', video: 'thi_ang', block_input_until_end: true }, // 영상 추가 후 수정
+        { action: 'play_video', video: 'thi_ang', block_input_until_end: true }, // 영상 추가 후 수정
         { action: 'play_video', video: 'angry' },        
         { speaker: '???', text: '...{나이}살이라고?' },
         { speaker: '???', text: '내가 바보인 줄 알아?' },
