@@ -257,6 +257,11 @@
 
     <script src="{% static 'bgm.js' %}"></script>
 
+    <video autoplay muted loop class="background-video">
+        <source src="{% static 'img/Quiz Room.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
     {% include 'includes/top_menu.html' with show_room_link=True %}
     <div class="quiz-layout-wrapper">
         <div class="character-container">
