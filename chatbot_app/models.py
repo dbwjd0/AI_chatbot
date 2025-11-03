@@ -157,7 +157,7 @@ class QuizResult(models.Model):
         ('world_history', '세계사'),
         ('science', '과학'),
         ('literature', '문학'),
-        ('general', '상식'),
+        ('general_knowledge', '상식'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quiz_results')
