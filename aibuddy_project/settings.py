@@ -6,8 +6,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
-load_dotenv(os.path.join(BASE_DIR, '.env'))
 
+# (A) .env 파일 로딩: 로컬 있으면 .env.local, 아니면 .env.prod
+local_env = BASE_DIR / ".env.local"
+if local_env.exists():
+    load_dotenv(local_env)
+else:
+    load_dotenv(BASE_DIR / ".env.prod")
+
+def env_bool(key: str, default: bool=False):
+    v = os.getenv(key)
+    if v is None: return default
+    return v.strip().lower() in ("1", "true", "yes", "on")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -16,12 +26,19 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_bool("DJANGO_DEBUG", False)
 
-ALLOWED_HOSTS = [
-	"3.35.133.152",
-	"ec2-3-35-133-152.ap-northeast-2.compute.amazonaws.com"
-]
+allowed = os.getenv("DJANGO_ALLOWED_HOSTS", "")
+if allowed:
+    ALLOWED_HOSTS = [h.strip() for h in allowed.split(",") if h.strip()]
+else:
+    ALLOWED_HOSTS = [
+        "3.35.133.152",
+        "ec2-3-35-133-152.ap-northeast-2.compute.amazonaws.com",
+        "localhost",
+        "127.0.0.1",
+        "0.0.0.0",
+    ]
 
 # Increase max memory size for file uploads (e.g., images)
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10 MB
@@ -73,6 +90,27 @@ WSGI_APPLICATION = "aibuddy_project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# (B) DB: 로컬은 sqlite, 서버는 Postgres
+USE_SQLITE = env_bool("DJANGO_USE_SQLITE", False)
+if USE_SQLITE:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.postgresql"),
+            "NAME": os.getenv("DB_NAME", "postgres"),
+            "USER": os.getenv("DB_USER", "postgres"),
+            "PASSWORD": os.getenv("DB_PASSWORD", ""),
+            "HOST": os.getenv("DB_HOST", "localhost"),
+            "PORT": os.getenv("DB_PORT", "5432"),
+        }
+    }
+
 DATABASES = {
     "default": {
         "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.sqlite3"),
@@ -84,6 +122,11 @@ DATABASES = {
     }
 }
 
+# Qdrant 설정
+QDRANT_HOST = os.getenv("QDRANT_HOST", "localhost")
+QDRANT_PORT = int(os.getenv("QDRANT_PORT", "6333"))
+QDRANT_API_KEY = os.getenv("QDRANT_API_KEY", "")        # 없으면 빈 문자열
+QDRANT_USE_HTTPS = env_bool("QDRANT_USE_HTTPS", False)  # 보통 내부망이면 False
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
