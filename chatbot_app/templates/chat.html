@@ -20,6 +20,33 @@
             font-family: 'VT323', monospace;
             z-index: 101;
         }
+        #bgm-volume-slider {
+            position: absolute;
+            top: 20px;
+            left: 120px; /* Adjust as needed to position next to the button */
+            width: 100px;
+            z-index: 101;
+            -webkit-appearance: none;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            height: 10px;
+            outline: none;
+        }
+        #bgm-volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
+        #bgm-volume-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
         #feedback-container {
             position: absolute;
             bottom: 90px; /* Position above the dialogue box */
@@ -47,6 +74,7 @@
 </head>
 <body>
     <button id="toggle-bgm-btn">BGM OFF</button>
+    <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
     <div class="game-container">
         {% include 'includes/top_menu.html' with show_room_link=True %}
 
@@ -126,13 +154,12 @@
         const affinityScore = "{{ user_profile.affinity_score|default:0 }}";
         const UNREAD_MESSAGE_COUNT = "{{ unread_friend_messages_count }}";
     </script>
-    <script src="{% static 'chat.js' %}"></script>
-
-    <!-- 게임 페이지용 BGM (login.html 제외) -->
     <audio id="bgm2" loop>
         <source src="{% static 'music/game_bgm.mp3' %}" type="audio/mpeg">
     </audio>
 
     <script src="{% static 'bgm.js' %}"></script>
+    <script src="{% static 'chat.js' %}"></script>
+
 </body>
 </html>
