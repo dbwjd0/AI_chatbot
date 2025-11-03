@@ -211,67 +211,35 @@ document.addEventListener('DOMContentLoaded', function() {
             showNextLine();
             return;
         }
-
                 currentActionDetails = line;
-
-        
-
                 try {
-
                     if (line.action) {
-
                         await handleAction(line);
-
                     } else { // It's a dialogue line
-
                         if (line.block_script !== false) { // Only block if block_script is not explicitly false
-
                             isWaitingForInput = true;
-
                             updateEnterIndicator(true);
-
                         } else {
-
                             isWaitingForInput = false; // Ensure it's not waiting for input
-
                             updateEnterIndicator(false); // Hide indicator for non-blocking dialogue
-
                         }
-
                         let speaker = line.speaker.replace('{ai_name}', aiData.이름);
-
                         speakerName.textContent = `[${speaker}]`;
-
                         let processedText = line.text;
-
                         for (const key in userData) {
-
                             processedText = processedText.replace(`{${key}}`, userData[key]);
-
                         }
-
                         processedText = processedText.replace(`{ai_name}`, aiData.이름);
-
                         dialogueText.textContent = processedText;
-
                     }
-
                                 } finally {
-
                                     isScriptRunning = false;
-
                                 }
-
-                                
-
+            
                                 // If after processing the current line, we are not waiting for input,
-
                                 // automatically proceed to the next line.
-
                                 if (!isWaitingForInput && currentStep < script.length) {
-
                                     showNextLine();
-
                                 }
     }
 

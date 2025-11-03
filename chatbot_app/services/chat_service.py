@@ -1,6 +1,7 @@
 import json
 import os
 import base64
+import re
 from django.utils import timezone
 from typing import Optional, Dict, Any, Tuple
 from openai import OpenAI, APIError
@@ -10,8 +11,103 @@ from ..models import ChatMessage, UserAttribute, UserActivity, ActivityAnalytics
 from .context_service import get_activity_recommendation, search_activities_for_context
 from .memory_service import extract_and_save_user_context_data
 from .image_captioning_service import ImageCaptioningService
-from . import vector_service, location_service, schedule_service, emoticon_service, prompt_service, rl_agent_service # rl_agent_service 추가
+from . import vector_service, location_service, schedule_service, emoticon_service, prompt_service, rl_agent_service, friend_message_service # rl_agent_service, friend_message_service 추가
+from .llm_utils import call_openai_api # _call_openai_api 함수를 llm_utils로 이동
 from datetime import date # date 추가
+
+FOOD_CATEGORIES = {
+    # 직접 일치
+    "카레": "카레.png",
+    "햄버거": "햄버거.png",
+    "콜라": "콜라.png",
+    "김밥": "김밥.png",
+    "돈가스": "돈가스.png",
+    "떡볶이": "떡볶이.png",
+    "라면": "라면.png",
+    "아이스크림": "아이스크림.png",
+    "초밥": "초밥.png",
+    "치킨": "치킨.png",
+    "커피": "커피.png",
+    "피자": "피자.png",
+
+    # '탕류' 카테고리
+    "짬뽕": "탕류.png",
+    "짜글이": "탕류.png",
+    "김치찌개": "탕류.png",
+    "된장찌개": "탕류.png",
+    "부대찌개": "탕류.png",
+    "국밥": "탕류.png",
+    "갈비탕": "탕류.png",
+    "설렁탕": "탕류.png",
+    "육개장": "탕류.png",
+    "감자탕": "탕류.png",
+
+    # '과자류' 카테고리
+    "과자": "과자류.png",
+    "비스킷": "과자류.png",
+    "감자칩": "과자류.png",
+    "팝콘": "과자류.png",
+    "새우깡": "과자류.png",
+
+    # '고기류' 카테고리
+    "고기": "고기류.png",
+    "삼겹살": "고기류.png",
+    "소고기": "고기류.png",
+    "돼지고기": "고기류.png",
+    "스테이크": "고기류.png",
+    "갈비": "고기류.png",
+
+    # '꼬치류' 카테고리
+    "꼬치": "꼬치류.png",
+    "닭꼬치": "꼬치류.png",
+    "염통꼬치": "꼬치류.png",
+
+    # '덮밥류' 카테고리
+    "덮밥": "덥밥류.png",
+    "제육덮밥": "덥밥류.png",
+    "오징어덮밥": "덥밥류.png",
+    "카레덮밥": "덥밥류.png",
+
+    # '빵류' 카테고리
+    "빵": "빵류.png",
+    "케이크": "빵류.png",
+    "도넛": "빵류.png",
+    "베이글": "빵류.png",
+    "크루아상": "빵류.png",
+
+    # '생선류' 카테고리
+    "생선": "생선류.png",
+    "고등어": "생선류.png",
+    "갈치": "생선류.png",
+    "연어": "생선류.png",
+    "회": "생선류.png",
+}
+
+def _handle_food_memory(request, user_message: str):
+    """사용자 메시지에서 음식 언급을 감지하고 세션에 저장합니다."""
+    # 간단한 정규 표현식으로 "음식 먹었어"와 같은 패턴 감지
+    for food_name, image_file in FOOD_CATEGORIES.items():
+        # 더 유연한 감지를 위해 "먹었"과 유사한 단어들을 포함
+        patterns = [
+            rf"{food_name}.*(먹었|먹고|먹는|먹었다|먹으니|먹으니까|먹어서)",
+            rf".*{food_name}.*(먹었|먹고|먹는|먹었다|먹으니|먹으니까|먹어서)"
+        ]
+        if any(re.search(pattern, user_message) for pattern in patterns):
+            eaten_foods = request.session.get('eaten_foods', [])
+            
+            # 중복 확인
+            is_duplicate = any(food['name'] == food_name for food in eaten_foods)
+            
+            if not is_duplicate:
+                food_data = {'name': food_name, 'image': image_file}
+                eaten_foods.append(food_data)
+                request.session['eaten_foods'] = eaten_foods
+                print(f"--- [음식 기억] '{food_name}'을(를) 세션에 저장했습니다. 이미지: {image_file} ---")
+            else:
+                print(f"--- [음식 기억] '{food_name}'은(는) 이미 세션에 존재합니다. ---")
+            
+            # 하나의 음식만 처리하고 함수 종료
+            return
 
 
 def process_chat_interaction(request, user_message_text: str, user_emotion: str, latitude: Optional[float] = None, longitude: Optional[float] = None, image_file: Optional[UploadedFile] = None):
@@ -66,9 +162,9 @@ def process_chat_interaction(request, user_message_text: str, user_emotion: str,
             bot_message_obj = ChatMessage.objects.create(user=user, message=bot_message_text, is_user=False)
             
             # 벡터 DB에도 저장
-            collection = vector_service.get_or_create_collection()
-            vector_service.upsert_message(collection, user_message_obj)
-            vector_service.upsert_message(collection, bot_message_obj)
+            collection_name = vector_service.get_or_create_collection()
+            vector_service.upsert_message(collection_name, user_message_obj)
+            vector_service.upsert_message(collection_name, bot_message_obj)
 
             return bot_message_text, explanation, bot_message_obj, user_message_obj, action_data
 
@@ -94,7 +190,7 @@ def process_chat_interaction(request, user_message_text: str, user_emotion: str,
 
         # 5단계: 최종 LLM 호출 (파인튜닝된 모델)
         model_to_use = os.getenv("FINETUNED_MODEL_ID", "gpt-4.1")
-        response_json = _call_openai_api(client, model_to_use, messages)
+        response_json = call_openai_api(client, model_to_use, messages)
         
         # 6단계: 응답 처리 및 저장
         bot_message_text, explanation, bot_message_obj, user_message_obj = _finalize_chat_interaction(
@@ -114,6 +210,51 @@ def process_chat_interaction(request, user_message_text: str, user_emotion: str,
         bot_message_text = f"예상치 못한 오류가 발생했습니다: {e}"
 
     return bot_message_text, explanation, bot_message_obj, user_message_obj, action_data
+
+def generate_object_monologue(user, target: str) -> str:
+    """오브젝트 상호작용 시 AI의 동적 독백을 생성합니다."""
+    try:
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY가 설정되지 않았습니다.")
+        client = OpenAI()
+
+        # 1. 페르소나 프롬프트 빌드
+        persona_prompt = prompt_service.build_persona_system_prompt(user, user.profile.persona_preference)
+
+        # 2. 독백 생성을 위한 특별 지시사항 추가
+        monologue_instruction = (
+            f"\n## 추가 임무: 사물에 대한 독백 생성 ##\n"
+            f"너는 지금 '{target}'을(를) 보고 있어. 이 사물에 대해 너의 현재 페르소나와 감정, 그리고 {user.username}님과의 관계를 바탕으로 짧은 독백을 해줘."
+            f"이 독백은 너 혼자 생각하는 것이며, 사용자에게 질문하거나 답변을 요구해서는 안 돼."
+            f"반드시 1~2문장의 짧고 간결한 생각으로 표현해야 해."
+            f"답변은 다른 어떤 설명도 없이, 오직 독백 내용만 일반 텍스트로 반환해야 해. JSON 형식이 아니야."
+        )
+
+        final_prompt = persona_prompt + monologue_instruction
+        
+        messages = [
+            {'role': 'system', 'content': final_prompt},
+        ]
+
+        # 3. LLM 호출
+        model_to_use = os.getenv("FINETUNED_MODEL_ID", "gpt-4.1")
+        response = client.chat.completions.create(
+            model=model_to_use,
+            messages=messages,
+            temperature=0.8, # 약간 더 창의적인 답변을 위해 온도 조절
+            top_p=0.9,
+            max_tokens=100,
+            frequency_penalty=0.3,
+            presence_penalty=0.2,
+        )
+        
+        monologue = response.choices[0].message.content.strip()
+        return monologue
+
+    except Exception as e:
+        print(f"독백 생성 중 오류 발생: {e}")
+        return "..."
 
 def _get_time_contexts(history):
     """현재 시간 및 마지막 대화와의 시간 간격에 대한 컨텍스트를 생성합니다."""
@@ -168,8 +309,8 @@ def _assemble_context_data(user, user_message_text, contexts_to_use: list, latit
     # 2. 벡터 검색 컨텍스트
     if 'vector_search' in contexts_to_use:
         try:
-            collection = vector_service.get_or_create_collection()
-            similar_results = vector_service.query_similar_messages(collection, user_message_text, user.id, n_results=5)
+            collection_name = vector_service.get_or_create_collection()
+            similar_results = vector_service.query_similar_messages(collection_name, user_message_text, user.id, n_results=5)
             if similar_results and isinstance(similar_results, dict) and similar_results.get('documents'):
                 past_conversations = [f"{meta.get('speaker', '알수없음')}: {doc}" for doc, meta in zip(similar_results['documents'], similar_results['metadatas'])]
                 contexts['vector_search'] = "[과거 유사한 대화 내용(벡터DB)]: " + " | ".join(past_conversations)
@@ -265,6 +406,7 @@ def _call_openai_api(client: OpenAI, model_to_use: str, messages: list) -> Dict[
 
 def _finalize_chat_interaction(request, user_message_text, response_json, history, api_key, image_file: Optional[UploadedFile] = None):
     """성공적인 LLM 응답을 처리하고 관련 데이터를 RDB와 벡터 DB에 저장합니다."""
+    _handle_food_memory(request, user_message_text)
     user = request.user
     bot_message_text = "음... 생각을 정리하는 데 시간이 좀 걸리네. 다시 한번 말해줄래?"
     explanation = "AI 응답 처리 중 오류 발생."
@@ -336,14 +478,14 @@ def _finalize_chat_interaction(request, user_message_text, response_json, histor
         explanation = f"예상치 못한 오류 발생: {e}"
 
     # ChromaDB 컬렉션 가져오기
-    collection = vector_service.get_or_create_collection()
+    collection_name = vector_service.get_or_create_collection()
 
     # ChatMessage 저장 시 image_file을 직접 사용
     user_message_obj = ChatMessage.objects.create(user=user, message=user_message_text, image=image_file, is_user=True)
-    vector_service.upsert_message(collection, user_message_obj)
+    vector_service.upsert_message(collection_name, user_message_obj)
 
     bot_message_obj = ChatMessage.objects.create(user=user, message=bot_message_text, is_user=False)
-    vector_service.upsert_message(collection, bot_message_obj)
+    vector_service.upsert_message(collection_name, bot_message_obj)
     
     recent_history_for_extraction = history[:5]
     extract_and_save_user_context_data(user, user_message_text, bot_message_text, recent_history_for_extraction, api_key)

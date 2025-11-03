@@ -2,10 +2,15 @@ Django
 requests
 python-dotenv
 openai
-chromadb
 django-apscheduler
+qdrant-client
 
 # For Reinforcement Learning Agent and NLP tasks
 numpy
 torch
 transformers
+
+# Web
+gunicorn
+Pillow
+psycopg2-binary

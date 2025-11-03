@@ -14,14 +14,17 @@ class UserProfile(models.Model):
     - memory: 사용자에 대한 정보를 JSON 형태로 저장 (예: {"facts": ["사용자는 고양이를 좋아한다"], "name": "홍길동"})
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    nickname = models.CharField(max_length=100, null=True, blank=True, help_text="사용자 닉네임")
+    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True, default='profile_pics/cute_pig.jpg', help_text="사용자 프로필 사진")
     is_onboarding_complete = models.BooleanField(default=False, help_text="사용자 초기 설정(온보딩) 완료 여부")
     affinity_score = models.IntegerField(default=0, help_text="AI '아이'와의 호감도 점수")
     memory = models.JSONField(default=dict, help_text="사용자에 대한 기억 저장소")
     chatbot_name = models.CharField(max_length=100, default='아이', help_text="사용자가 지정한 챗봇 이름")
     persona_preference = models.CharField(max_length=100, default='친근한', help_text="챗봇의 스타일")
+    status_message = models.CharField(max_length=255, null=True, blank=True, help_text="사용자 상태 메시지")
 
     def __str__(self):
-        return f"{self.user.username}의 프로필"
+        return f"{self.nickname or self.user.username}의 프로필"
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -168,3 +171,44 @@ class QuizResult(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.genre} 퀴즈 ({self.score}/{self.num_questions}) on {self.date_completed.strftime('%Y-%m-%d')}"
+
+
+# 쪽지 기능 - 친구 관계 모델 (UserFriendship)
+# ----------------------------------------------------
+class UserFriendship(models.Model):
+    STATUS_PENDING = 1  # 신청 대기 중
+    STATUS_ACCEPTED = 2 # 친구 수락 완료
+
+    STATUS_CHOICES = (
+        (STATUS_PENDING, '대기 중'),
+        (STATUS_ACCEPTED, '친구'),
+    )
+
+    from_user = models.ForeignKey(User, related_name='friendship_requests_sent', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name='friendship_requests_received', on_delete=models.CASCADE)
+    status = models.IntegerField(choices=STATUS_CHOICES, default=STATUS_PENDING)
+    
+    class Meta:
+        # 🌟 친구 요청 중복 방지 (필수)
+        unique_together = ('from_user', 'to_user')
+
+    def __str__(self):
+        return f"요청: {self.from_user.username} -> {self.to_user.username} ({self.get_status_display()})"
+
+class FriendMessage(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_friend_messages')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_friend_messages')
+    sender_chatbot_name = models.CharField(max_length=100, help_text="보낸 사람 챗봇 이름")
+    sender_persona = models.CharField(max_length=100, help_text="보낸 사람 챗봇 페르소나")
+    message_content = models.TextField(help_text="쪽지 내용")
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['receiver', 'is_read']),
+        ]
+
+    def __str__(self):
+        return f"{self.sender.username}님이 {self.receiver.username}님에게 보낸 쪽지: {self.message_content[:50]}... (읽음: {self.is_read})"

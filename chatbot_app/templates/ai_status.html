@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>아이의 상태</title>
+    <title>{{ user.profile.chatbot_name }}의 상태</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <style>
@@ -19,6 +19,33 @@
             cursor: pointer;
             font-family: 'VT323', monospace;
             z-index: 101;
+        }
+        #bgm-volume-slider {
+            position: absolute;
+            top: 20px;
+            left: 120px; /* Adjust as needed to position next to the button */
+            width: 100px;
+            z-index: 101;
+            -webkit-appearance: none;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            height: 10px;
+            outline: none;
+        }
+        #bgm-volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
+        #bgm-volume-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
         }
         body {
             display: flex;
@@ -167,8 +194,10 @@
 </head>
 <body>
     <button id="toggle-bgm-btn">BGM OFF</button>
+    <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
     <div class="status-container">
-        <h1>아이의 현재 상태</h1>
+        <a href="{% url 'edit_profile' %}" class="edit-profile-link">프로필 수정</a>
+        <h1>{{ user.profile.chatbot_name }}의 현재 상태</h1>
 
         <div class="status-item">
             <h2>호감도</h2>

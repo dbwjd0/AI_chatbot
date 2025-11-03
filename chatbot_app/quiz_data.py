@@ -1,3004 +1,518 @@
-# Auto-generated quiz data (5 genres × 100 = 500 questions)
 QUIZ_QUESTIONS = [
-    {
-        'genre': 'korean_history',
-        'question': '조선 왕조를 건국한 인물은 누구인가요?',
-        'options': ['정조', '이성계', '장영실', '세종'],
-        'answer': '이성계'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '훈민정음을 창제한 왕은 누구인가요?',
-        'options': ['세종', '백제의 근초고왕', '정조', '연산군'],
-        'answer': '세종'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '거북선을 발명한 장수는 누구인가요?',
-        'options': ['이순신', '세조', '세종', '이성계'],
-        'answer': '이순신'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 대표적인 실학자는 정조와 함께 활동한 인물로 누구인가요?',
-        'options': ['문익점', '태조', '광개토대왕', '정약용'],
-        'answer': '정약용'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '고조선을 세운 전설적 인물은 누구인가요?',
-        'options': ['대조영', '단군왕검', '이성계', '을지문덕'],
-        'answer': '단군왕검'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '임진왜란은 어느 연도에 시작되었나요?',
-        'options': ['1392년', '1446년', '1592년', '1636년'],
-        'answer': '1592년'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '훈민정음을 만든 목적은 무엇인가요?',
-        'options': ['왕의 권력강화', '백성의 문자 사용 편의', '세금 징수', '군사용 암호'],
-        'answer': '백성의 문자 사용 편의'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '삼국 시대에 속하지 않는 국가는?',
-        'options': ['신라', '백제', '고구려', '가야'],
-        'answer': '가야'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 수도였던 도시는 어디인가요?',
-        'options': ['한양', '안동', '부산', '익산'],
-        'answer': '한양'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '신라의 수도는 어디였나요?',
-        'options': ['강릉', '서울', '경주', '한양'],
-        'answer': '경주'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 왕조를 건국한 인물은 누구인가요?',
-        'options': ['이성계', '이순신', '이이', '윤봉길'],
-        'answer': '이성계'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '훈민정음을 창제한 왕은 누구인가요?',
-        'options': ['고려 태조 왕건', '신사임당', '세종', '세종대왕'],
-        'answer': '세종'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '거북선을 발명한 장수는 누구인가요?',
-        'options': ['연산군', '이순신', '보덕', '장영실'],
-        'answer': '이순신'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 대표적인 실학자는 정조와 함께 활동한 인물로 누구인가요?',
-        'options': ['이이', '정약용', '장영실', '을지문덕'],
-        'answer': '정약용'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '고조선을 세운 전설적 인물은 누구인가요?',
-        'options': ['단군왕검', '고려 태조 왕건', '세종', '러시아와 관련 없는 인물'],
-        'answer': '단군왕검'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '임진왜란은 어느 연도에 시작되었나요?',
-        'options': ['1592년', '1392년', '1446년', '1636년'],
-        'answer': '1592년'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '훈민정음을 만든 목적은 무엇인가요?',
-        'options': ['군사용 암호', '백성의 문자 사용 편의', '세금 징수', '왕의 권력강화'],
-        'answer': '백성의 문자 사용 편의'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '삼국 시대에 속하지 않는 국가는?',
-        'options': ['고구려', '신라', '백제', '가야'],
-        'answer': '가야'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 수도였던 도시는 어디인가요?',
-        'options': ['공주', '수원', '한양', '평양'],
-        'answer': '한양'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '신라의 수도는 어디였나요?',
-        'options': ['경주', '거창', '안동', '평양'],
-        'answer': '경주'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 왕조를 건국한 인물은 누구인가요?',
-        'options': ['윤봉길', '보덕', '이성계', '단군왕검'],
-        'answer': '이성계'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '훈민정음을 창제한 왕은 누구인가요?',
-        'options': ['세종대왕', '백제의 근초고왕', '세종', '정조'],
-        'answer': '세종'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '거북선을 발명한 장수는 누구인가요?',
-        'options': ['안중근', '광해군', '이순신', '김부식'],
-        'answer': '이순신'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 대표적인 실학자는 정조와 함께 활동한 인물로 누구인가요?',
-        'options': ['정약용', '백제의 근초고왕', '단군왕검', '을지문덕'],
-        'answer': '정약용'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '고조선을 세운 전설적 인물은 누구인가요?',
-        'options': ['김구', '단군왕검', '장영실', '이순신'],
-        'answer': '단군왕검'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '임진왜란은 어느 연도에 시작되었나요?',
-        'options': ['1636년', '1446년', '1392년', '1592년'],
-        'answer': '1592년'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '훈민정음을 만든 목적은 무엇인가요?',
-        'options': ['군사용 암호', '왕의 권력강화', '백성의 문자 사용 편의', '세금 징수'],
-        'answer': '백성의 문자 사용 편의'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '삼국 시대에 속하지 않는 국가는?',
-        'options': ['신라', '가야', '고구려', '백제'],
-        'answer': '가야'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 수도였던 도시는 어디인가요?',
-        'options': ['평양', '서울', '공주', '한양'],
-        'answer': '한양'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '신라의 수도는 어디였나요?',
-        'options': ['서울', '거창', '부산', '경주'],
-        'answer': '경주'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '삼국통일을 이룬 나라는 어디인가요?',
-        'options': ['백제', '신라', '가야', '고구려'],
-        'answer': '신라'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 성리학을 국가이념으로 적극 수용한 왕조는?',
-        'options': ['통일신라', '고구려', '조선', '신라'],
-        'answer': '조선'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '고려의 수도는 어디였나요?',
-        'options': ['평양', '개경', '한양', '경주'],
-        'answer': '개경'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 후기 실학자 정약용의 대표 저서는?',
-        'options': ['경세유표', '목민심서', '흠흠신서', '홍길동전'],
-        'answer': '목민심서'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '발해를 건국한 인물은 누구인가요?',
-        'options': ['대조영', '고려 태조', '무왕', '이나사'],
-        'answer': '대조영'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '을지문덕이 활약한 나라는?',
-        'options': ['가야', '백제', '신라', '고구려'],
-        'answer': '고구려'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '삼국사기를 편찬한 사람은?',
-        'options': ['김부식', '정약용', '일연', '이이'],
-        'answer': '김부식'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '광해군 시대의 정치적 사건으로 유명한 난은?',
-        'options': ['임진왜란', '인조반정', '정묘호란', '병자호란'],
-        'answer': '인조반정'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 개국 연도는?',
-        'options': ['1392년', '918년', '1897년', '1910년'],
-        'answer': '1392년'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '한국 역사에서 일제강점기가 끝난 해는?',
-        'options': ['1932년', '1945년', '1950년', '1910년'],
-        'answer': '1945년'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '삼국통일을 이룬 나라는 어디인가요?',
-        'options': ['고구려', '백제', '가야', '신라'],
-        'answer': '신라'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 성리학을 국가이념으로 적극 수용한 왕조는?',
-        'options': ['일제강점기', '대한제국', '조선', '신라'],
-        'answer': '조선'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '고려의 수도는 어디였나요?',
-        'options': ['한양', '평양', '경주', '개경'],
-        'answer': '개경'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 후기 실학자 정약용의 대표 저서는?',
-        'options': ['흠흠신서', '홍길동전', '목민심서', '경세유표'],
-        'answer': '목민심서'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '발해를 건국한 인물은 누구인가요?',
-        'options': ['이나사', '고려 태조', '대조영', '무왕'],
-        'answer': '대조영'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '을지문덕이 활약한 나라는?',
-        'options': ['백제', '신라', '고구려', '가야'],
-        'answer': '고구려'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '삼국사기를 편찬한 사람은?',
-        'options': ['일연', '정약용', '이이', '김부식'],
-        'answer': '김부식'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '광해군 시대의 정치적 사건으로 유명한 난은?',
-        'options': ['병자호란', '임진왜란', '정묘호란', '인조반정'],
-        'answer': '인조반정'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 개국 연도는?',
-        'options': ['1897년', '1910년', '1392년', '918년'],
-        'answer': '1392년'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '한국 역사에서 일제강점기가 끝난 해는?',
-        'options': ['1932년', '1945년', '1910년', '1950년'],
-        'answer': '1945년'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '삼국통일을 이룬 나라는 어디인가요?',
-        'options': ['백제', '신라', '가야', '고구려'],
-        'answer': '신라'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 성리학을 국가이념으로 적극 수용한 왕조는?',
-        'options': ['백제', '고조선', '조선', '일제강점기'],
-        'answer': '조선'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '고려의 수도는 어디였나요?',
-        'options': ['개경', '경주', '평양', '한양'],
-        'answer': '개경'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 후기 실학자 정약용의 대표 저서는?',
-        'options': ['흠흠신서', '목민심서', '홍길동전', '경세유표'],
-        'answer': '목민심서'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '발해를 건국한 인물은 누구인가요?',
-        'options': ['무왕', '고려 태조', '대조영', '이나사'],
-        'answer': '대조영'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '을지문덕이 활약한 나라는?',
-        'options': ['가야', '신라', '고구려', '백제'],
-        'answer': '고구려'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '삼국사기를 편찬한 사람은?',
-        'options': ['이이', '정약용', '일연', '김부식'],
-        'answer': '김부식'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '광해군 시대의 정치적 사건으로 유명한 난은?',
-        'options': ['인조반정', '정묘호란', '임진왜란', '병자호란'],
-        'answer': '인조반정'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 개국 연도는?',
-        'options': ['1897년', '918년', '1392년', '1910년'],
-        'answer': '1392년'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '한국 역사에서 일제강점기가 끝난 해는?',
-        'options': ['1932년', '1950년', '1945년', '1910년'],
-        'answer': '1945년'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '삼국통일을 이룬 나라는 어디인가요?',
-        'options': ['가야', '신라', '백제', '고구려'],
-        'answer': '신라'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 성리학을 국가이념으로 적극 수용한 왕조는?',
-        'options': ['신라', '고려', '조선', '고조선'],
-        'answer': '조선'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '고려의 수도는 어디였나요?',
-        'options': ['경주', '개경', '평양', '한양'],
-        'answer': '개경'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 후기 실학자 정약용의 대표 저서는?',
-        'options': ['홍길동전', '흠흠신서', '경세유표', '목민심서'],
-        'answer': '목민심서'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '발해를 건국한 인물은 누구인가요?',
-        'options': ['고려 태조', '무왕', '이나사', '대조영'],
-        'answer': '대조영'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '을지문덕이 활약한 나라는?',
-        'options': ['고구려', '백제', '가야', '신라'],
-        'answer': '고구려'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '삼국사기를 편찬한 사람은?',
-        'options': ['일연', '정약용', '이이', '김부식'],
-        'answer': '김부식'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '광해군 시대의 정치적 사건으로 유명한 난은?',
-        'options': ['임진왜란', '정묘호란', '병자호란', '인조반정'],
-        'answer': '인조반정'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 개국 연도는?',
-        'options': ['918년', '1392년', '1897년', '1910년'],
-        'answer': '1392년'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '한국 역사에서 일제강점기가 끝난 해는?',
-        'options': ['1910년', '1950년', '1945년', '1932년'],
-        'answer': '1945년'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 중기의 성리학자 중 퇴계 이황과 함께 대표적인 학자는?',
-        'options': ['김장생', '정약용', '이이', '이황'],
-        'answer': '이이'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '임진왜란 당시 명나라의 지원군을 이끈 장수는?',
-        'options': ['이순신', '원균', '이여송', '권율'],
-        'answer': '이여송'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 후기의 개혁을 추진한 수원화성을 축성한 왕은?',
-        'options': ['정조', '순조', '헌종', '영조'],
-        'answer': '정조'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '고려 말 공민왕이 추진한 개혁 중 하나는?',
-        'options': ['상평창 설치', '신돈 등용', '불교 배척', '과거제 폐지'],
-        'answer': '신돈 등용'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 과학자 장영실이 만든 기구는?',
-        'options': ['대포', '거울', '거북선', '혼천의'],
-        'answer': '혼천의'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 시대 과거제의 주요 과목이 아니었던 것은?',
-        'options': ['유학', '문학', '법률', '물리학'],
-        'answer': '물리학'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '신라의 화랑도를 이끈 조직의 이름은?',
-        'options': ['승려', '무사', '선비', '화랑'],
-        'answer': '화랑'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '고려의 대표적인 청자 문화는 어느 시대에 번성했나요?',
-        'options': ['삼국시대', '고려시대', '조선시대', '근대'],
-        'answer': '고려시대'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 대표적 여성 문학가로 그림과 시로 유명한 인물은?',
-        'options': ['심청', '허난설헌', '신사임당', '황진이'],
-        'answer': '신사임당'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '독립운동가 안중근이 이토 히로부미를 사살한 해는?',
-        'options': ['1909년', '1919년', '1905년', '1932년'],
-        'answer': '1909년'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 중기의 성리학자 중 퇴계 이황과 함께 대표적인 학자는?',
-        'options': ['김장생', '이황', '정약용', '이이'],
-        'answer': '이이'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '임진왜란 당시 명나라의 지원군을 이끈 장수는?',
-        'options': ['권율', '원균', '이순신', '이여송'],
-        'answer': '이여송'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 후기의 개혁을 추진한 수원화성을 축성한 왕은?',
-        'options': ['순조', '정조', '헌종', '영조'],
-        'answer': '정조'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '고려 말 공민왕이 추진한 개혁 중 하나는?',
-        'options': ['상평창 설치', '신돈 등용', '과거제 폐지', '불교 배척'],
-        'answer': '신돈 등용'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 과학자 장영실이 만든 기구는?',
-        'options': ['거울', '거북선', '대포', '혼천의'],
-        'answer': '혼천의'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 시대 과거제의 주요 과목이 아니었던 것은?',
-        'options': ['문학', '유학', '법률', '물리학'],
-        'answer': '물리학'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '신라의 화랑도를 이끈 조직의 이름은?',
-        'options': ['선비', '무사', '화랑', '승려'],
-        'answer': '화랑'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '고려의 대표적인 청자 문화는 어느 시대에 번성했나요?',
-        'options': ['조선시대', '고려시대', '삼국시대', '근대'],
-        'answer': '고려시대'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 대표적 여성 문학가로 그림과 시로 유명한 인물은?',
-        'options': ['황진이', '신사임당', '심청', '허난설헌'],
-        'answer': '신사임당'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '독립운동가 안중근이 이토 히로부미를 사살한 해는?',
-        'options': ['1909년', '1919년', '1905년', '1932년'],
-        'answer': '1909년'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 중기의 성리학자 중 퇴계 이황과 함께 대표적인 학자는?',
-        'options': ['이황', '김장생', '이이', '정약용'],
-        'answer': '이이'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '임진왜란 당시 명나라의 지원군을 이끈 장수는?',
-        'options': ['이순신', '원균', '권율', '이여송'],
-        'answer': '이여송'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 후기의 개혁을 추진한 수원화성을 축성한 왕은?',
-        'options': ['영조', '순조', '정조', '헌종'],
-        'answer': '정조'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '고려 말 공민왕이 추진한 개혁 중 하나는?',
-        'options': ['신돈 등용', '과거제 폐지', '상평창 설치', '불교 배척'],
-        'answer': '신돈 등용'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 과학자 장영실이 만든 기구는?',
-        'options': ['거북선', '거울', '대포', '혼천의'],
-        'answer': '혼천의'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선 시대 과거제의 주요 과목이 아니었던 것은?',
-        'options': ['문학', '유학', '법률', '물리학'],
-        'answer': '물리학'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '신라의 화랑도를 이끈 조직의 이름은?',
-        'options': ['승려', '선비', '무사', '화랑'],
-        'answer': '화랑'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '고려의 대표적인 청자 문화는 어느 시대에 번성했나요?',
-        'options': ['삼국시대', '조선시대', '근대', '고려시대'],
-        'answer': '고려시대'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '조선의 대표적 여성 문학가로 그림과 시로 유명한 인물은?',
-        'options': ['허난설헌', '신사임당', '심청', '황진이'],
-        'answer': '신사임당'
-    },
-    {
-        'genre': 'korean_history',
-        'question': '독립운동가 안중근이 이토 히로부미를 사살한 해는?',
-        'options': ['1905년', '1932년', '1909년', '1919년'],
-        'answer': '1909년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '로제타석은 어느 문명의 유물을 해독하는 데 도움을 주었나?',
-        'options': ['인더스', '고대 이집트', '메소포타미아', '마야'],
-        'answer': '고대 이집트'
-    },
-    {
-        'genre': 'world_history',
-        'question': '프랑스 혁명의 시작을 알린 사건은?',
-        'options': ['테니스 코트의 서약', '나폴레옹의 쿠데타', '루이16세 처형', '바스티유 감옥 습격'],
-        'answer': '바스티유 감옥 습격'
-    },
-    {
-        'genre': 'world_history',
-        'question': '제1차 세계대전의 도화선이 된 사건은?',
-        'options': ['탈레반 점령', '베르사유 조약', '사라예보 사건', '진주만 공격'],
-        'answer': '사라예보 사건'
-    },
-    {
-        'genre': 'world_history',
-        'question': '로마 제국의 초대 황제는?',
-        'options': ['네로', '콘스탄티누스', '율리우스 카이사르', '아우구스투스'],
-        'answer': '아우구스투스'
-    },
-    {
-        'genre': 'world_history',
-        'question': '미국 독립선언이 발표된 해는?',
-        'options': ['1865년', '1789년', '1776년', '1804년'],
-        'answer': '1776년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '레오나르도 다빈치의 대표작은?',
-        'options': ['비너스의 탄생', '최후의 심판', '천지창조', '모나리자'],
-        'answer': '모나리자'
-    },
-    {
-        'genre': 'world_history',
-        'question': '마르틴 루터가 95개조 반박문을 발표한 해는?',
-        'options': ['1648년', '1492년', '1588년', '1517년'],
-        'answer': '1517년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '칭기즈 칸이 세운 제국은?',
-        'options': ['로마 제국', '오스만 제국', '몽골 제국', '페르시아 제국'],
-        'answer': '몽골 제국'
-    },
-    {
-        'genre': 'world_history',
-        'question': '대항해시대를 연 주요 동인은 무엇이었나?',
-        'options': ['국경 분쟁', '종교적 이유', '신대륙 옮기기', '향신료와 무역'],
-        'answer': '향신료와 무역'
-    },
-    {
-        'genre': 'world_history',
-        'question': '중세 유럽에서 기사 계급을 상징하던 예절은?',
-        'options': ['기사도', '영주제', '봉건제', '상공업'],
-        'answer': '기사도'
-    },
-    {
-        'genre': 'world_history',
-        'question': '로제타석은 어느 문명의 유물을 해독하는 데 도움을 주었나?',
-        'options': ['고대 이집트', '메소포타미아', '마야', '인더스'],
-        'answer': '고대 이집트'
-    },
-    {
-        'genre': 'world_history',
-        'question': '프랑스 혁명의 시작을 알린 사건은?',
-        'options': ['나폴레옹의 쿠데타', '바스티유 감옥 습격', '루이16세 처형', '테니스 코트의 서약'],
-        'answer': '바스티유 감옥 습격'
-    },
-    {
-        'genre': 'world_history',
-        'question': '제1차 세계대전의 도화선이 된 사건은?',
-        'options': ['사라예보 사건', '진주만 공격', '베르사유 조약', '탈레반 점령'],
-        'answer': '사라예보 사건'
-    },
-    {
-        'genre': 'world_history',
-        'question': '로마 제국의 초대 황제는?',
-        'options': ['콘스탄티누스', '아우구스투스', '율리우스 카이사르', '네로'],
-        'answer': '아우구스투스'
-    },
-    {
-        'genre': 'world_history',
-        'question': '미국 독립선언이 발표된 해는?',
-        'options': ['1789년', '1804년', '1776년', '1865년'],
-        'answer': '1776년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '레오나르도 다빈치의 대표작은?',
-        'options': ['최후의 심판', '천지창조', '모나리자', '비너스의 탄생'],
-        'answer': '모나리자'
-    },
-    {
-        'genre': 'world_history',
-        'question': '마르틴 루터가 95개조 반박문을 발표한 해는?',
-        'options': ['1588년', '1517년', '1648년', '1492년'],
-        'answer': '1517년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '칭기즈 칸이 세운 제국은?',
-        'options': ['몽골 제국', '로마 제국', '오스만 제국', '페르시아 제국'],
-        'answer': '몽골 제국'
-    },
-    {
-        'genre': 'world_history',
-        'question': '대항해시대를 연 주요 동인은 무엇이었나?',
-        'options': ['국경 분쟁', '향신료와 무역', '신대륙 옮기기', '종교적 이유'],
-        'answer': '향신료와 무역'
-    },
-    {
-        'genre': 'world_history',
-        'question': '중세 유럽에서 기사 계급을 상징하던 예절은?',
-        'options': ['봉건제', '영주제', '기사도', '상공업'],
-        'answer': '기사도'
-    },
-    {
-        'genre': 'world_history',
-        'question': '로제타석은 어느 문명의 유물을 해독하는 데 도움을 주었나?',
-        'options': ['메소포타미아', '고대 이집트', '마야', '인더스'],
-        'answer': '고대 이집트'
-    },
-    {
-        'genre': 'world_history',
-        'question': '프랑스 혁명의 시작을 알린 사건은?',
-        'options': ['나폴레옹의 쿠데타', '루이16세 처형', '바스티유 감옥 습격', '테니스 코트의 서약'],
-        'answer': '바스티유 감옥 습격'
-    },
-    {
-        'genre': 'world_history',
-        'question': '제1차 세계대전의 도화선이 된 사건은?',
-        'options': ['사라예보 사건', '베르사유 조약', '진주만 공격', '탈레반 점령'],
-        'answer': '사라예보 사건'
-    },
-    {
-        'genre': 'world_history',
-        'question': '로마 제국의 초대 황제는?',
-        'options': ['콘스탄티누스', '아우구스투스', '네로', '율리우스 카이사르'],
-        'answer': '아우구스투스'
-    },
-    {
-        'genre': 'world_history',
-        'question': '미국 독립선언이 발표된 해는?',
-        'options': ['1776년', '1789년', '1865년', '1804년'],
-        'answer': '1776년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '레오나르도 다빈치의 대표작은?',
-        'options': ['최후의 심판', '모나리자', '천지창조', '비너스의 탄생'],
-        'answer': '모나리자'
-    },
-    {
-        'genre': 'world_history',
-        'question': '마르틴 루터가 95개조 반박문을 발표한 해는?',
-        'options': ['1648년', '1492년', '1588년', '1517년'],
-        'answer': '1517년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '칭기즈 칸이 세운 제국은?',
-        'options': ['페르시아 제국', '로마 제국', '오스만 제국', '몽골 제국'],
-        'answer': '몽골 제국'
-    },
-    {
-        'genre': 'world_history',
-        'question': '대항해시대를 연 주요 동인은 무엇이었나?',
-        'options': ['향신료와 무역', '신대륙 옮기기', '국경 분쟁', '종교적 이유'],
-        'answer': '향신료와 무역'
-    },
-    {
-        'genre': 'world_history',
-        'question': '중세 유럽에서 기사 계급을 상징하던 예절은?',
-        'options': ['기사도', '상공업', '영주제', '봉건제'],
-        'answer': '기사도'
-    },
-    {
-        'genre': 'world_history',
-        'question': '르네상스가 시작된 국가는?',
-        'options': ['프랑스', '영국', '스페인', '이탈리아'],
-        'answer': '이탈리아'
-    },
-    {
-        'genre': 'world_history',
-        'question': '산업혁명이 먼저 일어난 나라는?',
-        'options': ['미국', '프랑스', '영국', '독일'],
-        'answer': '영국'
-    },
-    {
-        'genre': 'world_history',
-        'question': '나폴레옹이 최종 패배한 전투는?',
-        'options': ['아우스터리츠 전투', '트라팔가르 전투', '워털루 전투', '마렝고 전투'],
-        'answer': '워털루 전투'
-    },
-    {
-        'genre': 'world_history',
-        'question': '베르사유 조약은 어느 전쟁 후 체결되었나?',
-        'options': ['러·우 전쟁', '한국전쟁', '제1차 세계대전', '제2차 세계대전'],
-        'answer': '제1차 세계대전'
-    },
-    {
-        'genre': 'world_history',
-        'question': '대항해시대에 신대륙을 처음으로 항해로 도달한 사람은?',
-        'options': ['바스코 다 가마', '코르테스', '콜럼버스', '마젤란'],
-        'answer': '콜럼버스'
-    },
-    {
-        'genre': 'world_history',
-        'question': '미국의 초대 대통령은?',
-        'options': ['존 애덤스', '토머스 제퍼슨', '조지 워싱턴', '에이브러햄 링컨'],
-        'answer': '조지 워싱턴'
-    },
-    {
-        'genre': 'world_history',
-        'question': '중국을 통일한 최초의 황제는?',
-        'options': ['명 태조', '진시황', '한 고조', '당 태종'],
-        'answer': '진시황'
-    },
-    {
-        'genre': 'world_history',
-        'question': '대공황이 심각했던 1930년대의 주요 원인은?',
-        'options': ['기후 변화', '전쟁', '주식시장 붕괴', '전염병'],
-        'answer': '주식시장 붕괴'
-    },
-    {
-        'genre': 'world_history',
-        'question': '인디언 중 아즈텍 문명 중심 도시는?',
-        'options': ['치첸이차', '마추픽추', '테노치티틀란', '티티카카'],
-        'answer': '테노치티틀란'
-    },
-    {
-        'genre': 'world_history',
-        'question': '영국의 산업혁명 초기 주요 동력원은?',
-        'options': ['물', '석탄', '석유', '원자력'],
-        'answer': '석탄'
-    },
-    {
-        'genre': 'world_history',
-        'question': '르네상스가 시작된 국가는?',
-        'options': ['영국', '프랑스', '스페인', '이탈리아'],
-        'answer': '이탈리아'
-    },
-    {
-        'genre': 'world_history',
-        'question': '산업혁명이 먼저 일어난 나라는?',
-        'options': ['미국', '프랑스', '영국', '독일'],
-        'answer': '영국'
-    },
-    {
-        'genre': 'world_history',
-        'question': '나폴레옹이 최종 패배한 전투는?',
-        'options': ['마렝고 전투', '트라팔가르 전투', '아우스터리츠 전투', '워털루 전투'],
-        'answer': '워털루 전투'
-    },
-    {
-        'genre': 'world_history',
-        'question': '베르사유 조약은 어느 전쟁 후 체결되었나?',
-        'options': ['제1차 세계대전', '한국전쟁', '제2차 세계대전', '러·우 전쟁'],
-        'answer': '제1차 세계대전'
-    },
-    {
-        'genre': 'world_history',
-        'question': '대항해시대에 신대륙을 처음으로 항해로 도달한 사람은?',
-        'options': ['바스코 다 가마', '코르테스', '마젤란', '콜럼버스'],
-        'answer': '콜럼버스'
-    },
-    {
-        'genre': 'world_history',
-        'question': '미국의 초대 대통령은?',
-        'options': ['존 애덤스', '토머스 제퍼슨', '에이브러햄 링컨', '조지 워싱턴'],
-        'answer': '조지 워싱턴'
-    },
-    {
-        'genre': 'world_history',
-        'question': '중국을 통일한 최초의 황제는?',
-        'options': ['당 태종', '한 고조', '명 태조', '진시황'],
-        'answer': '진시황'
-    },
-    {
-        'genre': 'world_history',
-        'question': '대공황이 심각했던 1930년대의 주요 원인은?',
-        'options': ['전염병', '전쟁', '주식시장 붕괴', '기후 변화'],
-        'answer': '주식시장 붕괴'
-    },
-    {
-        'genre': 'world_history',
-        'question': '인디언 중 아즈텍 문명 중심 도시는?',
-        'options': ['마추픽추', '테노치티틀란', '티티카카', '치첸이차'],
-        'answer': '테노치티틀란'
-    },
-    {
-        'genre': 'world_history',
-        'question': '영국의 산업혁명 초기 주요 동력원은?',
-        'options': ['석유', '물', '석탄', '원자력'],
-        'answer': '석탄'
-    },
-    {
-        'genre': 'world_history',
-        'question': '르네상스가 시작된 국가는?',
-        'options': ['프랑스', '스페인', '이탈리아', '영국'],
-        'answer': '이탈리아'
-    },
-    {
-        'genre': 'world_history',
-        'question': '산업혁명이 먼저 일어난 나라는?',
-        'options': ['영국', '독일', '프랑스', '미국'],
-        'answer': '영국'
-    },
-    {
-        'genre': 'world_history',
-        'question': '나폴레옹이 최종 패배한 전투는?',
-        'options': ['마렝고 전투', '트라팔가르 전투', '워털루 전투', '아우스터리츠 전투'],
-        'answer': '워털루 전투'
-    },
-    {
-        'genre': 'world_history',
-        'question': '베르사유 조약은 어느 전쟁 후 체결되었나?',
-        'options': ['러·우 전쟁', '한국전쟁', '제2차 세계대전', '제1차 세계대전'],
-        'answer': '제1차 세계대전'
-    },
-    {
-        'genre': 'world_history',
-        'question': '대항해시대에 신대륙을 처음으로 항해로 도달한 사람은?',
-        'options': ['바스코 다 가마', '마젤란', '코르테스', '콜럼버스'],
-        'answer': '콜럼버스'
-    },
-    {
-        'genre': 'world_history',
-        'question': '미국의 초대 대통령은?',
-        'options': ['존 애덤스', '에이브러햄 링컨', '조지 워싱턴', '토머스 제퍼슨'],
-        'answer': '조지 워싱턴'
-    },
-    {
-        'genre': 'world_history',
-        'question': '중국을 통일한 최초의 황제는?',
-        'options': ['명 태조', '당 태종', '한 고조', '진시황'],
-        'answer': '진시황'
-    },
-    {
-        'genre': 'world_history',
-        'question': '대공황이 심각했던 1930년대의 주요 원인은?',
-        'options': ['주식시장 붕괴', '전쟁', '전염병', '기후 변화'],
-        'answer': '주식시장 붕괴'
-    },
-    {
-        'genre': 'world_history',
-        'question': '인디언 중 아즈텍 문명 중심 도시는?',
-        'options': ['티티카카', '마추픽추', '테노치티틀란', '치첸이차'],
-        'answer': '테노치티틀란'
-    },
-    {
-        'genre': 'world_history',
-        'question': '영국의 산업혁명 초기 주요 동력원은?',
-        'options': ['석유', '원자력', '석탄', '물'],
-        'answer': '석탄'
-    },
-    {
-        'genre': 'world_history',
-        'question': '르네상스가 시작된 국가는?',
-        'options': ['영국', '스페인', '프랑스', '이탈리아'],
-        'answer': '이탈리아'
-    },
-    {
-        'genre': 'world_history',
-        'question': '산업혁명이 먼저 일어난 나라는?',
-        'options': ['독일', '영국', '미국', '프랑스'],
-        'answer': '영국'
-    },
-    {
-        'genre': 'world_history',
-        'question': '나폴레옹이 최종 패배한 전투는?',
-        'options': ['트라팔가르 전투', '워털루 전투', '마렝고 전투', '아우스터리츠 전투'],
-        'answer': '워털루 전투'
-    },
-    {
-        'genre': 'world_history',
-        'question': '베르사유 조약은 어느 전쟁 후 체결되었나?',
-        'options': ['러·우 전쟁', '제2차 세계대전', '제1차 세계대전', '한국전쟁'],
-        'answer': '제1차 세계대전'
-    },
-    {
-        'genre': 'world_history',
-        'question': '대항해시대에 신대륙을 처음으로 항해로 도달한 사람은?',
-        'options': ['콜럼버스', '바스코 다 가마', '마젤란', '코르테스'],
-        'answer': '콜럼버스'
-    },
-    {
-        'genre': 'world_history',
-        'question': '미국의 초대 대통령은?',
-        'options': ['조지 워싱턴', '에이브러햄 링컨', '토머스 제퍼슨', '존 애덤스'],
-        'answer': '조지 워싱턴'
-    },
-    {
-        'genre': 'world_history',
-        'question': '중국을 통일한 최초의 황제는?',
-        'options': ['당 태종', '명 태조', '한 고조', '진시황'],
-        'answer': '진시황'
-    },
-    {
-        'genre': 'world_history',
-        'question': '대공황이 심각했던 1930년대의 주요 원인은?',
-        'options': ['기후 변화', '전쟁', '전염병', '주식시장 붕괴'],
-        'answer': '주식시장 붕괴'
-    },
-    {
-        'genre': 'world_history',
-        'question': '인디언 중 아즈텍 문명 중심 도시는?',
-        'options': ['테노치티틀란', '마추픽추', '티티카카', '치첸이차'],
-        'answer': '테노치티틀란'
-    },
-    {
-        'genre': 'world_history',
-        'question': '영국의 산업혁명 초기 주요 동력원은?',
-        'options': ['물', '석탄', '원자력', '석유'],
-        'answer': '석탄'
-    },
-    {
-        'genre': 'world_history',
-        'question': '나폴레옹이 황제가 된 해는?',
-        'options': ['1812년', '1815년', '1804년', '1799년'],
-        'answer': '1804년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '대항해시대에 포르투갈이 먼저 개척한 해로 유명한 인물은?',
-        'options': ['바스코 다 가마', '마젤란', '헨리 왕자', '콜럼버스'],
-        'answer': '바스코 다 가마'
-    },
-    {
-        'genre': 'world_history',
-        'question': '20세기 초 발칸반도에서의 갈등을 촉발한 사건은?',
-        'options': ['발칸 전쟁', '보스니아 합병', '러시아 혁명', '사라예보 사건'],
-        'answer': '사라예보 사건'
-    },
-    {
-        'genre': 'world_history',
-        'question': '베트남 전쟁에서 미군의 큰 철수 시기는?',
-        'options': ['1964년', '1973년', '1968년', '1975년'],
-        'answer': '1973년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '베를린 장벽이 무너진 해는?',
-        'options': ['1989년', '1991년', '1987년', '1995년'],
-        'answer': '1989년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '로마 제국이 공식적으로 동서로 분리된 시기는?',
-        'options': ['395년', '527년', '476년', '330년'],
-        'answer': '395년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '몽골 제국의 수도였던 도시 이름은?',
-        'options': ['올란바토르', '카라코룸', '사마르칸트', '하르코프'],
-        'answer': '카라코룸'
-    },
-    {
-        'genre': 'world_history',
-        'question': '십자군 전쟁이 시작된 세기는?',
-        'options': ['12세기', '11세기', '10세기', '9세기'],
-        'answer': '11세기'
-    },
-    {
-        'genre': 'world_history',
-        'question': '유럽에서 종교개혁을 촉발한 인물은?',
-        'options': ['헨리 8세', '존 칼빈', '존 녹스', '마르틴 루터'],
-        'answer': '마르틴 루터'
-    },
-    {
-        'genre': 'world_history',
-        'question': '스페인의 황금시대(엘 시글로 데 오로)가 주로 번성한 세기는?',
-        'options': ['18세기', '16세기', '17세기', '15세기'],
-        'answer': '16세기'
-    },
-    {
-        'genre': 'world_history',
-        'question': '나폴레옹이 황제가 된 해는?',
-        'options': ['1815년', '1799년', '1804년', '1812년'],
-        'answer': '1804년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '대항해시대에 포르투갈이 먼저 개척한 해로 유명한 인물은?',
-        'options': ['마젤란', '바스코 다 가마', '콜럼버스', '헨리 왕자'],
-        'answer': '바스코 다 가마'
-    },
-    {
-        'genre': 'world_history',
-        'question': '20세기 초 발칸반도에서의 갈등을 촉발한 사건은?',
-        'options': ['사라예보 사건', '보스니아 합병', '발칸 전쟁', '러시아 혁명'],
-        'answer': '사라예보 사건'
-    },
-    {
-        'genre': 'world_history',
-        'question': '베트남 전쟁에서 미군의 큰 철수 시기는?',
-        'options': ['1975년', '1968년', '1964년', '1973년'],
-        'answer': '1973년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '베를린 장벽이 무너진 해는?',
-        'options': ['1995년', '1991년', '1987년', '1989년'],
-        'answer': '1989년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '로마 제국이 공식적으로 동서로 분리된 시기는?',
-        'options': ['330년', '476년', '527년', '395년'],
-        'answer': '395년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '몽골 제국의 수도였던 도시 이름은?',
-        'options': ['카라코룸', '하르코프', '올란바토르', '사마르칸트'],
-        'answer': '카라코룸'
-    },
-    {
-        'genre': 'world_history',
-        'question': '십자군 전쟁이 시작된 세기는?',
-        'options': ['10세기', '12세기', '11세기', '9세기'],
-        'answer': '11세기'
-    },
-    {
-        'genre': 'world_history',
-        'question': '유럽에서 종교개혁을 촉발한 인물은?',
-        'options': ['존 칼빈', '헨리 8세', '마르틴 루터', '존 녹스'],
-        'answer': '마르틴 루터'
-    },
-    {
-        'genre': 'world_history',
-        'question': '스페인의 황금시대(엘 시글로 데 오로)가 주로 번성한 세기는?',
-        'options': ['18세기', '16세기', '15세기', '17세기'],
-        'answer': '16세기'
-    },
-    {
-        'genre': 'world_history',
-        'question': '나폴레옹이 황제가 된 해는?',
-        'options': ['1815년', '1804년', '1812년', '1799년'],
-        'answer': '1804년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '대항해시대에 포르투갈이 먼저 개척한 해로 유명한 인물은?',
-        'options': ['바스코 다 가마', '콜럼버스', '마젤란', '헨리 왕자'],
-        'answer': '바스코 다 가마'
-    },
-    {
-        'genre': 'world_history',
-        'question': '20세기 초 발칸반도에서의 갈등을 촉발한 사건은?',
-        'options': ['발칸 전쟁', '사라예보 사건', '보스니아 합병', '러시아 혁명'],
-        'answer': '사라예보 사건'
-    },
-    {
-        'genre': 'world_history',
-        'question': '베트남 전쟁에서 미군의 큰 철수 시기는?',
-        'options': ['1975년', '1973년', '1964년', '1968년'],
-        'answer': '1973년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '베를린 장벽이 무너진 해는?',
-        'options': ['1987년', '1989년', '1991년', '1995년'],
-        'answer': '1989년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '로마 제국이 공식적으로 동서로 분리된 시기는?',
-        'options': ['476년', '527년', '395년', '330년'],
-        'answer': '395년'
-    },
-    {
-        'genre': 'world_history',
-        'question': '몽골 제국의 수도였던 도시 이름은?',
-        'options': ['사마르칸트', '하르코프', '올란바토르', '카라코룸'],
-        'answer': '카라코룸'
-    },
-    {
-        'genre': 'world_history',
-        'question': '십자군 전쟁이 시작된 세기는?',
-        'options': ['11세기', '12세기', '10세기', '9세기'],
-        'answer': '11세기'
-    },
-    {
-        'genre': 'world_history',
-        'question': '유럽에서 종교개혁을 촉발한 인물은?',
-        'options': ['존 칼빈', '헨리 8세', '마르틴 루터', '존 녹스'],
-        'answer': '마르틴 루터'
-    },
-    {
-        'genre': 'world_history',
-        'question': '스페인의 황금시대(엘 시글로 데 오로)가 주로 번성한 세기는?',
-        'options': ['17세기', '18세기', '15세기', '16세기'],
-        'answer': '16세기'
-    },
-    {
-        'genre': 'science',
-        'question': '물은 몇 도에서 끓나요? (섭씨)',
-        'options': ['100도', '50도', '0도', '200도'],
-        'answer': '100도'
-    },
-    {
-        'genre': 'science',
-        'question': '태양계에서 가장 큰 행성은?',
-        'options': ['지구', '목성', '화성', '수성'],
-        'answer': '목성'
-    },
-    {
-        'genre': 'science',
-        'question': '공기 중 가장 많은 기체는?',
-        'options': ['이산화탄소', '산소', '아르곤', '질소'],
-        'answer': '질소'
-    },
-    {
-        'genre': 'science',
-        'question': '광합성에 필요한 기체는?',
-        'options': ['산소', '질소', '수소', '이산화탄소'],
-        'answer': '이산화탄소'
-    },
-    {
-        'genre': 'science',
-        'question': '인체에서 가장 큰 장기는?',
-        'options': ['간', '뇌', '폐', '심장'],
-        'answer': '간'
-    },
-    {
-        'genre': 'science',
-        'question': '달에 최초로 착륙한 해는?',
-        'options': ['1961년', '1957년', '1969년', '1975년'],
-        'answer': '1969년'
-    },
-    {
-        'genre': 'science',
-        'question': '소리의 속도(공기 중)는 약 얼마인가?',
-        'options': ['340m/s', '1000m/s', '3000m/s', '100m/s'],
-        'answer': '340m/s'
-    },
-    {
-        'genre': 'science',
-        'question': '물의 분자식은?',
-        'options': ['NaCl', 'CO2', 'O2', 'H2O'],
-        'answer': 'H2O'
-    },
-    {
-        'genre': 'science',
-        'question': '태양은 어떤 종류의 천체인가?',
-        'options': ['항성', '혜성', '행성', '위성'],
-        'answer': '항성'
-    },
-    {
-        'genre': 'science',
-        'question': '빛의 속도는 진공에서 초당 약 몇 km인가?',
-        'options': ['3만 km/s', '3백 km/s', '3천 km/s', '30만 km/s'],
-        'answer': '30만 km/s'
-    },
-    {
-        'genre': 'science',
-        'question': '물은 몇 도에서 끓나요? (섭씨)',
-        'options': ['200도', '50도', '100도', '0도'],
-        'answer': '100도'
-    },
-    {
-        'genre': 'science',
-        'question': '태양계에서 가장 큰 행성은?',
-        'options': ['화성', '수성', '목성', '지구'],
-        'answer': '목성'
-    },
-    {
-        'genre': 'science',
-        'question': '공기 중 가장 많은 기체는?',
-        'options': ['이산화탄소', '질소', '아르곤', '산소'],
-        'answer': '질소'
-    },
-    {
-        'genre': 'science',
-        'question': '광합성에 필요한 기체는?',
-        'options': ['이산화탄소', '산소', '수소', '질소'],
-        'answer': '이산화탄소'
-    },
-    {
-        'genre': 'science',
-        'question': '인체에서 가장 큰 장기는?',
-        'options': ['심장', '뇌', '폐', '간'],
-        'answer': '간'
-    },
-    {
-        'genre': 'science',
-        'question': '달에 최초로 착륙한 해는?',
-        'options': ['1961년', '1957년', '1969년', '1975년'],
-        'answer': '1969년'
-    },
-    {
-        'genre': 'science',
-        'question': '소리의 속도(공기 중)는 약 얼마인가?',
-        'options': ['3000m/s', '340m/s', '1000m/s', '100m/s'],
-        'answer': '340m/s'
-    },
-    {
-        'genre': 'science',
-        'question': '물의 분자식은?',
-        'options': ['O2', 'NaCl', 'CO2', 'H2O'],
-        'answer': 'H2O'
-    },
-    {
-        'genre': 'science',
-        'question': '태양은 어떤 종류의 천체인가?',
-        'options': ['항성', '행성', '혜성', '위성'],
-        'answer': '항성'
-    },
-    {
-        'genre': 'science',
-        'question': '빛의 속도는 진공에서 초당 약 몇 km인가?',
-        'options': ['3백 km/s', '30만 km/s', '3만 km/s', '3천 km/s'],
-        'answer': '30만 km/s'
-    },
-    {
-        'genre': 'science',
-        'question': '물은 몇 도에서 끓나요? (섭씨)',
-        'options': ['200도', '50도', '100도', '0도'],
-        'answer': '100도'
-    },
-    {
-        'genre': 'science',
-        'question': '태양계에서 가장 큰 행성은?',
-        'options': ['지구', '목성', '수성', '화성'],
-        'answer': '목성'
-    },
-    {
-        'genre': 'science',
-        'question': '공기 중 가장 많은 기체는?',
-        'options': ['산소', '이산화탄소', '질소', '아르곤'],
-        'answer': '질소'
-    },
-    {
-        'genre': 'science',
-        'question': '광합성에 필요한 기체는?',
-        'options': ['질소', '수소', '산소', '이산화탄소'],
-        'answer': '이산화탄소'
-    },
-    {
-        'genre': 'science',
-        'question': '인체에서 가장 큰 장기는?',
-        'options': ['간', '폐', '심장', '뇌'],
-        'answer': '간'
-    },
-    {
-        'genre': 'science',
-        'question': '달에 최초로 착륙한 해는?',
-        'options': ['1969년', '1961년', '1975년', '1957년'],
-        'answer': '1969년'
-    },
-    {
-        'genre': 'science',
-        'question': '소리의 속도(공기 중)는 약 얼마인가?',
-        'options': ['100m/s', '1000m/s', '3000m/s', '340m/s'],
-        'answer': '340m/s'
-    },
-    {
-        'genre': 'science',
-        'question': '물의 분자식은?',
-        'options': ['CO2', 'NaCl', 'H2O', 'O2'],
-        'answer': 'H2O'
-    },
-    {
-        'genre': 'science',
-        'question': '태양은 어떤 종류의 천체인가?',
-        'options': ['혜성', '행성', '항성', '위성'],
-        'answer': '항성'
-    },
-    {
-        'genre': 'science',
-        'question': '빛의 속도는 진공에서 초당 약 몇 km인가?',
-        'options': ['3백 km/s', '30만 km/s', '3천 km/s', '3만 km/s'],
-        'answer': '30만 km/s'
-    },
-    {
-        'genre': 'science',
-        'question': '상대성 이론을 발표한 사람은?',
-        'options': ['아이작 뉴턴', '스티븐 호킹', '알베르트 아인슈타인', '닐스 보어'],
-        'answer': '알베르트 아인슈타인'
-    },
-    {
-        'genre': 'science',
-        'question': '양자역학의 불확정성 원리를 제시한 사람은?',
-        'options': ['플랑크', '베르너 하이젠베르크', '닐스 보어', '슈뢰딩거'],
-        'answer': '베르너 하이젠베르크'
-    },
-    {
-        'genre': 'science',
-        'question': 'DNA 이중나선 구조를 발견한 과학자는?',
-        'options': ['토머스 헌트 모건', '제임스 왓슨과 프랜시스 크릭', '마리 퀴리', '아이작 뉴턴'],
-        'answer': '제임스 왓슨과 프랜시스 크릭'
-    },
-    {
-        'genre': 'science',
-        'question': '지구의 공전은 약 얼마의 기간을 가지나요?',
-        'options': ['365.25일', '10년', '30일', '24시간'],
-        'answer': '365.25일'
-    },
-    {
-        'genre': 'science',
-        'question': '인체 면역계에서 항체를 만드는 세포는?',
-        'options': ['B세포', 'T세포', '적혈구', '대식세포'],
-        'answer': 'B세포'
-    },
-    {
-        'genre': 'science',
-        'question': '물을 전기분해하면 생성되는 기체는?',
-        'options': ['메탄과 이산화탄소', '헬륨과 수소', '질소와 산소', '수소와 산소'],
-        'answer': '수소와 산소'
-    },
-    {
-        'genre': 'science',
-        'question': '지구 내부에서 가장 중심부는 무엇인가?',
-        'options': ['맨틀', '핵', '지각', '망간층'],
-        'answer': '핵'
-    },
-    {
-        'genre': 'science',
-        'question': '대기권 중 비행기가 주로 운항하는 층은?',
-        'options': ['성층권', '대류권', '중간권', '열권'],
-        'answer': '대류권'
-    },
-    {
-        'genre': 'science',
-        'question': '태양광 발전에서 햇빛을 전기로 바꾸는 장치는?',
-        'options': ['태양열 집열기', '태양전지', '연료전지', '풍력 터빈'],
-        'answer': '태양전지'
-    },
-    {
-        'genre': 'science',
-        'question': '물질의 세 가지 상태는 고체, 액체와 무엇?',
-        'options': ['유체', '플라즈마', '기체', '초액체'],
-        'answer': '기체'
-    },
-    {
-        'genre': 'science',
-        'question': '상대성 이론을 발표한 사람은?',
-        'options': ['닐스 보어', '알베르트 아인슈타인', '아이작 뉴턴', '스티븐 호킹'],
-        'answer': '알베르트 아인슈타인'
-    },
-    {
-        'genre': 'science',
-        'question': '양자역학의 불확정성 원리를 제시한 사람은?',
-        'options': ['베르너 하이젠베르크', '플랑크', '슈뢰딩거', '닐스 보어'],
-        'answer': '베르너 하이젠베르크'
-    },
-    {
-        'genre': 'science',
-        'question': 'DNA 이중나선 구조를 발견한 과학자는?',
-        'options': ['마리 퀴리', '아이작 뉴턴', '제임스 왓슨과 프랜시스 크릭', '토머스 헌트 모건'],
-        'answer': '제임스 왓슨과 프랜시스 크릭'
-    },
-    {
-        'genre': 'science',
-        'question': '지구의 공전은 약 얼마의 기간을 가지나요?',
-        'options': ['30일', '365.25일', '24시간', '10년'],
-        'answer': '365.25일'
-    },
-    {
-        'genre': 'science',
-        'question': '인체 면역계에서 항체를 만드는 세포는?',
-        'options': ['T세포', '대식세포', '적혈구', 'B세포'],
-        'answer': 'B세포'
-    },
-    {
-        'genre': 'science',
-        'question': '물을 전기분해하면 생성되는 기체는?',
-        'options': ['수소와 산소', '메탄과 이산화탄소', '질소와 산소', '헬륨과 수소'],
-        'answer': '수소와 산소'
-    },
-    {
-        'genre': 'science',
-        'question': '지구 내부에서 가장 중심부는 무엇인가?',
-        'options': ['핵', '맨틀', '망간층', '지각'],
-        'answer': '핵'
-    },
-    {
-        'genre': 'science',
-        'question': '대기권 중 비행기가 주로 운항하는 층은?',
-        'options': ['중간권', '대류권', '열권', '성층권'],
-        'answer': '대류권'
-    },
-    {
-        'genre': 'science',
-        'question': '태양광 발전에서 햇빛을 전기로 바꾸는 장치는?',
-        'options': ['연료전지', '태양전지', '풍력 터빈', '태양열 집열기'],
-        'answer': '태양전지'
-    },
-    {
-        'genre': 'science',
-        'question': '물질의 세 가지 상태는 고체, 액체와 무엇?',
-        'options': ['플라즈마', '기체', '초액체', '유체'],
-        'answer': '기체'
-    },
-    {
-        'genre': 'science',
-        'question': '상대성 이론을 발표한 사람은?',
-        'options': ['아이작 뉴턴', '스티븐 호킹', '알베르트 아인슈타인', '닐스 보어'],
-        'answer': '알베르트 아인슈타인'
-    },
-    {
-        'genre': 'science',
-        'question': '양자역학의 불확정성 원리를 제시한 사람은?',
-        'options': ['플랑크', '닐스 보어', '베르너 하이젠베르크', '슈뢰딩거'],
-        'answer': '베르너 하이젠베르크'
-    },
-    {
-        'genre': 'science',
-        'question': 'DNA 이중나선 구조를 발견한 과학자는?',
-        'options': ['아이작 뉴턴', '토머스 헌트 모건', '마리 퀴리', '제임스 왓슨과 프랜시스 크릭'],
-        'answer': '제임스 왓슨과 프랜시스 크릭'
-    },
-    {
-        'genre': 'science',
-        'question': '지구의 공전은 약 얼마의 기간을 가지나요?',
-        'options': ['365.25일', '10년', '24시간', '30일'],
-        'answer': '365.25일'
-    },
-    {
-        'genre': 'science',
-        'question': '인체 면역계에서 항체를 만드는 세포는?',
-        'options': ['T세포', '적혈구', 'B세포', '대식세포'],
-        'answer': 'B세포'
-    },
-    {
-        'genre': 'science',
-        'question': '물을 전기분해하면 생성되는 기체는?',
-        'options': ['헬륨과 수소', '질소와 산소', '수소와 산소', '메탄과 이산화탄소'],
-        'answer': '수소와 산소'
-    },
-    {
-        'genre': 'science',
-        'question': '지구 내부에서 가장 중심부는 무엇인가?',
-        'options': ['지각', '망간층', '핵', '맨틀'],
-        'answer': '핵'
-    },
-    {
-        'genre': 'science',
-        'question': '대기권 중 비행기가 주로 운항하는 층은?',
-        'options': ['대류권', '열권', '성층권', '중간권'],
-        'answer': '대류권'
-    },
-    {
-        'genre': 'science',
-        'question': '태양광 발전에서 햇빛을 전기로 바꾸는 장치는?',
-        'options': ['풍력 터빈', '태양전지', '태양열 집열기', '연료전지'],
-        'answer': '태양전지'
-    },
-    {
-        'genre': 'science',
-        'question': '물질의 세 가지 상태는 고체, 액체와 무엇?',
-        'options': ['기체', '유체', '초액체', '플라즈마'],
-        'answer': '기체'
-    },
-    {
-        'genre': 'science',
-        'question': '상대성 이론을 발표한 사람은?',
-        'options': ['아이작 뉴턴', '닐스 보어', '스티븐 호킹', '알베르트 아인슈타인'],
-        'answer': '알베르트 아인슈타인'
-    },
-    {
-        'genre': 'science',
-        'question': '양자역학의 불확정성 원리를 제시한 사람은?',
-        'options': ['슈뢰딩거', '베르너 하이젠베르크', '닐스 보어', '플랑크'],
-        'answer': '베르너 하이젠베르크'
-    },
-    {
-        'genre': 'science',
-        'question': 'DNA 이중나선 구조를 발견한 과학자는?',
-        'options': ['마리 퀴리', '제임스 왓슨과 프랜시스 크릭', '아이작 뉴턴', '토머스 헌트 모건'],
-        'answer': '제임스 왓슨과 프랜시스 크릭'
-    },
-    {
-        'genre': 'science',
-        'question': '지구의 공전은 약 얼마의 기간을 가지나요?',
-        'options': ['10년', '30일', '365.25일', '24시간'],
-        'answer': '365.25일'
-    },
-    {
-        'genre': 'science',
-        'question': '인체 면역계에서 항체를 만드는 세포는?',
-        'options': ['대식세포', '적혈구', 'B세포', 'T세포'],
-        'answer': 'B세포'
-    },
-    {
-        'genre': 'science',
-        'question': '물을 전기분해하면 생성되는 기체는?',
-        'options': ['헬륨과 수소', '메탄과 이산화탄소', '질소와 산소', '수소와 산소'],
-        'answer': '수소와 산소'
-    },
-    {
-        'genre': 'science',
-        'question': '지구 내부에서 가장 중심부는 무엇인가?',
-        'options': ['핵', '망간층', '맨틀', '지각'],
-        'answer': '핵'
-    },
-    {
-        'genre': 'science',
-        'question': '대기권 중 비행기가 주로 운항하는 층은?',
-        'options': ['중간권', '성층권', '대류권', '열권'],
-        'answer': '대류권'
-    },
-    {
-        'genre': 'science',
-        'question': '태양광 발전에서 햇빛을 전기로 바꾸는 장치는?',
-        'options': ['태양전지', '풍력 터빈', '연료전지', '태양열 집열기'],
-        'answer': '태양전지'
-    },
-    {
-        'genre': 'science',
-        'question': '물질의 세 가지 상태는 고체, 액체와 무엇?',
-        'options': ['기체', '플라즈마', '초액체', '유체'],
-        'answer': '기체'
-    },
-    {
-        'genre': 'science',
-        'question': '플랑크 상수를 도입해 양자이론 기초를 놓은 사람은?',
-        'options': ['알베르트 아인슈타인', '베르너 하이젠베르크', '닐스 보어', '막스 플랑크'],
-        'answer': '막스 플랑크'
-    },
-    {
-        'genre': 'science',
-        'question': '슈뢰딩거 방정식은 어느 분야의 기본 방정식인가?',
-        'options': ['열역학', '양자역학', '상대성이론', '전기역학'],
-        'answer': '양자역학'
-    },
-    {
-        'genre': 'science',
-        'question': '세포 내 에너지 생성의 중심 기관은?',
-        'options': ['리보솜', '미토콘드리아', '리소좀', '골지체'],
-        'answer': '미토콘드리아'
-    },
-    {
-        'genre': 'science',
-        'question': '유전자 염기서열에서 아데닌과 결합하는 염기는?',
-        'options': ['시토신', '티민', '구아닌', '우라실'],
-        'answer': '티민'
-    },
-    {
-        'genre': 'science',
-        'question': '플라스틱을 구성하는 기본 단위는?',
-        'options': ['모노머', '원자', '분자', '폴리머'],
-        'answer': '모노머'
-    },
-    {
-        'genre': 'science',
-        'question': '지구의 자기장은 주로 어디에서 생성되나?',
-        'options': ['지각', '맨틀', '핵 고체', '외핵의 액체 철'],
-        'answer': '외핵의 액체 철'
-    },
-    {
-        'genre': 'science',
-        'question': '광합성에서 빛 반응이 일어나는 세포 소기관은?',
-        'options': ['미토콘드리아', '리보솜', '엽록체', '골지체'],
-        'answer': '엽록체'
-    },
-    {
-        'genre': 'science',
-        'question': '상대성 이론에서 시간 지연을 설명하는 것은?',
-        'options': ['공간 수축', '시간 수축', '공간 팽창', '시간 팽창'],
-        'answer': '시간 팽창'
-    },
-    {
-        'genre': 'science',
-        'question': '뉴턴의 운동 제2법칙은 무엇을 설명하나?',
-        'options': ['작용-반작용', '관성의 법칙', '힘은 질량과 가속도의 곱', '중력의 법칙'],
-        'answer': '힘은 질량과 가속도의 곱'
-    },
-    {
-        'genre': 'science',
-        'question': '화학 반응 속도를 높이는 일반적인 방법이 아닌 것은?',
-        'options': ['농도 증가', '온도 증가', '촉매 사용', '온도 감소'],
-        'answer': '온도 감소'
-    },
-    {
-        'genre': 'science',
-        'question': '플랑크 상수를 도입해 양자이론 기초를 놓은 사람은?',
-        'options': ['베르너 하이젠베르크', '닐스 보어', '알베르트 아인슈타인', '막스 플랑크'],
-        'answer': '막스 플랑크'
-    },
-    {
-        'genre': 'science',
-        'question': '슈뢰딩거 방정식은 어느 분야의 기본 방정식인가?',
-        'options': ['전기역학', '열역학', '양자역학', '상대성이론'],
-        'answer': '양자역학'
-    },
-    {
-        'genre': 'science',
-        'question': '세포 내 에너지 생성의 중심 기관은?',
-        'options': ['골지체', '미토콘드리아', '리소좀', '리보솜'],
-        'answer': '미토콘드리아'
-    },
-    {
-        'genre': 'science',
-        'question': '유전자 염기서열에서 아데닌과 결합하는 염기는?',
-        'options': ['구아닌', '티민', '시토신', '우라실'],
-        'answer': '티민'
-    },
-    {
-        'genre': 'science',
-        'question': '플라스틱을 구성하는 기본 단위는?',
-        'options': ['원자', '모노머', '폴리머', '분자'],
-        'answer': '모노머'
-    },
-    {
-        'genre': 'science',
-        'question': '지구의 자기장은 주로 어디에서 생성되나?',
-        'options': ['핵 고체', '외핵의 액체 철', '맨틀', '지각'],
-        'answer': '외핵의 액체 철'
-    },
-    {
-        'genre': 'science',
-        'question': '광합성에서 빛 반응이 일어나는 세포 소기관은?',
-        'options': ['골지체', '리보솜', '엽록체', '미토콘드리아'],
-        'answer': '엽록체'
-    },
-    {
-        'genre': 'science',
-        'question': '상대성 이론에서 시간 지연을 설명하는 것은?',
-        'options': ['시간 수축', '공간 수축', '시간 팽창', '공간 팽창'],
-        'answer': '시간 팽창'
-    },
-    {
-        'genre': 'science',
-        'question': '뉴턴의 운동 제2법칙은 무엇을 설명하나?',
-        'options': ['중력의 법칙', '작용-반작용', '힘은 질량과 가속도의 곱', '관성의 법칙'],
-        'answer': '힘은 질량과 가속도의 곱'
-    },
-    {
-        'genre': 'science',
-        'question': '화학 반응 속도를 높이는 일반적인 방법이 아닌 것은?',
-        'options': ['온도 감소', '농도 증가', '촉매 사용', '온도 증가'],
-        'answer': '온도 감소'
-    },
-    {
-        'genre': 'science',
-        'question': '플랑크 상수를 도입해 양자이론 기초를 놓은 사람은?',
-        'options': ['베르너 하이젠베르크', '닐스 보어', '알베르트 아인슈타인', '막스 플랑크'],
-        'answer': '막스 플랑크'
-    },
-    {
-        'genre': 'science',
-        'question': '슈뢰딩거 방정식은 어느 분야의 기본 방정식인가?',
-        'options': ['양자역학', '상대성이론', '열역학', '전기역학'],
-        'answer': '양자역학'
-    },
-    {
-        'genre': 'science',
-        'question': '세포 내 에너지 생성의 중심 기관은?',
-        'options': ['미토콘드리아', '골지체', '리소좀', '리보솜'],
-        'answer': '미토콘드리아'
-    },
-    {
-        'genre': 'science',
-        'question': '유전자 염기서열에서 아데닌과 결합하는 염기는?',
-        'options': ['티민', '시토신', '우라실', '구아닌'],
-        'answer': '티민'
-    },
-    {
-        'genre': 'science',
-        'question': '플라스틱을 구성하는 기본 단위는?',
-        'options': ['모노머', '분자', '폴리머', '원자'],
-        'answer': '모노머'
-    },
-    {
-        'genre': 'science',
-        'question': '지구의 자기장은 주로 어디에서 생성되나?',
-        'options': ['지각', '핵 고체', '맨틀', '외핵의 액체 철'],
-        'answer': '외핵의 액체 철'
-    },
-    {
-        'genre': 'science',
-        'question': '광합성에서 빛 반응이 일어나는 세포 소기관은?',
-        'options': ['미토콘드리아', '골지체', '리보솜', '엽록체'],
-        'answer': '엽록체'
-    },
-    {
-        'genre': 'science',
-        'question': '상대성 이론에서 시간 지연을 설명하는 것은?',
-        'options': ['공간 팽창', '시간 수축', '공간 수축', '시간 팽창'],
-        'answer': '시간 팽창'
-    },
-    {
-        'genre': 'science',
-        'question': '뉴턴의 운동 제2법칙은 무엇을 설명하나?',
-        'options': ['관성의 법칙', '힘은 질량과 가속도의 곱', '작용-반작용', '중력의 법칙'],
-        'answer': '힘은 질량과 가속도의 곱'
-    },
-    {
-        'genre': 'science',
-        'question': '화학 반응 속도를 높이는 일반적인 방법이 아닌 것은?',
-        'options': ['온도 감소', '촉매 사용', '농도 증가', '온도 증가'],
-        'answer': '온도 감소'
-    },
-    {
-        'genre': 'literature',
-        'question': '셰익스피어의 4대 비극에 해당하지 않는 작품은?',
-        'options': ['오셀로', '햄릿', '로미오와 줄리엣', '리어왕'],
-        'answer': '로미오와 줄리엣'
-    },
-    {
-        'genre': 'literature',
-        'question': '어린 왕자의 작가는 누구인가요?',
-        'options': ['톨스토이', '생텍쥐페리', '그림 형제', '안데르센'],
-        'answer': '생텍쥐페리'
-    },
-    {
-        'genre': 'literature',
-        'question': '한국 현대 소설의 아버지로 불리는 작가는?',
-        'options': ['염상섭', '김유정', '이광수', '현진건'],
-        'answer': '이광수'
-    },
-    {
-        'genre': 'literature',
-        'question': '윤동주 시인의 대표작은?',
-        'options': ['서시', '광야', '진달래꽃', '님의 침묵'],
-        'answer': '서시'
-    },
-    {
-        'genre': 'literature',
-        'question': "헤밍웨이의 '노인과 바다' 주인공 이름은?",
-        'options': ['프레데릭 헨리', '산티아고', '제이크 반즈', '로버트 조던'],
-        'answer': '산티아고'
-    },
-    {
-        'genre': 'literature',
-        'question': "단테의 '신곡'에서 지옥을 안내하는 인물은?",
-        'options': ['베아트리체', '오디세우스', '베르길리우스', '호메로스'],
-        'answer': '베르길리우스'
-    },
-    {
-        'genre': 'literature',
-        'question': '톨스토이의 대표작 중 하나는?',
-        'options': ['죄와 벌', '잃어버린 시간을 찾아서', '안나 카레니나', '위대한 개츠비'],
-        'answer': '안나 카레니나'
-    },
-    {
-        'genre': 'literature',
-        'question': '김소월의 대표시는?',
-        'options': ['서시', '동백꽃', '풀잎', '진달래꽃'],
-        'answer': '진달래꽃'
-    },
-    {
-        'genre': 'literature',
-        'question': "괴테의 '파우스트'에서 악마의 이름은?",
-        'options': ['벨제부브', '아스모데우스', '메피스토펠레스', '루시퍼'],
-        'answer': '메피스토펠레스'
-    },
-    {
-        'genre': 'literature',
-        'question': "한국의 전래동화 '흥부전'에서 흥부가 박씨를 얻게 된 계기는?",
-        'options': ['제비를 고쳐줘서', '도깨비를 물리쳐서', '부자에게 돈을 받아서', '나무꾼을 도와줘서'],
-        'answer': '제비를 고쳐줘서'
-    },
-    {
-        'genre': 'literature',
-        'question': '셰익스피어의 4대 비극에 해당하지 않는 작품은?',
-        'options': ['햄릿', '로미오와 줄리엣', '오셀로', '리어왕'],
-        'answer': '로미오와 줄리엣'
-    },
-    {
-        'genre': 'literature',
-        'question': '어린 왕자의 작가는 누구인가요?',
-        'options': ['톨스토이', '안데르센', '생텍쥐페리', '그림 형제'],
-        'answer': '생텍쥐페리'
-    },
-    {
-        'genre': 'literature',
-        'question': '한국 현대 소설의 아버지로 불리는 작가는?',
-        'options': ['김유정', '현진건', '이광수', '염상섭'],
-        'answer': '이광수'
-    },
-    {
-        'genre': 'literature',
-        'question': '윤동주 시인의 대표작은?',
-        'options': ['님의 침묵', '서시', '진달래꽃', '광야'],
-        'answer': '서시'
-    },
-    {
-        'genre': 'literature',
-        'question': "헤밍웨이의 '노인과 바다' 주인공 이름은?",
-        'options': ['제이크 반즈', '프레데릭 헨리', '로버트 조던', '산티아고'],
-        'answer': '산티아고'
-    },
-    {
-        'genre': 'literature',
-        'question': "단테의 '신곡'에서 지옥을 안내하는 인물은?",
-        'options': ['오디세우스', '베아트리체', '호메로스', '베르길리우스'],
-        'answer': '베르길리우스'
-    },
-    {
-        'genre': 'literature',
-        'question': '톨스토이의 대표작 중 하나는?',
-        'options': ['안나 카레니나', '잃어버린 시간을 찾아서', '위대한 개츠비', '죄와 벌'],
-        'answer': '안나 카레니나'
-    },
-    {
-        'genre': 'literature',
-        'question': '김소월의 대표시는?',
-        'options': ['진달래꽃', '동백꽃', '서시', '풀잎'],
-        'answer': '진달래꽃'
-    },
-    {
-        'genre': 'literature',
-        'question': "괴테의 '파우스트'에서 악마의 이름은?",
-        'options': ['벨제부브', '루시퍼', '메피스토펠레스', '아스모데우스'],
-        'answer': '메피스토펠레스'
-    },
-    {
-        'genre': 'literature',
-        'question': "한국의 전래동화 '흥부전'에서 흥부가 박씨를 얻게 된 계기는?",
-        'options': ['나무꾼을 도와줘서', '제비를 고쳐줘서', '부자에게 돈을 받아서', '도깨비를 물리쳐서'],
-        'answer': '제비를 고쳐줘서'
-    },
-    {
-        'genre': 'literature',
-        'question': '셰익스피어의 4대 비극에 해당하지 않는 작품은?',
-        'options': ['오셀로', '햄릿', '로미오와 줄리엣', '리어왕'],
-        'answer': '로미오와 줄리엣'
-    },
-    {
-        'genre': 'literature',
-        'question': '어린 왕자의 작가는 누구인가요?',
-        'options': ['그림 형제', '안데르센', '톨스토이', '생텍쥐페리'],
-        'answer': '생텍쥐페리'
-    },
-    {
-        'genre': 'literature',
-        'question': '한국 현대 소설의 아버지로 불리는 작가는?',
-        'options': ['염상섭', '현진건', '김유정', '이광수'],
-        'answer': '이광수'
-    },
-    {
-        'genre': 'literature',
-        'question': '윤동주 시인의 대표작은?',
-        'options': ['서시', '님의 침묵', '광야', '진달래꽃'],
-        'answer': '서시'
-    },
-    {
-        'genre': 'literature',
-        'question': "헤밍웨이의 '노인과 바다' 주인공 이름은?",
-        'options': ['로버트 조던', '프레데릭 헨리', '제이크 반즈', '산티아고'],
-        'answer': '산티아고'
-    },
-    {
-        'genre': 'literature',
-        'question': "단테의 '신곡'에서 지옥을 안내하는 인물은?",
-        'options': ['베아트리체', '오디세우스', '베르길리우스', '호메로스'],
-        'answer': '베르길리우스'
-    },
-    {
-        'genre': 'literature',
-        'question': '톨스토이의 대표작 중 하나는?',
-        'options': ['위대한 개츠비', '안나 카레니나', '잃어버린 시간을 찾아서', '죄와 벌'],
-        'answer': '안나 카레니나'
-    },
-    {
-        'genre': 'literature',
-        'question': '김소월의 대표시는?',
-        'options': ['동백꽃', '풀잎', '진달래꽃', '서시'],
-        'answer': '진달래꽃'
-    },
-    {
-        'genre': 'literature',
-        'question': "괴테의 '파우스트'에서 악마의 이름은?",
-        'options': ['루시퍼', '벨제부브', '메피스토펠레스', '아스모데우스'],
-        'answer': '메피스토펠레스'
-    },
-    {
-        'genre': 'literature',
-        'question': "한국의 전래동화 '흥부전'에서 흥부가 박씨를 얻게 된 계기는?",
-        'options': ['제비를 고쳐줘서', '부자에게 돈을 받아서', '도깨비를 물리쳐서', '나무꾼을 도와줘서'],
-        'answer': '제비를 고쳐줘서'
-    },
-    {
-        'genre': 'literature',
-        'question': "근대 소설의 대표 작가 중 '광장'을 쓴 이는?",
-        'options': ['이광수', '박완서', '김동리', '최인훈'],
-        'answer': '최인훈'
-    },
-    {
-        'genre': 'literature',
-        'question': "카뮈의 소설 '이방인'의 주인공은?",
-        'options': ['앙투안 로캉탱', '라스콜니코프', '뫼르소', '장발장'],
-        'answer': '뫼르소'
-    },
-    {
-        'genre': 'literature',
-        'question': '일본문학에서 노벨문학상을 수상한 작가는?',
-        'options': ['오에 겐자부로', '도스토예프스키', '무라카미 하루키', '가와바타 야스나리'],
-        'answer': '오에 겐자부로'
-    },
-    {
-        'genre': 'literature',
-        'question': '시인 김영랑의 대표시는?',
-        'options': ['서시', '돌담에 속삭이는 햇발', '진달래꽃', '풀잎'],
-        'answer': '돌담에 속삭이는 햇발'
-    },
-    {
-        'genre': 'literature',
-        'question': '셰익스피어 희극 중 하나는?',
-        'options': ['한여름 밤의 꿈', '오셀로', '맥베스', '햄릿'],
-        'answer': '한여름 밤의 꿈'
-    },
-    {
-        'genre': 'literature',
-        'question': '18세기 계몽주의를 대표하는 사상가는?',
-        'options': ['루소', '홉스', '칸트', '사마르크'],
-        'answer': '루소'
-    },
-    {
-        'genre': 'literature',
-        'question': "일본의 고전 '겐지 이야기'의 저자는?",
-        'options': ['마츠오 바쇼', '겐지', '오노 노히메', '무라사키 시키부'],
-        'answer': '무라사키 시키부'
-    },
-    {
-        'genre': 'literature',
-        'question': "한국 근대시의 대표적 시인으로 '서시'의 저자는?",
-        'options': ['박인환', '윤동주', '김소월', '이육사'],
-        'answer': '윤동주'
-    },
-    {
-        'genre': 'literature',
-        'question': '셰익스피어의 비극 중 하나는?',
-        'options': ['베니스의 상인', '햄릿', '한여름 밤의 꿈', '십이야'],
-        'answer': '햄릿'
-    },
-    {
-        'genre': 'literature',
-        'question': "현대 소설 '태백산맥'의 작가는?",
-        'options': ['조정래', '황석영', '김승옥', '박완서'],
-        'answer': '조정래'
-    },
-    {
-        'genre': 'literature',
-        'question': "근대 소설의 대표 작가 중 '광장'을 쓴 이는?",
-        'options': ['박완서', '최인훈', '이광수', '김동리'],
-        'answer': '최인훈'
-    },
-    {
-        'genre': 'literature',
-        'question': "카뮈의 소설 '이방인'의 주인공은?",
-        'options': ['앙투안 로캉탱', '장발장', '라스콜니코프', '뫼르소'],
-        'answer': '뫼르소'
-    },
-    {
-        'genre': 'literature',
-        'question': '일본문학에서 노벨문학상을 수상한 작가는?',
-        'options': ['도스토예프스키', '무라카미 하루키', '오에 겐자부로', '가와바타 야스나리'],
-        'answer': '오에 겐자부로'
-    },
-    {
-        'genre': 'literature',
-        'question': '시인 김영랑의 대표시는?',
-        'options': ['진달래꽃', '서시', '풀잎', '돌담에 속삭이는 햇발'],
-        'answer': '돌담에 속삭이는 햇발'
-    },
-    {
-        'genre': 'literature',
-        'question': '셰익스피어 희극 중 하나는?',
-        'options': ['햄릿', '한여름 밤의 꿈', '오셀로', '맥베스'],
-        'answer': '한여름 밤의 꿈'
-    },
-    {
-        'genre': 'literature',
-        'question': '18세기 계몽주의를 대표하는 사상가는?',
-        'options': ['칸트', '루소', '사마르크', '홉스'],
-        'answer': '루소'
-    },
-    {
-        'genre': 'literature',
-        'question': "일본의 고전 '겐지 이야기'의 저자는?",
-        'options': ['마츠오 바쇼', '무라사키 시키부', '겐지', '오노 노히메'],
-        'answer': '무라사키 시키부'
-    },
-    {
-        'genre': 'literature',
-        'question': "한국 근대시의 대표적 시인으로 '서시'의 저자는?",
-        'options': ['박인환', '윤동주', '김소월', '이육사'],
-        'answer': '윤동주'
-    },
-    {
-        'genre': 'literature',
-        'question': '셰익스피어의 비극 중 하나는?',
-        'options': ['베니스의 상인', '십이야', '한여름 밤의 꿈', '햄릿'],
-        'answer': '햄릿'
-    },
-    {
-        'genre': 'literature',
-        'question': "현대 소설 '태백산맥'의 작가는?",
-        'options': ['박완서', '조정래', '김승옥', '황석영'],
-        'answer': '조정래'
-    },
-    {
-        'genre': 'literature',
-        'question': "근대 소설의 대표 작가 중 '광장'을 쓴 이는?",
-        'options': ['최인훈', '김동리', '이광수', '박완서'],
-        'answer': '최인훈'
-    },
-    {
-        'genre': 'literature',
-        'question': "카뮈의 소설 '이방인'의 주인공은?",
-        'options': ['라스콜니코프', '앙투안 로캉탱', '뫼르소', '장발장'],
-        'answer': '뫼르소'
-    },
-    {
-        'genre': 'literature',
-        'question': '일본문학에서 노벨문학상을 수상한 작가는?',
-        'options': ['도스토예프스키', '오에 겐자부로', '무라카미 하루키', '가와바타 야스나리'],
-        'answer': '오에 겐자부로'
-    },
-    {
-        'genre': 'literature',
-        'question': '시인 김영랑의 대표시는?',
-        'options': ['서시', '풀잎', '진달래꽃', '돌담에 속삭이는 햇발'],
-        'answer': '돌담에 속삭이는 햇발'
-    },
-    {
-        'genre': 'literature',
-        'question': '셰익스피어 희극 중 하나는?',
-        'options': ['맥베스', '햄릿', '한여름 밤의 꿈', '오셀로'],
-        'answer': '한여름 밤의 꿈'
-    },
-    {
-        'genre': 'literature',
-        'question': '18세기 계몽주의를 대표하는 사상가는?',
-        'options': ['사마르크', '칸트', '루소', '홉스'],
-        'answer': '루소'
-    },
-    {
-        'genre': 'literature',
-        'question': "일본의 고전 '겐지 이야기'의 저자는?",
-        'options': ['무라사키 시키부', '오노 노히메', '겐지', '마츠오 바쇼'],
-        'answer': '무라사키 시키부'
-    },
-    {
-        'genre': 'literature',
-        'question': "한국 근대시의 대표적 시인으로 '서시'의 저자는?",
-        'options': ['이육사', '윤동주', '김소월', '박인환'],
-        'answer': '윤동주'
-    },
-    {
-        'genre': 'literature',
-        'question': '셰익스피어의 비극 중 하나는?',
-        'options': ['한여름 밤의 꿈', '베니스의 상인', '햄릿', '십이야'],
-        'answer': '햄릿'
-    },
-    {
-        'genre': 'literature',
-        'question': "현대 소설 '태백산맥'의 작가는?",
-        'options': ['조정래', '박완서', '황석영', '김승옥'],
-        'answer': '조정래'
-    },
-    {
-        'genre': 'literature',
-        'question': "근대 소설의 대표 작가 중 '광장'을 쓴 이는?",
-        'options': ['박완서', '이광수', '김동리', '최인훈'],
-        'answer': '최인훈'
-    },
-    {
-        'genre': 'literature',
-        'question': "카뮈의 소설 '이방인'의 주인공은?",
-        'options': ['뫼르소', '장발장', '앙투안 로캉탱', '라스콜니코프'],
-        'answer': '뫼르소'
-    },
-    {
-        'genre': 'literature',
-        'question': '일본문학에서 노벨문학상을 수상한 작가는?',
-        'options': ['오에 겐자부로', '가와바타 야스나리', '도스토예프스키', '무라카미 하루키'],
-        'answer': '오에 겐자부로'
-    },
-    {
-        'genre': 'literature',
-        'question': '시인 김영랑의 대표시는?',
-        'options': ['서시', '돌담에 속삭이는 햇발', '진달래꽃', '풀잎'],
-        'answer': '돌담에 속삭이는 햇발'
-    },
-    {
-        'genre': 'literature',
-        'question': '셰익스피어 희극 중 하나는?',
-        'options': ['오셀로', '한여름 밤의 꿈', '맥베스', '햄릿'],
-        'answer': '한여름 밤의 꿈'
-    },
-    {
-        'genre': 'literature',
-        'question': '18세기 계몽주의를 대표하는 사상가는?',
-        'options': ['사마르크', '칸트', '홉스', '루소'],
-        'answer': '루소'
-    },
-    {
-        'genre': 'literature',
-        'question': "일본의 고전 '겐지 이야기'의 저자는?",
-        'options': ['오노 노히메', '겐지', '무라사키 시키부', '마츠오 바쇼'],
-        'answer': '무라사키 시키부'
-    },
-    {
-        'genre': 'literature',
-        'question': "한국 근대시의 대표적 시인으로 '서시'의 저자는?",
-        'options': ['이육사', '김소월', '윤동주', '박인환'],
-        'answer': '윤동주'
-    },
-    {
-        'genre': 'literature',
-        'question': '셰익스피어의 비극 중 하나는?',
-        'options': ['한여름 밤의 꿈', '햄릿', '베니스의 상인', '십이야'],
-        'answer': '햄릿'
-    },
-    {
-        'genre': 'literature',
-        'question': "현대 소설 '태백산맥'의 작가는?",
-        'options': ['조정래', '황석영', '박완서', '김승옥'],
-        'answer': '조정래'
-    },
-    {
-        'genre': 'literature',
-        'question': "'죄와 벌'의 주인공은?",
-        'options': ['라스콜니코프', '무라사키', '뫼르소', '장발장'],
-        'answer': '라스콜니코프'
-    },
-    {
-        'genre': 'literature',
-        'question': "'위대한 개츠비'의 저자는?",
-        'options': ['조지 오웰', '토니 모리슨', 'F. 스콧 피츠제럴드', '어니스트 헤밍웨이'],
-        'answer': 'F. 스콧 피츠제럴드'
-    },
-    {
-        'genre': 'literature',
-        'question': "시 '님의 침묵'의 저자는?",
-        'options': ['윤동주', '김영랑', '김소월', '이육사'],
-        'answer': '윤동주'
-    },
-    {
-        'genre': 'literature',
-        'question': "중세 서사시 '베오울프'의 언어는?",
-        'options': ['중세 프랑스어', '고대 노르드어', '고대 영어', '라틴어'],
-        'answer': '고대 영어'
-    },
-    {
-        'genre': 'literature',
-        'question': "'백년의 고독'의 작가는?",
-        'options': ['마르셀 프루스트', '어니스트 헤밍웨이', '가브리엘 가르시아 마르케스', '하룬 야히아'],
-        'answer': '가브리엘 가르시아 마르케스'
-    },
-    {
-        'genre': 'literature',
-        'question': '일본의 노벨 문학상 수상자 중 최초는?',
-        'options': ['오에 겐자부로', '무라카미 하루키', '나쓰메 소세키', '가와바타 야스나리'],
-        'answer': '가와바타 야스나리'
-    },
-    {
-        'genre': 'literature',
-        'question': '셰익스피어의 시대를 대표하는 극장 이름은?',
-        'options': ['엘지 극장', '로열 코트', '글로브 극장', '바티칸 극장'],
-        'answer': '글로브 극장'
-    },
-    {
-        'genre': 'literature',
-        'question': "현대 희곡 '죽은 자의 집에서'의 저자는?",
-        'options': ['버나드 쇼', '아서 밀러', '헨리크 입센', '안톤 체호프'],
-        'answer': '안톤 체호프'
-    },
-    {
-        'genre': 'literature',
-        'question': "문학 이론에서 '실존주의'를 대표하는 작가는?",
-        'options': ['조이스', '카프카', '카뮈', '버지니아 울프'],
-        'answer': '카뮈'
-    },
-    {
-        'genre': 'literature',
-        'question': '시대 배경이 빅토리아 시대인 소설은?',
-        'options': ['노인과 바다', '햄릿', '제인 에어', '태백산맥'],
-        'answer': '제인 에어'
-    },
-    {
-        'genre': 'literature',
-        'question': "'죄와 벌'의 주인공은?",
-        'options': ['라스콜니코프', '무라사키', '뫼르소', '장발장'],
-        'answer': '라스콜니코프'
-    },
-    {
-        'genre': 'literature',
-        'question': "'위대한 개츠비'의 저자는?",
-        'options': ['F. 스콧 피츠제럴드', '어니스트 헤밍웨이', '조지 오웰', '토니 모리슨'],
-        'answer': 'F. 스콧 피츠제럴드'
-    },
-    {
-        'genre': 'literature',
-        'question': "시 '님의 침묵'의 저자는?",
-        'options': ['김소월', '이육사', '김영랑', '윤동주'],
-        'answer': '윤동주'
-    },
-    {
-        'genre': 'literature',
-        'question': "중세 서사시 '베오울프'의 언어는?",
-        'options': ['고대 영어', '고대 노르드어', '중세 프랑스어', '라틴어'],
-        'answer': '고대 영어'
-    },
-    {
-        'genre': 'literature',
-        'question': "'백년의 고독'의 작가는?",
-        'options': ['마르셀 프루스트', '어니스트 헤밍웨이', '가브리엘 가르시아 마르케스', '하룬 야히아'],
-        'answer': '가브리엘 가르시아 마르케스'
-    },
-    {
-        'genre': 'literature',
-        'question': '일본의 노벨 문학상 수상자 중 최초는?',
-        'options': ['나쓰메 소세키', '무라카미 하루키', '오에 겐자부로', '가와바타 야스나리'],
-        'answer': '가와바타 야스나리'
-    },
-    {
-        'genre': 'literature',
-        'question': '셰익스피어의 시대를 대표하는 극장 이름은?',
-        'options': ['엘지 극장', '로열 코트', '바티칸 극장', '글로브 극장'],
-        'answer': '글로브 극장'
-    },
-    {
-        'genre': 'literature',
-        'question': "현대 희곡 '죽은 자의 집에서'의 저자는?",
-        'options': ['버나드 쇼', '아서 밀러', '안톤 체호프', '헨리크 입센'],
-        'answer': '안톤 체호프'
-    },
-    {
-        'genre': 'literature',
-        'question': "문학 이론에서 '실존주의'를 대표하는 작가는?",
-        'options': ['버지니아 울프', '카뮈', '조이스', '카프카'],
-        'answer': '카뮈'
-    },
-    {
-        'genre': 'literature',
-        'question': '시대 배경이 빅토리아 시대인 소설은?',
-        'options': ['노인과 바다', '제인 에어', '햄릿', '태백산맥'],
-        'answer': '제인 에어'
-    },
-    {
-        'genre': 'literature',
-        'question': "'죄와 벌'의 주인공은?",
-        'options': ['뫼르소', '장발장', '무라사키', '라스콜니코프'],
-        'answer': '라스콜니코프'
-    },
-    {
-        'genre': 'literature',
-        'question': "'위대한 개츠비'의 저자는?",
-        'options': ['어니스트 헤밍웨이', '조지 오웰', '토니 모리슨', 'F. 스콧 피츠제럴드'],
-        'answer': 'F. 스콧 피츠제럴드'
-    },
-    {
-        'genre': 'literature',
-        'question': "시 '님의 침묵'의 저자는?",
-        'options': ['윤동주', '김영랑', '김소월', '이육사'],
-        'answer': '윤동주'
-    },
-    {
-        'genre': 'literature',
-        'question': "중세 서사시 '베오울프'의 언어는?",
-        'options': ['고대 노르드어', '라틴어', '고대 영어', '중세 프랑스어'],
-        'answer': '고대 영어'
-    },
-    {
-        'genre': 'literature',
-        'question': "'백년의 고독'의 작가는?",
-        'options': ['가브리엘 가르시아 마르케스', '하룬 야히아', '마르셀 프루스트', '어니스트 헤밍웨이'],
-        'answer': '가브리엘 가르시아 마르케스'
-    },
-    {
-        'genre': 'literature',
-        'question': '일본의 노벨 문학상 수상자 중 최초는?',
-        'options': ['가와바타 야스나리', '오에 겐자부로', '무라카미 하루키', '나쓰메 소세키'],
-        'answer': '가와바타 야스나리'
-    },
-    {
-        'genre': 'literature',
-        'question': '셰익스피어의 시대를 대표하는 극장 이름은?',
-        'options': ['글로브 극장', '로열 코트', '엘지 극장', '바티칸 극장'],
-        'answer': '글로브 극장'
-    },
-    {
-        'genre': 'literature',
-        'question': "현대 희곡 '죽은 자의 집에서'의 저자는?",
-        'options': ['안톤 체호프', '버나드 쇼', '아서 밀러', '헨리크 입센'],
-        'answer': '안톤 체호프'
-    },
-    {
-        'genre': 'literature',
-        'question': "문학 이론에서 '실존주의'를 대표하는 작가는?",
-        'options': ['카뮈', '조이스', '카프카', '버지니아 울프'],
-        'answer': '카뮈'
-    },
-    {
-        'genre': 'literature',
-        'question': '시대 배경이 빅토리아 시대인 소설은?',
-        'options': ['제인 에어', '햄릿', '태백산맥', '노인과 바다'],
-        'answer': '제인 에어'
-    },
-    {
-        'genre': 'general',
-        'question': '대한민국의 수도는?',
-        'options': ['서울', '제주', '부산', '인천'],
-        'answer': '서울'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 높은 산은?',
-        'options': ['에베레스트', '후지산', '백두산', '한라산'],
-        'answer': '에베레스트'
-    },
-    {
-        'genre': 'general',
-        'question': '지구의 자전 주기는?',
-        'options': ['30일', '24시간', '12시간', '7일'],
-        'answer': '24시간'
-    },
-    {
-        'genre': 'general',
-        'question': 'EU 본부가 있는 도시는?',
-        'options': ['베를린', '파리', '브뤼셀', '로마'],
-        'answer': '브뤼셀'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 긴 강은?',
-        'options': ['미시시피 강', '나일 강', '양쯔 강', '아마존 강'],
-        'answer': '나일 강'
-    },
-    {
-        'genre': 'general',
-        'question': '올림픽 오륜기에서 아시아를 상징하는 색은?',
-        'options': ['파랑', '검정', '노랑', '초록'],
-        'answer': '노랑'
-    },
-    {
-        'genre': 'general',
-        'question': 'UN의 5대 상임이사국이 아닌 나라는?',
-        'options': ['독일', '미국', '중국', '영국'],
-        'answer': '독일'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 큰 사막은?',
-        'options': ['고비 사막', '남극', '아라비아 사막', '사하라 사막'],
-        'answer': '남극'
-    },
-    {
-        'genre': 'general',
-        'question': '피타고라스 정리는 어떤 삼각형에 적용되나?',
-        'options': ['이등변삼각형', '둔각삼각형', '정삼각형', '직각삼각형'],
-        'answer': '직각삼각형'
-    },
-    {
-        'genre': 'general',
-        'question': '인간의 몸에서 가장 단단한 부분은?',
-        'options': ['손톱', '뼈', '치아', '두개골'],
-        'answer': '치아'
-    },
-    {
-        'genre': 'general',
-        'question': '대한민국의 수도는?',
-        'options': ['제주', '부산', '인천', '서울'],
-        'answer': '서울'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 높은 산은?',
-        'options': ['백두산', '한라산', '후지산', '에베레스트'],
-        'answer': '에베레스트'
-    },
-    {
-        'genre': 'general',
-        'question': '지구의 자전 주기는?',
-        'options': ['30일', '24시간', '12시간', '7일'],
-        'answer': '24시간'
-    },
-    {
-        'genre': 'general',
-        'question': 'EU 본부가 있는 도시는?',
-        'options': ['로마', '베를린', '브뤼셀', '파리'],
-        'answer': '브뤼셀'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 긴 강은?',
-        'options': ['아마존 강', '미시시피 강', '양쯔 강', '나일 강'],
-        'answer': '나일 강'
-    },
-    {
-        'genre': 'general',
-        'question': '올림픽 오륜기에서 아시아를 상징하는 색은?',
-        'options': ['파랑', '노랑', '초록', '검정'],
-        'answer': '노랑'
-    },
-    {
-        'genre': 'general',
-        'question': 'UN의 5대 상임이사국이 아닌 나라는?',
-        'options': ['중국', '미국', '독일', '영국'],
-        'answer': '독일'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 큰 사막은?',
-        'options': ['사하라 사막', '아라비아 사막', '남극', '고비 사막'],
-        'answer': '남극'
-    },
-    {
-        'genre': 'general',
-        'question': '피타고라스 정리는 어떤 삼각형에 적용되나?',
-        'options': ['이등변삼각형', '정삼각형', '둔각삼각형', '직각삼각형'],
-        'answer': '직각삼각형'
-    },
-    {
-        'genre': 'general',
-        'question': '인간의 몸에서 가장 단단한 부분은?',
-        'options': ['치아', '손톱', '뼈', '두개골'],
-        'answer': '치아'
-    },
-    {
-        'genre': 'general',
-        'question': '대한민국의 수도는?',
-        'options': ['인천', '부산', '서울', '제주'],
-        'answer': '서울'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 높은 산은?',
-        'options': ['백두산', '후지산', '에베레스트', '한라산'],
-        'answer': '에베레스트'
-    },
-    {
-        'genre': 'general',
-        'question': '지구의 자전 주기는?',
-        'options': ['12시간', '30일', '7일', '24시간'],
-        'answer': '24시간'
-    },
-    {
-        'genre': 'general',
-        'question': 'EU 본부가 있는 도시는?',
-        'options': ['로마', '베를린', '브뤼셀', '파리'],
-        'answer': '브뤼셀'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 긴 강은?',
-        'options': ['아마존 강', '미시시피 강', '양쯔 강', '나일 강'],
-        'answer': '나일 강'
-    },
-    {
-        'genre': 'general',
-        'question': '올림픽 오륜기에서 아시아를 상징하는 색은?',
-        'options': ['초록', '검정', '파랑', '노랑'],
-        'answer': '노랑'
-    },
-    {
-        'genre': 'general',
-        'question': 'UN의 5대 상임이사국이 아닌 나라는?',
-        'options': ['미국', '영국', '중국', '독일'],
-        'answer': '독일'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 큰 사막은?',
-        'options': ['아라비아 사막', '고비 사막', '사하라 사막', '남극'],
-        'answer': '남극'
-    },
-    {
-        'genre': 'general',
-        'question': '피타고라스 정리는 어떤 삼각형에 적용되나?',
-        'options': ['정삼각형', '이등변삼각형', '둔각삼각형', '직각삼각형'],
-        'answer': '직각삼각형'
-    },
-    {
-        'genre': 'general',
-        'question': '인간의 몸에서 가장 단단한 부분은?',
-        'options': ['치아', '뼈', '손톱', '두개골'],
-        'answer': '치아'
-    },
-    {
-        'genre': 'general',
-        'question': '세계 인구가 가장 많은 나라는?',
-        'options': ['인도', '러시아', '중국', '미국'],
-        'answer': '중국'
-    },
-    {
-        'genre': 'general',
-        'question': '미국의 수도는?',
-        'options': ['워싱턴 D.C.', '시카고', '로스앤젤레스', '뉴욕'],
-        'answer': '워싱턴 D.C.'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 면적이 가장 큰 나라는?',
-        'options': ['중국', '캐나다', '미국', '러시아'],
-        'answer': '러시아'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 긴 해안선을 가진 나라는?',
-        'options': ['호주', '러시아', '노르웨이', '캐나다'],
-        'answer': '캐나다'
-    },
-    {
-        'genre': 'general',
-        'question': '국제 음성 기호(IPA)는 주로 무엇을 표기하나?',
-        'options': ['어원', '발음', '철자', '문법'],
-        'answer': '발음'
-    },
-    {
-        'genre': 'general',
-        'question': '지구의 평균 기온 상승 현상을 일컫는 말은?',
-        'options': ['지구 온난화', '지구 냉각화', '우주 온난화', '지구 반전'],
-        'answer': '지구 온난화'
-    },
-    {
-        'genre': 'general',
-        'question': '세계 최초로 달에 착륙한 우주선의 나라는?',
-        'options': ['미국', '소련', '중국', '인도'],
-        'answer': '미국'
-    },
-    {
-        'genre': 'general',
-        'question': 'UN이 설립된 연도는?',
-        'options': ['1960년', '1950년', '1919년', '1945년'],
-        'answer': '1945년'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 긴 철도 터널은?',
-        'options': ['세이칸 터널', '고베 터널', '터널 A', '영국 터널'],
-        'answer': '세이칸 터널'
-    },
-    {
-        'genre': 'general',
-        'question': 'ISO 국가 코드에서 한국의 2자리 코드는?',
-        'options': ['KO', 'KR', 'KP', 'KS'],
-        'answer': 'KR'
-    },
-    {
-        'genre': 'general',
-        'question': '세계 인구가 가장 많은 나라는?',
-        'options': ['중국', '미국', '인도', '러시아'],
-        'answer': '중국'
-    },
-    {
-        'genre': 'general',
-        'question': '미국의 수도는?',
-        'options': ['뉴욕', '워싱턴 D.C.', '시카고', '로스앤젤레스'],
-        'answer': '워싱턴 D.C.'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 면적이 가장 큰 나라는?',
-        'options': ['캐나다', '미국', '러시아', '중국'],
-        'answer': '러시아'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 긴 해안선을 가진 나라는?',
-        'options': ['캐나다', '러시아', '호주', '노르웨이'],
-        'answer': '캐나다'
-    },
-    {
-        'genre': 'general',
-        'question': '국제 음성 기호(IPA)는 주로 무엇을 표기하나?',
-        'options': ['문법', '어원', '발음', '철자'],
-        'answer': '발음'
-    },
-    {
-        'genre': 'general',
-        'question': '지구의 평균 기온 상승 현상을 일컫는 말은?',
-        'options': ['지구 반전', '지구 온난화', '우주 온난화', '지구 냉각화'],
-        'answer': '지구 온난화'
-    },
-    {
-        'genre': 'general',
-        'question': '세계 최초로 달에 착륙한 우주선의 나라는?',
-        'options': ['인도', '미국', '소련', '중국'],
-        'answer': '미국'
-    },
-    {
-        'genre': 'general',
-        'question': 'UN이 설립된 연도는?',
-        'options': ['1950년', '1945년', '1960년', '1919년'],
-        'answer': '1945년'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 긴 철도 터널은?',
-        'options': ['터널 A', '고베 터널', '영국 터널', '세이칸 터널'],
-        'answer': '세이칸 터널'
-    },
-    {
-        'genre': 'general',
-        'question': 'ISO 국가 코드에서 한국의 2자리 코드는?',
-        'options': ['KP', 'KS', 'KO', 'KR'],
-        'answer': 'KR'
-    },
-    {
-        'genre': 'general',
-        'question': '세계 인구가 가장 많은 나라는?',
-        'options': ['중국', '러시아', '인도', '미국'],
-        'answer': '중국'
-    },
-    {
-        'genre': 'general',
-        'question': '미국의 수도는?',
-        'options': ['뉴욕', '시카고', '워싱턴 D.C.', '로스앤젤레스'],
-        'answer': '워싱턴 D.C.'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 면적이 가장 큰 나라는?',
-        'options': ['미국', '캐나다', '러시아', '중국'],
-        'answer': '러시아'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 긴 해안선을 가진 나라는?',
-        'options': ['러시아', '캐나다', '노르웨이', '호주'],
-        'answer': '캐나다'
-    },
-    {
-        'genre': 'general',
-        'question': '국제 음성 기호(IPA)는 주로 무엇을 표기하나?',
-        'options': ['발음', '어원', '철자', '문법'],
-        'answer': '발음'
-    },
-    {
-        'genre': 'general',
-        'question': '지구의 평균 기온 상승 현상을 일컫는 말은?',
-        'options': ['지구 반전', '지구 냉각화', '지구 온난화', '우주 온난화'],
-        'answer': '지구 온난화'
-    },
-    {
-        'genre': 'general',
-        'question': '세계 최초로 달에 착륙한 우주선의 나라는?',
-        'options': ['중국', '미국', '소련', '인도'],
-        'answer': '미국'
-    },
-    {
-        'genre': 'general',
-        'question': 'UN이 설립된 연도는?',
-        'options': ['1919년', '1950년', '1960년', '1945년'],
-        'answer': '1945년'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 긴 철도 터널은?',
-        'options': ['세이칸 터널', '터널 A', '영국 터널', '고베 터널'],
-        'answer': '세이칸 터널'
-    },
-    {
-        'genre': 'general',
-        'question': 'ISO 국가 코드에서 한국의 2자리 코드는?',
-        'options': ['KR', 'KS', 'KO', 'KP'],
-        'answer': 'KR'
-    },
-    {
-        'genre': 'general',
-        'question': '세계 인구가 가장 많은 나라는?',
-        'options': ['미국', '중국', '러시아', '인도'],
-        'answer': '중국'
-    },
-    {
-        'genre': 'general',
-        'question': '미국의 수도는?',
-        'options': ['시카고', '로스앤젤레스', '뉴욕', '워싱턴 D.C.'],
-        'answer': '워싱턴 D.C.'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 면적이 가장 큰 나라는?',
-        'options': ['러시아', '캐나다', '중국', '미국'],
-        'answer': '러시아'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 긴 해안선을 가진 나라는?',
-        'options': ['러시아', '노르웨이', '호주', '캐나다'],
-        'answer': '캐나다'
-    },
-    {
-        'genre': 'general',
-        'question': '국제 음성 기호(IPA)는 주로 무엇을 표기하나?',
-        'options': ['발음', '문법', '철자', '어원'],
-        'answer': '발음'
-    },
-    {
-        'genre': 'general',
-        'question': '지구의 평균 기온 상승 현상을 일컫는 말은?',
-        'options': ['지구 냉각화', '우주 온난화', '지구 온난화', '지구 반전'],
-        'answer': '지구 온난화'
-    },
-    {
-        'genre': 'general',
-        'question': '세계 최초로 달에 착륙한 우주선의 나라는?',
-        'options': ['인도', '미국', '소련', '중국'],
-        'answer': '미국'
-    },
-    {
-        'genre': 'general',
-        'question': 'UN이 설립된 연도는?',
-        'options': ['1950년', '1919년', '1960년', '1945년'],
-        'answer': '1945년'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 긴 철도 터널은?',
-        'options': ['영국 터널', '세이칸 터널', '고베 터널', '터널 A'],
-        'answer': '세이칸 터널'
-    },
-    {
-        'genre': 'general',
-        'question': 'ISO 국가 코드에서 한국의 2자리 코드는?',
-        'options': ['KO', 'KR', 'KP', 'KS'],
-        'answer': 'KR'
-    },
-    {
-        'genre': 'general',
-        'question': '세계 GDP 순위에서 상위권에 드는 나라는?',
-        'options': ['인도네시아', '브라질', '멕시코', '미국'],
-        'answer': '미국'
-    },
-    {
-        'genre': 'general',
-        'question': '시간대 기준 그리니치 표준시는 무엇을 기준으로 하나?',
-        'options': ['북극점', '적도', '남극점', '경도 0도'],
-        'answer': '경도 0도'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 큰 호수는?',
-        'options': ['아랄해', '슈피리어호', '빅토리아호', '카스피해'],
-        'answer': '카스피해'
-    },
-    {
-        'genre': 'general',
-        'question': '지구의 대기 중 이산화탄소 비율이 주로 증가한 주요 원인은?',
-        'options': ['우주 먼지', '태양 활동', '화산 활동', '화석연료 연소'],
-        'answer': '화석연료 연소'
-    },
-    {
-        'genre': 'general',
-        'question': '국제 연합의 설립 목적 중 하나는?',
-        'options': ['종교 전파', '영토 확장', '국제 평화 유지', '경제 통합'],
-        'answer': '국제 평화 유지'
-    },
-    {
-        'genre': 'general',
-        'question': '음악에서 4/4박자를 나타내는 다른 이름은?',
-        'options': ['왈츠박자', '행진박자', '공통박자', '불규칙박자'],
-        'answer': '공통박자'
-    },
-    {
-        'genre': 'general',
-        'question': '실용적인 암호학에서 RSA 알고리즘은 무엇의 기반인가?',
-        'options': ['이산로그 문제', '해시 충돌', '소인수분해의 어려움', '대칭키'],
-        'answer': '소인수분해의 어려움'
-    },
-    {
-        'genre': 'general',
-        'question': '국제 기후 협약 파리협정이 채택된 해는?',
-        'options': ['2015년', '2005년', '2020년', '1997년'],
-        'answer': '2015년'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 오래된 문명 중 하나는?',
-        'options': ['메소포타미아', '인더스', '페니키아', '마야'],
-        'answer': '메소포타미아'
-    },
-    {
-        'genre': 'general',
-        'question': '바다의 평균 염분 농도는 약 몇 퍼센트인가?',
-        'options': ['5%', '3.5%', '1.5%', '0.5%'],
-        'answer': '3.5%'
-    },
-    {
-        'genre': 'general',
-        'question': '세계 GDP 순위에서 상위권에 드는 나라는?',
-        'options': ['인도네시아', '멕시코', '브라질', '미국'],
-        'answer': '미국'
-    },
-    {
-        'genre': 'general',
-        'question': '시간대 기준 그리니치 표준시는 무엇을 기준으로 하나?',
-        'options': ['북극점', '남극점', '경도 0도', '적도'],
-        'answer': '경도 0도'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 큰 호수는?',
-        'options': ['빅토리아호', '아랄해', '카스피해', '슈피리어호'],
-        'answer': '카스피해'
-    },
-    {
-        'genre': 'general',
-        'question': '지구의 대기 중 이산화탄소 비율이 주로 증가한 주요 원인은?',
-        'options': ['태양 활동', '우주 먼지', '화산 활동', '화석연료 연소'],
-        'answer': '화석연료 연소'
-    },
-    {
-        'genre': 'general',
-        'question': '국제 연합의 설립 목적 중 하나는?',
-        'options': ['국제 평화 유지', '종교 전파', '경제 통합', '영토 확장'],
-        'answer': '국제 평화 유지'
-    },
-    {
-        'genre': 'general',
-        'question': '음악에서 4/4박자를 나타내는 다른 이름은?',
-        'options': ['공통박자', '왈츠박자', '불규칙박자', '행진박자'],
-        'answer': '공통박자'
-    },
-    {
-        'genre': 'general',
-        'question': '실용적인 암호학에서 RSA 알고리즘은 무엇의 기반인가?',
-        'options': ['해시 충돌', '이산로그 문제', '대칭키', '소인수분해의 어려움'],
-        'answer': '소인수분해의 어려움'
-    },
-    {
-        'genre': 'general',
-        'question': '국제 기후 협약 파리협정이 채택된 해는?',
-        'options': ['1997년', '2005년', '2020년', '2015년'],
-        'answer': '2015년'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 오래된 문명 중 하나는?',
-        'options': ['마야', '인더스', '페니키아', '메소포타미아'],
-        'answer': '메소포타미아'
-    },
-    {
-        'genre': 'general',
-        'question': '바다의 평균 염분 농도는 약 몇 퍼센트인가?',
-        'options': ['0.5%', '1.5%', '3.5%', '5%'],
-        'answer': '3.5%'
-    },
-    {
-        'genre': 'general',
-        'question': '세계 GDP 순위에서 상위권에 드는 나라는?',
-        'options': ['인도네시아', '미국', '브라질', '멕시코'],
-        'answer': '미국'
-    },
-    {
-        'genre': 'general',
-        'question': '시간대 기준 그리니치 표준시는 무엇을 기준으로 하나?',
-        'options': ['적도', '북극점', '경도 0도', '남극점'],
-        'answer': '경도 0도'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 큰 호수는?',
-        'options': ['슈피리어호', '빅토리아호', '아랄해', '카스피해'],
-        'answer': '카스피해'
-    },
-    {
-        'genre': 'general',
-        'question': '지구의 대기 중 이산화탄소 비율이 주로 증가한 주요 원인은?',
-        'options': ['화석연료 연소', '화산 활동', '우주 먼지', '태양 활동'],
-        'answer': '화석연료 연소'
-    },
-    {
-        'genre': 'general',
-        'question': '국제 연합의 설립 목적 중 하나는?',
-        'options': ['경제 통합', '종교 전파', '국제 평화 유지', '영토 확장'],
-        'answer': '국제 평화 유지'
-    },
-    {
-        'genre': 'general',
-        'question': '음악에서 4/4박자를 나타내는 다른 이름은?',
-        'options': ['불규칙박자', '공통박자', '행진박자', '왈츠박자'],
-        'answer': '공통박자'
-    },
-    {
-        'genre': 'general',
-        'question': '실용적인 암호학에서 RSA 알고리즘은 무엇의 기반인가?',
-        'options': ['이산로그 문제', '대칭키', '해시 충돌', '소인수분해의 어려움'],
-        'answer': '소인수분해의 어려움'
-    },
-    {
-        'genre': 'general',
-        'question': '국제 기후 협약 파리협정이 채택된 해는?',
-        'options': ['2005년', '2015년', '2020년', '1997년'],
-        'answer': '2015년'
-    },
-    {
-        'genre': 'general',
-        'question': '세계에서 가장 오래된 문명 중 하나는?',
-        'options': ['메소포타미아', '페니키아', '마야', '인더스'],
-        'answer': '메소포타미아'
-    },
-    {
-        'genre': 'general',
-        'question': '바다의 평균 염분 농도는 약 몇 퍼센트인가?',
-        'options': ['5%', '0.5%', '3.5%', '1.5%'],
-        'answer': '3.5%'
-    },
+    {'id': 1, 'genre': 'korean_history', 'question': '조선 왕조를 건국한 인물은 누구인가요?', 'options': ['광해군', '정조', '세종대왕', '이성계'], 'answer': '이성계'},
+    {'id': 2, 'genre': 'korean_history', 'question': '훈민정음을 창제한 왕은 누구인가요?', 'options': ['문종', '태종', '성종', '세종대왕'], 'answer': '세종대왕'},
+    {'id': 3, 'genre': 'korean_history', 'question': '임진왜란 당시 조선을 지킨 장군은 누구인가요?', 'options': ['권율', '김시민', '이순신', '강감찬'], 'answer': '이순신'},
+    {'id': 4, 'genre': 'korean_history', 'question': '고조선을 세운 전설 속 인물은 누구인가요?', 'options': ['단군왕검', '대조영', '김수로', '박혁거세'], 'answer': '단군왕검'},
+    {'id': 5, 'genre': 'korean_history', 'question': '대한민국 임시정부가 수립된 도시는 어디인가요?', 'options': ['상하이', '평양', '도쿄', '서울'], 'answer': '상하이'},
+    {'id': 6, 'genre': 'korean_history', 'question': '신라의 삼국통일을 완성한 왕은 누구인가요?', 'options': ['무열왕', '문무왕', '선덕여왕', '진흥왕'], 'answer': '문무왕'},
+    {'id': 7, 'genre': 'korean_history', 'question': '을미사변으로 시해된 왕비는 누구인가요?', 'options': ['소현왕후', '명성황후', '순정효황후', '인현왕후'], 'answer': '명성황후'},
+    {'id': 8, 'genre': 'korean_history', 'question': '고려의 수도는 어디였나요?', 'options': ['평양', '개경', '한양', '경주'], 'answer': '개경'},
+    {'id': 9, 'genre': 'korean_history', 'question': '대한제국을 선포한 황제는 누구인가요?', 'options': ['고종', '순종', '영조', '철종'], 'answer': '고종'},
+    {'id': 10, 'genre': 'korean_history', 'question': '3·1운동이 일어난 해는 언제인가요?', 'options': ['1925년', '1945년', '1919년', '1895년'], 'answer': '1919년'},
+    {'id': 11, 'genre': 'korean_history', 'question': '훈민정음의 반포 연도는 언제인가요?', 'options': ['1392년', '1446년', '1592년', '1453년'], 'answer': '1446년'},
+    {'id': 12, 'genre': 'korean_history', 'question': '조선의 법전 “경국대전”이 완성된 왕은?', 'options': ['성종', '세종대왕', '세조', '문종'], 'answer': '성종'},
+    {'id': 13, 'genre': 'korean_history', 'question': '고려를 건국한 인물은 누구인가요?', 'options': ['이성계', '견훤', '왕건', '궁예'], 'answer': '왕건'},
+    {'id': 14, 'genre': 'korean_history', 'question': '발해를 세운 사람은 누구인가요?', 'options': ['장보고', '대조영', '문무왕', '단군왕검'], 'answer': '대조영'},
+    {'id': 15, 'genre': 'korean_history', 'question': '을지문덕이 활약한 나라는 어디인가요?', 'options': ['가야', '백제', '고구려', '신라'], 'answer': '고구려'},
+    {'id': 16, 'genre': 'korean_history', 'question': '광개토대왕은 어느 나라의 왕인가요?', 'options': ['신라', '발해', '백제', '고구려'], 'answer': '고구려'},
+    {'id': 17, 'genre': 'korean_history', 'question': '고려의 과거제는 어떤 왕 때 처음 시행되었나요?', 'options': ['현종', '태조 왕건', '광종', '성종'], 'answer': '광종'},
+    {'id': 18, 'genre': 'korean_history', 'question': '조선시대에 혼천의, 자격루 등을 만든 과학자는?', 'options': ['장영실', '홍대용', '정약용', '이순신'], 'answer': '장영실'},
+    {'id': 19, 'genre': 'korean_history', 'question': '조선의 수도로 정해진 도시는 어디인가요?', 'options': ['경주', '공주', '한양', '개경'], 'answer': '한양'},
+    {'id': 20, 'genre': 'korean_history', 'question': '임진왜란이 일어난 해는 언제인가요?', 'options': ['1592년', '1392년', '1446년', '1636년'], 'answer': '1592년'},
+    {'id': 21, 'genre': 'korean_history', 'question': '세종대왕이 설립한 학문 기관은?', 'options': ['집현전', '성균관', '규장각', '홍문관'], 'answer': '집현전'},
+    {'id': 22, 'genre': 'korean_history', 'question': '정약용이 저술한 목민관 지침서는?', 'options': ['흠흠신서', '목민심서', '성호사설', '경세유표'], 'answer': '목민심서'},
+    {'id': 23, 'genre': 'korean_history', 'question': '조선 후기 실학자 중 “탕론”으로 유명한 학자는?', 'options': ['정약용', '이익', '박지원', '홍대용'], 'answer': '박지원'},
+    {'id': 24, 'genre': 'korean_history', 'question': '병자호란 당시 항복한 조선의 왕은?', 'options': ['효종', '광해군', '선조', '인조'], 'answer': '인조'},
+    {'id': 25, 'genre': 'korean_history', 'question': '일제강점기는 몇 년 동안 지속되었나요?', 'options': ['35년', '40년', '25년', '15년'], 'answer': '35년'},
+    {'id': 26, 'genre': 'korean_history', 'question': '대한민국 정부가 수립된 해는?', 'options': ['1919년', '1948년', '1945년', '1950년'], 'answer': '1948년'},
+    {'id': 27, 'genre': 'korean_history', 'question': '조선의 성리학을 국가 이념으로 채택한 왕은?', 'options': ['성종', '태조 이성계', '세종대왕', '태종'], 'answer': '태조 이성계'},
+    {'id': 28, 'genre': 'korean_history', 'question': '고려시대 청자 문화가 절정에 달했던 시기는?', 'options': ['14세기', '9세기', '12세기', '10세기'], 'answer': '12세기'},
+    {'id': 29, 'genre': 'korean_history', 'question': '훈련도감이 설치된 왕은 누구인가요?', 'options': ['인조', '광해군', '선조', '영조'], 'answer': '선조'},
+    {'id': 30, 'genre': 'korean_history', 'question': '조선 후기 서민문학 “홍길동전”을 쓴 사람은?', 'options': ['정약용', '허균', '이이', '박지원'], 'answer': '허균'},
+    {'id': 31, 'genre': 'korean_history', 'question': '대한독립군 총사령관으로 청산리 전투를 지휘한 인물은?', 'options': ['김좌진', '윤봉길', '이봉창', '안중근'], 'answer': '김좌진'},
+    {'id': 32, 'genre': 'korean_history', 'question': '안중근 의사가 이토 히로부미를 처단한 장소는?', 'options': ['상하이', '도쿄', '하얼빈', '서울'], 'answer': '하얼빈'},
+    {'id': 33, 'genre': 'korean_history', 'question': '조선의 세금을 공납, 역, 조로 나눈 제도를 무엇이라 하나요?', 'options': ['삼위일체', '삼국제도', '삼국통일', '삼정제도'], 'answer': '삼정제도'},
+    {'id': 34, 'genre': 'korean_history', 'question': '신라의 골품제는 무엇을 기준으로 한 제도인가요?', 'options': ['연령', '지식', '재산', '신분'], 'answer': '신분'},
+    {'id': 35, 'genre': 'korean_history', 'question': '조선시대 여성 중 시와 그림으로 유명한 인물은?', 'options': ['황진이', '신사임당', '이매창', '허난설헌'], 'answer': '신사임당'},
+    {'id': 36, 'genre': 'korean_history', 'question': '백제의 마지막 왕은 누구인가요?', 'options': ['근초고왕', '의자왕', '온조왕', '무왕'], 'answer': '의자왕'},
+    {'id': 37, 'genre': 'korean_history', 'question': '신라의 최초 여왕은 누구인가요?', 'options': ['선덕여왕', '진성여왕', '문무왕', '진덕여왕'], 'answer': '선덕여왕'},
+    {'id': 38, 'genre': 'korean_history', 'question': '광해군의 업적으로 옳은 것은?', 'options': ['대동법 시행', '훈민정음 창제', '경국대전 편찬', '집현전 설치'], 'answer': '대동법 시행'},
+    {'id': 39, 'genre': 'korean_history', 'question': '조선 중기의 대표적 성리학자는?', 'options': ['이황', '정약용', '이이', '송시열'], 'answer': '이황'},
+    {'id': 40, 'genre': 'korean_history', 'question': '훈민정음 창제의 목적은?', 'options': ['왕권 강화', '백성의 문해력 향상', '세금 제도 개선', '군사 암호 개발'], 'answer': '백성의 문해력 향상'},
+    {'id': 41, 'genre': 'korean_history', 'question': '고려를 멸망시킨 나라는?', 'options': ['원', '조선', '신라', '후백제'], 'answer': '조선'},
+    {'id': 42, 'genre': 'korean_history', 'question': '고려의 건국 연도는?', 'options': ['1945년', '668년', '1392년', '918년'], 'answer': '918년'},
+    {'id': 43, 'genre': 'korean_history', 'question': '발해의 수도 중 하나로 알려진 도시는?', 'options': ['평양', '경주', '개경', '상경성'], 'answer': '상경성'},
+    {'id': 44, 'genre': 'korean_history', 'question': '조선의 마지막 왕은 누구인가요?', 'options': ['고종', '영조', '철종', '순종'], 'answer': '순종'},
+    {'id': 45, 'genre': 'korean_history', 'question': '삼국사기를 편찬한 인물은 누구인가요?', 'options': ['정약용', '일연', '이이', '김부식'], 'answer': '김부식'},
+    {'id': 46, 'genre': 'korean_history', 'question': '삼국유사를 쓴 인물은 누구인가요?', 'options': ['이순신', '정약용', '일연', '김부식'], 'answer': '일연'},
+    {'id': 47, 'genre': 'korean_history', 'question': '한글 반포 당시 훈민정음은 몇 자로 구성되었나요?', 'options': ['30자', '27자', '24자', '28자'], 'answer': '28자'},
+    {'id': 48, 'genre': 'korean_history', 'question': '고려의 무신정변은 어느 시기에 일어났나요?', 'options': ['1170년', '1392년', '918년', '1231년'], 'answer': '1170년'},
+    {'id': 49, 'genre': 'korean_history', 'question': '신라의 건국 시조는 누구인가요?', 'options': ['김수로', '박혁거세', '단군왕검', '온조'], 'answer': '박혁거세'},
+    {'id': 50, 'genre': 'korean_history', 'question': '백제의 건국자는 누구인가요?', 'options': ['온조왕', '근초고왕', '의자왕', '무왕'], 'answer': '온조왕'},
+    {'id': 51, 'genre': 'korean_history', 'question': '고려의 대표적인 무신 집권자는 누구인가요?', 'options': ['최충헌', '정중부', '이자겸', '이의민'], 'answer': '최충헌'},
+    {'id': 52, 'genre': 'korean_history', 'question': '몽골 침입에 맞서 싸운 승려 지도자는 누구인가요?', 'options': ['김윤후', '서희', '강감찬', '최영'], 'answer': '김윤후'},
+    {'id': 53, 'genre': 'korean_history', 'question': '거란과의 전쟁에서 강감찬이 활약한 전투는?', 'options': ['귀주대첩', '살수대첩', '한산도대첩', '평양성 전투'], 'answer': '귀주대첩'},
+    {'id': 54, 'genre': 'korean_history', 'question': '발해가 멸망한 이유는 무엇인가요?', 'options': ['내부 반란', '고려 침공', '몽골 침공', '거란의 침입'], 'answer': '거란의 침입'},
+    {'id': 55, 'genre': 'korean_history', 'question': '조선의 역법을 정리한 책 “칠정산”을 만든 왕은?', 'options': ['문종', '세종대왕', '성종', '연산군'], 'answer': '세종대왕'},
+    {'id': 56, 'genre': 'korean_history', 'question': '이순신 장군의 대표적인 해전은?', 'options': ['귀주대첩', '살수대첩', '한산도대첩', '강화도해전'], 'answer': '한산도대첩'},
+    {'id': 57, 'genre': 'korean_history', 'question': '조선의 역관 출신으로 청나라와 교류한 실학자는?', 'options': ['박제가', '홍대용', '박지원', '정약용'], 'answer': '박제가'},
+    {'id': 58, 'genre': 'korean_history', 'question': '조선 후기 실학자 중 북학파에 속한 인물은?', 'options': ['정약용', '송시열', '박지원', '이익'], 'answer': '박지원'},
+    {'id': 59, 'genre': 'korean_history', 'question': '대한민국 국호를 처음 제안한 인물은?', 'options': ['김구', '고종', '이승만', '안창호'], 'answer': '고종'},
+    {'id': 60, 'genre': 'korean_history', 'question': '조선의 법률 제도를 완성한 법전은?', 'options': ['대명률', '경국대전', '육전조례', '흠흠신서'], 'answer': '경국대전'},
+    {'id': 61, 'genre': 'korean_history', 'question': '조선 후기의 개혁 군주로 수원화성을 축성한 왕은?', 'options': ['순조', '영조', '헌종', '정조'], 'answer': '정조'},
+    {'id': 62, 'genre': 'korean_history', 'question': '정조가 세운 개혁 기관은?', 'options': ['집현전', '훈련도감', '규장각', '성균관'], 'answer': '규장각'},
+    {'id': 63, 'genre': 'korean_history', 'question': '홍경래의 난이 일어난 지역은?', 'options': ['충청도', '전라도', '경상도', '평안도'], 'answer': '평안도'},
+    {'id': 64, 'genre': 'korean_history', 'question': '임오군란이 일어난 시기는?', 'options': ['1894년', '1876년', '1910년', '1882년'], 'answer': '1882년'},
+    {'id': 65, 'genre': 'korean_history', 'question': '갑신정변을 주도한 인물은?', 'options': ['김옥균', '윤치호', '박영효', '서재필'], 'answer': '김옥균'},
+    {'id': 66, 'genre': 'korean_history', 'question': '갑오개혁 당시 폐지된 제도는?', 'options': ['과거제', '조세제도', '신분제', '향약'], 'answer': '과거제'},
+    {'id': 67, 'genre': 'korean_history', 'question': '동학농민운동의 주요 구호는?', 'options': ['자강불식', '흥학개명', '보국안민', '실사구시'], 'answer': '보국안민'},
+    {'id': 68, 'genre': 'korean_history', 'question': '대한제국의 황제 즉위식이 열린 장소는?', 'options': ['환구단', '덕수궁', '경복궁', '창덕궁'], 'answer': '환구단'},
+    {'id': 69, 'genre': 'korean_history', 'question': '일제강점기 대표적인 비폭력 독립운동 단체는?', 'options': ['조선의용대', '의열단', '대한광복회', '신간회'], 'answer': '신간회'},
+    {'id': 70, 'genre': 'korean_history', 'question': '1932년 상하이 홍커우 공원에서 폭탄 의거를 일으킨 인물은?', 'options': ['김구', '이봉창', '안중근', '윤봉길'], 'answer': '윤봉길'},
+    {'id': 71, 'genre': 'korean_history', 'question': '대한민국 임시정부의 주석을 맡았던 인물은?', 'options': ['이승만', '김구', '신채호', '안창호'], 'answer': '김구'},
+    {'id': 72, 'genre': 'korean_history', 'question': '광복 후 제헌국회에서 초대 대통령으로 선출된 인물은?', 'options': ['이승만', '김구', '신익희', '장면'], 'answer': '이승만'},
+    {'id': 73, 'genre': 'korean_history', 'question': '한국전쟁이 발발한 해는?', 'options': ['1950년', '1945년', '1948년', '1953년'], 'answer': '1950년'},
+    {'id': 74, 'genre': 'korean_history', 'question': '6·25 전쟁의 휴전 협정이 체결된 해는?', 'options': ['1960년', '1955년', '1953년', '1950년'], 'answer': '1953년'},
+    {'id': 75, 'genre': 'korean_history', 'question': '4·19 혁명이 일어난 해는?', 'options': ['1979년', '1987년', '1960년', '1980년'], 'answer': '1960년'},
+    {'id': 76, 'genre': 'korean_history', 'question': '5·18 민주화운동이 일어난 도시는?', 'options': ['대구', '부산', '서울', '광주'], 'answer': '광주'},
+    {'id': 77, 'genre': 'korean_history', 'question': '6월 항쟁이 일어난 해는?', 'options': ['1992년', '1979년', '1980년', '1987년'], 'answer': '1987년'},
+    {'id': 78, 'genre': 'korean_history', 'question': '서울이 한양으로 불리기 시작한 왕은?', 'options': ['세종대왕', '성종', '문종', '태조 이성계'], 'answer': '태조 이성계'},
+    {'id': 79, 'genre': 'korean_history', 'question': '삼국통일의 완성은 어느 나라가 이루었나요?', 'options': ['가야', '고구려', '신라', '백제'], 'answer': '신라'},
+    {'id': 80, 'genre': 'korean_history', 'question': '고려를 멸망시킨 외세는?', 'options': ['일본', '원나라', '청나라', '몽골'], 'answer': '원나라'},
+    {'id': 81, 'genre': 'korean_history', 'question': '조선의 통치 이념은?', 'options': ['유교', '성리학', '불교', '법가'], 'answer': '성리학'},
+    {'id': 82, 'genre': 'korean_history', 'question': '세종대왕이 만든 물시계의 이름은?', 'options': ['앙부일구', '측우기', '자격루', '혼천의'], 'answer': '자격루'},
+    {'id': 83, 'genre': 'korean_history', 'question': '세종대왕이 만든 비가 측정기구는?', 'options': ['자격루', '경국대전', '혼천의', '측우기'], 'answer': '측우기'},
+    {'id': 84, 'genre': 'korean_history', 'question': '한글의 창제 원리를 설명한 책은?', 'options': ['훈민정음 해례본', '삼국사기', '조선왕조실록', '경국대전'], 'answer': '훈민정음 해례본'},
+    {'id': 85, 'genre': 'korean_history', 'question': '조선 후기 실학 운동의 기본 사상은?', 'options': ['천주교 전파', '성리학 강화', '실사구시', '불교 중흥'], 'answer': '실사구시'},
+    {'id': 86, 'genre': 'korean_history', 'question': '고려의 대표적인 역사서는?', 'options': ['고려사', '동사강목', '조선왕조실록', '삼국사기'], 'answer': '고려사'},
+    {'id': 87, 'genre': 'korean_history', 'question': '조선시대 대표적인 의학서는?', 'options': ['동의보감', '향약집성방', '의방유취', '본초강목'], 'answer': '동의보감'},
+    {'id': 88, 'genre': 'korean_history', 'question': '조선의 중종 때 일어난 사화는?', 'options': ['을사사화', '갑자사화', '기묘사화', '무오사화'], 'answer': '기묘사화'},
+    {'id': 89, 'genre': 'korean_history', 'question': '조선의 연산군 때 일어난 사화는?', 'options': ['무오사화', '갑자사화', '을사사화', '기묘사화'], 'answer': '무오사화'},
+    {'id': 90, 'genre': 'korean_history', 'question': '세도정치가 본격화된 왕은?', 'options': ['영조', '헌종', '철종', '순조'], 'answer': '순조'},
+    {'id': 91, 'genre': 'korean_history', 'question': '영조의 대표적인 업적은?', 'options': ['집현전 설치', '대동법 시행', '탕평책 시행', '훈민정음 창제'], 'answer': '탕평책 시행'},
+    {'id': 92, 'genre': 'korean_history', 'question': '정조의 개혁정책 중 경제 개혁에 해당하는 것은?', 'options': ['대동법', '균역법', '사림 등용', '신해통공'], 'answer': '신해통공'},
+    {'id': 93, 'genre': 'korean_history', 'question': '균역법이 시행된 왕은?', 'options': ['세종대왕', '영조', '성종', '정조'], 'answer': '영조'},
+    {'id': 94, 'genre': 'korean_history', 'question': '삼국시대 불교를 공인한 나라는?', 'options': ['가야', '백제', '고구려', '신라'], 'answer': '고구려'},
+    {'id': 95, 'genre': 'korean_history', 'question': '삼국시대 불교를 처음 수용한 나라는?', 'options': ['백제', '고구려', '신라', '가야'], 'answer': '고구려'},
+    {'id': 96, 'genre': 'korean_history', 'question': '조선의 국보 1호로 지정된 것은?', 'options': ['창덕궁', '숭례문', '흥인지문', '석굴암'], 'answer': '숭례문'},
+    {'id': 97, 'genre': 'korean_history', 'question': '대한민국의 국새는 무엇을 상징하나요?', 'options': ['민주의 힘', '평화의 상징', '통일의 염원', '국가의 권위'], 'answer': '국가의 권위'},
+    {'id': 98, 'genre': 'korean_history', 'question': '우리나라 최초의 신문은?', 'options': ['대한매일신보', '한성순보', '독립신문', '황성신문'], 'answer': '한성순보'},
+    {'id': 99, 'genre': 'korean_history', 'question': '독립신문을 창간한 인물은?', 'options': ['이승만', '안창호', '김구', '서재필'], 'answer': '서재필'},
+    {'id': 100, 'genre': 'korean_history', 'question': '일제강점기 독립운동 자금을 모금한 단체는?', 'options': ['조선의용대', '의열단', '신민회', '대한광복회'], 'answer': '신민회'},
+    {'id': 101, 'genre': 'korean_history', 'question': '조선시대 지방 행정 단위 중 고을의 수장을 무엇이라 했나요?', 'options': ['군수', '도감', '수령', '현감'], 'answer': '수령'},
+    {'id': 102, 'genre': 'korean_history', 'question': '고려 시대 대외 교역의 중심지는?', 'options': ['개성', '인천', '벡자도', '의주'], 'answer': '벡자도'},
+    {'id': 103, 'genre': 'korean_history', 'question': '조선의 과거제 중 무과는 어떤 인재를 뽑는 시험이었나요?', 'options': ['관료', '문관', '군사', '학자'], 'answer': '군사'},
+    {'id': 104, 'genre': 'korean_history', 'question': '고려의 삼별초는 어떤 조직이었나요?', 'options': ['학문단체', '불교단체', '군사조직', '상인조합'], 'answer': '군사조직'},
+    {'id': 105, 'genre': 'korean_history', 'question': '조선의 최고 행정기구는?', 'options': ['사헌부', '의정부', '사간원', '육조'], 'answer': '의정부'},
+    {'id': 106, 'genre': 'world_history', 'question': '로마 제국의 초대 황제는 누구인가요?', 'options': ['콘스탄티누스', '아우구스투스', '카이사르', '네로'], 'answer': '아우구스투스'},
+    {'id': 107, 'genre': 'world_history', 'question': '프랑스 혁명이 일어난 해는 언제인가요?', 'options': ['1815년', '1776년', '1789년', '1848년'], 'answer': '1789년'},
+    {'id': 108, 'genre': 'world_history', 'question': '콜럼버스가 아메리카 대륙에 도착한 해는?', 'options': ['1517년', '1453년', '1492년', '1600년'], 'answer': '1492년'},
+    {'id': 109, 'genre': 'world_history', 'question': '제2차 세계 대전의 주요 연합국이 아닌 나라는?', 'options': ['영국', '소련', '미국', '독일'], 'answer': '독일'},
+    {'id': 110, 'genre': 'world_history', 'question': '이집트의 피라미드를 건설한 고대 문명은?', 'options': ['이집트 문명', '인더스 문명', '메소포타미아 문명', '황하 문명'], 'answer': '이집트 문명'},
+    {'id': 111, 'genre': 'world_history', 'question': '마르틴 루터의 종교개혁이 시작된 곳은?', 'options': ['로마', '런던', '비텐베르크', '제네바'], 'answer': '비텐베르크'},
+    {'id': 112, 'genre': 'world_history', 'question': '중국의 만리장성을 축조하기 시작한 왕조는?', 'options': ['당(唐)나라', '명(明)나라', '한(漢)나라', '진(秦)나라'], 'answer': '진(秦)나라'},
+    {'id': 113, 'genre': 'world_history', 'question': '고대 그리스의 아테네에서 발달한 정치 체제는?', 'options': ['과두정', '신정정치', '군주제', '민주주의'], 'answer': '민주주의'},
+    {'id': 114, 'genre': 'world_history', 'question': '산업 혁명이 가장 먼저 시작된 나라는?', 'options': ['독일', '미국', '영국', '프랑스'], 'answer': '영국'},
+    {'id': 115, 'genre': 'world_history', 'question': '냉전 시대, 미국과 대립했던 공산주의 진영의 맹주는?', 'options': ['중국', '쿠바', '북한', '소련'], 'answer': '소련'},
+    {'id': 116, 'genre': 'world_history', 'question': '잔다르크가 활약했던 전쟁은?', 'options': ['장미전쟁', '백년전쟁', '30년 전쟁', '십자군 전쟁'], 'answer': '백년전쟁'},
+    {'id': 117, 'genre': 'world_history', 'question': '고대 인더스 문명의 주요 도시는?', 'options': ['모헨조다로', '우르', '앙코르', '테베'], 'answer': '모헨조다로'},
+    {'id': 118, 'genre': 'world_history', 'question': '알렉산드로스 대왕의 제국이 정복했던 지역은?', 'options': ['페르시아', '중국', '영국', '로마'], 'answer': '페르시아'},
+    {'id': 119, 'genre': 'world_history', 'question': '마야 문명이 위치했던 대륙은?', 'options': ['유럽', '아시아', '아메리카', '아프리카'], 'answer': '아메리카'},
+    {'id': 120, 'genre': 'world_history', 'question': '제1차 세계 대전의 시발점이 된 사건은?', 'options': ['사라예보 사건', '베를린 장벽 건설', '아편 전쟁', '진주만 공격'], 'answer': '사라예보 사건'},
+    {'id': 121, 'genre': 'world_history', 'question': '고대 중국에서 비단길을 개척하는 데 기여한 인물은?', 'options': ['시황제', '징기즈칸', '공자', '장건'], 'answer': '장건'},
+    {'id': 122, 'genre': 'world_history', 'question': '이슬람교를 창시한 인물은?', 'options': ['예수', '부처', '무함마드', '모세'], 'answer': '무함마드'},
+    {'id': 123, 'genre': 'world_history', 'question': '미국 독립선언서가 채택된 해는?', 'options': ['1861년', '1789년', '1898년', '1776년'], 'answer': '1776년'},
+    {'id': 124, 'genre': 'world_history', 'question': '독일의 통일을 이끈 재상은?', 'options': ['빌헬름 2세', '히틀러', '비스마르크', '메테르니히'], 'answer': '비스마르크'},
+    {'id': 125, 'genre': 'world_history', 'question': '러시아 혁명을 이끈 주요 인물은?', 'options': ['트로츠키', '니콜라이 2세', '스탈린', '레닌'], 'answer': '레닌'},
+    {'id': 126, 'genre': 'world_history', 'question': '르네상스가 시작된 나라는?', 'options': ['프랑스', '독일', '이탈리아', '영국'], 'answer': '이탈리아'},
+    {'id': 127, 'genre': 'world_history', 'question': '몽골 제국을 건설한 인물은?', 'options': ['징기즈칸', '쿠빌라이칸', '티무르', '오고타이칸'], 'answer': '징기즈칸'},
+    {'id': 128, 'genre': 'world_history', 'question': '나폴레옹이 최종적으로 패배한 전투는?', 'options': ['트라팔가르 해전', '아우스터리츠 전투', '워털루 전투', '라이프치히 전투'], 'answer': '워털루 전투'},
+    {'id': 129, 'genre': 'world_history', 'question': '일본의 메이지 유신이 일어난 시기는?', 'options': ['17세기 중반', '20세기 초반', '18세기 전반', '19세기 후반'], 'answer': '19세기 후반'},
+    {'id': 130, 'genre': 'world_history', 'question': '로마의 평화(Pax Romana)를 이끈 황제는?', 'options': ['디오클레티아누스', '콘스탄티누스', '네로', '아우구스투스'], 'answer': '아우구스투스'},
+    {'id': 131, 'genre': 'world_history', 'question': '베르사유 궁전을 건설한 프랑스 왕은?', 'options': ['루이 14세', '루이 16세', '샤를 10세', '나폴레옹'], 'answer': '루이 14세'},
+    {'id': 132, 'genre': 'world_history', 'question': '영국의 명예혁명이 일어난 해는?', 'options': ['1789년', '1688년', '1707년', '1642년'], 'answer': '1688년'},
+    {'id': 133, 'genre': 'world_history', 'question': '마오쩌둥이 이끈 혁명은?', 'options': ['문화 혁명', '신해혁명', '중국 공산당 혁명', '대만 혁명'], 'answer': '중국 공산당 혁명'},
+    {'id': 134, 'genre': 'world_history', 'question': '세계에서 가장 오래된 문자로 알려진 것은?', 'options': ['알파벳', '쐐기 문자', '상형 문자', '갑골 문자'], 'answer': '쐐기 문자'},
+    {'id': 135, 'genre': 'world_history', 'question': '르네상스 시대의 대표적인 미술가로 모나리자를 그린 사람은?', 'options': ['도나텔로', '미켈란젤로', '라파엘로', '레오나르도 다빈치'], 'answer': '레오나르도 다빈치'},
+    {'id': 136, 'genre': 'world_history', 'question': '십자군 전쟁의 주요 목적은?', 'options': ['정치 체제 개혁', '성지 예루살렘 탈환', '무역로 개척', '신대륙 발견'], 'answer': '성지 예루살렘 탈환'},
+    {'id': 137, 'genre': 'world_history', 'question': '영국과 프랑스가 아프리카를 식민지로 분할하던 시기는?', 'options': ['냉전 시대', '제국주의 시대', '중세 시대', '르네상스 시대'], 'answer': '제국주의 시대'},
+    {'id': 138, 'genre': 'world_history', 'question': '고대 올림픽이 처음 시작된 곳은?', 'options': ['스파르타', '올림피아', '아테네', '로마'], 'answer': '올림피아'},
+    {'id': 139, 'genre': 'world_history', 'question': '인도의 비폭력 독립운동을 이끈 지도자는?', 'options': ['타고르', '네루', '마하트마 간디', '보스'], 'answer': '마하트마 간디'},
+    {'id': 140, 'genre': 'world_history', 'question': '미국의 노예 해방 선언을 발표한 대통령은?', 'options': ['조지 워싱턴', '토머스 제퍼슨', '프랭클린 루스벨트', '에이브러햄 링컨'], 'answer': '에이브러햄 링컨'},
+    {'id': 141, 'genre': 'world_history', 'question': '베를린 장벽이 무너진 해는?', 'options': ['1991년', '1989년', '1961년', '1945년'], 'answer': '1989년'},
+    {'id': 142, 'genre': 'world_history', 'question': '중국의 신해혁명을 주도한 인물은?', 'options': ['쑨원', '장제스', '마오쩌둥', '덩샤오핑'], 'answer': '쑨원'},
+    {'id': 143, 'genre': 'world_history', 'question': '흑사병이 유럽에 창궐했던 시기는?', 'options': ['14세기', '17세기', '19세기', '11세기'], 'answer': '14세기'},
+    {'id': 144, 'genre': 'world_history', 'question': '고대 로마의 공화정 시대에 평민의 권익을 대변했던 관직은?', 'options': ['원로원', '호민관', '재무관', '집정관'], 'answer': '호민관'},
+    {'id': 145, 'genre': 'world_history', 'question': '동로마 제국의 수도는?', 'options': ['콘스탄티노폴리스', '아테네', '로마', '알렉산드리아'], 'answer': '콘스탄티노폴리스'},
+    {'id': 146, 'genre': 'world_history', 'question': '영국이 미국에 세금을 부과하여 독립전쟁을 초래한 법은?', 'options': ['항해법', '인지세', '곡물법', '타운센드법'], 'answer': '인지세'},
+    {'id': 147, 'genre': 'world_history', 'question': '고대 그리스의 철학자로 "너 자신을 알라"를 주장한 사람은?', 'options': ['피타고라스', '아리스토텔레스', '플라톤', '소크라테스'], 'answer': '소크라테스'},
+    {'id': 148, 'genre': 'world_history', 'question': '스페인과 포르투갈이 세계를 양분한 조약은?', 'options': ['파리 조약', '난징 조약', '베르사유 조약', '토르데시야스 조약'], 'answer': '토르데시야스 조약'},
+    {'id': 149, 'genre': 'world_history', 'question': '바이킹의 주 활동 지역은?', 'options': ['동남아시아', '아프리카 북부', '스칸디나비아', '지중해'], 'answer': '스칸디나비아'},
+    {'id': 150, 'genre': 'world_history', 'question': '고대 바빌로니아의 법전은?', 'options': ['12표법', '함무라비 법전', '솔론의 법', '로마법 대전'], 'answer': '함무라비 법전'},
+    {'id': 151, 'genre': 'world_history', 'question': '제2차 세계 대전 중 영국을 이끈 총리는?', 'options': ['윈스턴 처칠', '클레멘트 애틀리', '토니 블레어', '네빌 체임벌린'], 'answer': '윈스턴 처칠'},
+    {'id': 152, 'genre': 'world_history', 'question': '아즈텍 문명의 중심지는?', 'options': ['이집트', '멕시코', '터키', '페루'], 'answer': '멕시코'},
+    {'id': 153, 'genre': 'world_history', 'question': '나폴레옹이 유럽 대륙을 지배할 때 영국을 고립시키기 위해 시행한 정책은?', 'options': ['관세동맹', '대륙봉쇄령', '빈 체제', '신성동맹'], 'answer': '대륙봉쇄령'},
+    {'id': 154, 'genre': 'world_history', 'question': '1884년 아프리카 분할을 논의한 회의는?', 'options': ['파리 강화 회의', '포츠담 회담', '베를린 회의', '빈 회의'], 'answer': '베를린 회의'},
+    {'id': 155, 'genre': 'world_history', 'question': '제1차 세계 대전의 종전 연도는?', 'options': ['1919년', '1914년', '1918년', '1920년'], 'answer': '1918년'},
+    {'id': 156, 'genre': 'world_history', 'question': '이탈리아의 파시즘을 이끈 독재자는?', 'options': ['히틀러', '프랑코', '스탈린', '무솔리니'], 'answer': '무솔리니'},
+    {'id': 157, 'genre': 'world_history', 'question': '동서 문화 교류의 상징인 비단길의 시발점이 된 중국 도시는?', 'options': ['난징', '낙양', '장안', '베이징'], 'answer': '장안'},
+    {'id': 158, 'genre': 'world_history', 'question': '로마의 검투사 노예였으나 반란을 일으킨 인물은?', 'options': ['스파르타쿠스', '카이사르', '폼페이우스', '한니발'], 'answer': '스파르타쿠스'},
+    {'id': 159, 'genre': 'world_history', 'question': '미국 독립 혁명의 상징적인 사건 중 하나는?', 'options': ['워털루 전투', '보스턴 차 사건', '프랑스 대혁명', '아편 전쟁'], 'answer': '보스턴 차 사건'},
+    {'id': 160, 'genre': 'world_history', 'question': '러시아의 마지막 황제는?', 'options': ['니콜라이 2세', '예카테리나 2세', '이반 4세', '표트르 대제'], 'answer': '니콜라이 2세'},
+    {'id': 161, 'genre': 'world_history', 'question': '중세 유럽의 장원 제도를 기반으로 한 사회는?', 'options': ['노예제', '봉건제', '공화정', '민주주의'], 'answer': '봉건제'},
+    {'id': 162, 'genre': 'world_history', 'question': '고대 중국의 유가 사상을 확립한 사상가는?', 'options': ['노자', '순자', '공자', '맹자'], 'answer': '공자'},
+    {'id': 163, 'genre': 'world_history', 'question': '인류 최초의 문명 발상지로 알려진 지역은?', 'options': ['이집트', '로마', '그리스', '메소포타미아'], 'answer': '메소포타미아'},
+    {'id': 164, 'genre': 'world_history', 'question': '아편 전쟁을 일으킨 나라는?', 'options': ['프랑스', '영국', '미국', '러시아'], 'answer': '영국'},
+    {'id': 165, 'genre': 'world_history', 'question': '아리스토텔레스의 제자로 유명한 대왕은?', 'options': ['카이사르', '알렉산드로스 대왕', '다리우스 1세', '아우구스투스'], 'answer': '알렉산드로스 대왕'},
+    {'id': 166, 'genre': 'world_history', 'question': '중국에서 과거 제도가 처음 시행된 왕조는?', 'options': ['한(漢)나라', '당(唐)나라', '송(宋)나라', '수(隋)나라'], 'answer': '수(隋)나라'},
+    {'id': 167, 'genre': 'world_history', 'question': '1871년 파리에서 수립된 노동자들의 자치 정부는?', 'options': ['파리 코뮌', '영국 노동당', '미국 노조', '러시아 소비에트'], 'answer': '파리 코뮌'},
+    {'id': 168, 'genre': 'world_history', 'question': '제2차 세계 대전 중 독일이 소련을 침공한 작전명은?', 'options': ['사막의 여우 작전', '오버로드 작전', '패스파인더 작전', '바르바로사 작전'], 'answer': '바르바로사 작전'},
+    {'id': 169, 'genre': 'world_history', 'question': '이탈리아 통일의 3걸 중 "붉은 셔츠단"을 이끈 인물은?', 'options': ['마치니', '카부르', '비토리오 에마누엘레 2세', '가리발디'], 'answer': '가리발디'},
+    {'id': 170, 'genre': 'world_history', 'question': '영국의 식민지였던 인도가 독립한 해는?', 'options': ['1960년', '1945년', '1950년', '1947년'], 'answer': '1947년'},
+    {'id': 171, 'genre': 'world_history', 'question': '르네상스 시대, "군주론"을 저술한 사상가는?', 'options': ['단테', '마키아벨리', '토마스 모어', '에라스무스'], 'answer': '마키아벨리'},
+    {'id': 172, 'genre': 'world_history', 'question': '13세기 몽골의 침략에 맞서 일본을 지킨 바람은?', 'options': ['제트 기류', '회오리바람', '태풍', '가미카제'], 'answer': '가미카제'},
+    {'id': 173, 'genre': 'world_history', 'question': '로마 제국을 동서로 분할한 황제는?', 'options': ['콘스탄티누스', '테오도시우스', '아우구스투스', '디오클레티아누스'], 'answer': '디오클레티아누스'},
+    {'id': 174, 'genre': 'world_history', 'question': '제2차 세계 대전 후 유럽 부흥을 위한 미국의 원조 계획은?', 'options': ['트루먼 독트린', '베르사유 조약', '카터 독트린', '마셜 플랜'], 'answer': '마셜 플랜'},
+    {'id': 175, 'genre': 'world_history', 'question': '고대 이스라엘의 최초의 왕은?', 'options': ['다윗', '모세', '사울', '솔로몬'], 'answer': '사울'},
+    {'id': 176, 'genre': 'world_history', 'question': '18세기 프로이센의 계몽 전제 군주로 유명한 왕은?', 'options': ['예카테리나 2세', '빌헬름 1세', '프리드리히 2세', '마리아 테레지아'], 'answer': '프리드리히 2세'},
+    {'id': 177, 'genre': 'world_history', 'question': '중세 유럽의 대학에서 라틴어로 강의하던 학문은?', 'options': ['의학', '법학', '신학', '철학'], 'answer': '신학'},
+    {'id': 178, 'genre': 'world_history', 'question': '스파르타의 교육 방식에서 중요시된 덕목은?', 'options': ['예술', '군사 훈련', '철학', '문학'], 'answer': '군사 훈련'},
+    {'id': 179, 'genre': 'world_history', 'question': '고대 중국에서 법가 사상을 국가 통치 이념으로 삼은 왕조는?', 'options': ['춘추전국시대', '한(漢)나라', '주(周)나라', '진(秦)나라'], 'answer': '진(秦)나라'},
+    {'id': 180, 'genre': 'world_history', 'question': '영국의 "권리 장전"이 승인된 해는?', 'options': ['1215년', '1701년', '1689년', '1776년'], 'answer': '1689년'},
+    {'id': 181, 'genre': 'world_history', 'question': '아프리카의 "검은 대륙" 탐험가로 유명한 인물은?', 'options': ['제임스 쿡', '데이비드 리빙스턴', '바스코 다 가마', '마르코 폴로'], 'answer': '데이비드 리빙스턴'},
+    {'id': 182, 'genre': 'world_history', 'question': '중세 유럽에서 교황의 권위가 가장 높았던 사건은?', 'options': ['아비뇽 유수', '십자군 전쟁', '카노사의 굴욕', '종교개혁'], 'answer': '카노사의 굴욕'},
+    {'id': 183, 'genre': 'world_history', 'question': '19세기 초 남미 독립 운동을 이끈 "해방자"는?', 'options': ['이달고', '미란다', '산 마르틴', '시몬 볼리바르'], 'answer': '시몬 볼리바르'},
+    {'id': 184, 'genre': 'world_history', 'question': '제2차 세계 대전 중 일본이 항복하게 된 결정적 계기는?', 'options': ['미드웨이 해전', '원자 폭탄 투하', '노르망디 상륙 작전', '진주만 공격'], 'answer': '원자 폭탄 투하'},
+    {'id': 185, 'genre': 'world_history', 'question': '고대 페르시아의 종교로 유일신 아후라 마즈다를 믿는 종교는?', 'options': ['조로아스터교', '불교', '이슬람교', '마니교'], 'answer': '조로아스터교'},
+    {'id': 186, 'genre': 'world_history', 'question': '19세기 후반 유럽에서 유행했던, 현실을 있는 그대로 표현하려는 사조는?', 'options': ['사실주의', '인상주의', '절대주의', '낭만주의'], 'answer': '사실주의'},
+    {'id': 187, 'genre': 'world_history', 'question': '고대 중국의 한(漢)나라를 멸망시키고 새로운 왕조(신)를 세운 인물은?', 'options': ['조조', '장각', '왕망', '유방'], 'answer': '왕망'},
+    {'id': 188, 'genre': 'world_history', 'question': '바이킹족의 주요 활동이 아닌 것은?', 'options': ['농업', '약탈', '무역', '탐험'], 'answer': '농업'},
+    {'id': 189, 'genre': 'world_history', 'question': '제1차 세계 대전 후 국제 평화 유지를 위해 창설된 기구는?', 'options': ['국제 연맹', '나토(NATO)', '유엔(UN)', '바르샤바 조약 기구'], 'answer': '국제 연맹'},
+    {'id': 190, 'genre': 'world_history', 'question': '근대 유럽에서 절대 왕정을 뒷받침한 사상은?', 'options': ['삼권분립설', '자유주의', '사회계약설', '왕권신수설'], 'answer': '왕권신수설'},
+    {'id': 191, 'genre': 'world_history', 'question': '고대 이집트의 왕을 칭하는 용어는?', 'options': ['파라오', '황제', '칼리프', '술탄'], 'answer': '파라오'},
+    {'id': 192, 'genre': 'world_history', 'question': '아테네의 민주정 발전에 기여한 법률가는?', 'options': ['드라콘', '페리클레스', '클레이스테네스', '솔론'], 'answer': '클레이스테네스'},
+    {'id': 193, 'genre': 'world_history', 'question': '동서 교회의 분열이 일어난 해는?', 'options': ['395년', '1054년', '476년', '1453년'], 'answer': '1054년'},
+    {'id': 194, 'genre': 'world_history', 'question': '러시아가 부동항을 얻기 위해 벌인 전쟁은?', 'options': ['러일 전쟁', '나폴레옹 전쟁', '크림 전쟁', '청일 전쟁'], 'answer': '크림 전쟁'},
+    {'id': 195, 'genre': 'world_history', 'question': '고대 로마에서 카르타고와 벌인 전쟁은?', 'options': ['페르시아 전쟁', '포에니 전쟁', '펠로폰네소스 전쟁', '십자군 전쟁'], 'answer': '포에니 전쟁'},
+    {'id': 196, 'genre': 'world_history', 'question': '영국의 산업혁명 초기, 기계를 파괴한 노동자들의 운동은?', 'options': ['공상적 사회주의', '차티스트 운동', '오웬주의', '러다이트 운동'], 'answer': '러다이트 운동'},
+    {'id': 197, 'genre': 'world_history', 'question': '서양 중세 시대의 기사들이 지켜야 했던 도덕 규범은?', 'options': ['무사도', '기사도', '유교', '십계명'], 'answer': '기사도'},
+    {'id': 198, 'genre': 'world_history', 'question': '제2차 세계 대전 중 노르망디 상륙 작전을 지휘한 연합군 총사령관은?', 'options': ['조지 패튼', '드와이트 D. 아이젠하워', '더글러스 맥아더', '버나드 몽고메리'], 'answer': '드와이트 D. 아이젠하워'},
+    {'id': 199, 'genre': 'world_history', 'question': '고대 그리스의 스파르타가 아테네를 무너뜨린 전쟁은?', 'options': ['페르시아 전쟁', '펠로폰네소스 전쟁', '포에니 전쟁', '트로이 전쟁'], 'answer': '펠로폰네소스 전쟁'},
+    {'id': 200, 'genre': 'world_history', 'question': '중국의 청(淸)나라를 세운 민족은?', 'options': ['몽골족', '위구르족', '만주족', '한족'], 'answer': '만주족'},
+    {'id': 201, 'genre': 'world_history', 'question': '르네상스 3대 발명품이 아닌 것은?', 'options': ['종이', '나침반', '화약', '인쇄술'], 'answer': '종이'},
+    {'id': 202, 'genre': 'world_history', 'question': '히틀러가 이끈 독일의 정당은?', 'options': ['자유민주당', '나치당', '사회민주당', '공산당'], 'answer': '나치당'},
+    {'id': 203, 'genre': 'world_history', 'question': '미국과 소련 간의 쿠바 미사일 위기가 발생한 해는?', 'options': ['1950년', '1962년', '1989년', '1973년'], 'answer': '1962년'},
+    {'id': 204, 'genre': 'world_history', 'question': '고대 중국에서 분서갱유를 단행한 황제는?', 'options': ['진시황', '한 무제', '당 태종', '수 양제'], 'answer': '진시황'},
+    {'id': 205, 'genre': 'world_history', 'question': '콜럼버스의 신대륙 발견을 후원한 나라는?', 'options': ['포르투갈', '프랑스', '영국', '스페인'], 'answer': '스페인'},
+    {'id': 206, 'genre': 'world_history', 'question': '근대 과학 혁명의 시작을 알린 천문학자는?', 'options': ['뉴턴', '케플러', '갈릴레이', '코페르니쿠스'], 'answer': '코페르니쿠스'},
+    {'id': 207, 'genre': 'world_history', 'question': '프랑스 혁명 시기에 절대 왕정을 상징하는 건물은?', 'options': ['루브르 박물관', '베르사유 궁전', '노트르담 대성당', '바스티유 감옥'], 'answer': '바스티유 감옥'},
+    {'id': 208, 'genre': 'world_history', 'question': '인도에서 불교를 창시한 인물은?', 'options': ['마하비라', '크리슈나', '브라흐마', '석가모니'], 'answer': '석가모니'},
+    {'id': 209, 'genre': 'world_history', 'question': '고대 로마 제국의 서로마 제국이 멸망한 해는?', 'options': ['395년', '753년', '1453년', '476년'], 'answer': '476년'},
+    {'id': 210, 'genre': 'world_history', 'question': '제2차 세계 대전 중 진주만 공격을 감행한 나라는?', 'options': ['일본', '독일', '소련', '이탈리아'], 'answer': '일본'},
+    {'id': 211, 'genre': 'world_history', 'question': '고대 그리스의 도시국가를 칭하는 용어는?', 'options': ['테메노스', '아크로폴리스', '폴리스', '메가리스'], 'answer': '폴리스'},
+    {'id': 212, 'genre': 'world_history', 'question': '중세 유럽에서 흑사병을 매개한 동물은?', 'options': ['박쥐', '고양이', '개', '쥐'], 'answer': '쥐'},
+    {'id': 213, 'genre': 'world_history', 'question': '신항로 개척에 결정적인 역할을 한 항해술 발전은?', 'options': ['망원경 발명', '나침반 사용', '증기선 개발', '지도 제작술'], 'answer': '나침반 사용'},
+    {'id': 214, 'genre': 'world_history', 'question': '마르틴 루터가 비판했던 교회의 부패 중 가장 큰 문제는?', 'options': ['성상 숭배', '성직자 독신주의', '면죄부 판매', '교황권 강화'], 'answer': '면죄부 판매'},
+    {'id': 215, 'genre': 'world_history', 'question': '나폴레옹이 황제로 즉위한 해는?', 'options': ['1799년', '1804년', '1800년', '1815년'], 'answer': '1804년'},
+    {'id': 216, 'genre': 'world_history', 'question': '유럽의 지성사적 대변혁을 가져온 "계몽주의"의 핵심 사상은?', 'options': ['신앙', '이성', '전통', '감정'], 'answer': '이성'},
+    {'id': 217, 'genre': 'world_history', 'question': '러시아 혁명 당시 농민과 노동자의 대표 회의는?', 'options': ['멘셰비키', '볼셰비키', '소비에트', '두마'], 'answer': '소비에트'},
+    {'id': 218, 'genre': 'world_history', 'question': '제2차 세계 대전 후 독일이 동서로 분단된 도시는?', 'options': ['뮌헨', '프랑크푸르트', '함부르크', '베를린'], 'answer': '베를린'},
+    {'id': 219, 'genre': 'science', 'question': '지구의 대기권 중 오존층이 존재하는 층은?', 'options': ['중간권', '성층권', '열권', '대류권'], 'answer': '성층권'},
+    {'id': 220, 'genre': 'science', 'question': '물질을 이루는 가장 기본적인 입자는?', 'options': ['전자', '분자', '원자', '중성자'], 'answer': '원자'},
+    {'id': 221, 'genre': 'science', 'question': '태양계 행성 중 가장 큰 행성은?', 'options': ['지구', '토성', '목성', '화성'], 'answer': '목성'},
+    {'id': 222, 'genre': 'science', 'question': '식물이 빛 에너지를 이용하여 양분을 만드는 과정은?', 'options': ['광합성', '증산 작용', '호흡', '발효'], 'answer': '광합성'},
+    {'id': 223, 'genre': 'science', 'question': '뉴턴의 운동 법칙 중 힘의 크기는 질량과 가속도의 곱과 같다는 법칙은?', 'options': ['제3법칙 (작용 반작용의 법칙)', '제1법칙 (관성의 법칙)', '만유인력의 법칙', '제2법칙 (가속도의 법칙)'], 'answer': '제2법칙 (가속도의 법칙)'},
+    {'id': 224, 'genre': 'science', 'question': 'DNA의 이중 나선 구조를 밝혀낸 과학자는?', 'options': ['멘델', '왓슨과 크릭', '파스퇴르', '다윈'], 'answer': '왓슨과 크릭'},
+    {'id': 225, 'genre': 'science', 'question': '물질의 세 가지 상태 중 에너지가 가장 높은 상태는?', 'options': ['기체', '플라즈마', '액체', '고체'], 'answer': '기체'},
+    {'id': 226, 'genre': 'science', 'question': '인간의 혈액형을 결정하는 유전 법칙을 발견한 사람은?', 'options': ['그레고어 멘델', '루이 파스퇴르', '에드워드 제너', '카를 란트슈타이너'], 'answer': '카를 란트슈타이너'},
+    {'id': 227, 'genre': 'science', 'question': '현재 사용되는 원소 주기율표를 확립하는 데 기여한 과학자는?', 'options': ['러더퍼드', '보어', '돌턴', '멘델레예프'], 'answer': '멘델레예프'},
+    {'id': 228, 'genre': 'science', 'question': '지진의 규모를 측정하는 데 사용되는 척도는?', 'options': ['리히터 규모', 'pH', '절대 등급', '켈빈 온도'], 'answer': '리히터 규모'},
+    {'id': 229, 'genre': 'science', 'question': '지구 온난화의 주요 원인 물질은?', 'options': ['헬륨', '산소', '질소', '이산화탄소'], 'answer': '이산화탄소'},
+    {'id': 230, 'genre': 'science', 'question': '전기를 띤 입자의 흐름을 무엇이라고 하나요?', 'options': ['전압', '전력', '저항', '전류'], 'answer': '전류'},
+    {'id': 231, 'genre': 'science', 'question': '빛의 속도는 초당 약 몇 킬로미터인가요?', 'options': ['30만 km', '100만 km', '10만 km', '15만 km'], 'answer': '30만 km'},
+    {'id': 232, 'genre': 'science', 'question': '사람의 정상 체온은 섭씨 몇 도인가요?', 'options': ['37.5°C', '36.5°C', '35.5°C', '38.5°C'], 'answer': '36.5°C'},
+    {'id': 233, 'genre': 'science', 'question': '물체가 외부의 힘 없이 스스로 운동 상태를 유지하려는 성질은?', 'options': ['탄성', '관성', '가속도', '중력'], 'answer': '관성'},
+    {'id': 234, 'genre': 'science', 'question': '소리가 전달될 수 없는 공간은?', 'options': ['물', '고체', '공기', '진공'], 'answer': '진공'},
+    {'id': 235, 'genre': 'science', 'question': '지구 내부 구조 중 가장 바깥 층은?', 'options': ['내핵', '외핵', '맨틀', '지각'], 'answer': '지각'},
+    {'id': 236, 'genre': 'science', 'question': '세포 내에서 에너지를 생산하는 기관은?', 'options': ['핵', '엽록체', '미토콘드리아', '리보솜'], 'answer': '미토콘드리아'},
+    {'id': 237, 'genre': 'science', 'question': '용액의 산성도를 나타내는 지수는?', 'options': ['pH', '밀도', '온도', '농도'], 'answer': 'pH'},
+    {'id': 238, 'genre': 'science', 'question': '전염병 예방을 위한 백신을 처음 개발한 사람은?', 'options': ['로버트 코흐', '알렉산더 플레밍', '에드워드 제너', '루이 파스퇴르'], 'answer': '에드워드 제너'},
+    {'id': 239, 'genre': 'science', 'question': '물은 섭씨 몇 도에서 어나요?', 'options': ['100°C', '0°C', '4°C', '-10°C'], 'answer': '0°C'},
+    {'id': 240, 'genre': 'science', 'question': '지구를 도는 달의 운동 형태는?', 'options': ['타원 운동', '직선 운동', '공전', '자전'], 'answer': '공전'},
+    {'id': 241, 'genre': 'science', 'question': '가장 흔한 원소로 태양의 주요 구성 성분은?', 'options': ['헬륨', '탄소', '산소', '수소'], 'answer': '수소'},
+    {'id': 242, 'genre': 'science', 'question': '공기 중에서 소리가 전달되는 속도는?', 'options': ['약 300,000km/s', '약 1500m/s', '약 340m/s', '약 100m/s'], 'answer': '약 340m/s'},
+    {'id': 243, 'genre': 'science', 'question': '화산 폭발 시 분출되는 뜨거운 액체 상태의 물질은?', 'options': ['화산재', '용암', '마그마', '화산 가스'], 'answer': '마그마'},
+    {'id': 244, 'genre': 'science', 'question': '사람의 감각기관 중 가장 큰 면적을 차지하는 기관은?', 'options': ['혀', '눈', '코', '피부'], 'answer': '피부'},
+    {'id': 245, 'genre': 'science', 'question': '색깔을 볼 수 있게 해주는 눈의 세포는?', 'options': ['렌즈', '간상 세포', '시신경', '원추 세포'], 'answer': '원추 세포'},
+    {'id': 246, 'genre': 'science', 'question': '질량 보존의 법칙을 확립한 과학자는?', 'options': ['보일', '라부아지에', '돌턴', '게이뤼삭'], 'answer': '라부아지에'},
+    {'id': 247, 'genre': 'science', 'question': '태양계 행성 중 "붉은 행성"으로 불리는 행성은?', 'options': ['수성', '금성', '화성', '목성'], 'answer': '화성'},
+    {'id': 248, 'genre': 'science', 'question': '생물이 환경에 적응하여 점진적으로 변화하는 현상은?', 'options': ['대사', '번식', '성장', '진화'], 'answer': '진화'},
+    {'id': 249, 'genre': 'science', 'question': '식물의 뿌리에서 물이 잎으로 이동하는 현상은?', 'options': ['호흡', '증산 작용', '흡수', '광합성'], 'answer': '증산 작용'},
+    {'id': 250, 'genre': 'science', 'question': '물질의 화학적 성질을 결정하는 원자의 부분은?', 'options': ['전자', '중성자', '양성자', '원자핵'], 'answer': '전자'},
+    {'id': 251, 'genre': 'science', 'question': '전기 회로에서 전압을 측정하는 기구는?', 'options': ['전압계', '저항계', '오실로스코프', '전류계'], 'answer': '전압계'},
+    {'id': 252, 'genre': 'science', 'question': '우리 은하의 이름은?', 'options': ['소용돌이 은하', '안드로메다', '은하수', '삼각형자리 은하'], 'answer': '은하수'},
+    {'id': 253, 'genre': 'science', 'question': '독감 바이러스를 막는 항체를 만드는 기관은?', 'options': ['신장', '혈소판', '적혈구', '림프구'], 'answer': '림프구'},
+    {'id': 254, 'genre': 'science', 'question': '금속 중에서 가장 전기가 잘 통하는 원소는?', 'options': ['알루미늄', '은', '금', '구리'], 'answer': '은'},
+    {'id': 255, 'genre': 'science', 'question': '끓는점과 어는점의 차이를 100등분하여 사용하는 온도 체계는?', 'options': ['랭킨', '섭씨', '화씨', '켈빈'], 'answer': '섭씨'},
+    {'id': 256, 'genre': 'science', 'question': '지구 대기 중 가장 많은 비율을 차지하는 기체는?', 'options': ['질소', '이산화탄소', '아르곤', '산소'], 'answer': '질소'},
+    {'id': 257, 'genre': 'science', 'question': '빛이 굴절되는 현상을 설명하는 법칙은?', 'options': ['옴의 법칙', '아르키메데스의 원리', '스넬의 법칙', '뉴턴의 법칙'], 'answer': '스넬의 법칙'},
+    {'id': 258, 'genre': 'science', 'question': '생물 분류의 가장 작은 단위는?', 'options': ['속', '과', '종', '목'], 'answer': '종'},
+    {'id': 259, 'genre': 'science', 'question': '지구의 북극에서 볼 수 있는 환상적인 빛의 현상은?', 'options': ['오로라', '무지개', '미세스', '신 기루'], 'answer': '오로라'},
+    {'id': 260, 'genre': 'science', 'question': '중력을 발견한 것으로 유명한 과학자는?', 'options': ['알베르트 아인슈타인', '아이작 뉴턴', '갈릴레오 갈릴레이', '니콜라 테슬라'], 'answer': '아이작 뉴턴'},
+    {'id': 261, 'genre': 'science', 'question': '전기를 저장하는 장치는?', 'options': ['트랜지스터', '다이오드', '저항', '축전기 (커패시터)'], 'answer': '축전기 (커패시터)'},
+    {'id': 262, 'genre': 'science', 'question': '멘델이 유전 연구에 사용한 식물은?', 'options': ['강낭콩', '완두콩', '벼', '옥수수'], 'answer': '완두콩'},
+    {'id': 263, 'genre': 'science', 'question': '바닷물이 짠 이유는 어떤 물질 때문인가요?', 'options': ['염화나트륨', '염화칼슘', '탄산칼륨', '황산마그네슘'], 'answer': '염화나트륨'},
+    {'id': 264, 'genre': 'science', 'question': '지구 자기장의 방향을 측정하는 도구는?', 'options': ['분광기', '현미경', '망원경', '나침반'], 'answer': '나침반'},
+    {'id': 265, 'genre': 'science', 'question': '화학 반응의 속도를 변화시키는 물질은?', 'options': ['촉매', '산소', '용질', '용매'], 'answer': '촉매'},
+    {'id': 266, 'genre': 'science', 'question': '천체의 거리를 나타내는 단위 중 하나로, 빛이 1년 동안 가는 거리는?', 'options': ['킬로미터', '광년', '파섹', '천문 단위'], 'answer': '광년'},
+    {'id': 267, 'genre': 'science', 'question': '사람의 심장에서 피가 폐로 이동하는 곳은?', 'options': ['좌심실', '우심방', '좌심방', '우심실'], 'answer': '우심실'},
+    {'id': 268, 'genre': 'science', 'question': '가장 단단한 광물은?', 'options': ['석영', '철', '금', '다이아몬드'], 'answer': '다이아몬드'},
+    {'id': 269, 'genre': 'science', 'question': '물체를 물에 띄우는 힘은?', 'options': ['장력', '부력', '탄성력', '중력'], 'answer': '부력'},
+    {'id': 270, 'genre': 'science', 'question': '원자핵을 이루는 입자는?', 'options': ['양성자와 중성자', '전자와 중성자', '전자와 양성자', '전자만'], 'answer': '양성자와 중성자'},
+    {'id': 271, 'genre': 'science', 'question': '화학에서 산과 염기가 만나서 물과 염을 생성하는 반응은?', 'options': ['분해 반응', '환원 반응', '산화 반응', '중화 반응'], 'answer': '중화 반응'},
+    {'id': 272, 'genre': 'science', 'question': '인간의 뇌에서 기억을 담당하는 주요 부위는?', 'options': ['소뇌', '시상하부', '대뇌 피질', '해마'], 'answer': '해마'},
+    {'id': 273, 'genre': 'science', 'question': '태양계 행성 중 고리가 가장 뚜렷한 행성은?', 'options': ['천왕성', '해왕성', '토성', '목성'], 'answer': '토성'},
+    {'id': 274, 'genre': 'science', 'question': '지구상의 물이 순환하는 현상의 주요 원동력은?', 'options': ['조력', '지열 에너지', '태양 에너지', '바람'], 'answer': '태양 에너지'},
+    {'id': 275, 'genre': 'science', 'question': '전자기 유도 현상을 발견한 과학자는?', 'options': ['니콜라 테슬라', '앙드레 마리 앙페르', '제임스 맥스웰', '마이클 패러데이'], 'answer': '마이클 패러데이'},
+    {'id': 276, 'genre': 'science', 'question': '식물의 성장에 필요한 무기 양분 중 하나로, 엽록소의 주요 성분인 원소는?', 'options': ['마그네슘', '나트륨', '철', '칼슘'], 'answer': '마그네슘'},
+    {'id': 277, 'genre': 'science', 'question': '물질이 타는 현상은 어떤 원소와 결합하는 반응인가요?', 'options': ['수소', '탄소', '산소', '질소'], 'answer': '산소'},
+    {'id': 278, 'genre': 'science', 'question': '인간의 눈에서 빛을 모아주는 부분은?', 'options': ['수정체', '망막', '홍채', '각막'], 'answer': '수정체'},
+    {'id': 279, 'genre': 'science', 'question': '액체가 기체로 변하는 현상은?', 'options': ['용해', '승화', '응결', '증발'], 'answer': '증발'},
+    {'id': 280, 'genre': 'science', 'question': '전쟁과 평화에 기여한 과학자에게 수여되는 상은?', 'options': ['필즈상', '오스카상', '노벨상', '퓰리처상'], 'answer': '노벨상'},
+    {'id': 281, 'genre': 'science', 'question': '중력에 의해 발생하는 물체의 낙하 운동은?', 'options': ['자유 낙하', '등속 운동', '수평 운동', '포물선 운동'], 'answer': '자유 낙하'},
+    {'id': 282, 'genre': 'science', 'question': '물질의 온도가 절대 0도에 가까워지면 저항이 0이 되는 현상은?', 'options': ['보스-아인슈타인 응축', '초유체 현상', '초전도 현상', '양자 얽힘'], 'answer': '초전도 현상'},
+    {'id': 283, 'genre': 'science', 'question': '생물체의 유전 정보를 담고 있는 물질은?', 'options': ['지질', 'DNA', 'RNA', '단백질'], 'answer': 'DNA'},
+    {'id': 284, 'genre': 'science', 'question': '우주가 팽창하고 있다는 이론은?', 'options': ['상대성 이론', '빅뱅 이론', '블랙홀 이론', '정상 우주론'], 'answer': '빅뱅 이론'},
+    {'id': 285, 'genre': 'science', 'question': '물체가 물 속에서 받는 부력의 크기는 물체가 밀어낸 물의 무게와 같다는 원리는?', 'options': ['베르누이의 원리', '토크의 법칙', '아르키메데스의 원리', '파스칼의 원리'], 'answer': '아르키메데스의 원리'},
+    {'id': 286, 'genre': 'science', 'question': '달에서 지구를 볼 때 나타나는 모양 변화는?', 'options': ['달의 위상 변화', '월식', '조석 현상', '일식'], 'answer': '달의 위상 변화'},
+    {'id': 287, 'genre': 'science', 'question': '태양계 행성 중 가장 온도가 높은 행성은?', 'options': ['화성', '금성', '지구', '수성'], 'answer': '금성'},
+    {'id': 288, 'genre': 'science', 'question': '생물이 에너지를 얻기 위해 산소를 흡수하고 이산화탄소를 배출하는 과정은?', 'options': ['소화', '순환', '광합성', '호흡'], 'answer': '호흡'},
+    {'id': 289, 'genre': 'science', 'question': '파동의 높이를 나타내는 용어는?', 'options': ['진폭', '진동수', '파장', '주기'], 'answer': '진폭'},
+    {'id': 290, 'genre': 'science', 'question': '화학에서 물질을 구성하는 원자의 종류와 개수를 나타내는 식은?', 'options': ['반응식', '원소 기호', '분자식', '화학식'], 'answer': '화학식'},
+    {'id': 291, 'genre': 'science', 'question': '지구상에 존재하는 물의 대부분을 차지하는 곳은?', 'options': ['바다', '빙하', '강과 호수', '지하수'], 'answer': '바다'},
+    {'id': 292, 'genre': 'science', 'question': '자외선을 막아주는 지구 대기권의 층은?', 'options': ['중간권', '오존층', '대류권', '열권'], 'answer': '오존층'},
+    {'id': 293, 'genre': 'science', 'question': '사람의 소화기관 중 영양소의 대부분이 흡수되는 곳은?', 'options': ['식도', '대장', '위', '소장'], 'answer': '소장'},
+    {'id': 294, 'genre': 'science', 'question': '우주에서 가장 밀도가 높아 빛조차 빠져나올 수 없는 천체는?', 'options': ['퀘이사', '백색 왜성', '블랙홀', '중성자별'], 'answer': '블랙홀'},
+    {'id': 295, 'genre': 'science', 'question': '식물의 성장을 조절하는 물질은?', 'options': ['효소', '호르몬', '무기 염류', '비타민'], 'answer': '호르몬'},
+    {'id': 296, 'genre': 'science', 'question': '물체의 운동 방향을 바꾸는 능력은?', 'options': ['질량', '힘', '가속도', '속도'], 'answer': '힘'},
+    {'id': 297, 'genre': 'science', 'question': '소리가 물체를 통과하여 뒷부분까지 들리는 현상은?', 'options': ['반사', '굴절', '간섭', '회절'], 'answer': '회절'},
+    {'id': 298, 'genre': 'science', 'question': '지구의 핵을 이루는 주요 원소는?', 'options': ['산소와 규소', '규소와 알루미늄', '철과 니켈', '마그네슘과 철'], 'answer': '철과 니켈'},
+    {'id': 299, 'genre': 'science', 'question': '광합성을 하는 세포 소기관은?', 'options': ['미토콘드리아', '핵', '엽록체', '액포'], 'answer': '엽록체'},
+    {'id': 300, 'genre': 'science', 'question': '가장 안정된 전자 배치를 갖는 원소족은?', 'options': ['전이 금속', '비활성 기체', '알칼리 금속', '할로젠 원소'], 'answer': '비활성 기체'},
+    {'id': 301, 'genre': 'science', 'question': '생물체가 환경에 적합한 특성을 후대에 전달하는 과정은?', 'options': ['적응', '돌연변이', '성장', '유전'], 'answer': '유전'},
+    {'id': 302, 'genre': 'science', 'question': '물질의 고유한 성질로, 질량을 부피로 나눈 값은?', 'options': ['점도', '농도', '밀도', '비중'], 'answer': '밀도'},
+    {'id': 303, 'genre': 'science', 'question': '별이 탄생하는 곳은?', 'options': ['태양계', '은하', '블랙홀', '성운'], 'answer': '성운'},
+    {'id': 304, 'genre': 'science', 'question': '혈액 속에서 산소를 운반하는 세포는?', 'options': ['혈소판', '백혈구', '림프구', '적혈구'], 'answer': '적혈구'},
+    {'id': 305, 'genre': 'science', 'question': '온실 효과를 가장 많이 일으키는 기체는?', 'options': ['메탄', '오존', '이산화탄소', '수증기'], 'answer': '수증기'},
+    {'id': 306, 'genre': 'science', 'question': '태양계 행성 중 지구와 크기가 가장 비슷한 행성은?', 'options': ['천왕성', '수성', '화성', '금성'], 'answer': '금성'},
+    {'id': 307, 'genre': 'science', 'question': '물체의 위치 에너지를 결정하는 요인은?', 'options': ['높이', '속도', '가속도', '탄성'], 'answer': '높이'},
+    {'id': 308, 'genre': 'science', 'question': '지구의 평균적인 기상 현상이 일어나는 대기권의 층은?', 'options': ['대류권', '열권', '성층권', '중간권'], 'answer': '대류권'},
+    {'id': 309, 'genre': 'science', 'question': '생물체에서 외부의 자극에 반응하는 성질은?', 'options': ['대사', '유전', '반응성', '성장'], 'answer': '반응성'},
+    {'id': 310, 'genre': 'science', 'question': '액체 상태에서 고체 상태로 변할 때 부피가 팽창하는 물질은?', 'options': ['수은', '물', '알코올', '식용유'], 'answer': '물'},
+    {'id': 311, 'genre': 'science', 'question': '전하의 이동을 방해하는 정도를 나타내는 물리량은?', 'options': ['전류', '전압', '전력', '저항'], 'answer': '저항'},
+    {'id': 312, 'genre': 'science', 'question': '별이 수명이 다했을 때 폭발하는 현상은?', 'options': ['블랙홀 형성', '혜성 충돌', '별의 충돌', '초신성 폭발'], 'answer': '초신성 폭발'},
+    {'id': 313, 'genre': 'science', 'question': '인간의 몸에서 가장 단단한 부분은?', 'options': ['두개골', '치아의 에나멜', '뼈', '손톱'], 'answer': '치아의 에나멜'},
+    {'id': 314, 'genre': 'science', 'question': '물질이 고체에서 기체로 바로 변하는 현상은?', 'options': ['기화', '승화', '융해', '응고'], 'answer': '승화'},
+    {'id': 315, 'genre': 'science', 'question': '세균을 죽이는 최초의 항생제를 발견한 과학자는?', 'options': ['알렉산더 플레밍', '에드워드 제너', '루이 파스퇴르', '로버트 코흐'], 'answer': '알렉산더 플레밍'},
+    {'id': 316, 'genre': 'science', 'question': '인간의 청각 기관 중 소리를 감지하는 부분은?', 'options': ['이소골', '고막', '달팽이관', '외이도'], 'answer': '달팽이관'},
+    {'id': 317, 'genre': 'science', 'question': '파동이 한 매질에서 다른 매질로 진행할 때 꺾이는 현상은?', 'options': ['간섭', '굴절', '반사', '회절'], 'answer': '굴절'},
+    {'id': 318, 'genre': 'science', 'question': '모든 생물은 세포로 이루어져 있다는 이론은?', 'options': ['유전설', '진화론', '세포설', '발생설'], 'answer': '세포설'},
+    {'id': 319, 'genre': 'science', 'question': '빛의 입자성을 설명하는 데 기여한 이론은?', 'options': ['파동설', '양자론', '만유인력', '상대성 이론'], 'answer': '양자론'},
+    {'id': 320, 'genre': 'science', 'question': '에너지의 근원으로, 대부분의 생명 활동에 필요한 것은?', 'options': ['ATP', '산소', '이산화탄소', '물'], 'answer': 'ATP'},
+    {'id': 321, 'genre': 'literature', 'question': '셰익스피어의 4대 비극에 속하지 않는 작품은?', 'options': ['햄릿', '로미오와 줄리엣', '오셀로', '리어왕'], 'answer': '로미오와 줄리엣'},
+    {'id': 322, 'genre': 'literature', 'question': '"주홍 글씨"를 쓴 미국의 작가는?', 'options': ['너새니얼 호손', '마크 트웨인', '허먼 멜빌', '에드거 앨런 포'], 'answer': '너새니얼 호손'},
+    {'id': 323, 'genre': 'literature', 'question': '단테의 "신곡"에서 지옥을 여행하는 주인공의 이름은?', 'options': ['단테', '베아트리체', '베르길리우스', '카론'], 'answer': '단테'},
+    {'id': 324, 'genre': 'literature', 'question': '"잃어버린 시간을 찾아서"를 쓴 프랑스 작가는?', 'options': ['마르셀 프루스트', '장 폴 사르트르', '앙드레 지드', '알베르 카뮈'], 'answer': '마르셀 프루스트'},
+    {'id': 325, 'genre': 'literature', 'question': '"데미안", "싯다르타" 등을 쓴 독일계 스위스 작가는?', 'options': ['괴테', '프란츠 카프카', '토마스 만', '헤르만 헤세'], 'answer': '헤르만 헤세'},
+    {'id': 326, 'genre': 'literature', 'question': '러시아 문학의 거장으로 "죄와 벌"을 쓴 작가는?', 'options': ['톨스토이', '도스토옙스키', '투르게네프', '체호프'], 'answer': '도스토옙스키'},
+    {'id': 327, 'genre': 'literature', 'question': '"돈키호테"를 쓴 스페인 작가는?', 'options': ['호르헤 루이스 보르헤스', '미겔 데 세르반테스', '가르시아 마르케스', '페데리코 가르시아 로르카'], 'answer': '미겔 데 세르반테스'},
+    {'id': 328, 'genre': 'literature', 'question': '그리스 신화에 나오는 서사시 "일리아스"와 "오디세이아"의 저자는?', 'options': ['에우리피데스', '호메로스', '소포클레스', '헤시오도스'], 'answer': '호메로스'},
+    {'id': 329, 'genre': 'literature', 'question': '"위대한 개츠비"를 쓴 미국 작가는?', 'options': ['존 스타인벡', '어니스트 헤밍웨이', '윌리엄 포크너', 'F. 스콧 피츠제럴드'], 'answer': 'F. 스콧 피츠제럴드'},
+    {'id': 330, 'genre': 'literature', 'question': '노벨 문학상 수상자인 프랑스 작가로 "이방인", "페스트" 등을 쓴 사람은?', 'options': ['장 폴 사르트르', '앙드레 지드', '로맹 롤랑', '알베르 카뮈'], 'answer': '알베르 카뮈'},
+    {'id': 331, 'genre': 'literature', 'question': '"어린 왕자"를 쓴 프랑스 작가이자 비행사는?', 'options': ['쥘 베른', '빅토르 위고', '앙투안 드 생텍쥐페리', '알렉상드르 뒤마'], 'answer': '앙투안 드 생텍쥐페리'},
+    {'id': 332, 'genre': 'literature', 'question': '영국의 여류 작가로 "오만과 편견"을 쓴 사람은?', 'options': ['에밀리 브론테', '버지니아 울프', '샬럿 브론테', '제인 오스틴'], 'answer': '제인 오스틴'},
+    {'id': 333, 'genre': 'literature', 'question': '"변신"과 "심판" 등의 부조리 문학을 대표하는 작가는?', 'options': ['헤르만 헤세', '프란츠 카프카', '슈테판 츠바이크', '토마스 만'], 'answer': '프란츠 카프카'},
+    {'id': 334, 'genre': 'literature', 'question': '"동물 농장", "1984" 등을 쓴 영국의 작가는?', 'options': ['찰스 디킨스', 'J.R.R. 톨킨', '조지 오웰', '올더스 헉슬리'], 'answer': '조지 오웰'},
+    {'id': 335, 'genre': 'literature', 'question': '일본의 여류 작가로 "겐지 이야기"를 쓴 사람은?', 'options': ['요사노 아키코', '세이 쇼나곤', '오오카 마코토', '무라사키 시키부'], 'answer': '무라사키 시키부'},
+    {'id': 336, 'genre': 'literature', 'question': '미국의 대문호로 "노인과 바다"를 쓴 작가는?', 'options': ['윌리엄 포크너', '어니스트 헤밍웨이', '존 스타인벡', 'F. 스콧 피츠제럴드'], 'answer': '어니스트 헤밍웨이'},
+    {'id': 337, 'genre': 'literature', 'question': '인도의 대문호로 노벨 문학상을 수상한 시인은?', 'options': ['프리텀 싱', '무크 랄', 'R. K. 나라얀', '라빈드라나트 타고르'], 'answer': '라빈드라나트 타고르'},
+    {'id': 338, 'genre': 'literature', 'question': '"레 미제라블"을 쓴 프랑스 작가는?', 'options': ['에밀 졸라', '오노레 드 발자크', '알렉상드르 뒤마', '빅토르 위고'], 'answer': '빅토르 위고'},
+    {'id': 339, 'genre': 'literature', 'question': '"호밀밭의 파수꾼"을 쓴 미국 작가는?', 'options': ['J.D. 샐린저', 'F. 스콧 피츠제럴드', '존 스타인벡', '어니스트 헤밍웨이'], 'answer': 'J.D. 샐린저'},
+    {'id': 340, 'genre': 'literature', 'question': '"해리 포터" 시리즈를 쓴 영국의 작가는?', 'options': ['테리 프래쳇', 'J.K. 롤링', '로알드 달', 'C.S. 루이스'], 'answer': 'J.K. 롤링'},
+    {'id': 341, 'genre': 'literature', 'question': '"백년의 고독"을 쓴 콜롬비아 작가는?', 'options': ['호르헤 루이스 보르헤스', '가브리엘 가르시아 마르케스', '마리오 바르가스 요사', '파블로 네루다'], 'answer': '가브리엘 가르시아 마르케스'},
+    {'id': 342, 'genre': 'literature', 'question': '"파우스트"를 쓴 독일의 대문호는?', 'options': ['프리드리히 쉴러', '요한 볼프강 폰 괴테', '토마스 만', '헤르만 헤세'], 'answer': '요한 볼프강 폰 괴테'},
+    {'id': 343, 'genre': 'literature', 'question': '그리스 신화의 비극 작가로 "오이디푸스 왕"을 쓴 사람은?', 'options': ['소포클레스', '에우리피데스', '아리스토파네스', '아이스킬로스'], 'answer': '소포클레스'},
+    {'id': 344, 'genre': 'literature', 'question': '"폭풍의 언덕"을 쓴 브론테 자매 중 둘째는?', 'options': ['샬럿 브론테', '에밀리 브론테', '제인 오스틴', '앤 브론테'], 'answer': '에밀리 브론테'},
+    {'id': 345, 'genre': 'literature', 'question': '러시아의 시인이자 작가로 "푸쉬킨 동화"로 유명한 사람은?', 'options': ['미하일 레르몬토프', '이반 투르게네프', '니콜라이 고골', '알렉산드르 푸쉬킨'], 'answer': '알렉산드르 푸쉬킨'},
+    {'id': 346, 'genre': 'literature', 'question': '"이상한 나라의 앨리스"를 쓴 작가는?', 'options': ['루이스 캐럴', 'A.A. 밀른', 'J.M. 배리', '로알드 달'], 'answer': '루이스 캐럴'},
+    {'id': 347, 'genre': 'literature', 'question': '"앵무새 죽이기"를 쓴 미국 작가는?', 'options': ['어니스트 헤밍웨이', 'F. 스콧 피츠제럴드', '하퍼 리', '존 스타인벡'], 'answer': '하퍼 리'},
+    {'id': 348, 'genre': 'literature', 'question': '"삼총사", "몬테크리스토 백작" 등을 쓴 프랑스 작가는?', 'options': ['에밀 졸라', '오노레 드 발자크', '빅토르 위고', '알렉상드르 뒤마'], 'answer': '알렉상드르 뒤마'},
+    {'id': 349, 'genre': 'literature', 'question': '라틴 아메리카의 작가로, "콜레라 시대의 사랑"을 쓴 노벨상 수상자는?', 'options': ['가브리엘 가르시아 마르케스', '옥타비오 파스', '파블로 네루다', '마리오 바르가스 요사'], 'answer': '가브리엘 가르시아 마르케스'},
+    {'id': 350, 'genre': 'literature', 'question': '"오페라의 유령"의 원작 소설을 쓴 프랑스 작가는?', 'options': ['가스통 르루', '알렉상드르 뒤마', '에밀 졸라', '빅토르 위고'], 'answer': '가스통 르루'},
+    {'id': 351, 'genre': 'literature', 'question': '"걸리버 여행기"를 쓴 풍자 작가는?', 'options': ['대니얼 디포', '조너선 스위프트', '제인 오스틴', '찰스 디킨스'], 'answer': '조너선 스위프트'},
+    {'id': 352, 'genre': 'literature', 'question': '"주사위는 던져졌다"라는 말을 남긴 로마의 정치가이자 작가는?', 'options': ['키케로', '아우구스투스', '율리우스 카이사르', '네로'], 'answer': '율리우스 카이사르'},
+    {'id': 353, 'genre': 'literature', 'question': '"제인 에어"를 쓴 브론테 자매 중 맏이는?', 'options': ['제인 오스틴', '앤 브론테', '샬럿 브론테', '에밀리 브론테'], 'answer': '샬럿 브론테'},
+    {'id': 354, 'genre': 'literature', 'question': '러시아의 대문호로 "안나 카레니나", "전쟁과 평화"를 쓴 작가는?', 'options': ['투르게네프', '도스토옙스키', '체호프', '레프 톨스토이'], 'answer': '레프 톨스토이'},
+    {'id': 355, 'genre': 'literature', 'question': '"오만과 편견"의 주인공은?', 'options': ['제인 베넷', '엘리자베스 베넷', '캐서린 모랜드', '리디아 베넷'], 'answer': '엘리자베스 베넷'},
+    {'id': 356, 'genre': 'literature', 'question': '"나니아 연대기" 시리즈를 쓴 영국의 작가는?', 'options': ['J.K. 롤링', '로알드 달', 'J.R.R. 톨킨', 'C.S. 루이스'], 'answer': 'C.S. 루이스'},
+    {'id': 357, 'genre': 'literature', 'question': '"천로역정"을 쓴 영국의 작가는?', 'options': ['윌리엄 블레이크', '존 던', '존 버니언', '존 밀턴'], 'answer': '존 버니언'},
+    {'id': 358, 'genre': 'literature', 'question': '프랑스의 극작가로 "시라노 드 베르주라크"를 쓴 사람은?', 'options': ['코르네유', '에드몽 로스탕', '라신', '몰리에르'], 'answer': '에드몽 로스탕'},
+    {'id': 359, 'genre': 'literature', 'question': '독일의 작가로 "변신", "성" 등의 작품을 남긴 사람은?', 'options': ['헤르만 헤세', '프리드리히 니체', '프란츠 카프카', '토마스 만'], 'answer': '프란츠 카프카'},
+    {'id': 360, 'genre': 'literature', 'question': '"호빗", "반지의 제왕" 등을 쓴 영국의 작가는?', 'options': ['필립 풀먼', 'J.R.R. 톨킨', 'C.S. 루이스', 'J.K. 롤링'], 'answer': 'J.R.R. 톨킨'},
+    {'id': 361, 'genre': 'literature', 'question': '"주홍 글씨"의 배경이 되는 나라는?', 'options': ['프랑스', '스페인', '미국', '영국'], 'answer': '미국'},
+    {'id': 362, 'genre': 'literature', 'question': '"리어왕", "햄릿" 등의 비극을 쓴 작가는?', 'options': ['윌리엄 셰익스피어', '제프리 초서', '벤 존슨', '크리스토퍼 말로우'], 'answer': '윌리엄 셰익스피어'},
+    {'id': 363, 'genre': 'literature', 'question': '"오디세이아"에서 주인공 오디세우스의 아내는?', 'options': ['칼립소', '키르케', '페넬로페', '헬렌'], 'answer': '페넬로페'},
+    {'id': 364, 'genre': 'literature', 'question': '"젊은 베르테르의 슬픔"을 쓴 작가는?', 'options': ['토마스 만', '헤르만 헤세', '프리드리히 쉴러', '요한 볼프강 폰 괴테'], 'answer': '요한 볼프강 폰 괴테'},
+    {'id': 365, 'genre': 'literature', 'question': '"노인과 바다"에서 노인의 이름은?', 'options': ['페드로', '조', '마놀린', '산티아고'], 'answer': '산티아고'},
+    {'id': 366, 'genre': 'literature', 'question': '프랑스 작가로 "보바리 부인"을 쓴 사람은?', 'options': ['오노레 드 발자크', '에밀 졸라', '기 드 모파상', '귀스타브 플로베르'], 'answer': '귀스타브 플로베르'},
+    {'id': 367, 'genre': 'literature', 'question': '미국 흑인 작가로 "보이지 않는 인간"을 쓴 사람은?', 'options': ['토니 모리슨', '제임스 볼드윈', '리처드 라이트', '랄프 엘리슨'], 'answer': '랄프 엘리슨'},
+    {'id': 368, 'genre': 'literature', 'question': '"아라비안 나이트"의 다른 이름은?', 'options': ['하늘의 별', '바벨의 탑', '마의 밤', '천일야화'], 'answer': '천일야화'},
+    {'id': 369, 'genre': 'literature', 'question': '"두 도시 이야기"의 배경이 되는 도시는?', 'options': ['런던과 파리', '런던과 뉴욕', '로마와 아테네', '파리와 로마'], 'answer': '런던과 파리'},
+    {'id': 370, 'genre': 'literature', 'question': '노벨 문학상 수상자로 "도가니", "대지" 등을 쓴 중국계 미국 작가는?', 'options': ['가오싱젠', '펄 벅', '에이미 탄', '아이리스 장'], 'answer': '펄 벅'},
+    {'id': 371, 'genre': 'literature', 'question': '"오셀로"에서 오셀로를 파멸로 이끄는 악역은?', 'options': ['몬타노', '캐시오', '이아고', '로드리고'], 'answer': '이아고'},
+    {'id': 372, 'genre': 'literature', 'question': '"돈키호테"의 고향은?', 'options': ['세비야', '마드리드', '라 만차', '바르셀로나'], 'answer': '라 만차'},
+    {'id': 373, 'genre': 'literature', 'question': '토마스 모어의 이상향을 그린 작품은?', 'options': ['리바이어던', '유토피아', '군주론', '신기관'], 'answer': '유토피아'},
+    {'id': 374, 'genre': 'literature', 'question': '"나의 라임 오렌지 나무"를 쓴 브라질 작가는?', 'options': ['파울로 코엘료', '클라리시 리스펙토르', '조제 마우루 지 바스콘셀루스', '조르지 아마두'], 'answer': '조제 마우루 지 바스콘셀루스'},
+    {'id': 375, 'genre': 'literature', 'question': '"카라마조프 가의 형제들"을 쓴 러시아 작가는?', 'options': ['톨스토이', '도스토옙스키', '투르게네프', '체호프'], 'answer': '도스토옙스키'},
+    {'id': 376, 'genre': 'literature', 'question': '영국의 시인이자 극작가로 "황무지"를 쓴 사람은?', 'options': ['W.B. 예이츠', 'T.S. 엘리엇', '딜런 토마스', '워즈워스'], 'answer': 'T.S. 엘리엇'},
+    {'id': 377, 'genre': 'literature', 'question': '"구토" 등의 작품으로 실존주의를 대표하는 프랑스 작가는?', 'options': ['앙드레 지드', '알베르 카뮈', '앙드레 말로', '장 폴 사르트르'], 'answer': '장 폴 사르트르'},
+    {'id': 378, 'genre': 'literature', 'question': '"호밀밭의 파수꾼"의 주인공 이름은?', 'options': ['제이 게츠비', '조지 오웰', '홀든 콜필드', '어니스트 헤밍웨이'], 'answer': '홀든 콜필드'},
+    {'id': 379, 'genre': 'literature', 'question': '"80일간의 세계 일주"를 쓴 프랑스 작가는?', 'options': ['쥘 베른', '빅토르 위고', '알렉상드르 뒤마', '에밀 졸라'], 'answer': '쥘 베른'},
+    {'id': 380, 'genre': 'literature', 'question': '"제인 에어"의 작가 샬럿 브론테의 필명은?', 'options': ['조지 엘리엇', '액튼 벨', '엘리스 벨', '커러 벨'], 'answer': '커러 벨'},
+    {'id': 381, 'genre': 'literature', 'question': '"백경"을 쓴 미국 작가는?', 'options': ['너새니얼 호손', '허먼 멜빌', '에드거 앨런 포', '마크 트웨인'], 'answer': '허먼 멜빌'},
+    {'id': 382, 'genre': 'literature', 'question': '중국의 4대 기서에 속하지 않는 것은?', 'options': ['홍루몽', '삼국지연의', '수호전', '서유기'], 'answer': '홍루몽'},
+    {'id': 383, 'genre': 'literature', 'question': '신화적 상상력을 바탕으로 한 "마술적 리얼리즘"을 대표하는 작가는?', 'options': ['가브리엘 가르시아 마르케스', '파블로 네루다', '호르헤 루이스 보르헤스', '미겔 앙헬 아스투리아스'], 'answer': '가브리엘 가르시아 마르케스'},
+    {'id': 384, 'genre': 'literature', 'question': '"데미안"의 주인공 싱클레어가 성장하면서 추구하는 것은?', 'options': ['부와 명예', '자아 발견', '권력', '사랑'], 'answer': '자아 발견'},
+    {'id': 385, 'genre': 'literature', 'question': '"오이디푸스 왕"의 배경이 되는 그리스 도시는?', 'options': ['스파르타', '코린토스', '테베', '아테네'], 'answer': '테베'},
+    {'id': 386, 'genre': 'literature', 'question': '"이방인"의 주인공 뫼르소가 살인하게 된 계기는?', 'options': ['복수', '재산', '태양빛', '질투'], 'answer': '태양빛'},
+    {'id': 387, 'genre': 'literature', 'question': '"레 미제라블"의 주인공은?', 'options': ['코제트', '장 발장', '자베르', '마리우스'], 'answer': '장 발장'},
+    {'id': 388, 'genre': 'literature', 'question': '미국 작가로 "톰 소여의 모험", "허클베리 핀의 모험"을 쓴 사람은?', 'options': ['잭 런던', 'F. 스콧 피츠제럴드', '마크 트웨인', '존 스타인벡'], 'answer': '마크 트웨인'},
+    {'id': 389, 'genre': 'literature', 'question': '"달과 6펜스"를 쓴 영국의 작가는?', 'options': ['찰스 디킨스', '조지 오웰', '서머싯 몸', '데이비드 허버트 로렌스'], 'answer': '서머싯 몸'},
+    {'id': 390, 'genre': 'literature', 'question': '"로빈슨 크루소"를 쓴 작가는?', 'options': ['찰스 디킨스', '월터 스콧', '대니얼 디포', '조너선 스위프트'], 'answer': '대니얼 디포'},
+    {'id': 391, 'genre': 'literature', 'question': '"변신"에서 주인공 그레고르 잠자가 변한 곤충은?', 'options': ['나비', '벌레', '딱정벌레', '개미'], 'answer': '벌레'},
+    {'id': 392, 'genre': 'literature', 'question': '"파리대왕"을 쓴 영국의 작가는?', 'options': ['윌리엄 골딩', '올더스 헉슬리', '이언 매큐언', '조지 오웰'], 'answer': '윌리엄 골딩'},
+    {'id': 393, 'genre': 'literature', 'question': '노벨 문학상 수상자로 "지킬 박사와 하이드"를 쓴 작가는?', 'options': ['로버트 루이스 스티븐슨', '토마스 하디', 'J.M. 배리', '아서 코난 도일'], 'answer': '로버트 루이스 스티븐슨'},
+    {'id': 394, 'genre': 'literature', 'question': '러시아 작가로 "닥터 지바고"를 쓴 노벨상 수상자는?', 'options': ['투르게네프', '솔제니친', '보리스 파스테르나크', '나보코프'], 'answer': '보리스 파스테르나크'},
+    {'id': 395, 'genre': 'literature', 'question': '"좁은 문"을 쓴 프랑스 작가는?', 'options': ['장 폴 사르트르', '앙드레 지드', '알베르 카뮈', '마르셀 프루스트'], 'answer': '앙드레 지드'},
+    {'id': 396, 'genre': 'literature', 'question': '일본의 작가로 "설국", "천 마리 학" 등을 쓴 노벨상 수상자는?', 'options': ['아쿠타가와 류노스케', '무라카미 하루키', '오에 겐자부로', '가와바타 야스나리'], 'answer': '가와바타 야스나리'},
+    {'id': 397, 'genre': 'literature', 'question': '"오만과 편견"의 남자 주인공은?', 'options': ['콜린스', '빙리', '위컴', '다아시'], 'answer': '다아시'},
+    {'id': 398, 'genre': 'literature', 'question': '"오만과 편견"의 배경이 되는 시대는?', 'options': ['빅토리아 시대', '튜더 왕조 시대', '조지 왕조 시대', '엘리자베스 시대'], 'answer': '조지 왕조 시대'},
+    {'id': 399, 'genre': 'literature', 'question': '"어둠의 속"을 쓴 영국의 작가는?', 'options': ['올더스 헉슬리', '조지 오웰', '조지프 콘래드', '찰스 디킨스'], 'answer': '조지프 콘래드'},
+    {'id': 400, 'genre': 'literature', 'question': '"인간의 조건"을 쓴 프랑스 작가는?', 'options': ['앙드레 말로', '앙드레 지드', '알베르 카뮈', '장 폴 사르트르'], 'answer': '앙드레 말로'},
+    {'id': 401, 'genre': 'literature', 'question': '미국 작가로 "분노의 포도"를 쓴 노벨상 수상자는?', 'options': ['윌리엄 포크너', '존 스타인벡', 'F. 스콧 피츠제럴드', '어니스트 헤밍웨이'], 'answer': '존 스타인벡'},
+    {'id': 402, 'genre': 'literature', 'question': '"천일야화"의 이야기꾼 여성은?', 'options': ['신밧드', '알리바바', '셰헤라자데', '알라딘'], 'answer': '셰헤라자데'},
+    {'id': 403, 'genre': 'literature', 'question': '"오이디푸스 왕"에서 오이디푸스가 죽인 사람은?', 'options': ['장님 예언자', '어머니 이오카스테', '아버지 라이오스 왕', '스핑크스'], 'answer': '아버지 라이오스 왕'},
+    {'id': 404, 'genre': 'literature', 'question': '"마담 보바리"의 주인공 엠마 보바리가 추구하는 삶은?', 'options': ['금욕적인 삶', '낭만적인 삶', '종교적인 삶', '현실적인 삶'], 'answer': '낭만적인 삶'},
+    {'id': 405, 'genre': 'literature', 'question': '영국의 작가로 "크리스마스 캐럴"을 쓴 사람은?', 'options': ['윌리엄 셰익스피어', '찰스 디킨스', '제인 오스틴', '조지 오웰'], 'answer': '찰스 디킨스'},
+    {'id': 406, 'genre': 'literature', 'question': '노벨 문학상 수상자로 "황금 노트"를 쓴 여성 작가는?', 'options': ['도리스 레싱', '셀마 라게를뢰프', '토니 모리슨', '나딘 고디머'], 'answer': '도리스 레싱'},
+    {'id': 407, 'genre': 'literature', 'question': '"롤리타"를 쓴 러시아계 미국 작가는?', 'options': ['보리스 파스테르나크', '솔제니친', '아이작 아시모프', '블라디미르 나보코프'], 'answer': '블라디미르 나보코프'},
+    {'id': 408, 'genre': 'literature', 'question': '"월든"을 쓰고 비폭력 불복종 사상을 주장한 미국 작가는?', 'options': ['헨리 데이비드 소로', '에드거 앨런 포', '랄프 왈도 에머슨', '월트 휘트먼'], 'answer': '헨리 데이비드 소로'},
+    {'id': 409, 'genre': 'literature', 'question': '"나의 안티고네"를 쓴 프랑스의 극작가는?', 'options': ['장 아누이', '앙드레 지드', '알베르 카뮈', '장 폴 사르트르'], 'answer': '장 아누이'},
+    {'id': 410, 'genre': 'literature', 'question': '"노인과 바다"의 배경이 되는 나라는?', 'options': ['쿠바', '미국', '스페인', '멕시코'], 'answer': '쿠바'},
+    {'id': 411, 'genre': 'literature', 'question': '"햄릿"에서 햄릿의 아버지가 살해당한 이유는?', 'options': ['복수', '재산', '숙부의 왕위 찬탈', '사랑'], 'answer': '숙부의 왕위 찬탈'},
+    {'id': 412, 'genre': 'literature', 'question': '"주홍 글씨"에서 주인공 헤스터 프린이 주홍 글씨로 새긴 글자는?', 'options': ['C', 'B', 'A', 'D'], 'answer': 'A'},
+    {'id': 413, 'genre': 'literature', 'question': '"이상한 나라의 앨리스"에서 앨리스를 따라간 동물은?', 'options': ['도마뱀', '토끼', '쥐', '고양이'], 'answer': '토끼'},
+    {'id': 414, 'genre': 'literature', 'question': '고대 로마의 서사시 "아이네이스"를 쓴 시인은?', 'options': ['오비디우스', '호라티우스', '호메로스', '베르길리우스'], 'answer': '베르길리우스'},
+    {'id': 415, 'genre': 'literature', 'question': '"달과 6펜스"의 주인공이 화가로 활동한 배경이 된 섬은?', 'options': ['타히티', '몰디브', '제주도', '하와이'], 'answer': '타히티'},
+    {'id': 416, 'genre': 'literature', 'question': '"분노의 포도"의 배경이 되는 미국의 주(State)는?', 'options': ['뉴욕', '오클라호마', '텍사스', '캘리포니아'], 'answer': '오클라호마'},
+    {'id': 417, 'genre': 'literature', 'question': '고대 중국의 시집으로 공자가 편집한 것으로 알려진 책은?', 'options': ['역경', '시경', '서경', '춘추'], 'answer': '시경'},
+    {'id': 418, 'genre': 'literature', 'question': '"콜레라 시대의 사랑"의 배경이 되는 나라는?', 'options': ['콜롬비아', '멕시코', '스페인', '아르헨티나'], 'answer': '콜롬비아'},
+    {'id': 419, 'genre': 'literature', 'question': '"안나 카레니나"의 작가 톨스토이의 국적은?', 'options': ['프랑스', '독일', '러시아', '영국'], 'answer': '러시아'},
+    {'id': 420, 'genre': 'general_knowledge', 'question': '대한민국의 수도는 어디인가요?', 'options': ['서울', '대전', '인천', '부산'], 'answer': '서울'},
+    {'id': 421, 'genre': 'general_knowledge', 'question': '지구상에서 가장 높은 산은?', 'options': ['에베레스트산', 'K2', '몽블랑', '킬리만자로산'], 'answer': '에베레스트산'},
+    {'id': 422, 'genre': 'general_knowledge', 'question': '노벨상 시상식이 열리는 나라는?', 'options': ['미국', '노르웨이', '영국', '스웨덴'], 'answer': '스웨덴'},
+    {'id': 423, 'genre': 'general_knowledge', 'question': '대한민국의 국화는?', 'options': ['진달래', '개나리', '장미', '무궁화'], 'answer': '무궁화'},
+    {'id': 424, 'genre': 'general_knowledge', 'question': '컴퓨터의 중앙처리장치(CPU)를 뜻하는 약어는?', 'options': ['USB', 'CPU', 'RAM', 'ROM'], 'answer': 'CPU'},
+    {'id': 425, 'genre': 'general_knowledge', 'question': '음력 8월 15일로, 한국의 큰 명절은?', 'options': ['추석', '한식', '단오', '설날'], 'answer': '추석'},
+    {'id': 426, 'genre': 'general_knowledge', 'question': '세계에서 가장 인구가 많은 나라는 (2024년 기준)?', 'options': ['인도네시아', '인도', '중국', '미국'], 'answer': '인도'},
+    {'id': 427, 'genre': 'general_knowledge', 'question': '프랑스의 수도는?', 'options': ['베를린', '파리', '런던', '로마'], 'answer': '파리'},
+    {'id': 428, 'genre': 'general_knowledge', 'question': '화폐의 가치를 측정하는 기준은?', 'options': ['물가', '주가지수', '금리', '환율'], 'answer': '물가'},
+    {'id': 429, 'genre': 'general_knowledge', 'question': '축구 경기에서 한 팀의 선수는 몇 명인가요?', 'options': ['12명', '9명', '11명', '10명'], 'answer': '11명'},
+    {'id': 430, 'genre': 'general_knowledge', 'question': '모나리자를 그린 화가는?', 'options': ['레오나르도 다빈치', '미켈란젤로', '파블로 피카소', '빈센트 반 고흐'], 'answer': '레오나르도 다빈치'},
+    {'id': 431, 'genre': 'general_knowledge', 'question': '대한민국에서 가장 긴 강은?', 'options': ['한강', '금강', '낙동강', '압록강'], 'answer': '압록강'},
+    {'id': 432, 'genre': 'general_knowledge', 'question': '유럽 연합(EU)의 본부가 있는 도시는?', 'options': ['베를린', '파리', '브뤼셀', '로마'], 'answer': '브뤼셀'},
+    {'id': 433, 'genre': 'general_knowledge', 'question': '사람의 몸에서 가장 큰 장기는?', 'options': ['간', '폐', '심장', '위'], 'answer': '간'},
+    {'id': 434, 'genre': 'general_knowledge', 'question': '바둑에서 승패를 결정하는 방법은?', 'options': ['돌의 개수', '집 수', '시간', '바둑알 수'], 'answer': '집 수'},
+    {'id': 435, 'genre': 'general_knowledge', 'question': '올림픽에서 오륜기의 다섯 가지 색깔이 상징하는 것은?', 'options': ['다섯 나라', '다섯 대륙', '다섯 인종', '다섯 종목'], 'answer': '다섯 대륙'},
+    {'id': 436, 'genre': 'general_knowledge', 'question': '대한민국의 헌법 제1조는 무엇에 관한 내용인가요?', 'options': ['국민의 권리', '민주 공화국', '경제 발전', '국방의 의무'], 'answer': '민주 공화국'},
+    {'id': 437, 'genre': 'general_knowledge', 'question': '원유를 정제하여 휘발유, 경유 등을 만드는 곳은?', 'options': ['화학 공장', '화력 발전소', '제철소', '정유 공장'], 'answer': '정유 공장'},
+    {'id': 438, 'genre': 'general_knowledge', 'question': '영국의 화폐 단위는?', 'options': ['유로', '엔', '파운드', '달러'], 'answer': '파운드'},
+    {'id': 439, 'genre': 'general_knowledge', 'question': '자전거가 처음 발명된 시기는?', 'options': ['18세기', '20세기 초', '19세기', '17세기'], 'answer': '19세기'},
+    {'id': 440, 'genre': 'general_knowledge', 'question': '대한민국 최남단에 위치한 섬은?', 'options': ['독도', '제주도', '울릉도', '마라도'], 'answer': '마라도'},
+    {'id': 441, 'genre': 'general_knowledge', 'question': '태평양과 대서양을 잇는 운하는?', 'options': ['파나마 운하', '경인 운하', '킬 운하', '수에즈 운하'], 'answer': '파나마 운하'},
+    {'id': 442, 'genre': 'general_knowledge', 'question': '우리나라 대통령의 임기는 몇 년인가요?', 'options': ['7년', '6년', '4년', '5년'], 'answer': '5년'},
+    {'id': 443, 'genre': 'general_knowledge', 'question': '세계에서 가장 큰 바다는?', 'options': ['북극해', '태평양', '인도양', '대서양'], 'answer': '태평양'},
+    {'id': 444, 'genre': 'general_knowledge', 'question': '인터넷에서 정보를 검색하는 데 사용하는 프로그램은?', 'options': ['운영체제', '웹 브라우저', '스프레드시트', '워드 프로세서'], 'answer': '웹 브라우저'},
+    {'id': 445, 'genre': 'general_knowledge', 'question': '음악에서 3화음을 이루는 기본 음정은?', 'options': ['도-파-솔', '라-시-도', '도-레-미', '도-미-솔'], 'answer': '도-미-솔'},
+    {'id': 446, 'genre': 'general_knowledge', 'question': '대한민국의 가장 동쪽에 위치한 섬은?', 'options': ['울릉도', '제주도', '독도', '마라도'], 'answer': '독도'},
+    {'id': 427, 'genre': 'general_knowledge', 'question': '축구에서 페널티킥이 주어지는 상황은?', 'options': ['코너킥', '페널티 에어리어 내의 반칙', '오프사이드', '골키퍼의 반칙'], 'answer': '페널티 에어리어 내의 반칙'},
+    {'id': 448, 'genre': 'general_knowledge', 'question': '고대 로마의 투기장으로 유명한 건축물은?', 'options': ['포로 로마노', '판테온', '콜로세움', '트레비 분수'], 'answer': '콜로세움'},
+    {'id': 449, 'genre': 'general_knowledge', 'question': '미국의 국립 항공 우주국(NASA)의 본부는 어디에 있나요?', 'options': ['휴스턴', '플로리다', '캘리포니아', '워싱턴 D.C.'], 'answer': '워싱턴 D.C.'},
+    {'id': 450, 'genre': 'general_knowledge', 'question': '사진을 찍을 때 셔터 속도와 조리개 값으로 조절되는 것은?', 'options': ['색감', '노출', '초점', '화질'], 'answer': '노출'},
+    {'id': 451, 'genre': 'general_knowledge', 'question': '지구의 자전 주기는?', 'options': ['약 365일', '약 24시간', '약 29.5일', '약 1년'], 'answer': '약 24시간'},
+    {'id': 452, 'genre': 'general_knowledge', 'question': '러시아의 수도는?', 'options': ['상트페테르부르크', '베를린', '키예프', '모스크바'], 'answer': '모스크바'},
+    {'id': 453, 'genre': 'general_knowledge', 'question': '대한민국의 행정 구역 중 특별시가 아닌 곳은?', 'options': ['인천광역시', '부산광역시', '서울특별시', '세종특별자치시'], 'answer': '부산광역시'},
+    {'id': 454, 'genre': 'general_knowledge', 'question': '음식의 맛 중 하나로, 혀의 미뢰로 감지하는 것은?', 'options': ['신맛', '짠맛', '고소한 맛', '매운맛'], 'answer': '신맛'},
+    {'id': 455, 'genre': 'general_knowledge', 'question': '축구에서 공을 손으로 건드리는 반칙은?', 'options': ['오프사이드', '태클', '파울', '핸드볼'], 'answer': '핸드볼'},
+    {'id': 456, 'genre': 'general_knowledge', 'question': '국제 연합(UN)의 본부가 있는 도시는?', 'options': ['제네바', '런던', '파리', '뉴욕'], 'answer': '뉴욕'},
+    {'id': 457, 'genre': 'general_knowledge', 'question': '달리기 경주에서 가장 먼저 결승선을 통과하는 것이 목표인 스포츠는?', 'options': ['육상', '사이클', '수영', '마라톤'], 'answer': '육상'},
+    {'id': 458, 'genre': 'general_knowledge', 'question': '지진이 발생했을 때 안전한 대피 장소는?', 'options': ['탁자 아래', '창문 옆', '건물 밖', '엘리베이터'], 'answer': '탁자 아래'},
+    {'id': 459, 'genre': 'general_knowledge', 'question': '대한민국의 민속놀이 중 씨름에서 승부를 결정하는 기술은?', 'options': ['몸통 박치기', '샅바 잡기', '발차기', '되치기'], 'answer': '샅바 잡기'},
+    {'id': 460, 'genre': 'general_knowledge', 'question': '물의 화학 기호는?', 'options': ['CO2', 'O2', 'NaCl', 'H2O'], 'answer': 'H2O'},
+    {'id': 461, 'genre': 'general_knowledge', 'question': '대한민국에서 가장 많은 사람들이 사용하는 성씨는?', 'options': ['이', '박', '최', '김'], 'answer': '김'},
+    {'id': 462, 'genre': 'general_knowledge', 'question': '야구 경기에서 투수가 공을 던지는 곳은?', 'options': ['베이스', '마운드', '홈 플레이트', '외야'], 'answer': '마운드'},
+    {'id': 463, 'genre': 'general_knowledge', 'question': '세계에서 가장 긴 강은?', 'options': ['나일강', '아마존강', '양쯔강', '미시시피강'], 'answer': '나일강'},
+    {'id': 464, 'genre': 'general_knowledge', 'question': '태양계 행성 중 지구보다 안쪽에 있는 행성은?', 'options': ['토성', '목성', '금성', '화성'], 'answer': '금성'},
+    {'id': 465, 'genre': 'general_knowledge', 'question': '컴퓨터에서 임시 기억 장치로 사용되는 것은?', 'options': ['ROM', 'CPU', 'RAM', 'HDD'], 'answer': 'RAM'},
+    {'id': 466, 'genre': 'general_knowledge', 'question': '대한민국에서 통용되는 법정 화폐는?', 'options': ['유로', '달러', '엔', '원'], 'answer': '원'},
+    {'id': 467, 'genre': 'general_knowledge', 'question': '미국 달러 지폐에 새겨진 인물 중 초대 대통령은?', 'options': ['조지 워싱턴', '토머스 제퍼슨', '벤저민 프랭클린', '에이브러햄 링컨'], 'answer': '조지 워싱턴'},
+    {'id': 468, 'genre': 'general_knowledge', 'question': '피아노 건반의 검은 건반은 한 옥타브에 몇 개인가요?', 'options': ['7개', '12개', '5개', '8개'], 'answer': '5개'},
+    {'id': 469, 'genre': 'general_knowledge', 'question': '달의 표면에 착륙한 최초의 유인 우주선은?', 'options': ['스푸트니크 1호', '보스토크 1호', '챌린저 호', '아폴로 11호'], 'answer': '아폴로 11호'},
+    {'id': 470, 'genre': 'general_knowledge', 'question': '대한민국에서 가장 높은 건축물은?', 'options': ['롯데월드 타워', 'N서울타워', '63빌딩', '해운대 엘시티 더샵'], 'answer': '롯데월드 타워'},
+    {'id': 471, 'genre': 'general_knowledge', 'question': '골프 경기에서 홀을 기준으로 가장 적은 타수를 기록한 사람은?', 'options': ['버디', '파', '홀인원', '이글'], 'answer': '홀인원'},
+    {'id': 472, 'genre': 'general_knowledge', 'question': '세계 4대 문명의 발상지가 아닌 곳은?', 'options': ['메소포타미아', '이집트', '아메리카', '인더스'], 'answer': '아메리카'},
+    {'id': 473, 'genre': 'general_knowledge', 'question': '우리나라의 표준시는 어느 지역의 시간을 기준으로 하나요?', 'options': ['동경 127도', '동경 135도', '동경 130도', '동경 125도'], 'answer': '동경 135도'},
+    {'id': 474, 'genre': 'general_knowledge', 'question': '국제 축구 연맹(FIFA) 월드컵의 개최 주기는?', 'options': ['4년', '1년', '2년', '5년'], 'answer': '4년'},
+    {'id': 475, 'genre': 'general_knowledge', 'question': '대한민국의 국기인 태극기의 네 모서리에 있는 문양은?', 'options': ['구괘', '사괘', '팔괘', '육괘'], 'answer': '사괘'},
+    {'id': 476, 'genre': 'general_knowledge', 'question': '식물의 광합성에 필요한 기체는?', 'options': ['이산화탄소', '산소', '수소', '질소'], 'answer': '이산화탄소'},
+    {'id': 477, 'genre': 'general_knowledge', 'question': '미국 뉴욕의 상징적인 여신상은?', 'options': ['평화의 여신상', '승리의 여신상', '자유의 여신상', '정의의 여신상'], 'answer': '자유의 여신상'},
+    {'id': 478, 'genre': 'general_knowledge', 'question': '태양계 행성 중 지구에서 가장 가까운 행성은?', 'options': ['금성', '목성', '수성', '화성'], 'answer': '금성'},
+    {'id': 479, 'genre': 'general_knowledge', 'question': '야구에서 투수가 타자에게 공을 네 번 잘못 던지면 타자가 나가는 것은?', 'options': ['삼진', '스트라이크', '파울', '볼넷 (포볼)'], 'answer': '볼넷 (포볼)'},
+    {'id': 480, 'genre': 'general_knowledge', 'question': '세계에서 가장 큰 대륙은?', 'options': ['아시아', '북아메리카', '아프리카', '유럽'], 'answer': '아시아'},
+    {'id': 481, 'genre': 'general_knowledge', 'question': '인간의 혈액형 중 A, B, AB, O형을 분류하는 기준은?', 'options': ['혈소판의 종류', '백혈구의 항체', '적혈구의 항원', '혈장의 성분'], 'answer': '적혈구의 항원'},
+    {'id': 482, 'genre': 'general_knowledge', 'question': '컴퓨터에서 자료를 영구적으로 저장하는 장치는?', 'options': ['HDD (하드 디스크)', 'USB', 'CPU', 'RAM'], 'answer': 'HDD (하드 디스크)'},
+    {'id': 483, 'genre': 'general_knowledge', 'question': '달걀 껍데기의 주성분은?', 'options': ['산화철', '이산화규소', '염화나트륨', '탄산칼슘'], 'answer': '탄산칼슘'},
+    {'id': 484, 'genre': 'general_knowledge', 'question': '대한민국의 섬 중 가장 큰 섬은?', 'options': ['제주도', '강화도', '거제도', '진도'], 'answer': '제주도'},
+    {'id': 485, 'genre': 'general_knowledge', 'question': '고대 이집트의 상형 문자는?', 'options': ['쐐기 문자', '알파벳', '데모틱', '히에로글리프'], 'answer': '히에로글리프'},
+    {'id': 486, 'genre': 'general_knowledge', 'question': '농구 경기에서 한 팀의 선수는 몇 명인가요?', 'options': ['4명', '6명', '5명', '7명'], 'answer': '5명'},
+    {'id': 487, 'genre': 'general_knowledge', 'question': '지구상에서 가장 깊은 해구는?', 'options': ['페루-칠레 해구', '마리아나 해구', '쿠릴-캄차카 해구', '자바 해구'], 'answer': '마리아나 해구'},
+    {'id': 488, 'genre': 'general_knowledge', 'question': '미국의 수도는?', 'options': ['뉴욕', '로스앤젤레스', '워싱턴 D.C.', '시카고'], 'answer': '워싱턴 D.C.'},
+    {'id': 489, 'genre': 'general_knowledge', 'question': '시속 100km로 달리는 자동차가 1시간 동안 이동하는 거리는?', 'options': ['10km', '50km', '100km', '200km'], 'answer': '100km'},
+    {'id': 490, 'genre': 'general_knowledge', 'question': '바이올린, 비올라, 첼로, 콘트라베이스를 통틀어 무엇이라고 하나요?', 'options': ['타악기', '현악기', '관악기', '건반 악기'], 'answer': '현악기'},
+    {'id': 491, 'genre': 'general_knowledge', 'question': '대한민국의 5대 궁궐에 속하지 않는 것은?', 'options': ['창덕궁', '운현궁', '경복궁', '덕수궁'], 'answer': '운현궁'},
+    {'id': 492, 'genre': 'general_knowledge', 'question': '국제 표준 시간대의 기준이 되는 도시는?', 'options': ['뉴욕', '도쿄', '그리니치', '파리'], 'answer': '그리니치'},
+    {'id': 493, 'genre': 'general_knowledge', 'question': '축구에서 공이 골라인을 넘어 코너 플래그 쪽으로 나갔을 때 주어지는 것은?', 'options': ['코너킥', '스로인', '골킥', '프리킥'], 'answer': '코너킥'},
+    {'id': 494, 'genre': 'general_knowledge', 'question': '컴퓨터에서 데이터를 입력하는 장치는?', 'options': ['모니터', '스피커', '프린터', '키보드'], 'answer': '키보드'},
+    {'id': 495, 'genre': 'general_knowledge', 'question': '피타고라스 정리가 적용되는 삼각형은?', 'options': ['이등변 삼각형', '둔각 삼각형', '정삼각형', '직각 삼각형'], 'answer': '직각 삼각형'},
+    {'id': 496, 'genre': 'general_knowledge', 'question': '동양의 전통적인 달력 계산법은?', 'options': ['태음력', '음력', '양력', '태양력'], 'answer': '음력'},
+    {'id': 497, 'genre': 'general_knowledge', 'question': '대한민국에서 가장 오래된 대학은?', 'options': ['고려대학교', '서울대학교', '성균관', '연세대학교'], 'answer': '성균관'},
+    {'id': 498, 'genre': 'general_knowledge', 'question': '태양계 행성 중 가장 작은 행성은?', 'options': ['화성', '지구', '수성', '명왕성'], 'answer': '수성'},
+    {'id': 499, 'genre': 'general_knowledge', 'question': '달걀의 노른자에 가장 많이 들어 있는 영양소는?', 'options': ['탄수화물', '단백질', '지방', '비타민 C'], 'answer': '지방'},
+    {'id': 500, 'genre': 'general_knowledge', 'question': '야구에서 타자가 한 번의 타격으로 4개의 베이스를 모두 도는 것은?', 'options': ['도루', '희생 플라이', '홈런', '안타'], 'answer': '홈런'},
+    {'id': 501, 'genre': 'general_knowledge', 'question': '세계에서 가장 널리 사용되는 언어는?', 'options': ['중국어', '영어', '힌디어', '스페인어'], 'answer': '영어'},
+    {'id': 502, 'genre': 'general_knowledge', 'question': '자동차의 핸들을 돌려 방향을 바꾸는 장치는?', 'options': ['스티어링 휠', '변속기', '액셀러레이터', '브레이크'], 'answer': '스티어링 휠'},
+    {'id': 503, 'genre': 'general_knowledge', 'question': '대한민국의 국조는?', 'options': ['독수리', '비둘기', '호랑이', '까치'], 'answer': '까치'},
+    {'id': 504, 'genre': 'general_knowledge', 'question': '컴퓨터의 기본적인 작동을 관리하는 소프트웨어는?', 'options': ['드라이버', '바이러스 백신', '운영체제', '응용 프로그램'], 'answer': '운영체제'},
+    {'id': 505, 'genre': 'general_knowledge', 'question': '세계에서 가장 오래된 스포츠 대회는?', 'options': ['아시안 게임', '올림픽', '투르 드 프랑스', '월드컵'], 'answer': '올림픽'},
+    {'id': 506, 'genre': 'general_knowledge', 'question': '대한민국의 삼면이 바다인 곳은?', 'options': ['황해, 동해, 태평양', '동해, 서해, 남해', '서해, 남해, 북해', '남해, 동해, 북해'], 'answer': '동해, 서해, 남해'},
+    {'id': 507, 'genre': 'general_knowledge', 'question': '전기밥솥을 처음 발명한 나라는?', 'options': ['한국', '일본', '독일', '미국'], 'answer': '일본'},
+    {'id': 508, 'genre': 'general_knowledge', 'question': '세계에서 가장 큰 섬은?', 'options': ['그린란드', '보르네오', '마다가스카르', '뉴기니'], 'answer': '그린란드'},
+    {'id': 509, 'genre': 'general_knowledge', 'question': '축구 경기에서 한 선수가 한 경기에 3골을 넣는 것은?', 'options': ['해트트릭', '프리킥', '더블', '오버헤드킥'], 'answer': '해트트릭'},
+    {'id': 510, 'genre': 'general_knowledge', 'question': '대한민국의 공용어는?', 'options': ['한국어', '중국어', '일본어', '영어'], 'answer': '한국어'},
+    {'id': 511, 'genre': 'general_knowledge', 'question': '컴퓨터의 가장 작은 정보 단위는?', 'options': ['바이트', '워드', '킬로바이트', '비트'], 'answer': '비트'},
+    {'id': 512, 'genre': 'general_knowledge', 'question': '화가 빈센트 반 고흐가 자신의 귀를 자른 것으로 유명한 사건이 일어난 도시는?', 'options': ['파리', '암스테르담', '런던', '아를'], 'answer': '아를'},
+    {'id': 513, 'genre': 'general_knowledge', 'question': '달리기 경기에서 100m, 200m, 400m와 같은 거리를 달리는 종목은?', 'options': ['마라톤', '장거리', '단거리', '중거리'], 'answer': '단거리'},
+    {'id': 514, 'genre': 'general_knowledge', 'question': '대한민국에서 사계절이 아닌 계절은?', 'options': ['여름', '봄', '건기', '가을'], 'answer': '건기'},
+    {'id': 515, 'genre': 'general_knowledge', 'question': '지구의 북극점은 어느 대륙에 위치하나요?', 'options': ['남극', '대륙이 없다', '유라시아', '북아메리카'], 'answer': '대륙이 없다'},
+    {'id': 516, 'genre': 'general_knowledge', 'question': '대한민국의 주요 수출품이 아닌 것은?', 'options': ['자동차', '농산물', '선박', '반도체'], 'answer': '농산물'},
 ]
-# Total questions per genre: {'korean_history': 100, 'world_history': 100, 'science': 100, 'literature': 100, 'general': 100}\n

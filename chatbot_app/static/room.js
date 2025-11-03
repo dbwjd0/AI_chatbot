@@ -9,6 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const dialogBox = document.getElementById('dialog-box');
     const dialogSpeaker = document.getElementById('dialog-speaker');
     const dialogText = document.getElementById('dialog-text');
+    const chatbotName = document.querySelector('.container').dataset.chatbotName || '아이';
+
+    const refrigeratorModal = document.getElementById('refrigerator-modal');
+    const refrigeratorCloseButton = refrigeratorModal.querySelector('.close-button');
+
+    let processingBubble; // 처리 중 말풍선
+    let processingAnimationInterval; // 애니메이션 인터벌 ID
+    let processingDotCount = 0; // 점 개수
 
     // --- Image Paths ---
     const idleImg = '/static/img/char_idle.png';
@@ -51,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeInteraction = null;
     let isDialogActive = false;
     let isConfirmationActive = false;
+    let isRefrigeratorConfirmationActive = false; // Add this line
     let selectedConfirmationOption = 'yes'; // 'yes' or 'no'
     let onQuizCooldown = false; // Cooldown flag for the quiz interaction
     let lastFrameTime = 0; // For time-based movement
@@ -59,6 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const playerDebugBox = document.createElement('div');
     playerDebugBox.className = 'debug-box';
     room.appendChild(playerDebugBox);
+
+    // --- 처리 중 말풍선 초기화 ---
+    processingBubble = document.createElement('div');
+    processingBubble.id = 'processing-bubble';
+    processingBubble.textContent = '.'; // 초기 텍스트
+    room.appendChild(processingBubble);
 
     const obstacles = document.querySelectorAll('.furniture-object');
     const obstacleCollisionBuffer = 35; // Make sure this is defined before use
@@ -175,6 +190,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Input Handlers ---
     document.addEventListener('keydown', (e) => {
+        if (isRefrigeratorConfirmationActive) { // Add this block
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                selectionSound.currentTime = 0;
+                selectionSound.play();
+                selectedConfirmationOption = selectedConfirmationOption === 'yes' ? 'no' : 'yes';
+                updateConfirmationSelection();
+            }
+            return; // Prevent movement keys from being processed
+        }
         if (isConfirmationActive) {
             if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
                 selectionSound.currentTime = 0;
@@ -189,16 +213,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('keyup', (e) => {
         keys[e.key] = false;
+        if (isRefrigeratorConfirmationActive) { // Add this block
+            if (e.key === 'Enter') {
+                handleRefrigeratorConfirmation();
+            }
+            return;
+        }
         if (isConfirmationActive) {
             if (e.key === 'Enter') {
                 handleConfirmation();
             }
             return;
         }
+
+        // 대화창이 활성화된 상태에서 Enter를 누르면, 후속 동작을 처리
         if (isDialogActive) {
-            hideDialog();
+            const interactionTarget = activeInteraction ? activeInteraction.dataset.interactionTarget : null;
+            
+            hideDialog(); // 먼저 대화창을 닫고
+
+            // 후속 동작으로 페이지 이동이 필요한 경우 처리
+            if (interactionTarget === 'chat' || interactionTarget === 'chat_history') {
+                fadeOverlay.classList.add('visible');
+                setTimeout(() => { window.location.href = `/${interactionTarget}/`; }, 300);
+            }
             return;
         }
+
         if (e.key === 'Enter' && activeInteraction) {
             handleInteraction(activeInteraction);
         }
@@ -206,28 +247,82 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleInteraction(object) {
         const target = object.dataset.interactionTarget;
-        if (target === 'chat_history') {
-            fadeOverlay.classList.add('visible');
-            setTimeout(() => { window.location.href = '/chat_history/'; }, 300);
-        } else if (target === 'chat') {
-            fadeOverlay.classList.add('visible');
-            setTimeout(() => { window.location.href = '/chat/'; }, 300);
-        } else if (target === 'books') {
-            showDialog('[아이]', '내가 좋아하는 책들이 꽂혀있다. 어려운 내용이 많아 보인다.');
-        } else if (target === 'sofa') {
-            showDialog('[아이]', '푹신한 소파에 앉아 잠시 쉬어볼까?');
-        }
-        else if (target === 'bed') {
-            showDialog('[아이]', '침대에 누우니 잠이 솔솔 오는걸?');
-        } else if (target === 'schedule') {
+
+        if (target === 'schedule') {
             openModal();
+            return;
         }
+
+        if (target === 'refrigerator') { // Add this block
+            showRefrigeratorConfirmationDialog();
+            return;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        startProcessingAnimation(); // 로딩 인디케이터 시작
+
+        // API 요청을 통해 동적 대사를 가져옴
+        fetch('/api/get-interaction-dialog/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({ target: target })
+        })
+        .then(response => response.json())
+        .then(data => {
+            stopProcessingAnimation(); // 로딩 인디케이터 중지
+            if (data.message) {
+                if (target === 'bed') {
+                    showBedDialog(data.message);
+                } else {
+                    const imageUrl = (target === 'sofa') ? '/static/img/char_thinking.png' : null;
+                    showDialog(`[${chatbotName}]`, data.message, imageUrl);
+                }
+            }
+        })
+        .catch(error => {
+            stopProcessingAnimation(); // 로딩 인디케이터 중지
+            console.error('Error fetching interaction dialog:', error);
+            // 에러 발생 시 기본 대사 출력
+            showDialog(`[${chatbotName}]`, '...');
+        });
     }
 
     // --- Dialog Functions ---
-    function showDialog(speaker, text) {
-        dialogSpeaker.textContent = speaker;
+    function showBedDialog(text) {
+        const bedImage = document.getElementById('bed-character-image');
+        dialogSpeaker.textContent = `[${chatbotName}]`;
         dialogText.textContent = text;
+
+        if (bedImage) {
+            bedImage.src = '/static/img/char_happy_left.png';
+            bedImage.style.display = 'block';
+        }
+
+        dialogBox.classList.remove('hidden');
+        isDialogActive = true;
+        interactionPrompt.classList.add('hidden');
+    }
+
+    function showDialog(speaker, text, imageUrl = null) {
+        const dialogImage = document.getElementById('dialog-character-image');
+        const dialogSpeaker = document.getElementById('dialog-speaker');
+        const dialogText = document.getElementById('dialog-text');
+
+        // Ensure elements exist before using them
+        if (dialogSpeaker) dialogSpeaker.textContent = speaker;
+        if (dialogText) dialogText.textContent = text;
+
+        if (imageUrl && dialogImage) {
+            dialogImage.src = imageUrl;
+            dialogImage.style.display = 'block';
+        } else if (dialogImage) {
+            dialogImage.style.display = 'none';
+        }
+
         dialogBox.classList.remove('hidden');
         isDialogActive = true;
         interactionPrompt.classList.add('hidden');
@@ -237,11 +332,149 @@ document.addEventListener('DOMContentLoaded', () => {
         dialogBox.classList.add('hidden');
         isDialogActive = false;
         isConfirmationActive = false;
+        isRefrigeratorConfirmationActive = false; // Add this line
+
+        // Hide the image as well
+        const dialogImage = document.getElementById('dialog-character-image');
+        const bedImage = document.getElementById('bed-character-image');
+        if (dialogImage) dialogImage.style.display = 'none';
+        if (bedImage) bedImage.style.display = 'none';
+
         // Remove confirmation buttons if they exist
         const options = dialogBox.querySelector('.dialog-options');
         if (options) {
             options.remove();
         }
+    }
+
+    function showRefrigeratorConfirmationDialog() {
+        if (isDialogActive) return;
+
+        isDialogActive = true;
+        isRefrigeratorConfirmationActive = true;
+        selectedConfirmationOption = 'yes';
+
+        dialogSpeaker.textContent = `[${chatbotName}]`;
+        dialogText.textContent = '맛있는 냄새가 나는데, 냉장고를 열어볼까?';
+
+        const options = document.createElement('div');
+        options.className = 'dialog-options';
+
+        const yesButton = document.createElement('button');
+        yesButton.id = 'confirm-yes';
+        yesButton.textContent = '예';
+
+        const noButton = document.createElement('button');
+        noButton.id = 'confirm-no';
+        noButton.textContent = '아니요';
+
+        options.appendChild(yesButton);
+        options.appendChild(noButton);
+        dialogBox.appendChild(options);
+
+        updateConfirmationSelection();
+        dialogBox.classList.remove('hidden');
+    }
+
+    function handleRefrigeratorConfirmation() {
+        if (selectedConfirmationOption === 'yes') {
+            yesConfirmationSound.play();
+            hideDialog();
+            openRefrigeratorModal();
+        } else {
+            confirmationSound.play();
+            hideDialog();
+        }
+    }
+
+    function openRefrigeratorModal() {
+        fetch('/api/refrigerator-contents/')
+            .then(response => response.json())
+            .then(data => {
+                displayRefrigeratorContents(data.foods);
+                refrigeratorModal.style.display = 'block';
+                isDialogActive = true; // Prevent player movement
+            })
+            .catch(error => {
+                console.error('Error fetching refrigerator contents:', error);
+            });
+    }
+
+    function displayRefrigeratorContents(foods) {
+        const itemsContainer = document.getElementById('refrigerator-items');
+        itemsContainer.innerHTML = ''; // 기존 아이템 삭제
+
+        if (foods.length === 0) {
+            itemsContainer.innerHTML = '<p>냉장고가 비어있습니다.</p>';
+            return;
+        }
+
+        foods.forEach(food => {
+            const foodImg = document.createElement('img');
+            foodImg.src = `/static/img/${food.image}`;
+            foodImg.alt = food.name;
+            foodImg.dataset.foodName = food.name; // 음식 이름 저장
+            foodImg.style.cursor = 'pointer';
+            foodImg.addEventListener('click', () => {
+                playEatingAnimation(food.name);
+            });
+            itemsContainer.appendChild(foodImg);
+        });
+    }
+
+    function playEatingAnimation(foodName) {
+        closeRefrigeratorModal();
+
+        // 서버에 음식 소비 사실을 알림
+        const csrftoken = getCookie('csrftoken');
+        fetch('/api/consume-food/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({ food_name: foodName })
+        })
+        .catch(error => console.error('Error consuming food:', error));
+        
+        const originalAnimation = playerImage.src; // 현재 애니메이션 저장
+        isDialogActive = true; // 먹는 동안 움직임 방지
+
+        playerImage.src = '/static/img/먹는 모션.gif';
+
+        // 먹는 모션 시간을 2초로 변경
+        setTimeout(() => {
+            playerImage.src = originalAnimation;
+            isDialogActive = false; // 움직임 다시 허용
+            showHeartBubble(); // 하트 말풍선 표시 함수 호출
+        }, 2000);
+    }
+
+    function showHeartBubble() {
+        const heartBubble = document.createElement('div');
+        heartBubble.className = 'feedback-bubble'; // 새로운 CSS 클래스 적용
+        heartBubble.textContent = '❤️';
+
+        // 플레이어 머리 위에 위치 설정
+        const bubbleWidth = 40;
+        const bubbleHeight = 40;
+        const playerHeight = 120;
+        heartBubble.style.left = `${playerState.x - bubbleWidth / 2}px`;
+        heartBubble.style.top = `${playerState.y - playerHeight / 2 - bubbleHeight - 10}px`;
+
+        room.appendChild(heartBubble);
+
+        // 2초 후에 말풍선 제거
+        setTimeout(() => {
+            if (heartBubble.parentNode) {
+                heartBubble.parentNode.removeChild(heartBubble);
+            }
+        }, 2000);
+    }
+
+    function closeRefrigeratorModal() {
+        refrigeratorModal.style.display = 'none';
+        isDialogActive = false; // Allow player movement
     }
 
     function showConfirmationDialog() {
@@ -298,6 +531,21 @@ document.addEventListener('DOMContentLoaded', () => {
             onQuizCooldown = true;
             setTimeout(() => { onQuizCooldown = false; }, 1000); // 1-second cooldown
         }
+    }
+
+    function startProcessingAnimation() {
+        processingDotCount = 0;
+        processingBubble.textContent = '.';
+        processingBubble.style.display = 'flex'; // Show the bubble
+        processingAnimationInterval = setInterval(() => {
+            processingDotCount = (processingDotCount % 3) + 1;
+            processingBubble.textContent = '.'.repeat(processingDotCount);
+        }, 300); // Update every 300ms
+    }
+
+    function stopProcessingAnimation() {
+        clearInterval(processingAnimationInterval);
+        processingBubble.style.display = 'none'; // Hide the bubble
     }
 
     // --- Game Loop (New Robust Logic) ---
@@ -505,6 +753,15 @@ document.addEventListener('DOMContentLoaded', () => {
             notificationBubble.style.top = `${playerState.y - playerHeight / 2 - bubbleHeight - 20}px`;
         }
 
+        // Update processing bubble position
+        if (processingBubble && processingBubble.style.display !== 'none') {
+            const bubbleWidth = 40;
+            const bubbleHeight = 40;
+            const playerHeight = 120;
+            processingBubble.style.left = `${playerState.x - bubbleWidth / 2}px`;
+            processingBubble.style.top = `${playerState.y - playerHeight / 2 - bubbleHeight - 20}px`;
+        }
+
         // 9. Continue Loop
         requestAnimationFrame(gameLoop);
     }
@@ -702,6 +959,13 @@ document.addEventListener('DOMContentLoaded', () => {
     addScheduleBtn.addEventListener('click', handleAddUpdateSchedule);
     window.addEventListener('click', (event) => {
         if (event.target == scheduleModal) closeModal();
+    });
+
+    refrigeratorCloseButton.addEventListener('click', closeRefrigeratorModal);
+    window.addEventListener('click', (event) => {
+        if (event.target == refrigeratorModal) {
+            closeRefrigeratorModal();
+        }
     });
 
     function getCookie(name) {

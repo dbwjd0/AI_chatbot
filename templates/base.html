@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Django App{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div id="wrapper">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <iframe id="bgm-iframe" src="{% url 'bgm_player' %}" style="display:none;" allow="autoplay"></iframe>
+    <script src="{% static 'main_bgm_controller.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
