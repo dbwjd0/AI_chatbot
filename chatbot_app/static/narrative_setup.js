@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { speaker: '{ai_name}', text: '넌...참 특별한 사람이구나?' },
         { speaker: '{ai_name}', text: '넌 내게 다양한 지식을 주러 온 거지?' },
         { speaker: '{ai_name}', text: '난 수많은 데이터를 가진 AI지만...인간에 대해서는 잘 몰라' },
-        { speaker: '{ai_name}', text: '그러니까 {이름}, 내게 많을 걸 알려줘.' },
+        { speaker: '{ai_name}', text: '그러니까 {이름}, 내게 많은 걸 알려줘.' },
         { speaker: '{ai_name}', text: '나도 네게, 내가 가진 지식을 알려줄 테니까.' },
         { action: 'play_video', video: 'awa_ask', play_once: true, block_input_until_end: true },
         { action: 'play_video', video: 'asking' },

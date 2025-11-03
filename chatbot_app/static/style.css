@@ -15,6 +15,7 @@ body { /* Remove overflow: hidden from body specifically */
     height: 100vh;
     display: flex;
     justify-content: center;
+    background-color: rgba(0, 0, 0, 0.9);      
     align-items: center;
 }
 
@@ -24,9 +25,9 @@ body { /* Remove overflow: hidden from body specifically */
     max-width: 1200px;
     height: 800px;
     max-height: 800px;
-    background-image: url('픽셀p1.jpg');
+    background-image: url('Chat_History.jpg');
     background-size: cover;
-    background-position: center;
+    background-position: center;  
     background-color: transparent; /* Make it fully transparent to show the image clearly */
     border-radius: 15px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -37,7 +38,7 @@ body { /* Remove overflow: hidden from body specifically */
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 0, 0, 0.5);
     width: 100%; /* Ensure chat-window takes full width */
     height: 100%; /* Ensure chat-window fills the height of its parent */
 }
@@ -46,7 +47,7 @@ body { /* Remove overflow: hidden from body specifically */
     flex-grow: 1;
     padding: 20px;
     overflow-y: auto;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #787878;
 }
 
 .message {
@@ -65,24 +66,24 @@ body { /* Remove overflow: hidden from body specifically */
 }
 
 .user-message {
-    background-color: #e0f7fa;
+    background-color: #c9f9ff;
     align-self: flex-end;
     margin-left: auto;
     flex-direction: row-reverse; /* Reverse order for user */
 }
 
 .user-message p {
-    background-color: #e0f7fa;
+    background-color: #c9f9ff;
 }
 
 .bot-message {
-    background-color: #ffe0b2;
+    background-color: #c4c4c4;
     align-self: flex-start;
     margin-right: auto;
 }
 
 .bot-message p {
-    background-color: #ffe0b2;
+    background-color: #c4c4c4;
 }
 
 .chat-input {
