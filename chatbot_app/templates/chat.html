@@ -22,8 +22,8 @@
         }
         #feedback-container {
             position: absolute;
-            bottom: 240px; /* Position above the dialogue box */
-            left: 50%;
+            bottom: 90px; /* Position above the dialogue box */
+            left: 54%;
             transform: translateX(460px); /* Move it to the right of the dialogue box */
             z-index: 25;
             display: flex;
@@ -124,7 +124,7 @@
         const USER_NICKNAME = "{{ user_profile.nickname|default:user.username|escapejs }}"; // Add this line
         const CHATBOT_NAME = "{{ user_profile.chatbot_name|escapejs }}";
         const affinityScore = "{{ user_profile.affinity_score|default:0 }}";
-        const UNREAD_MESSAGE_COUNT = {{ unread_friend_messages_count }};
+        const UNREAD_MESSAGE_COUNT = "{{ unread_friend_messages_count }}";
     </script>
     <script src="{% static 'chat.js' %}"></script>
 
