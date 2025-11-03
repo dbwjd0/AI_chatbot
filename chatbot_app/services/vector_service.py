@@ -2,10 +2,17 @@
 import openai
 import os
 from qdrant_client import QdrantClient, models
+from django.conf import settings
 
 # Qdrant 클라이언트 초기화
 # docker-compose.yml에 정의된 서비스 이름을 호스트로 사용합니다.
-client = QdrantClient(host="qdrant", port=6333)
+client = QdrantClient(
+    host=settings.QDRANT_HOST,
+    port=settings.QDRANT_PORT,
+    #api_key=settings.QDRANT_API_KEY or None,
+    #https=settings.QDRANT_USE_HTTPS,
+)
+
 
 # OpenAI API 키 설정
 openai.api_key = os.environ.get("OPENAI_API_KEY")

@@ -7,11 +7,47 @@
     <title>퀴즈 모드</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <style>
+        #toggle-bgm-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            z-index: 101;
+        }
+        #bgm-volume-slider {
+            position: absolute;
+            top: 20px;
+            left: 120px; /* Adjust as needed to position next to the button */
+            width: 100px;
+            z-index: 101;
+            -webkit-appearance: none;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            height: 10px;
+            outline: none;
+        }
+        #bgm-volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
+        #bgm-volume-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
         body {
-            background-image: url('{% static "img/quiz_mode.png" %}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
             height: 100vh;
             color: white;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -19,6 +55,18 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden; /* Prevent scrollbars due to video */
+        }
+        .background-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -100;
+            background-size: cover;
         }
         .quiz-layout-wrapper {
             display: flex;
@@ -36,11 +84,13 @@
             text-align: center;
             flex: 1; /* Allow quiz container to take available space */
             max-width: 600px; /* Adjust max-width for quiz content */
+            margin-top: 100px;            
         }
         .character-container {
             position: relative; /* Added for absolute positioning of emoticon bubble */
             text-align: center;
             max-width: 300px; /* Max width for the character container */
+            margin-top: 300px;
         }
         .character-container img {
             width: 80%; /* Reduce image size to 80% */
@@ -197,10 +247,25 @@
     </style>
 </head>
 <body {% if quiz_feedback %}data-character-emotion="{{ quiz_feedback.character_emotion }}"{% endif %}>
+    <button id="toggle-bgm-btn">BGM OFF</button>
+    <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
+
+    <!-- 게임 페이지용 BGM (login.html 제외) -->
+    <audio id="bgm2" loop>
+        <source src="{% static 'music/game_bgm.mp3' %}" type="audio/mpeg">
+    </audio>
+
+    <script src="{% static 'bgm.js' %}"></script>
+
+    <video autoplay muted loop class="background-video">
+        <source src="{% static 'img/Quiz Room.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
     {% include 'includes/top_menu.html' with show_room_link=True %}
     <div class="quiz-layout-wrapper">
         <div class="character-container">
-            <img id="chatbot-character" src="{% static 'img/quiz_mode.png' %}" alt="AI 비서">
+            <img id="chatbot-character" src="{% static 'img/quiz_girl.png' %}" alt="AI 비서">
             <div id="ai-emoticon-bubble" class="ai-emoticon-bubble" style="display: none;">
                 <img id="ai-emoticon-img" src="" alt="AI Emoticon">
             </div>
@@ -219,13 +284,18 @@
                                 오답입니다. 정답은 '{{ quiz_feedback.correct_answer }}' 입니다.
                             {% endif %}
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                            <button type="button" class="btn btn-primary" data-next-url-base="{% url 'quiz_question' %}" onclick="window.location.href=this.dataset.nextUrlBase + '?next_question=true'">다음 문제</button>
-                            <a href="{% url 'quiz_mode' %}" class="btn btn-secondary">처음으로 돌아가기</a>
-                        </div>
+                        <form action="{% url 'quiz_question' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="next_question">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                                <button type="submit" class="btn btn-primary">다음 문제</button>
+                                <a href="{% url 'quiz_mode' %}" class="btn btn-secondary">처음으로 돌아가기</a>
+                            </div>
+                        </form>
                     {% else %}
                         <form action="{% url 'quiz_question' %}" method="post">
                             {% csrf_token %}
+                            <input type="hidden" name="action" value="submit_answer">
                             <div class="options-group">
                                 {% for option in options %}
                                     <label>
@@ -262,7 +332,7 @@
                             <option value="world_history">세계사</option>
                             <option value="science">과학</option>
                             <option value="literature">문학</option>
-                            <option value="general">상식</option>
+                            <option value="general_knowledge">상식</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -293,10 +363,10 @@
             '놀람': "{% static 'img/char_surprise.png' %}",
             '공포': "{% static 'img/char_fear.png' %}",
             '혐오': "{% static 'img/char_disgust.png' %}",
-            '중립': "{% static 'img/char_default.png' %}",
+            '중립': "{% static 'img/quiz_girl.png' %}",
             'default': "{% static 'img/char_default.png' %}",
-            '정답': "{% static 'img/char_happy.png' %}", // Custom for quiz
-            '오답': "{% static 'img/char_sad.png' %}"   // Custom for quiz
+            '정답': "{% static 'img/Thumbs Up.png' %}", // Custom for quiz
+            '오답': "{% static 'img/Thumbs Down.png' %}"   // Custom for quiz
         };
 
         function updateCharacterEmotion(emotion) {

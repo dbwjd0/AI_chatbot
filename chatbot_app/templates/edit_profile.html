@@ -6,6 +6,46 @@
 {% block extra_head %}
     {# <link rel="stylesheet" href="{% static 'setup.css' %}"> #} {# 기존 스타일 재활용 또는 새 스타일 추가 #}
     <style>
+        #toggle-bgm-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            z-index: 101;
+        }
+        #bgm-volume-slider {
+            position: absolute;
+            top: 20px;
+            left: 120px; /* Adjust as needed to position next to the button */
+            width: 100px;
+            z-index: 101;
+            -webkit-appearance: none;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            height: 10px;
+            outline: none;
+        }
+        #bgm-volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
+        #bgm-volume-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
         .profile-edit-container {
             max-width: 600px;
             margin: 50px auto;
@@ -15,6 +55,8 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             color: #e0e0f0;
             text-align: center;
+            max-height: 80vh;
+            overflow-y: auto;
         }
         .profile-edit-container h1 {
             color: #ff7f7f;
@@ -86,10 +128,41 @@
             border: 3px solid #a0a0ff;
             margin-bottom: 20px;
         }
+
+        /* '비우기' 체크박스를 숨기고 라벨을 버튼처럼 스타일링 */
+        #profile_picture-clear_id {
+            display: none;
+        }
+        label[for="profile_picture-clear_id"] {
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+            border: none;
+            text-align: center;
+        }
+        label[for="profile_picture-clear_id"]:hover {
+            background-color: #c82333;
+        }
+
     </style>
 {% endblock %}
 
 {% block content %}
+    <button id="toggle-bgm-btn">BGM OFF</button>
+    <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
+
+    <!-- 게임 페이지용 BGM (login.html 제외) -->
+    <audio id="bgm2" loop>
+        <source src="{% static 'music/game_bgm.mp3' %}" type="audio/mpeg">
+    </audio>
+
+    <script src="{% static 'bgm.js' %}"></script>
+
     <div class="profile-edit-container">
         <h1>프로필 편집</h1>
 
@@ -106,12 +179,44 @@
             {% if form.instance.profile_picture %}
                 <img src="{{ form.instance.profile_picture.url }}" alt="현재 프로필 사진" class="profile-picture-preview">
             {% else %}
-                <img src="{% static 'img/default_profile.png' %}" alt="기본 프로필 사진" class="profile-picture-preview">
+                <img src="/media/profile_pics/cute_pig.jpg" alt="기본 프로필 사진" class="profile-picture-preview">
             {% endif %}
             
-            {{ form.as_p }}
+            {{ form.non_field_errors }}
+
+            <p>
+                <label for="{{ form.profile_picture.id_for_label }}">프로필 사진</label>
+                {{ form.profile_picture }}
+            </p>
+            <p>
+                <label for="{{ form.status_message.id_for_label }}">상태 메시지</label>
+                {{ form.status_message }}
+            </p>
+            <p>
+                <label for="{{ form.chatbot_name.id_for_label }}">챗봇 이름</label>
+                {{ form.chatbot_name }}
+            </p>
+            <p>
+                <label for="{{ form.persona_preference.id_for_label }}">페르소나 설정</label>
+                {{ form.persona_preference }}
+            </p>
+
             <button type="submit">저장</button>
         </form>
         <p><a href="{% url 'room' %}" class="back-link">방으로 돌아가기</a></p>
     </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const clearButton = document.querySelector('label[for="profile_picture-clear_id"]');
+        const previewImage = document.querySelector('.profile-picture-preview');
+        const defaultImageSrc = "{% static 'img/기본 프로필.png' %}";
+
+        if (clearButton && previewImage) {
+            clearButton.addEventListener('click', function() {
+                previewImage.src = defaultImageSrc;
+            });
+        }
+    });
+</script>
 {% endblock %}

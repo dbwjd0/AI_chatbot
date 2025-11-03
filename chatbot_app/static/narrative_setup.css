@@ -86,7 +86,7 @@ html, body {
     padding: 10px 20px;
     border-radius: 20px;
     border: none;
-    background-color: #007bff;
+    background-color: #636363;
     color: white;
     cursor: pointer;
     font-size: 1em;
@@ -95,9 +95,9 @@ html, body {
 }
 
 #send-button:hover {
-    background-color: #16ffff;
+    background-color: #ff2aed;
     color: #fff;
-    border-color: #ff00aa;
+    border-color: #00e1ff;
 }
 
 /* Choice Selection Styles */
@@ -121,15 +121,15 @@ html, body {
 }
 
 .choice-option:hover {
-    background-color: #000000; /* A slightly darker blue for hover */
+    background-color: #636363; /* A slightly darker blue for hover */
     color: #fff;
     border-color: #ff00aa;
 }
 
 .choice-option.selected {
-    background-color: #16ffff;
+    background-color: #ff2aed;
     color: #fff;
-    border-color: #ff00aa;
+    border-color: #00e1ff;
 }
 
 #choice-container.grid {

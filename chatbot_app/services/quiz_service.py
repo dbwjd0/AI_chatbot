@@ -75,12 +75,14 @@ def process_answer(session, user_answer):
         'character_emotion': '정답' if is_correct else '오답',
     }
 
-def get_feedback_and_advance(session):
-    """세션에서 피드백을 가져오고, 다음 질문으로 인덱스를 이동시킵니다."""
+def get_feedback(session): # Renamed from get_feedback_and_advance
+    """세션에서 피드백을 가져옵니다. (다음 질문으로 인덱스를 이동시키지 않음)"""
     feedback = session.pop('quiz_feedback', None)
-    if feedback:
-        session['current_question_index'] = session.get('current_question_index', 0) + 1
     return feedback
+
+def advance_question(session):
+    """다음 질문으로 인덱스를 이동시킵니다."""
+    session['current_question_index'] = session.get('current_question_index', 0) + 1
 
 def is_quiz_finished(session):
     """퀴즈가 끝났는지 확인합니다."""
