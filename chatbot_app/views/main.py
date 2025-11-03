@@ -297,3 +297,7 @@ def consume_food_view(request):
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
+def bgm_player_view(request):
+    """Renders the BGM player HTML for the iframe."""
+    return render(request, 'bgm/bgm_player.html')

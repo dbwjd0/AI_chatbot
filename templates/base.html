@@ -14,7 +14,8 @@
         {% endblock %}
     </div>
 
-    <script src="{% static 'main.js' %}"></script> {# Optional: A main JS file for global scripts #}
+    <iframe id="bgm-iframe" src="{% url 'bgm_player' %}" style="display:none;" allow="autoplay"></iframe>
+    <script src="{% static 'main_bgm_controller.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

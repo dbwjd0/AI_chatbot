@@ -20,10 +20,38 @@
             font-family: 'VT323', monospace;
             z-index: 101;
         }
+        #bgm-volume-slider {
+            position: absolute;
+            top: 20px;
+            left: 120px; /* Adjust as needed to position next to the button */
+            width: 100px;
+            z-index: 101;
+            -webkit-appearance: none;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            height: 10px;
+            outline: none;
+        }
+        #bgm-volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
+        #bgm-volume-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <button id="toggle-bgm-btn">BGM OFF</button>
+    <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
     <div class="container">
     {% include 'includes/top_menu.html' with show_room_link=True %}
         <div class="chatbot-container">
