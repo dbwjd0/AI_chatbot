@@ -73,6 +73,10 @@
     </style>
 </head>
 <body>
+    <video autoplay muted loop class="background-video">
+        <source src="{% static 'img/Main Room_.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
     <button id="toggle-bgm-btn">BGM OFF</button>
     <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
     <div class="game-container">
