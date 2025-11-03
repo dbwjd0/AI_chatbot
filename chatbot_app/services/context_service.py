@@ -1,7 +1,6 @@
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Count, Q
-from konlpy.tag import Okt
 from django.db.models import Count
 from ..models import UserActivity
 
