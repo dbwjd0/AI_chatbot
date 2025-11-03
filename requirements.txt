@@ -9,3 +9,9 @@ django-apscheduler
 numpy
 torch
 transformers
+
+# Web
+gunicorn
+konlpy
+Pillow
+psycopg2-binary
