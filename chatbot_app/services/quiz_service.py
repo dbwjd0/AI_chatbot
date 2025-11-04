@@ -41,9 +41,13 @@ def get_current_question_context(session):
         # ID에 해당하는 질문을 찾을 수 없는 경우 (데이터 오류 등)
         return None
 
+    # 옵션 순서를 랜덤으로 섞음
+    options = list(current_question['options'])
+    random.shuffle(options)
+
     context = {
         'question': current_question['question'],
-        'options': current_question['options'],
+        'options': options, # 섞인 옵션을 전달
         'current_question_number': current_question_index + 1,
         'total_questions': quiz_total_questions,
         'quiz_active': True,
