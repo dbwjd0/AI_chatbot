@@ -16,9 +16,56 @@
             opacity: 0.3; /* Default to semi-transparent */
             transition: opacity 0.3s ease;
         }
+        #toggle-bgm-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            z-index: 101;
+        }
+        #bgm-volume-slider {
+            position: absolute;
+            top: 30px;
+            left: 120px; /* Adjust as needed to position next to the button */
+            width: 100px;
+            z-index: 101;
+            -webkit-appearance: none;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            height: 10px;
+            outline: none;
+        }
+        #bgm-volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
+        #bgm-volume-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+    <button id="toggle-bgm-btn">BGM OFF</button>
+    <input type="range" id="bgm-volume-slider" min="0" max="100" value="100">
+
+    <audio id="narrative-bgm" loop>
+        <source src="{% static 'music/Neon Dreams 2.mp3' %}" type="audio/mpeg">
+    </audio>
+
     <div id="black-overlay" class="active"></div>
     <video id="intro-video" class="narrative-video" src="{% static 'img/0번 컷.mp4' %}" muted playsinline></video>
     <video id="discovery-video" class="narrative-video" src="{% static 'img/1번 컷.mp4' %}" loop muted playsinline></video>

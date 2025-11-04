@@ -1,7 +1,6 @@
 /* 전역 설정 및 폰트 */
 body {
     font-family: 'Roboto', sans-serif; /* 폰트 적용 */
-    background: #2c214d; /* 어두운 배경 */
     color: #e0e0f0; /* 밝은 텍스트 */
     margin: 0;
     padding: 0;
@@ -22,8 +21,8 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
-    padding-bottom: 15px;
-    border-bottom: 3px solid #ff7f7f; /* 네온 핑크 강조 */
+    padding-bottom: 23px;
+    border-bottom: 3px solid #48f6ff; /* 네온 핑크 강조 */
 }
 
 /* 네비게이션 바 스타일 */
@@ -39,20 +38,22 @@ body {
 .nav-btn {
     background: none;
     border: none;
-    color: #a0a0ff;
+    color: #ff71f8;
     font-size: 1.1em;
     padding: 10px 15px;
     cursor: pointer;
     transition: color 0.3s, border-bottom 0.3s;
     position: relative;
+    font-weight: bold;
 }
 
 .nav-btn:hover {
-    color: #fff;
+    color: #707070;
+    font-weight: bold;    
 }
 
 .nav-btn.active {
-    color: #ff7f7f;
+    color: #df0000;
     font-weight: bold;
 }
 
@@ -63,7 +64,7 @@ body {
     right: 0;
     bottom: -10px; /* border-bottom 두께만큼 아래로 */
     height: 3px;
-    background-color: #ff7f7f;
+    background-color: #ff7ffd;
     box-shadow: 0 0 8px #ff7f7f;
 }
 
@@ -111,7 +112,7 @@ body {
 
 /* 네온 테두리 효과 */
 .neon-pink {
-    box-shadow: 0 0 10px #ff7f7f;
+    box-shadow: 0 0 10px #ff7ffd;
 }
 
 
@@ -133,7 +134,7 @@ body {
     transition: box-shadow 0.3s, border-color 0.3s;
 }
 .neon-input:focus {
-    border-color: #ff7f7f;
+    border-color: #f155ff;
     box-shadow: 0 0 8px #ff7f7f;
 }
 
@@ -148,21 +149,21 @@ body {
 }
 
 .primary-btn {
-    background-color: #ff7f7f; /* 메인 핑크 */
+    background-color: #58f9ff; /* 메인 핑크 */
     color: #333;
 }
 .primary-btn:hover {
-    background-color: #ff5050;
+    background-color: #ff4dde;
     box-shadow: 0 0 15px #ff5050;
 }
 
 .secondary-btn {
-    background-color: rgba(255, 255, 255, 0.15);
-    color: #ff7f7f;
+    background-color: #58f9ff;
+    color: #dc2626;
     border: 1px solid #ff7f7f;
 }
 .secondary-btn:hover {
-    background-color: rgba(255, 127, 127, 0.3);
+    background-color: #ff4dde;
 }
 
 .delete-btn {
@@ -233,7 +234,7 @@ body {
 }
 
 .notification-count {
-    background-color: #ff7f7f;
+    background-color: #d1d1d1;
     color: #333;
     padding: 3px 10px;
     border-radius: 15px;
@@ -257,7 +258,7 @@ body {
 }
 
 .notification-badge.active-notification {
-    background-color: #ff4d4d; /* 빨간색 */
+    background-color: #ff3838; /* 빨간색 */
     color: #fff;
     box-shadow: 0 0 8px rgba(255, 77, 77, 0.7);
 }
@@ -355,7 +356,7 @@ body {
 
 .close-button:hover,
 .close-button:focus {
-    color: #ff7f7f; /* Neon pink on hover */
+    color: #ff72f1; /* Neon pink on hover */
     text-decoration: none;
     cursor: pointer;
 }
