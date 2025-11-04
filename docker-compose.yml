@@ -3,17 +3,16 @@ services:
     build: .
     container_name: project3-web
     expose:
-      - "8000"  
-    ports:  # 배포할때는 제거
-      - "8000:8000"   # ✅ 외부 접속을 위해 추가
+      - "8000"
     volumes:
       - .:/app
       - static_volume:/app/static
     env_file:
       - .env.prod
     depends_on:
-      #- db   # 배포할때는 주석해제
-      - qdrant  # 👈 Qdrant 먼저 뜨게
+      - db
+      - qdrant
+
     restart: unless-stopped
 
   db:
@@ -30,7 +29,7 @@ services:
   qdrant:
     image: qdrant/qdrant:latest
     container_name: project3-qdrant
-    #ports:   # 배포할 때는 주석제거
+    #ports:   
     #  - "6333:6333"
     #  - "6334:6334"
     volumes:
