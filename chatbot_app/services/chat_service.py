@@ -117,6 +117,7 @@ def process_chat_interaction(request, user_message_text: str, user_emotion: str,
     explanation = ""
     bot_message_obj = None
     user_message_obj = None
+    saved_info = []
 
     try:
         action_data = {} # RL 에이전트의 행동을 저장할 변수
@@ -166,7 +167,7 @@ def process_chat_interaction(request, user_message_text: str, user_emotion: str,
             vector_service.upsert_message(collection_name, user_message_obj)
             vector_service.upsert_message(collection_name, bot_message_obj)
 
-            return bot_message_text, explanation, bot_message_obj, user_message_obj, action_data
+            return bot_message_text, explanation, bot_message_obj, user_message_obj, action_data, []
 
         # 3단계: 결정된 행동에 따라 컨텍스트 생성
         time_contexts = _get_time_contexts(history)
@@ -193,7 +194,7 @@ def process_chat_interaction(request, user_message_text: str, user_emotion: str,
         response_json = call_openai_api(client, model_to_use, messages)
         
         # 6단계: 응답 처리 및 저장
-        bot_message_text, explanation, bot_message_obj, user_message_obj = _finalize_chat_interaction(
+        bot_message_text, explanation, bot_message_obj, user_message_obj, saved_info = _finalize_chat_interaction(
             request, user_message_text, response_json, history, api_key, image_file
         )
 
@@ -209,7 +210,7 @@ def process_chat_interaction(request, user_message_text: str, user_emotion: str,
         traceback.print_exc()
         bot_message_text = f"예상치 못한 오류가 발생했습니다: {e}"
 
-    return bot_message_text, explanation, bot_message_obj, user_message_obj, action_data
+    return bot_message_text, explanation, bot_message_obj, user_message_obj, action_data, saved_info
 
 def generate_object_monologue(user, target: str) -> str:
     """오브젝트 상호작용 시 AI의 동적 독백을 생성합니다."""
@@ -412,6 +413,7 @@ def _finalize_chat_interaction(request, user_message_text, response_json, histor
     explanation = "AI 응답 처리 중 오류 발생."
     bot_message_obj = None
     user_message_obj = None
+    saved_info = []
 
     try:
         if 'choices' not in response_json or not response_json['choices'] or \
@@ -488,11 +490,11 @@ def _finalize_chat_interaction(request, user_message_text, response_json, histor
     vector_service.upsert_message(collection_name, bot_message_obj)
     
     recent_history_for_extraction = history[:5]
-    extract_and_save_user_context_data(user, user_message_text, bot_message_text, recent_history_for_extraction, api_key)
+    saved_info = extract_and_save_user_context_data(user, user_message_text, bot_message_text, recent_history_for_extraction, api_key)
 
     # 디버깅을 위해 최종 explanation 내용을 터미널에 출력
     print("\n" + "-"*20 + " [Debug] Response Explanation " + "-"*20)
     print(explanation)
     print("-"*66 + "\n")
 
-    return bot_message_text, explanation, bot_message_obj, user_message_obj
+    return bot_message_text, explanation, bot_message_obj, user_message_obj, saved_info

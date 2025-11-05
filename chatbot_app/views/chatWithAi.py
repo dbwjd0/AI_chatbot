@@ -43,17 +43,18 @@ def chat_response(request):
             except Exception as e:
                 print(f"--- [PPO] 암시적 보상 계산 중 오류: {e} ---")
 
-        # --- 채팅 상호작용 시작 ---
+        # --- 채팅 상호작용 시작 --- 
         bot_message_text = "죄송합니다. API 응답을 가져오는 데 실패했습니다."
         explanation = ""
         character_emotion = "default"
         bot_message_obj = None
         image_url = None
         action_data = {} 
+        saved_info = []
 
         try:
             # 2. 채팅 상호작용 (RL 에이전트의 결정 포함) - 분석된 사용자 감정 전달
-            bot_message_text, explanation, bot_message_obj, user_message_obj, action_data = chat_service.process_chat_interaction(
+            bot_message_text, explanation, bot_message_obj, user_message_obj, action_data, saved_info = chat_service.process_chat_interaction(
                 request, user_message_text, user_emotion=current_user_emotion, latitude=latitude, longitude=longitude, image_file=image_file
             )
             finetuning_service.anonymize_and_log_finetuning_data(request, user_message_text, bot_message_text, explanation)
@@ -108,6 +109,7 @@ def chat_response(request):
             'timestamp': timestamp,
             'user_image_url': image_url,
             'bot_message_id': bot_message_obj.id if bot_message_obj else None,
+            'saved_info': saved_info,
             # 프론트엔드 피드백용 데이터는 마지막 경험의 데이터를 사용
             'action': trajectory[-1]['action'] if trajectory else None,
             'state_vector': trajectory[-1]['state'] if trajectory else None,

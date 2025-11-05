@@ -9,6 +9,7 @@ def extract_and_save_user_context_data(user, user_message, bot_message, recent_h
     """
     대화 내용을 한 번의 API 호출로 분석하여 사용자 속성, 활동, 인간관계를 추출하고 저장합니다.
     """
+    saved_info = []
     try:
         headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
         today_str = timezone.now().astimezone(timezone.get_default_timezone()).strftime('%Y-%m-%d')
@@ -83,7 +84,7 @@ def extract_and_save_user_context_data(user, user_message, bot_message, recent_h
         data = {
             "model": "gpt-4.1",
             "messages": [
-                {"role": "system", "content": "You are an AI that extracts structured information about a user's core facts, activities, relationships, and schedules from a conversation, returning a single JSON object."}, 
+                {"role": "system", "content": "You are an AI that extracts structured information about a user's core facts, activities, relationships, and schedules from a conversation, returning a single JSON object."},
                 {"role": "user", "content": extraction_prompt}
             ],
             "temperature": 0.0,
@@ -96,21 +97,21 @@ def extract_and_save_user_context_data(user, user_message, bot_message, recent_h
         content_str = response.json().get('choices', [{}])[0].get('message', {}).get('content', '{{}}')
         extracted_data = json.loads(content_str)
 
-        # 3. 각 정보 유형별로 저장 함수 호출
         if extracted_data.get("user_attributes"):
-            _save_user_attributes(user, extracted_data["user_attributes"])
+            saved_info.extend(_save_user_attributes(user, extracted_data["user_attributes"]))
 
         if extracted_data.get("activity"):
-            _save_activity(user, extracted_data["activity"], today_str)
+            saved_info.extend(_save_activity(user, extracted_data["activity"], today_str))
 
         if extracted_data.get("relationships"):
-            _save_relationships(user, extracted_data["relationships"])
+            saved_info.extend(_save_relationships(user, extracted_data["relationships"]))
 
-        if extracted_data.get("schedule"): # 새 기능: 스케줄 데이터 저장
-            _save_schedule(user, extracted_data["schedule"], today_str)
+        if extracted_data.get("schedule"):
+            saved_info.extend(_save_schedule(user, extracted_data["schedule"], today_str))
                 
     except (requests.exceptions.RequestException, json.JSONDecodeError, KeyError, IndexError, ValueError) as e:
         print(f"--- 속성, 활동, 관계 또는 스케줄을 추출하거나 저장할 수 없습니다. 오류: {e} ---")
+    return saved_info
 
 def _get_existing_attributes_context(user):
     existing_attributes = UserAttribute.objects.filter(user=user)
@@ -135,150 +136,160 @@ def _get_existing_relationships_context(user):
     return f"--- 현재 저장된 인물 목록 ---\n{rel_list_str}\n---"
 
 def _save_user_attributes(user, attributes_data):
-    print(f"--- Found Attributes to Create/Update for {user.username}: {attributes_data} ---")
-    for attribute_data in attributes_data:
-        action = attribute_data.get('action') # 'action' 필드는 이제 DB 작업에 덜 중요합니다.
-        fact_type = attribute_data.get('fact_type')
-        content = attribute_data.get('content')
-
+    saved_info = []
+    for attr_data in attributes_data:
+        fact_type = attr_data.get('fact_type')
+        content = attr_data.get('content')
         if not (fact_type and content):
             continue
 
-        # 'create' 및 'update' 작업 모두에 대해 'user'와 'fact_type'을 사용하여 기존 속성을 찾고 'content'를 업데이트합니다.
-        # 이는 각 (사용자, 속성 유형) 조합에 대해 하나의 고유한 항목만 존재하도록 보장합니다.
-        UserAttribute.objects.update_or_create(
-            user=user,
+        obj, created = UserAttribute.objects.get_or_create(
+            user=user, 
             fact_type=fact_type,
             defaults={'content': content}
         )
-        # LLM의 'action' 필드는 이제 DB 메서드를 지시하는 것이 아니라 정보 제공용입니다.
-        print(f"--- Ensured UserAttribute exists (action: {action}): {fact_type}: {content} for {user.username} ---")
+
+        if created:
+            saved_info.append(f"[속성] {fact_type}: {content}")
+            print(f"--- 새로운 사용자 속성 저장: {fact_type} for {user.username} ---")
+        elif obj.content != content:
+            obj.content = content
+            obj.save()
+            saved_info.append(f"[속성 업데이트] {fact_type}: {content}")
+            print(f"--- 사용자 속성 업데이트: {fact_type} for {user.username} ---")
+    return saved_info
+
 def _save_activity(user, activity_data, today_str):
-    activities_to_save = []
-    if isinstance(activity_data, list):
-        activities_to_save = activity_data
-    elif isinstance(activity_data, dict):
-        activities_to_save = [activity_data]
-    else:
-        print(f"--- Invalid activity_data format: {type(activity_data)} ---")
-        return
+    saved_info = []
+    activities_to_save = [activity_data] if isinstance(activity_data, dict) else activity_data if isinstance(activity_data, list) else []
 
     for single_activity_data in activities_to_save:
-        if single_activity_data and (single_activity_data.get('place') or single_activity_data.get('memo')):
-            memo_content = single_activity_data.get('memo')
-
-            # 최근 10분 이내에 동일한 메모 내용이 있는지 확인
-            if memo_content:
-                time_threshold = timezone.now() - timedelta(minutes=10)
-                is_duplicate = UserActivity.objects.filter(
-                    user=user,
-                    memo=memo_content,
-                    created_at__gte=time_threshold
-                ).exists()
-
-                if is_duplicate:
-                    print(f"--- Duplicate activity found, skipping save: {{memo_content}} ---")
-                    continue  # 중복이므로 이 활동은 건너뜀
-            
-            time_str = single_activity_data.get('activity_time')
-            parsed_time = None
-            if time_str:
-                try:
-                    parsed_time = datetime.strptime(time_str, '%H:%M').time()
-                except ValueError:
-                    try:
-                        parsed_time = datetime.strptime(time_str, '%I:%M %p').time()
-                    except ValueError:
-                        if '시' in time_str:
-                            time_str = time_str.replace('시', ':').replace('분', '')
-                            try:
-                                parsed_time = datetime.strptime(time_str.strip(), '%H:%M').time()
-                            except ValueError:
-                                parsed_time = None
-
-            UserActivity.objects.create(
-                user=user,
-                activity_date=single_activity_data.get('activity_date', today_str),
-                activity_time=parsed_time,
-                place=single_activity_data.get('place'),
-                companion=single_activity_data.get('companion'),
-                memo=memo_content
-            )
-            print(f"--- New Activity Saved for {user.username}: {{single_activity_data}} ---")
-
-def _save_relationships(user, relationships_data):
-    print(f"--- Found Relationships to Create/Update for {user.username}: {relationships_data} ---")
-    for rel_data in relationships_data:
-        name = rel_data.get('name')
-        rel_type = rel_data.get('relationship_type')
-        traits = rel_data.get('traits')
-
-        if not name or not rel_type:
+        memo_content = single_activity_data.get('memo')
+        if not memo_content:
             continue
 
-        obj, created = UserRelationship.objects.update_or_create(
+        activity_date_str = single_activity_data.get('activity_date', today_str)
+        try:
+            parsed_date = datetime.strptime(activity_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            print(f"--- 잘못된 활동 날짜 형식: {activity_date_str} ---")
+            continue
+
+        time_str = single_activity_data.get('activity_time')
+        parsed_time = None
+        if time_str:
+            try:
+                parsed_time = datetime.strptime(time_str, '%H:%M').time()
+            except ValueError:
+                pass # 추가 파싱 로직 필요 시 여기에
+
+        # 동일 날짜, 동일 메모의 활동이 이미 있는지 확인
+        obj, created = UserActivity.objects.get_or_create(
             user=user,
-            name=name,
-            defaults={'relationship_type': rel_type}
+            activity_date=parsed_date,
+            memo=memo_content,
+            defaults={
+                'activity_time': parsed_time,
+                'place': single_activity_data.get('place'),
+                'companion': single_activity_data.get('companion')
+            }
         )
 
         if created:
-            obj.traits = traits
-            obj.save()
-            print(f"--- Created new relationship: {name} ---")
+            saved_info.append(f"[활동] {memo_content}")
+            print(f"--- 새로운 활동 저장 for {user.username}: {single_activity_data} ---")
         else:
-            if traits:
-                existing_traits = {t.strip() for t in (obj.traits or "").split(',') if t.strip()}
-                new_traits = {t.strip() for t in traits.split(',') if t.strip()}
-                existing_traits.update(new_traits)
-                obj.traits = ", ".join(existing_traits)
+            # 이미 존재하는 활동이지만, 세부 정보가 업데이트되었는지 확인
+            if (obj.activity_time != parsed_time or 
+                obj.place != single_activity_data.get('place') or 
+                obj.companion != single_activity_data.get('companion')):
+                
+                obj.activity_time = parsed_time
+                obj.place = single_activity_data.get('place')
+                obj.companion = single_activity_data.get('companion')
                 obj.save()
-                print(f"--- Updated relationship: {name} ---")
+                saved_info.append(f"[활동 업데이트] {memo_content}")
+                print(f"--- 활동 업데이트 for {user.username}: {single_activity_data} ---")
+
+    return saved_info
+
+def _save_relationships(user, relationships_data):
+    saved_info = []
+    for rel_data in relationships_data:
+        name = rel_data.get('name')
+        rel_type = rel_data.get('relationship_type')
+        new_traits = rel_data.get('traits', '')
+        if not name or not rel_type:
+            continue
+
+        obj, created = UserRelationship.objects.get_or_create(
+            user=user, 
+            name=name,
+            defaults={'relationship_type': rel_type, 'traits': new_traits}
+        )
+
+        if created:
+            saved_info.append(f"[인간관계] {name} ({rel_type})")
+            print(f"--- 새로운 관계 생성: {name} for {user.username} ---")
+        else:
+            existing_traits = {t.strip() for t in (obj.traits or "").split(',') if t.strip()}
+            new_traits_set = {t.strip() for t in new_traits.split(',') if t.strip()}
+            if not new_traits_set.issubset(existing_traits):
+                existing_traits.update(new_traits_set)
+                obj.traits = ", ".join(sorted(list(existing_traits)))
+                obj.save()
+                saved_info.append(f"[인간관계 업데이트] {name}: 새로운 정보 추가")
+                print(f"--- 관계 업데이트: {name} for {user.username} ---")
+    return saved_info
 
 def _save_schedule(user, schedule_data, today_str):
-    print(f"--- {user.username}님을 위한 스케줄 생성 요청 발견: {schedule_data} ---")
-    schedules_to_save = []
-    if isinstance(schedule_data, list):
-        schedules_to_save = schedule_data
-    elif isinstance(schedule_data, dict):
-        schedules_to_save = [schedule_data]
-    else:
-        print(f"--- 잘못된 스케줄 데이터 형식: {type(schedule_data)} ---")
-        return
+    saved_info = []
+    schedules_to_save = [schedule_data] if isinstance(schedule_data, dict) else schedule_data if isinstance(schedule_data, list) else []
 
     for single_schedule_data in schedules_to_save:
         content = single_schedule_data.get('content')
-        schedule_date_str = single_schedule_data.get('schedule_date', today_str)
-        schedule_time_str = single_schedule_data.get('schedule_time')
-
         if not content:
             continue
 
-        parsed_date = None
+        schedule_date_str = single_schedule_data.get('schedule_date', today_str)
         try:
             parsed_date = datetime.strptime(schedule_date_str, '%Y-%m-%d').date()
         except ValueError:
             print(f"--- 잘못된 스케줄 날짜 형식: {schedule_date_str} ---")
             continue
 
+        if parsed_date < date.today():
+            continue
+
+        schedule_time_str = single_schedule_data.get('schedule_time')
         parsed_time = None
         if schedule_time_str:
             try:
                 parsed_time = datetime.strptime(schedule_time_str, '%H:%M').time()
             except ValueError:
-                print(f"--- 잘못된 스케줄 시간 형식: {schedule_time_str} ---")
-                # Continue without time if invalid
                 pass
 
-        # 스케줄이 오늘 또는 미래인 경우에만 생성
-        if parsed_date >= date.today():
-            UserSchedule.objects.update_or_create(
+        # Safely handle multiple objects by using filter() and updating the first one found.
+        obj = UserSchedule.objects.filter(user=user, date=parsed_date, content=content).first()
+
+        time_display = f"{parsed_time.strftime('%H:%M')} " if parsed_time else ""
+        notification_message = f"[일정] {schedule_date_str} {time_display}{content}"
+
+        if obj is None:
+            # Create new schedule if none exists
+            UserSchedule.objects.create(
                 user=user,
                 date=parsed_date,
-                schedule_time=parsed_time,
-                content=content, # Include content in lookup for exact match
-                defaults={} # No defaults needed as all fields are in lookup
+                content=content,
+                schedule_time=parsed_time
             )
-            print(f"--- {user.username}님을 위한 스케줄 저장/업데이트 완료: {single_schedule_data} ---")
-        else:
-            print(f"--- 과거 스케줄 건너뛰기: {single_schedule_data} ---")
+            saved_info.append(notification_message)
+            print(f"--- 새로운 스케줄 저장 for {user.username}: {single_schedule_data} ---")
+        elif obj.schedule_time != parsed_time:
+            # Update schedule only if the time is different
+            obj.schedule_time = parsed_time
+            obj.save()
+            saved_info.append(f"{notification_message} (업데이트)")
+            print(f"--- 스케줄 업데이트 for {user.username}: {single_schedule_data} ---")
+            
+    return saved_info
