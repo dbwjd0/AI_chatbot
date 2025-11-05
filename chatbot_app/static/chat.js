@@ -247,6 +247,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const data = await response.json();
             console.log('Response from backend:', data);
+            console.log('Saved Info from backend:', data.saved_info);
+
+            // Display saved info notification
+            if (data.saved_info && data.saved_info.length > 0) {
+                showSavedInfoNotification(data.saved_info);
+            }
 
             if (data.state_vector && data.action_id !== null) {
                 currentLearningData = {
@@ -268,6 +274,27 @@ document.addEventListener('DOMContentLoaded', function () {
             dialogueText.textContent = "미안, 지금은 응답할 수 없어. (서버 오류)";
             userInput.disabled = false;
             sendButton.disabled = false;
+        }
+    }
+
+    function showSavedInfoNotification(info) {
+        const notification = document.getElementById('saved-info-notification');
+        console.log('Notification element:', notification);
+        if (notification) {
+            const infoHtml = "<strong>기억했어요!</strong><br>" + info.map(item => `- ${item}`).join('<br>');
+            notification.innerHTML = infoHtml;
+            notification.style.display = 'block';
+            notification.style.opacity = '1';
+            notification.style.top = '30px';
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.top = '20px';
+                // Hide it after the transition
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 500); // Corresponds to the transition duration
+            }, 5000);
         }
     }
 

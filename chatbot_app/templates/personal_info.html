@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}개인정보 확인{% endblock %}
+
+{% block extra_head %}
+<style>
+    body {
+        display: flex;
+        height: auto;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: rgba(0, 0, 0, 0.9);
+        font-family: 'Arial', sans-serif;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    .status-container {
+        background-color: rgb(136, 241, 255);
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 30px;
+        width: 100%;
+        max-width: 800px;
+        text-align: left;
+    }
+    .status-container h1 {
+        color: #5E35B1;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .status-item {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 15px;
+    }
+    .status-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .status-item h2 {
+        color: #333;
+        font-size: 1.2em;
+        margin-bottom: 10px;
+    }
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    .table th, .table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    .table th {
+        background-color: #f2f2f2;
+    }
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 30px;
+        color: #5E35B1;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .back-link:hover {
+        text-decoration: underline;
+    }
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="status-container">
+    <h1>개인정보 확인</h1>
+    <p>대화에서 추출된 나의 정보를 확인하고 관리할 수 있습니다.</p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="status-item">
+        <h2>속성</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>종류</th>
+                    <th>내용</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attr in attributes %}
+                    <tr>
+                        <td>{{ attr.fact_type }}</td>
+                        <td>{{ attr.content }}</td>
+                        <td><a href="{% url 'delete_user_attribute' attr.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</a></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="3">저장된 속성 정보가 없습니다.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="status-item">
+        <h2>활동</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>날짜</th>
+                    <th>내용</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for act in activities %}
+                    <tr>
+                        <td>{{ act.activity_date }}</td>
+                        <td>{{ act.memo }}</td>
+                        <td><a href="{% url 'delete_user_activity' act.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</a></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="3">저장된 활동 정보가 없습니다.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="status-item">
+        <h2>인간관계</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>관계</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rel in relationships %}
+                    <tr>
+                        <td>{{ rel.name }}</td>
+                        <td>{{ rel.relationship_type }}</td>
+                        <td><a href="{% url 'delete_user_relationship' rel.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</a></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="3">저장된 인간관계 정보가 없습니다.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="status-item">
+        <h2>일정</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>날짜</th>
+                    <th>내용</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sch in schedules %}
+                    <tr>
+                        <td>{{ sch.date }}</td>
+                        <td>{{ sch.content }}</td>
+                        <td><a href="{% url 'delete_user_schedule' sch.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</a></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="3">저장된 일정 정보가 없습니다.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{% url 'ai_status' %}" class="back-link">돌아가기</a>
+</div>
+{% endblock %}
