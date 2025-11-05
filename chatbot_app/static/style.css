@@ -15,7 +15,7 @@ body { /* Remove overflow: hidden from body specifically */
     height: 100vh;
     display: flex;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.9);      
+    background-color: rgba(0, 0, 0, 0.9);  
     align-items: center;
 }
 
