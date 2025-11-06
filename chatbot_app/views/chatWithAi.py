@@ -6,7 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from ..services import chat_service, emotion_service, finetuning_service, rl_agent_service
+from django.utils.translation import get_language
+from ..services import chat_service, emotion_service, finetuning_service, rl_agent_service, lang_util
 from ..models import UserProfile
 
 # PPO 학습을 위한 설정
@@ -19,6 +20,11 @@ def chat_response(request):
         latitude = request.POST.get('latitude')
         longitude = request.POST.get('longitude')
         image_file = request.FILES.get('image')
+
+        # ★★★ 번역 계층: 입력 번역 ★★★
+        user_language = get_language()
+        if user_language != 'ko':
+            user_message_text = lang_util.translate_to_korean(user_message_text, source_lang=user_language)
 
         # 1. 사용자 메시지 감정 분석 (최적화: 한번만 실행)
         current_user_emotion = emotion_service.analyze_emotion(user_message_text, speaker="User")
@@ -97,6 +103,10 @@ def chat_response(request):
                 trajectory = [] # 오류 발생 시에도 초기화
 
         request.session['ppo_trajectory'] = trajectory
+
+        # ★★★ 번역 계층: 출력 번역 ★★★
+        if user_language != 'ko':
+            bot_message_text = lang_util.translate_from_korean(bot_message_text, target_lang=user_language)
 
         # --- 최종 응답 반환 ---
         timestamp = bot_message_obj.timestamp.isoformat() if bot_message_obj else timezone.now().isoformat()
