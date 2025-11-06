@@ -1,7 +1,6 @@
 import os
 from typing import Dict, Any
 from openai import OpenAI
-
 def call_openai_api(client: OpenAI, model_to_use: str, messages: list) -> Dict[str, Any]:
     """OpenAI API를 호출하고 응답 JSON을 반환합니다."""
     print(f"--- 사용 모델: {model_to_use} ---")

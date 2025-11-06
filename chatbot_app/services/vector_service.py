@@ -53,7 +53,7 @@ def upsert_message(collection_name, chat_message):
             collection_name=collection_name,
             points=[
                 models.PointStruct(
-                    id=str(chat_message.id),
+                    id=chat_message.id,
                     vector=vector,
                     payload={
                         "speaker": "user" if chat_message.is_user else "ai",

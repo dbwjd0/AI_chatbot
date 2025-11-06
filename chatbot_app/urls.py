@@ -39,8 +39,8 @@ urlpatterns = [
     path('friends/delete/<int:friendship_id>/', friend.delete_friend, name='delete_friend'),
     path('friends/search/', friend.search_users, name='search_users'),
     path('friends/message/send/', friend.send_friend_message, name='send_friend_message'), # 쪽지 보내기
-    path('friends/message/unread/', friend.check_unread_friend_messages, name='check_unread_friend_messages'), # 읽지 않은 쪽지 확인
-    path('friends/message/unread/get/', friend.get_and_mark_read_friend_message, name='get_and_mark_read_friend_message'), # 읽지 않은 쪽지 하나 가져오기 및 읽음 처리
-    path('friends/message/unread/get_processed/', friend.get_processed_unread_friend_message, name='get_processed_unread_friend_message'), # 처리된 읽지 않은 쪽지 가져오기
+    path('friends/message/unread/', friend.check_unread_friend_messages, name='check_unread_friend_messages'),
+    path('friends/message/unread/get/', friend.get_and_mark_read_friend_message, name='get_and_mark_read_friend_message'),
+    path('friends/message/unread/get_processed/', friend.get_processed_unread_friend_message, name='get_processed_unread_friend_message'),
     path('bgm_player/', main.bgm_player_view, name='bgm_player'), # BGM iframe player URL
 ]

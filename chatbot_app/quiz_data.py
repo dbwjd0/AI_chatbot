@@ -1,3 +1,5 @@
+from django.utils.translation import gettext_lazy as _
+
 QUIZ_QUESTIONS = [
     {'id': 1, 'genre': 'korean_history', 'question': '조선 왕조를 건국한 인물은 누구인가요?', 'options': ['광해군', '정조', '세종대왕', '이성계'], 'answer': '이성계'},
     {'id': 2, 'genre': 'korean_history', 'question': '훈민정음을 창제한 왕은 누구인가요?', 'options': ['문종', '태종', '성종', '세종대왕'], 'answer': '세종대왕'},

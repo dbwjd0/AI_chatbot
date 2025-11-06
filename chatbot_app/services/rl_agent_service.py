@@ -1,3 +1,6 @@
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as gt
+
 """
  강화학습(RL) 에이전트 서비스 (PPO, Multi-Discrete Action Space 기반)
 이 서비스는 채팅 응답 생성을 위해 페르소나와 컨텍스트 조합을 동적으로 결정합니다.

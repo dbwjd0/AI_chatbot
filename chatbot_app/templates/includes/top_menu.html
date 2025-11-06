@@ -1,10 +1,25 @@
 {% load static %}
+{% load i18n %}
 <div class="top-menu">
-    <strong>{{ user.username }}</strong>님, 환영합니다.
+    <strong>{{ user.username }}</strong>{% blocktrans %}님, 환영합니다.{% endblocktrans %}
+    {% get_current_language as LANGUAGE_CODE %}
+    <form action="/i18n/setlang/" method="post" style="display: inline;">
+        {% csrf_token %}
+                {% if request.path|slice:"1:3" == 'en' or request.path|slice:"1:3" == 'ja' or request.path|slice:"1:3" == 'ko' %}
+            <input name="next" type="hidden" value="{{ request.get_full_path|slice:'3:' }}">
+        {% else %}
+            <input name="next" type="hidden" value="{{ request.get_full_path }}">
+        {% endif %}
+        <select name="language" onchange="this.form.submit()" style="background-color: #333; color: white; border: none; padding: 5px;">
+            <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+            <option value="ko" {% if LANGUAGE_CODE == 'ko' %}selected{% endif %}>한국어</option>
+            <option value="ja" {% if LANGUAGE_CODE == 'ja' %}selected{% endif %}>日本語</option>
+        </select>
+    </form>
     {% if show_room_link %}
-        <a href="{% url 'room' %}">방으로 돌아가기</a>
+        <a href="{% url 'room' %}">{% trans "방으로 돌아가기" %}</a>
     {% endif %}
-    <a href="{% url 'friend_management' %}">친구 관리</a>
-    <a href="{% url 'ai_status' %}"> {{ user.profile.chatbot_name }} 상태</a>
-    <a href="{% url 'logout' %}">로그아웃</a>
+    <a href="{% url 'friend_management' %}">{% trans "친구 관리" %}</a>
+    <a href="{% url 'ai_status' %}"> {% blocktrans with chatbot_name=user.profile.chatbot_name %}{{ chatbot_name }} 상태{% endblocktrans %}</a>
+    <a href="{% url 'logout' %}">{% trans "로그아웃" %}</a>
 </div>

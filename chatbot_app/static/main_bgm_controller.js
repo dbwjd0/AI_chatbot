@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
             iframeReady = true;
             currentVolume = message.volume;
             isMuted = message.muted;
-            console.log('BGM iframe is ready. Initial volume:', currentVolume, 'muted:', isMuted);
+            console.log(gettext('BGM iframe is ready. Initial volume:'), currentVolume, gettext('muted:'), isMuted);
 
             // Initialize UI elements if they exist
             const toggleBgmBtn = document.getElementById('toggle-bgm-btn');
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 volumeSlider.value = currentVolume * 100;
             }
             if (toggleBgmBtn) {
-                toggleBgmBtn.textContent = isMuted ? 'BGM OFF' : 'BGM ON';
+                toggleBgmBtn.textContent = isMuted ? gettext('BGM OFF') : gettext('BGM ON');
             }
 
             // Autoplay policy workaround: try to play after user interaction
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
             isMuted = message.value;
             const toggleBgmBtn = document.getElementById('toggle-bgm-btn');
             if (toggleBgmBtn) {
-                toggleBgmBtn.textContent = isMuted ? 'BGM OFF' : 'BGM ON';
+                toggleBgmBtn.textContent = isMuted ? gettext('BGM OFF') : gettext('BGM ON');
             }
         }
     });
@@ -79,9 +79,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const isBgmMuted = localStorage.getItem('isBgmMuted');
     if (toggleBgmBtn) {
         if (isBgmMuted === 'true') {
-            toggleBgmBtn.textContent = 'BGM OFF';
+            toggleBgmBtn.textContent = gettext('BGM OFF');
         } else {
-            toggleBgmBtn.textContent = 'BGM ON';
+            toggleBgmBtn.textContent = gettext('BGM ON');
         }
     }
 });

@@ -1,10 +1,11 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 비서와의 대화</title>
+    <title>{% trans "AI 비서와의 대화" %}</title>
     <link rel="stylesheet" href="{% static 'chat.css' %}">
     <style>
         #toggle-bgm-btn {
@@ -77,13 +78,13 @@
         <source src="{% static 'img/Main Room_.mp4' %}" type="video/mp4">
         Your browser does not support the video tag.
     </video>
-    <button id="toggle-bgm-btn">BGM OFF</button>
+    <button id="toggle-bgm-btn">{% trans "BGM OFF" %}</button>
     <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
     <div class="game-container">
         {% include 'includes/top_menu.html' with show_room_link=True %}
 
         <div class="character-container">
-            <img id="chatbot-character" src="{% static 'img/char_default.png' %}" alt="AI 비서">
+            <img id="chatbot-character" src="{% static 'img/char_default.png' %}" alt="{% trans "AI 비서" %}">
             <div id="ai-emoticon-bubble" class="ai-emoticon-bubble" style="display: none;">
                 <img id="ai-emoticon-img" src="" alt="AI Emoticon">
             </div>
@@ -91,7 +92,7 @@
 
         <div class="dialogue-box">
             <div id="speaker-name">{{ user_profile.chatbot_name }}</div>
-            <div id="dialogue-text">... (삐빅) ... 흥, 드디어 왔네. 뭘 시킬 셈이야?</div>
+            <div id="dialogue-text">{% trans "... (삐빅) ... 흥, 드디어 왔네. 뭘 시킬 셈이야?" %}</div>
             <button id="prev-dialogue-button" class="dialogue-nav-button hidden">▲</button>
         </div>
 
@@ -102,12 +103,12 @@
 
         <div id="preview-container" class="preview-container" style="display: none;">
             <img id="image-preview" src="" alt="Image Preview">
-            <button id="clear-image-button" class="icon-button" title="이미지 지우기">&times;</button>
+            <button id="clear-image-button" class="icon-button" title="{% trans "이미지 지우기" %}">&times;</button>
         </div>
 
         <div id="emoticon-preview-container" class="emoticon-preview-container" style="display: none;">
             <img id="emoticon-preview" src="" alt="Emoticon Preview">
-            <button id="clear-emoticon-button" class="icon-button" title="이모티콘 지우기">&times;</button>
+            <button id="clear-emoticon-button" class="icon-button" title="{% trans "이모티콘 지우기" %}">&times;</button>
         </div>
 
         <div id="emoticon-palette" class="emoticon-palette" style="display: none;">
@@ -117,22 +118,22 @@
         <div id="chat-input-container" class="chat-input-container">
             <div class="chat-input">
                 <input type="file" id="image-input" accept="image/*" style="display: none;">
-                <button id="message-button" class="icon-button" title="쪽지 보내기">✉️</button>
-                <button id="unread-messages-button" class="icon-button" title="읽지 않은 쪽지">
+                <button id="message-button" class="icon-button" title="{% trans "쪽지 보내기" %}">✉️</button>
+                <button id="unread-messages-button" class="icon-button" title="{% trans "읽지 않은 쪽지" %}">
                     <span class="unread-indicator">{{ unread_friend_messages_count }}</span>
                 </button>
-                <button id="attach-image-button" class="icon-button" title="이미지 첨부">📎</button>
-                <button id="emoticon-button" class="icon-button" title="이모티콘 선택">😊</button>
-                <input type="text" id="user-input" placeholder="메시지를 입력하세요...">
+                <button id="attach-image-button" class="icon-button" title="{% trans "이미지 첨부" %}">📎</button>
+                <button id="emoticon-button" class="icon-button" title="{% trans "이모티콘 선택" %}">😊</button>
+                <input type="text" id="user-input" placeholder="{% trans "메시지를 입력하세요..." %}">
                 <select id="friend-receiver-select" style="display: none;">
-                    <option value="">친구 선택</option>
+                    <option value="">{% trans "친구 선택" %}</option>
                 </select>
-                <input type="text" id="friend-message-input" placeholder="친구에게 쪽지를 보내세요..." style="display: none;">
-                <button id="send-button">전송</button>
-                <button id="send-friend-message-button" style="display: none;">쪽지 전송</button>
+                <input type="text" id="friend-message-input" placeholder="{% trans "친구에게 쪽지를 보내세요..." %}" style="display: none;">
+                <button id="send-button">{% trans "전송" %}</button>
+                <button id="send-friend-message-button" style="display: none;">{% trans "쪽지 전송" %}</button>
                 <div class="location-permission">
                     <input type="checkbox" id="location-checkbox">
-                    <label for="location-checkbox">위치 정보 사용</label>
+                    <label for="location-checkbox">{% trans "위치 정보 사용" %}</label>
                 </div>
             </div>
         </div>
@@ -152,6 +153,16 @@
             '중립': "{% static 'img/char_default.png' %}",
             'default': "{% static 'img/char_default.png' %}"
         };
+        const TRANSLATED_EMOTIONS = {
+            '생각': '{% trans "생각" %}',
+            '행복': '{% trans "행복" %}',
+            '슬픔': '{% trans "슬픔" %}',
+            '분노': '{% trans "분노" %}',
+            '놀람': '{% trans "놀람" %}',
+            '공포': '{% trans "공포" %}',
+            '혐오': '{% trans "혐오" %}',
+            '중립': '{% trans "중립" %}',
+        };
         const USERNAME = "{{ user.username }}";
         const USER_NICKNAME = "{{ user_profile.nickname|default:user.username|escapejs }}"; // Add this line
         const CHATBOT_NAME = "{{ user_profile.chatbot_name|escapejs }}";
@@ -165,5 +176,6 @@
     <script src="{% static 'bgm.js' %}"></script>
     <script src="{% static 'chat.js' %}"></script>
 
+    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from .models import UserProfile
 import os # Import os module for file deletion
 from django.conf import settings # Import settings for MEDIA_ROOT
@@ -8,9 +9,9 @@ class UserProfileForm(forms.ModelForm):
         model = UserProfile
         fields = ['profile_picture', 'status_message', 'chatbot_name', 'persona_preference']
         widgets = {
-            'status_message': forms.TextInput(attrs={'placeholder': '상태 메시지를 입력하세요'}),
-            'chatbot_name': forms.TextInput(attrs={'placeholder': '챗봇 이름을 입력하세요'}),
-            'persona_preference': forms.TextInput(attrs={'placeholder': '챗봇 페르소나를 입력하세요'}),
+            'status_message': forms.TextInput(attrs={'placeholder': _('상태 메시지를 입력하세요')}),
+            'chatbot_name': forms.TextInput(attrs={'placeholder': _('챗봇 이름을 입력하세요')}),
+            'persona_preference': forms.TextInput(attrs={'placeholder': _('챗봇 페르소나를 입력하세요')}),
         }
 
     def clean_profile_picture(self):

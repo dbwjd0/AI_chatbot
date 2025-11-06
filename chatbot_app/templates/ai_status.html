@@ -1,10 +1,13 @@
+{% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ user.profile.chatbot_name }}의 상태</title>
+    <title>{% blocktrans with chatbot_name=user.profile.chatbot_name %}{{ chatbot_name }}의 상태{% endblocktrans %}</title>
     {% load static %}
+    {% load i18n %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <style>
         #toggle-bgm-btn {
@@ -193,50 +196,50 @@
     </style>
 </head>
 <body>
-    <button id="toggle-bgm-btn">BGM OFF</button>
+    <button id="toggle-bgm-btn">{% trans "BGM OFF" %}</button>
     <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
     <div class="status-container">
-        <a href="{% url 'edit_profile' %}" class="edit-profile-link">프로필 수정</a>
-        <h1>{{ user.profile.chatbot_name }}의 현재 상태</h1>
+        <a href="{% url 'edit_profile' %}" class="edit-profile-link">{% trans "프로필 수정" %}</a>
+        <h1>{% blocktrans with chatbot_name=user.profile.chatbot_name %}{{ chatbot_name }}의 현재 상태{% endblocktrans %}</h1>
 
         <div class="status-item">
-            <h2>호감도</h2>
+            <h2>{% trans "호감도" %}</h2>
             <p style="min-height: 0;">
-                현재 호감도 점수: <strong>{{ affinity_score }}점</strong>
+                {% blocktrans with affinity_score=affinity_score %}현재 호감도 점수: <strong>{{ affinity_score }}점</strong>{% endblocktrans %}
                 <br>
                 {% if affinity_score < 50 %}
-                    (아직은 츤데레 모드! 좀 더 친해져야겠어.)
+                    ({% trans "아직은 츤데레 모드! 좀 더 친해져야겠어." %})
                 {% elif affinity_score < 100 %}
-                    (장난꾸러기 모드! 가끔 짓궂은 장난을 칠 거야.)
+                    ({% trans "장난꾸러기 모드! 가끔 짓궂은 장난을 칠 거야." %})
                 {% else %}
-                    (이제는 다정한 친구! 더 많은 이야기를 나눌 수 있을 거야.)
+                    ({% trans "이제는 다정한 친구! 더 많은 이야기를 나눌 수 있을 거야." %})
                 {% endif %}
             </p>
         </div>
 
         <div class="status-item">
-            <h2>기억하는 사실</h2>
+            <h2>{% trans "기억하는 사실" %}</h2>
             <ul id="facts-list"></ul>
             <div id="facts-pagination" class="pagination-controls" style="display: none;">
-                <button id="facts-prev">&lt; 이전</button>
+                <button id="facts-prev">&lt; {% trans "이전" %}</button>
                 <span id="facts-page-info" class="page-info"></span>
-                <button id="facts-next">다음 &gt;</button>
+                <button id="facts-next">{% trans "다음" %} &gt;</button>
             </div>
-            <p id="no-facts-message" style="display: none;">아직 사용자에 대해 기억하는 사실이 없어. 대화를 통해 더 많은 것을 알려줘!</p>
+            <p id="no-facts-message" style="display: none;">{% trans "아직 사용자에 대해 기억하는 사실이 없어. 대화를 통해 더 많은 것을 알려줘!" %}</p>
         </div>
 
         <div class="status-item">
-            <h2>인간관계</h2>
+            <h2>{% trans "인간관계" %}</h2>
             <ul id="relationships-list"></ul>
             <div id="relationships-pagination" class="pagination-controls" style="display: none;">
-                <button id="rel-prev">&lt; 이전</button>
+                <button id="rel-prev">&lt; {% trans "이전" %}</button>
                 <span id="rel-page-info" class="page-info"></span>
-                <button id="rel-next">다음 &gt;</button>
+                <button id="rel-next">{% trans "다음" %} &gt;</button>
             </div>
-            <p id="no-relationships-message" style="display: none;">아직 사용자의 인간관계에 대한 정보가 없어.</p>
+            <p id="no-relationships-message" style="display: none;">{% trans "아직 사용자의 인간관계에 대한 정보가 없어." %}</p>
         </div>
 
-        <a href="{% url 'room' %}" class="back-link">방으로 돌아가기</a>
+        <a href="{% url 'room' %}" class="back-link">{% trans "방으로 돌아가기" %}</a>
     </div>
 
     <!-- 관계 상세 모달 -->
@@ -244,11 +247,11 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2 id="modal-name"></h2>
-            <p><strong>관계 유형:</strong> <span id="modal-relationship-type"></span></p>
-            <p><strong>포지션:</strong> <span id="modal-position"></span></p>
-            <p><strong>특징:</strong> <span id="modal-traits"></span></p>
-            <button>수정</button>
-            <button>삭제</button>
+            <p>{% blocktrans %}<strong>관계 유형:</strong> <span id="modal-relationship-type"></span>{% endblocktrans %}</p>
+            <p>{% blocktrans %}<strong>포지션:</strong> <span id="modal-position"></span>{% endblocktrans %}</p>
+            <p>{% blocktrans %}<strong>특징:</strong> <span id="modal-traits"></span>{% endblocktrans %}</p>
+            <button>{% trans "수정" %}</button>
+            <button>{% trans "삭제" %}</button>
         </div>
     </div>
 
@@ -377,5 +380,6 @@
     </audio>
 
     <script src="{% static 'bgm.js' %}"></script>
+    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 </body>
 </html>

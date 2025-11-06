@@ -2,6 +2,9 @@ import os
 import requests
 from chatbot_app.services import context_service # context_service 임포트
 
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as gt
+
 SEARCH_TRIGGERS = {
     'FD6': (['맛집', '음식점', '배고파', '뭐 먹지'], '맛집', '음식점'),
     'CE7': (['카페', '커피'], '카페', '카페'),

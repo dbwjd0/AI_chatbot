@@ -11,6 +11,10 @@ from .emotion_service import analyze_emotion
 from . import schedule_service # schedule_service 임포트
 from .rl_agent_service import decide_action # RL 에이전트의 decide_action 함수 임포트
 
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as gt
+
+
 def _check_upcoming_schedule(user):
     today = date.today()
     schedules = schedule_service.get_schedules_for_day(user, today)
