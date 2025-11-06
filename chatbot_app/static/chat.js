@@ -527,71 +527,42 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(checkUnreadMessages, 15000); // Every 15 seconds
 
         async function fetchAndDisplayUnreadFriendMessage() {
-
-            // If a message is already being displayed, wait a bit and retry.
-
+            // 1. 대화창이 현재 메시지를 표시 중인지 확인하고, 그렇다면 잠시 후 다시 시도합니다.
             if (isDisplayingMessage) {
-
                 setTimeout(fetchAndDisplayUnreadFriendMessage, 1000);
-
                 return;
-
             }
 
-    
+            // 2. API 호출 전에 즉시 사용자에게 상태를 알립니다.
+            queueAiMessage("어디보자... 새로운 쪽지가 와있는지 확인해볼게...");
+            // 쪽지 버튼을 즉시 숨겨 중복 클릭을 방지합니다.
+            unreadMessagesButton.style.display = 'none';
+            unreadMessagesButton.querySelector('.unread-indicator').textContent = '0';
 
             try {
-
+                // 3. 서버에 처리된 메시지를 요청합니다.
                 const response = await fetch('/friends/message/unread/get_processed/');
-
                 const data = await response.json();
 
-    
-
+                // 4. 성공적으로 메시지를 받아왔을 때 처리합니다.
                 if (data.status === 'success' && data.messages && data.messages.length > 0) {
-
-                                        // Hide the button immediately as we are processing the messages.
-
-                                        unreadMessagesButton.style.display = 'none';
-
-                                        unreadMessagesButton.querySelector('.unread-indicator').textContent = '0'; // Set count to 0
-
-    
-
-                    // Queue each friend message to be displayed in the chat window.
-
+                    // 받아온 메시지들을 순서대로 대화 큐에 추가합니다.
                     data.messages.forEach(msg => {
-
                         const formattedMessage = `[${msg.sender}님이 보낸 쪽지] ${msg.content}`;
-
                         queueAiMessage(formattedMessage);
-
                     });
-
-                    
-
-                    // After processing, re-check for any other unread messages.
-
-                    checkUnreadMessages();
-
                 } else {
-
-                    // If the button was visible but there are no messages, hide it and inform the user.
-
-                    unreadMessagesButton.style.display = 'none';
-
-                    queueAiMessage("새로운 쪽지가 없는 것 같아.");
-
+                    // 5. 메시지가 없을 경우, 사용자에게 알립니다.
+                    queueAiMessage("새로운 쪽지는 없는 것 같아.");
                 }
-
             } catch (error) {
-
+                // 6. API 호출 중 에러가 발생했을 경우, 사용자에게 알립니다.
                 console.error('Error fetching unread messages:', error);
-
                 queueAiMessage("이런, 쪽지를 가져오는 중에 문제가 생겼어.");
-
+            } finally {
+                // 7. 모든 처리가 끝난 후, 다시 최신 안 읽은 메시지 수를 확인하여 버튼 상태를 업데이트합니다.
+                checkUnreadMessages();
             }
-
         }
 
     // --- Handle Unread Messages Button Click ---
