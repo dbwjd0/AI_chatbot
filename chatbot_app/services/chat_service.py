@@ -153,6 +153,12 @@ def process_chat_interaction(request, user_message_text: str, user_emotion: str,
         history = ChatMessage.objects.filter(user=user).order_by('-timestamp')
         action_data = rl_agent_service.decide_action(user, user_message_for_llm, history, has_image=bool(image_file), user_emotion=user_emotion)
         
+        # 2.5단계: 사용자가 위치 정보 사용을 명시적으로 선택했는지 확인하고, 컨텍스트에 'location'을 강제로 추가
+        if latitude is not None and longitude is not None:
+            if 'location' not in action_data['contexts_to_use']:
+                action_data['contexts_to_use'].append('location')
+                print("--- [디버그] 사용자가 위치 정보 사용을 선택하여 'location' 컨텍스트를 강제로 추가합니다. ---")
+
         # "질문하기" 행동 특별 처리
         if action_data.get('chosen_persona_name') == 'Questioner':
             bot_message_text = "무슨 말인지 잘 모르겠어. 조금 더 자세히 설명해 줄래?"
