@@ -12,6 +12,7 @@ def call_openai_api(client: OpenAI, model_to_use: str, messages: list) -> Dict[s
         top_p=0.9,
         frequency_penalty=0.2,
         presence_penalty=0.1,
-        response_format={"type": "json_object"}
+        response_format={"type": "json_object"},
+        timeout=30.0  # 👈 타임아웃을 30초로 설정
     )
     return response.model_dump()
