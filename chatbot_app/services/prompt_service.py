@@ -115,9 +115,9 @@ def build_persona_system_prompt(user, persona_name: str = None):
     # 언어 코드에 따른 '엄격한 언어 규칙' 정의
     # 이 딕셔너리를 규칙을 정의하는 파일 상단이나 설정 파일에 정의해 둬.
     LANGUAGE_SPECIFIC_RULES = {
-        'ko': gt("**엄격한 언어 규칙:** 무조건 한국어 '반말'로만 대화해야 해. 다른 언어(영어 등)는 사용자 요청 시에만 사용해야 해.\n"),
-        'en': gt("**Strict Language Rule:** You must speak in **English informal tone** at all times. Do not use other languages (like Korean) unless requested by the user.\n"),
-        'ja': gt("**厳格な言語ルール:** 必ず**日本語のタメ口**でのみ会話してください。ユーザーの要求がない限り、他の言語（韓国語など）の使用は厳禁です。\n"),
+        'ko': gt("**엄격한 언어 규칙:** 사용자가 어떤 언어로 말하든, 너는 무조건 한국어 '반말'로만 대화해야 해. 다른 언어(영어 등)는 사용자 요청 시에만 사용해야 해.\n"),
+        'en': gt("**Strict Language Rule:** No matter what language the user speaks, you must speak in **English informal tone** at all times. Do not use other languages (like Korean) unless requested by the user.\n"),
+        'ja': gt("**厳格な言語ルール:** ユーザーがどの言語で話しても、必ず**日本語のタメ口**でのみ会話してください。ユーザーの要求がない限り、他の言語（韓国語など）の使用は厳禁です。\n"),
         # 다른 언어도 필요하면 여기에 계속 추가
     }
     common_rules = [
