@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}프로필 편집{% endblock %}
+{% load i18n %}  {% block title %}프로필 편집{% endblock %}
 
 {% block extra_head %}
     {# <link rel="stylesheet" href="{% static 'setup.css' %}"> #} {# 기존 스타일 재활용 또는 새 스타일 추가 #}
@@ -166,7 +166,7 @@
     <script src="{% static 'bgm.js' %}"></script>
 
     <div class="profile-edit-container">
-        <h1>프로필 편집</h1>
+        <h1>{% trans "프로필 편집" %}</h1>
 
         {% if messages %}
             <ul class="messages">
@@ -179,40 +179,41 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% if form.instance.profile_picture %}
-                <img src="{{ form.instance.profile_picture.url }}" alt="현재 프로필 사진" class="profile-picture-preview">
+                <img src="{{ form.instance.profile_picture.url }}" alt="{% trans "현재 프로필 사진" %}" class="profile-picture-preview">
             {% else %}
-                <img src="/media/profile_pics/cute_pig.jpg" alt="기본 프로필 사진" class="profile-picture-preview">
+                <img src="/media/profile_pics/cute_pig.jpg" alt="{% trans "기본 프로필 사진" %}" class="profile-picture-preview">
             {% endif %}
             
             {{ form.non_field_errors }}
 
             <p>
-                <label for="{{ form.profile_picture.id_for_label }}">프로필 사진</label>
+                <label for="{{ form.profile_picture.id_for_label }}">{% trans "프로필 사진" %}</label>
                 {{ form.profile_picture }}
             </p>
             <p>
-                <label for="{{ form.status_message.id_for_label }}">상태 메시지</label>
+                <label for="{{ form.status_message.id_for_label }}">{% trans "상태 메시지" %}</label>
                 {{ form.status_message }}
             </p>
             <p>
-                <label for="{{ form.chatbot_name.id_for_label }}">챗봇 이름</label>
+                <label for="{{ form.chatbot_name.id_for_label }}">{% trans "챗봇 이름" %}</label>
                 {{ form.chatbot_name }}
             </p>
             <p>
-                <label for="{{ form.persona_preference.id_for_label }}">페르소나 설정</label>
+                <label for="{{ form.persona_preference.id_for_label }}">{% trans "페르소나 설정" %}</label>
                 {{ form.persona_preference }}
             </p>
 
-            <button type="submit">저장</button>
+            <button type="submit">{% trans "저장" %}</button>
         </form>
-        <p><a href="{% url 'room' %}" class="back-link">방으로 돌아가기</a></p>
+        <p><a href="{% url 'room' %}" class="back-link">{% trans "방으로 돌아가기" %}</a></p>
     </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const clearButton = document.querySelector('label[for="profile_picture-clear_id"]');
         const previewImage = document.querySelector('.profile-picture-preview');
-        const defaultImageSrc = "{% static 'img/기본 프로필.png' %}";
+        // 파일 경로는 국제화 대상이 아니야.
+        const defaultImageSrc = "{% static 'img/기본 프로필.png' %}"; 
 
         if (clearButton && previewImage) {
             clearButton.addEventListener('click', function() {
