@@ -81,6 +81,7 @@
     <button id="toggle-bgm-btn">{% trans "BGM OFF" %}</button>
     <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
     <div class="game-container">
+        <div id="saved-info-notification" style="display: none;"></div>
         {% include 'includes/top_menu.html' with show_room_link=True %}
 
         <div class="character-container">
