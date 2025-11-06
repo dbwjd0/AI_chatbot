@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import main, chatWithAi, auth, schedule, friend, quiz, profile # profile 임포트
+from .views import main, chatWithAi, auth, schedule, friend, quiz, profile, personal
 
 urlpatterns = [
     path('', main.opening_view, name='opening'),
@@ -43,4 +43,11 @@ urlpatterns = [
     path('friends/message/unread/get/', friend.get_and_mark_read_friend_message, name='get_and_mark_read_friend_message'), # 읽지 않은 쪽지 하나 가져오기 및 읽음 처리
     path('friends/message/unread/get_processed/', friend.get_processed_unread_friend_message, name='get_processed_unread_friend_message'), # 처리된 읽지 않은 쪽지 가져오기
     path('bgm_player/', main.bgm_player_view, name='bgm_player'), # BGM iframe player URL
+
+    # 개인정보 확인 및 삭제 URL
+    path('personal/', personal.view_personal_info, name='view_personal_info'),
+    path('personal/delete/attribute/<int:pk>/', personal.delete_user_attribute, name='delete_user_attribute'),
+    path('personal/delete/activity/<int:pk>/', personal.delete_user_activity, name='delete_user_activity'),
+    path('personal/delete/relationship/<int:pk>/', personal.delete_user_relationship, name='delete_user_relationship'),
+    path('personal/delete/schedule/<int:pk>/', personal.delete_user_schedule, name='delete_user_schedule'),
 ]

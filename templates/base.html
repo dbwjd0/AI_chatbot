@@ -5,8 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Django App{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'chatbot_app/style.css' %}">
     {% block extra_head %}{% endblock %}
+    <style>
+        body {
+            /* background-color: rgba(0, 0, 0, 0.9); */
+        }
+    </style>
 </head>
 <body>
     <div id="wrapper">
