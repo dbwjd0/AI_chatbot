@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% load i18n %}  {% block title %}프로필 편집{% endblock %}
+{% load i18n %}  {% block title %}{% trans "프로필 편집" %}{% endblock %}
 
 {% block extra_head %}
     {# <link rel="stylesheet" href="{% static 'setup.css' %}"> #} {# 기존 스타일 재활용 또는 새 스타일 추가 #}
@@ -155,7 +155,7 @@
 {% endblock %}
 
 {% block content %}
-    <button id="toggle-bgm-btn">BGM OFF</button>
+    <button id="toggle-bgm-btn">{% trans "BGM OFF" %}</button>
     <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
 
     <!-- 게임 페이지용 BGM (login.html 제외) -->
@@ -195,12 +195,12 @@
                 {{ form.status_message }}
             </p>
             <p>
-                <label for="{{ form.chatbot_name.id_for_label }}">{% trans "챗봇 이름" %}</label>
-                {{ form.chatbot_name }}
+                <label>{% trans "챗봇 이름" %}</label>
+                <span class="display-value">{{ user.profile.chatbot_name }}</span>
             </p>
             <p>
-                <label for="{{ form.persona_preference.id_for_label }}">{% trans "페르소나 설정" %}</label>
-                {{ form.persona_preference }}
+                <label>{% trans "페르소나 설정" %}</label>
+                <span class="display-value">{{ persona_preference_display }}</span>
             </p>
 
             <button type="submit">{% trans "저장" %}</button>

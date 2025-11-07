@@ -107,6 +107,9 @@ def chat_response(request):
         # ★★★ 번역 계층: 출력 번역 ★★★
         if user_language != 'ko':
             bot_message_text = lang_util.translate_from_korean(bot_message_text, target_lang=user_language)
+            # ★★★ saved_info 리스트도 번역 ★★★
+            if saved_info:
+                saved_info = lang_util.translate_from_korean_batch(saved_info, target_lang=user_language)
 
         # --- 최종 응답 반환 ---
         timestamp = bot_message_obj.timestamp.isoformat() if bot_message_obj else timezone.now().isoformat()

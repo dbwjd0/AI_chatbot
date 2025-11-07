@@ -840,7 +840,7 @@ document.addEventListener('DOMContentLoaded', () => {
             scheduleItem.className = 'schedule-item';
             scheduleItem.dataset.id = schedule.id;
             scheduleItem.innerHTML = `
-                <span class="schedule-time">${schedule.schedule_time || gettext('시간 미지정')}</span>
+                <span class="schedule-time">${schedule.schedule_time ? new Date('1970-01-01T' + schedule.schedule_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : gettext('시간 미지정')}</span>
                 <span class="schedule-content">${schedule.content}</span>
                 <div class="schedule-actions">
                     <button class="edit-schedule-btn" data-id="${schedule.id}">${gettext('수정')}</button>

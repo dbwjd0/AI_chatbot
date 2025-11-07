@@ -216,10 +216,10 @@
     <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
     <div class="status-container">
         <div class="button-container">
-            <a href="{% url 'edit_profile' %}" class="profile-edit-link">프로필 수정</a>
-            <a href="{% url 'view_personal_info' %}" class="personal-info-link">개인정보 보기</a>
+            <a href="{% url 'edit_profile' %}" class="profile-edit-link">{% trans "프로필 수정" %}</a>
+            <a href="{% url 'view_personal_info' %}" class="personal-info-link">{% trans "개인정보 보기" %}</a>
         </div>
-        <h1>{{ user.profile.chatbot_name }}의 현재 상태</h1>
+        <h1>{% blocktrans with chatbot_name=user.profile.chatbot_name %}{{ chatbot_name }}의 현재 상태{% endblocktrans %}</h1>
 
         <div class="status-item">
             <h2>{% trans "호감도" %}</h2>

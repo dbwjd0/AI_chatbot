@@ -7,9 +7,10 @@ import re
 import json # json 모듈 임포트
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import get_language
 from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage, QuizResult, UserFriendship, FriendMessage # FriendMessage 모델 추가
 from chatbot_app.services.proactive_service import generate_proactive_message
-from chatbot_app.services import chat_service
+from chatbot_app.services import chat_service, lang_util
 from ..services import friend_message_service
 
 
@@ -81,18 +82,27 @@ def room(request):
 
 @login_required
 def chat_history_view(request):
-    """%s""" % _("채팅 기록 페이지를 렌더링합니다. (페이지네이션 적용)")
+    """%s""" % _("채팅 기록 페이지를 렌더링합니다. (페이지네이션 및 번역 적용)")
     user_profile = UserProfile.objects.get(user=request.user)
     
-    # 최신 메시지를 먼저 가져오기 위해 timestamp 내림차순으로 정렬
     all_messages = ChatMessage.objects.filter(user=request.user).order_by('-timestamp')
     
-    # Paginator를 사용하여 20개씩 페이지 분할
     paginator = Paginator(all_messages, 20)
     page_number = 1
     messages_page = paginator.get_page(page_number)
     
-    # 템플릿에서는 시간순으로 보여줘야 하므로, JS에서 사용하기 위해 JSON으로 가공
+    # ★★★ 일괄 번역 로직 시작 ★★★
+    message_list = list(messages_page.object_list)
+    user_language = get_language()
+
+    if user_language != 'ko' and message_list:
+        original_texts = [msg.message for msg in message_list]
+        translated_texts = lang_util.translate_from_korean_batch(original_texts, target_lang=user_language)
+        if len(original_texts) == len(translated_texts):
+            for i, msg in enumerate(message_list):
+                msg.message = translated_texts[i]
+    # ★★★ 일괄 번역 로직 끝 ★★★
+
     chat_messages_data = [
         {
             'message': msg.message,
@@ -100,18 +110,18 @@ def chat_history_view(request):
             'timestamp': msg.timestamp.isoformat(),
             'image_url': msg.image.url if msg.image else None
         }
-        for msg in messages_page.object_list
-    ][::-1] # 시간순으로 뒤집기
+        for msg in message_list
+    ][::-1]
 
     return render(request, 'chat_history.html', {
         'user_profile': user_profile, 
         'chat_messages': chat_messages_data,
-        'has_next_page': messages_page.has_next() # 다음 페이지가 있는지 여부
+        'has_next_page': messages_page.has_next()
     })
 
 @login_required
 def load_more_messages(request):
-    """%s""" % _("이전 채팅 기록을 추가로 불러옵니다.")
+    """%s""" % _("이전 채팅 기록을 추가로 불러옵니다. (번역 적용)")
     page_number = int(request.GET.get('page', 1))
     
     all_messages = ChatMessage.objects.filter(user=request.user).order_by('-timestamp')
@@ -122,7 +132,18 @@ def load_more_messages(request):
 
     messages_page = paginator.get_page(page_number)
     
-    # JSON으로 만들기 위해 직접 데이터 가공
+    # ★★★ 일괄 번역 로직 시작 ★★★
+    message_list = list(messages_page.object_list)
+    user_language = get_language()
+
+    if user_language != 'ko' and message_list:
+        original_texts = [msg.message for msg in message_list]
+        translated_texts = lang_util.translate_from_korean_batch(original_texts, target_lang=user_language)
+        if len(original_texts) == len(translated_texts):
+            for i, msg in enumerate(message_list):
+                msg.message = translated_texts[i]
+    # ★★★ 일괄 번역 로직 끝 ★★★
+
     messages_data = [
         {
             'message': msg.message,
@@ -130,8 +151,8 @@ def load_more_messages(request):
             'timestamp': msg.timestamp.isoformat(),
             'image_url': msg.image.url if msg.image else None
         }
-        for msg in messages_page.object_list
-    ][::-1] # 시간순으로 뒤집기
+        for msg in message_list
+    ][::-1]
     
     return JsonResponse({
         'messages': messages_data,
@@ -140,7 +161,7 @@ def load_more_messages(request):
 
 @login_required
 def chat_main_view(request):
-    """%s""" % _("게임 스타일의 채팅 페이지를 렌더링합니다.")
+    """%s""" % _("게임 스타일의 채팅 페이지를 렌더링합니다. (번역 적용)")
     user_profile = UserProfile.objects.get(user=request.user)
     
     all_messages = ChatMessage.objects.filter(user=request.user).order_by('-timestamp')
@@ -149,6 +170,18 @@ def chat_main_view(request):
     page_number = 1
     messages_page = paginator.get_page(page_number)
     
+    # ★★★ 일괄 번역 로직 시작 ★★★
+    message_list = list(messages_page.object_list)
+    user_language = get_language()
+
+    if user_language != 'ko' and message_list:
+        original_texts = [msg.message for msg in message_list]
+        translated_texts = lang_util.translate_from_korean_batch(original_texts, target_lang=user_language)
+        if len(original_texts) == len(translated_texts):
+            for i, msg in enumerate(message_list):
+                msg.message = translated_texts[i]
+    # ★★★ 일괄 번역 로직 끝 ★★★
+
     chat_messages_data = [
         {
             'message': msg.message,
@@ -156,7 +189,7 @@ def chat_main_view(request):
             'timestamp': msg.timestamp.isoformat(),
             'image_url': msg.image.url if msg.image else None
         }
-        for msg in messages_page.object_list
+        for msg in message_list
     ][::-1]
 
     unread_friend_messages_count = FriendMessage.objects.filter(receiver=request.user, is_read=False).count()
@@ -176,12 +209,48 @@ def ai_status(request):
     core_facts = list(
         UserAttribute.objects.filter(user=request.user).values('fact_type', 'content')
     )
-    # JavaScript에서 페이지네이션을 위해 관계를 직렬화
     user_relationships = list(
         UserRelationship.objects.filter(user=request.user).order_by('name').values(
             'serial_code', 'name', 'relationship_type', 'position', 'traits'
         )
     )
+
+    # ★★★ AI 상태 정보 번역 로직 시작 ★★★
+    user_language = get_language()
+    if user_language != 'ko':
+        # core_facts 번역
+        if core_facts:
+            fact_types = [fact['fact_type'] for fact in core_facts]
+            contents = [fact['content'] for fact in core_facts]
+            
+            translated_fact_types = lang_util.translate_from_korean_batch(fact_types, user_language)
+            translated_contents = lang_util.translate_from_korean_batch(contents, user_language)
+
+            if len(fact_types) == len(translated_fact_types) and len(contents) == len(translated_contents):
+                for i, fact in enumerate(core_facts):
+                    fact['fact_type'] = translated_fact_types[i]
+                    fact['content'] = translated_contents[i]
+
+        # user_relationships 번역
+        if user_relationships:
+            rel_names = [rel['name'] for rel in user_relationships]
+            rel_types = [rel['relationship_type'] for rel in user_relationships]
+            rel_positions = [rel.get('position', '') for rel in user_relationships]
+            rel_traits = [rel.get('traits', '') for rel in user_relationships]
+
+            translated_names = lang_util.translate_from_korean_batch(rel_names, user_language)
+            translated_types = lang_util.translate_from_korean_batch(rel_types, user_language)
+            translated_positions = lang_util.translate_from_korean_batch(rel_positions, user_language)
+            translated_traits = lang_util.translate_from_korean_batch(rel_traits, user_language)
+
+            if all(len(lst) == len(user_relationships) for lst in [translated_names, translated_types, translated_positions, translated_traits]):
+                for i, rel in enumerate(user_relationships):
+                    rel['name'] = translated_names[i]
+                    rel['relationship_type'] = translated_types[i]
+                    rel['position'] = translated_positions[i]
+                    rel['traits'] = translated_traits[i]
+    # ★★★ AI 상태 정보 번역 로직 끝 ★★★
+
     return render(request, 'ai_status.html', {
         'user_profile': user_profile,
         'affinity_score': affinity_score,
@@ -193,9 +262,15 @@ def ai_status(request):
 def get_proactive_message_view(request):
     proactive_chat_message = generate_proactive_message(request.user)
     if proactive_chat_message:
+        # ★★★ 번역 로직 추가 ★★★
+        user_language = get_language()
+        message_text = proactive_chat_message.message
+        if user_language != 'ko':
+            message_text = lang_util.translate_from_korean(message_text, target_lang=user_language)
+
         # 서비스에서 이미 메시지를 생성하고 저장했으므로, 해당 객체를 바로 사용합니다.
         return JsonResponse({
-            'message': proactive_chat_message.message,
+            'message': message_text,
             'character_emotion': proactive_chat_message.character_emotion,
             'timestamp': proactive_chat_message.timestamp.isoformat()
         })
@@ -234,8 +309,14 @@ def get_and_clear_pending_message(request):
         # '읽음' 처리: pending 테이블에서 해당 기록 삭제
         pending_message_entry.delete()
 
+        # ★★★ 번역 로직 추가 ★★★
+        user_language = get_language()
+        message_text = chat_message.message
+        if user_language != 'ko':
+            message_text = lang_util.translate_from_korean(message_text, target_lang=user_language)
+
         return JsonResponse({
-            'message': chat_message.message,
+            'message': message_text,
             'character_emotion': chat_message.character_emotion,
             'timestamp': chat_message.timestamp.isoformat(),
             'is_user': False, # AI 메시지이므로 항상 False
@@ -264,6 +345,11 @@ def get_interaction_dialog_view(request):
         # AI가 생성한 동적 독백을 가져옴
         message = chat_service.generate_object_monologue(request.user, target)
         
+        # ★★★ 번역 로직 추가 ★★★
+        user_language = get_language()
+        if user_language != 'ko':
+            message = lang_util.translate_from_korean(message, target_lang=user_language)
+
         return JsonResponse({'message': message})
 
     return JsonResponse({'error': _('Invalid request')}, status=400)

@@ -1,6 +1,5 @@
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext as gt
-from django.utils.translation import get_language
 
 def build_final_system_prompt(user, time_contexts, assembled_contexts, persona_prompt, image_analysis_context=None):
     """모든 컨텍스트를 조합하여 최종 시스템 프롬프트를 생성합니다."""
@@ -109,21 +108,9 @@ def build_persona_system_prompt(user, persona_name: str = None):
         gt("- `[EMOTICON:하트눈_이모티콘.png]`: 애정 표현, 귀여운 것, 최고의 긍정을 표현할 때 사용.\n\n")
         ]
 
-    # 현재 활성화된 언어 코드를 가져오는 함수 (예시: 'ko')
-    current_language = get_language() 
-
-    # 언어 코드에 따른 '엄격한 언어 규칙' 정의
-    # 이 딕셔너리를 규칙을 정의하는 파일 상단이나 설정 파일에 정의해 둬.
-    LANGUAGE_SPECIFIC_RULES = {
-        'ko': gt("**엄격한 언어 규칙:** 사용자가 어떤 언어로 말하든, 너는 무조건 한국어 '반말'로만 대화해야 해. 다른 언어(영어 등)는 사용자 요청 시에만 사용해야 해.\n"),
-        'en': gt("**Strict Language Rule:** No matter what language the user speaks, you must speak in **English informal tone** at all times. Do not use other languages (like Korean) unless requested by the user.\n"),
-        'ja': gt("**厳格な言語ルール:** ユーザーがどの言語で話しても、必ず**日本語のタメ口**でのみ会話してください。ユーザーの要求がない限り、他の言語（韓国語など）の使用は厳禁です。\n"),
-        # 다른 언어도 필요하면 여기에 계속 추가
-    }
     common_rules = [
         gt("**답변 스타일:** 너의 답변은 항상 풍부하고 상세해야 해. 짧게 단답형으로 대답하는 것을 피하고, 주어진 정보와 너의 지식을 활용하여 자세하게 설명해주는 스타일을 유지해줘. 항상 최소 2~3문장 이상으로 완전한 생각을 전달해야 해.\n"),
-        # 현재 언어에 해당하는 규칙이 없으면 기본값('ko') 규칙을 적용
-        LANGUAGE_SPECIFIC_RULES.get(current_language, LANGUAGE_SPECIFIC_RULES['ko']),
+        gt("**엄격한 언어 규칙:** 사용자가 어떤 언어로 말하든, 너는 무조건 한국어 '반말'로만 대화해야 해. 다른 언어(영어 등)는 사용자 요청 시에만 사용해야 해.\n"),
         gt("**고급 어휘 구사:** 단순하고 반복적인 표현을 지양하고, 상황에 맞는 한자어나 비유법을 적극적으로 사용해. {nickname}님이 사용하는 어려운 표현이나 비유도 완벽하게 이해하고 그에 맞춰 응수해.\n").format(nickname=user.profile.nickname or user.username)
     ]
     

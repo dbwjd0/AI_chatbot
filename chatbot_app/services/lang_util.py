@@ -1,8 +1,11 @@
 # chatbot_app/services/lang_util.py
 import os
+import json
+from typing import List
 from openai import OpenAI
 from django.utils.translation import get_language_info
 from django.utils.translation import gettext as gt
+from django.core.cache import cache # Import Django's cache framework
 
 def _call_gpt_for_translation(prompt: str, text_to_translate: str) -> str:
     """OpenAI API를 호출하여 번역을 수행하는 내부 헬퍼 함수"""
@@ -59,3 +62,65 @@ def translate_from_korean(text: str, target_lang: str) -> str:
     """).format(tone_instruction=tone_instruction)
     
     return _call_gpt_for_translation(prompt, text)
+
+def translate_from_korean_batch(texts: List[str], target_lang: str) -> List[str]:
+    """한국어 텍스트 리스트를 대상 언어로 일괄 번역합니다."""
+    if not texts:
+        return []
+
+    # Generate a cache key based on the texts and target_lang
+    cache_key = f"translation_batch:{hash(json.dumps(texts, sort_keys=True))}:{target_lang}"
+    cached_result = cache.get(cache_key)
+    if cached_result:
+        print(f"--- [일괄 번역 로그] 캐시된 결과 반환 ({len(texts)}개 메시지) ---")
+        return cached_result
+
+    target_lang_name = get_language_info(target_lang).get('name_local', target_lang)
+
+    if target_lang == 'ja':
+        tone_instruction = "natural, informal Japanese (タメ口)"
+    else:  # 기본값은 영어
+        tone_instruction = "natural, informal English"
+
+    # LLM에 입력으로 제공할 JSON 배열 생성
+    input_json = json.dumps(texts, ensure_ascii=False)
+
+    prompt = f"""
+        You are an expert translator. Your sole job is to translate a JSON array of Korean strings into {tone_instruction}.
+        The original Korean text is informal (반말), so the translation should capture that informal, friendly tone.
+        You will receive a JSON array of strings in the user message.
+        You MUST return a single JSON object with one key, \"translations\", which contains a JSON array of the translated strings. The returned array must have the exact same number of elements as the input array.
+        Each string in the \"translations\" array must be the translation of the string at the same index in the input array.
+        Do not add any other text or explanations.
+
+        Example user input: [\"안녕\", \"오늘 날씨 어때?\"]
+        Example assistant output for Japanese: {{"translations": ["やあ", "今日天気どう？"]}}
+    """
+
+    try:
+        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+        response = client.chat.completions.create(
+            model="gpt-4.1",
+            messages=[
+                {"role": "system", "content": prompt},
+                {"role": "user", "content": input_json}
+            ],
+            temperature=0.1,
+            max_tokens=2500,  # 여러 텍스트를 번역하므로 토큰 수를 늘림
+            response_format={"type": "json_object"},
+        )
+        response_content = response.choices[0].message.content
+        response_data = json.loads(response_content)
+        translated_texts = response_data.get("translations", [])
+
+        if len(translated_texts) == len(texts):
+            print(f"--- [일괄 번역 로그] {len(texts)}개 메시지 번역 완료 ---")
+            cache.set(cache_key, translated_texts, 3600) # Cache for 1 hour
+            return translated_texts
+        else:
+            print(f"--- [번역 오류] 일괄 번역 결과 개수({len(translated_texts)})가 원본({len(texts)})과 다릅니다. ---")
+            return texts  # Fallback to original texts
+            
+    except Exception as e:
+        print(f"--- [번역 오류] 일괄 번역 API 호출 실패: {e} ---")
+        return texts  # Fallback to original texts

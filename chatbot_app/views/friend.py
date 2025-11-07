@@ -8,8 +8,9 @@ from django.db import IntegrityError
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import get_language
 from ..models import UserFriendship, FriendMessage, UserProfile, UserAttribute # UserProfile 모델 추가
-from ..services import friend_message_service # friend_message_service 추가
+from ..services import friend_message_service, lang_util # friend_message_service, lang_util 추가
 
 
 @login_required
@@ -62,6 +63,16 @@ def get_processed_unread_friend_message(request):
     # 3. 성공적으로 처리된 모든 메시지를 읽음으로 표시합니다.
     if processed_message_ids:
         FriendMessage.objects.filter(id__in=processed_message_ids).update(is_read=True)
+
+    # ★★★ 일괄 번역 로직 시작 ★★★
+    user_language = get_language()
+    if user_language != 'ko' and final_messages:
+        original_contents = [msg['content'] for msg in final_messages]
+        translated_contents = lang_util.translate_from_korean_batch(original_contents, target_lang=user_language)
+        if len(original_contents) == len(translated_contents):
+            for i, msg in enumerate(final_messages):
+                msg['content'] = translated_contents[i]
+    # ★★★ 일괄 번역 로직 끝 ★★★
 
     # 4. 처리된 메시지 목록을 반환합니다.
     return JsonResponse({
