@@ -3,9 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggleBgmBtn = document.getElementById('toggle-bgm-btn');
     const volumeSlider = document.getElementById('bgm-volume-slider');
 
-    console.log('BGM element:', bgm);
-    console.log('Toggle BGM Button:', toggleBgmBtn);
-    console.log('Volume Slider:', volumeSlider);
+    console.log(gettext('BGM element:'), bgm);
+    console.log(gettext('Toggle BGM Button:'), toggleBgmBtn);
+    console.log(gettext('Volume Slider:'), volumeSlider);
 
     if (bgm && toggleBgmBtn && volumeSlider) {
         // --- Volume Control ---
@@ -28,20 +28,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const isBgmMuted = localStorage.getItem('isBgmMuted');
         if (isBgmMuted === 'false') {
             bgm.muted = false;
-            toggleBgmBtn.textContent = 'BGM ON';
+            toggleBgmBtn.textContent = gettext('BGM ON');
         } else {
             bgm.muted = true;
-            toggleBgmBtn.textContent = 'BGM OFF';
+            toggleBgmBtn.textContent = gettext('BGM OFF');
         }
 
         toggleBgmBtn.addEventListener('click', function() {
             if (bgm.muted) {
                 bgm.muted = false;
-                toggleBgmBtn.textContent = 'BGM ON';
+                toggleBgmBtn.textContent = gettext('BGM ON');
                 localStorage.setItem('isBgmMuted', 'false');
             } else {
                 bgm.muted = true;
-                toggleBgmBtn.textContent = 'BGM OFF';
+                toggleBgmBtn.textContent = gettext('BGM OFF');
                 localStorage.setItem('isBgmMuted', 'true');
             }
         });
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         bgm.play().catch(error => {
-            console.log("BGM autoplay failed:", error);
+            console.log(gettext("BGM autoplay failed:"), error);
         });
 
         window.addEventListener('beforeunload', () => {

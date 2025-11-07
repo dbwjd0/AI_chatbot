@@ -5,6 +5,9 @@ from django.utils import timezone
 from ..models import UserAttribute, UserActivity, UserRelationship, UserSchedule
 from . import schedule_service
 
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as gt
+
 def extract_and_save_user_context_data(user, user_message, bot_message, recent_history, api_key):
     """
     대화 내용을 한 번의 API 호출로 분석하여 사용자 속성, 활동, 인간관계를 추출하고 저장합니다.

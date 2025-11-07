@@ -1,0 +1,2057 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-06 09:58+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: .\chatbot_app\forms.py:12
+msgid "상태 메시지를 입력하세요"
+msgstr "상태 메시지를 입력하세요"
+
+#: .\chatbot_app\forms.py:13
+msgid "챗봇 이름을 입력하세요"
+msgstr "챗봇 이름을 입력하세요"
+
+#: .\chatbot_app\forms.py:14
+msgid "챗봇 페르소나를 입력하세요"
+msgstr "챗봇 페르소나를 입력하세요"
+
+#: .\chatbot_app\models.py:19
+msgid "사용자 닉네임"
+msgstr "사용자 닉네임"
+
+#: .\chatbot_app\models.py:20
+msgid "사용자 프로필 사진"
+msgstr "사용자 프로필 사진"
+
+#: .\chatbot_app\models.py:21
+msgid "사용자 초기 설정(온보딩) 완료 여부"
+msgstr "사용자 초기 설정(온보딩) 완료 여부"
+
+#: .\chatbot_app\models.py:22
+msgid "AI '아이'와의 호감도 점수"
+msgstr "AI '아이'와의 호감도 점수"
+
+#: .\chatbot_app\models.py:23
+msgid "사용자에 대한 기억 저장소"
+msgstr "사용자에 대한 기억 저장소"
+
+#: .\chatbot_app\models.py:24
+msgid "아이"
+msgstr "아이"
+
+#: .\chatbot_app\models.py:24
+msgid "사용자가 지정한 챗봇 이름"
+msgstr "사용자가 지정한 챗봇 이름"
+
+#: .\chatbot_app\models.py:25
+msgid "친근한"
+msgstr "친근한"
+
+#: .\chatbot_app\models.py:25
+msgid "챗봇의 스타일"
+msgstr "챗봇의 스타일"
+
+#: .\chatbot_app\models.py:26
+msgid "사용자 상태 메시지"
+msgstr "사용자 상태 메시지"
+
+#: .\chatbot_app\models.py:29
+#, python-brace-format
+msgid "{nickname}의 프로필"
+msgstr "{nickname}의 프로필"
+
+#: .\chatbot_app\models.py:33
+msgid "User가 생성될 때 자동으로 UserProfile을 생성합니다."
+msgstr "User가 생성될 때 자동으로 UserProfile을 생성합니다."
+
+#: .\chatbot_app\models.py:39
+msgid "User가 저장될 때 UserProfile도 함께 저장합니다."
+msgstr "User가 저장될 때 UserProfile도 함께 저장합니다."
+
+#: .\chatbot_app\models.py:49
+msgid "메시지에 첨부된 이미지 파일"
+msgstr "메시지에 첨부된 이미지 파일"
+
+#: .\chatbot_app\models.py:51
+msgid "AI 캐릭터의 감정 상태"
+msgstr "AI 캐릭터의 감정 상태"
+
+#: .\chatbot_app\models.py:55
+#, python-brace-format
+msgid "{username}: {message_snippet}"
+msgstr "{username}: {message_snippet}"
+
+#: .\chatbot_app\models.py:58
+msgid "사용자의 불변의 속성(성격, MBTI, 생일, 신체 특징 등)를 저장하는 모델"
+msgstr "사용자의 불변의 속성(성격, MBTI, 생일, 신체 특징 등)를 저장하는 모델"
+
+#: .\chatbot_app\models.py:60
+msgid "속성의 종류 (예: '성격', 'MBTI', '생일')"
+msgstr "속성의 종류 (예: '성격', 'MBTI', '생일')"
+
+#: .\chatbot_app\models.py:61
+msgid "속성 내용 (예: '털털함', 'INFP', '1995-10-31')"
+msgstr "속성 내용 (예: '털털함', 'INFP', '1995-10-31')"
+
+#: .\chatbot_app\models.py:68
+#, python-brace-format
+msgid "{username}의 속성 - {fact_type}: {content}"
+msgstr "{username}의 속성 - {fact_type}: {content}"
+
+#: .\chatbot_app\models.py:71
+msgid "사용자의 활동 기록(일기장)을 저장하는 모델"
+msgstr "사용자의 활동 기록(일기장)을 저장하는 모델"
+
+#: .\chatbot_app\models.py:73
+msgid "활동 날짜"
+msgstr "활동 날짜"
+
+#: .\chatbot_app\models.py:74
+msgid "활동 시간"
+msgstr "활동 시간"
+
+#: .\chatbot_app\models.py:75 .\chatbot_app\models.py:88
+msgid "장소"
+msgstr "장소"
+
+#: .\chatbot_app\models.py:76 .\chatbot_app\models.py:89
+msgid "동행인"
+msgstr "동행인"
+
+#: .\chatbot_app\models.py:77
+msgid "활동 관련 메모 또는 대화 내용"
+msgstr "활동 관련 메모 또는 대화 내용"
+
+#: .\chatbot_app\models.py:81
+#, python-brace-format
+msgid "[{activity_date}] {username}'s activity at {place}"
+msgstr "[{activity_date}] {username}'s activity at {place}"
+
+#: .\chatbot_app\models.py:84
+msgid "사용자의 활동을 주/월/년 단위로 요약하여 통계를 저장하는 모델"
+msgstr "사용자의 활동을 주/월/년 단위로 요약하여 통계를 저장하는 모델"
+
+#: .\chatbot_app\models.py:86
+msgid "주간"
+msgstr "주간"
+
+#: .\chatbot_app\models.py:86
+msgid "월간"
+msgstr "월간"
+
+#: .\chatbot_app\models.py:86
+msgid "연간"
+msgstr "연간"
+
+#: .\chatbot_app\models.py:87
+msgid "통계 기간의 시작일"
+msgstr "통계 기간의 시작일"
+
+#: .\chatbot_app\models.py:90
+msgid "해당 기간 동안의 방문 횟수"
+msgstr "해당 기간 동안의 방문 횟수"
+
+#: .\chatbot_app\models.py:96
+#, python-brace-format
+msgid "[{period_start_date} {period_type}] {username} at {place}: {count}"
+msgstr "[{period_start_date} {period_type}] {username} at {place}: {count}"
+
+#: .\chatbot_app\models.py:99
+msgid "사용자의 인간관계 정보를 저장하는 모델"
+msgstr "사용자의 인간관계 정보를 저장하는 모델"
+
+#: .\chatbot_app\models.py:101
+msgid "동일 인물 구분을 위한 고유 시리얼 코드"
+msgstr "동일 인물 구분을 위한 고유 시리얼 코드"
+
+#: .\chatbot_app\models.py:102
+msgid "관계 유형 (예: 가족, 친구, 직장 동료)"
+msgstr "관계 유형 (예: 가족, 친구, 직장 동료)"
+
+#: .\chatbot_app\models.py:103
+msgid "관계 내 포지션 (예: 오빠, 친한 친구, 상사)"
+msgstr "관계 내 포지션 (예: 오빠, 친한 친구, 상사)"
+
+#: .\chatbot_app\models.py:104
+msgid "상대방 이름"
+msgstr "상대방 이름"
+
+#: .\chatbot_app\models.py:105
+msgid "동명이인 구분을 위한 식별자 (예: '개발팀', '친구')"
+msgstr "동명이인 구분을 위한 식별자 (예: '개발팀', '친구')"
+
+#: .\chatbot_app\models.py:106
+msgid "상대방 성격 또는 특징"
+msgstr "상대방 성격 또는 특징"
+
+#: .\chatbot_app\models.py:114
+#, python-brace-format
+msgid "{username} - {name} ({relationship_type}) [{serial_code}]"
+msgstr "{username} - {name} ({relationship_type}) [{serial_code}]"
+
+#: .\chatbot_app\models.py:117
+msgid "사용자의 하루 일과를 저장하는 모델"
+msgstr "사용자의 하루 일과를 저장하는 모델"
+
+#: .\chatbot_app\models.py:119
+msgid "일과 날짜"
+msgstr "일과 날짜"
+
+#: .\chatbot_app\models.py:120
+msgid "일과 시간"
+msgstr "일과 시간"
+
+#: .\chatbot_app\models.py:121
+msgid "하루 일과 내용"
+msgstr "하루 일과 내용"
+
+#: .\chatbot_app\models.py:131
+#, python-brace-format
+msgid "[{date}] {username}'s schedule"
+msgstr "[{date}] {username}'s schedule"
+
+#: .\chatbot_app\models.py:134
+msgid "읽지 않은 능동 메시지를 추적하는 모델"
+msgstr "읽지 않은 능동 메시지를 추적하는 모델"
+
+#: .\chatbot_app\models.py:140
+#, python-brace-format
+msgid "{username}의 읽지 않은 능동 메시지"
+msgstr "{username}의 읽지 않은 능동 메시지"
+
+#: .\chatbot_app\models.py:143
+msgid "사용자의 퀴즈 결과를 저장하는 모델"
+msgstr "사용자의 퀴즈 결과를 저장하는 모델"
+
+#: .\chatbot_app\models.py:145 .\chatbot_app\templates\quiz.html:337
+msgid "랜덤"
+msgstr "랜덤"
+
+#: .\chatbot_app\models.py:146 .\chatbot_app\templates\quiz.html:338
+msgid "한국사"
+msgstr "한국사"
+
+#: .\chatbot_app\models.py:147 .\chatbot_app\templates\quiz.html:339
+msgid "세계사"
+msgstr "세계사"
+
+#: .\chatbot_app\models.py:148 .\chatbot_app\templates\quiz.html:340
+msgid "과학"
+msgstr "과학"
+
+#: .\chatbot_app\models.py:149 .\chatbot_app\templates\quiz.html:341
+msgid "문학"
+msgstr "문학"
+
+#: .\chatbot_app\models.py:150 .\chatbot_app\templates\quiz.html:342
+msgid "상식"
+msgstr "상식"
+
+#: .\chatbot_app\models.py:154
+msgid "퀴즈 장르"
+msgstr "퀴즈 장르"
+
+#: .\chatbot_app\models.py:155
+msgid "총 문제 수"
+msgstr "총 문제 수"
+
+#: .\chatbot_app\models.py:156
+msgid "획득 점수"
+msgstr "획득 점수"
+
+#: .\chatbot_app\models.py:157
+msgid "퀴즈 완료 시간"
+msgstr "퀴즈 완료 시간"
+
+#: .\chatbot_app\models.py:163
+#, python-brace-format
+msgid "{username} - {genre} 퀴즈 ({score}/{num_questions}) on {date_completed}"
+msgstr ""
+"{username} - {genre} 퀴즈 ({score}/{num_questions}) on {date_completed}"
+
+#: .\chatbot_app\models.py:173
+msgid "대기 중"
+msgstr "대기 중"
+
+#: .\chatbot_app\models.py:174
+msgid "친구"
+msgstr "친구"
+
+#: .\chatbot_app\models.py:186
+#, python-brace-format
+msgid "요청: {from_user} -> {to_user} ({status})"
+msgstr "요청: {from_user} -> {to_user} ({status})"
+
+#: .\chatbot_app\models.py:191
+msgid "보낸 사람 챗봇 이름"
+msgstr "보낸 사람 챗봇 이름"
+
+#: .\chatbot_app\models.py:192
+msgid "보낸 사람 챗봇 페르소나"
+msgstr "보낸 사람 챗봇 페르소나"
+
+#: .\chatbot_app\models.py:193
+msgid "쪽지 내용"
+msgstr "쪽지 내용"
+
+#: .\chatbot_app\models.py:204
+#, python-brace-format
+msgid ""
+"{sender}님이 {receiver}님에게 보낸 쪽지: {message_content}... (읽음: "
+"{is_read})"
+msgstr ""
+"{sender}님이 {receiver}님에게 보낸 쪽지: {message_content}... (읽음: "
+"{is_read})"
+
+#: .\chatbot_app\scheduler.py:7
+msgid "update_activity_analytics 관리자 명령을 실행합니다."
+msgstr "update_activity_analytics 관리자 명령을 실행합니다."
+
+#: .\chatbot_app\scheduler.py:10
+msgid "'update_activity_analytics' 작업이 성공적으로 실행되었습니다."
+msgstr "'update_activity_analytics' 작업이 성공적으로 실행되었습니다."
+
+#: .\chatbot_app\scheduler.py:12
+#, python-brace-format
+msgid "'update_activity_analytics' 작업 실행 중 오류 발생: {error}"
+msgstr "'update_activity_analytics' 작업 실행 중 오류 발생: {error}"
+
+#: .\chatbot_app\scheduler.py:15
+msgid "스케줄러를 시작하고 일일 작업을 추가합니다."
+msgstr "스케줄러를 시작하고 일일 작업을 추가합니다."
+
+#: .\chatbot_app\scheduler.py:27
+msgid "스케줄러가 시작되었습니다... 분석 작업이 매일 새벽 3시에 실행됩니다."
+msgstr "스케줄러가 시작되었습니다... 분석 작업이 매일 새벽 3시에 실행됩니다."
+
+#: .\chatbot_app\services\chat_service.py:22
+#: .\chatbot_app\templates\room.html:117
+msgid "카레"
+msgstr "카레"
+
+#: .\chatbot_app\services\chat_service.py:23
+#: .\chatbot_app\templates\room.html:118
+msgid "햄버거"
+msgstr "햄버거"
+
+#: .\chatbot_app\services\chat_service.py:24
+#: .\chatbot_app\templates\room.html:119
+msgid "콜라"
+msgstr "콜라"
+
+#: .\chatbot_app\services\chat_service.py:25
+msgid "김밥"
+msgstr "김밥"
+
+#: .\chatbot_app\services\chat_service.py:26
+msgid "돈가스"
+msgstr "돈가스"
+
+#: .\chatbot_app\services\chat_service.py:27
+msgid "떡볶이"
+msgstr "떡볶이"
+
+#: .\chatbot_app\services\chat_service.py:28
+msgid "라면"
+msgstr "라면"
+
+#: .\chatbot_app\services\chat_service.py:29
+msgid "아이스크림"
+msgstr "아이스크림"
+
+#: .\chatbot_app\services\chat_service.py:30
+msgid "초밥"
+msgstr "초밥"
+
+#: .\chatbot_app\services\chat_service.py:31
+msgid "치킨"
+msgstr "치킨"
+
+#: .\chatbot_app\services\chat_service.py:32
+msgid "커피"
+msgstr "커피"
+
+#: .\chatbot_app\services\chat_service.py:33
+msgid "피자"
+msgstr "피자"
+
+#: .\chatbot_app\services\chat_service.py:36
+msgid "짬뽕"
+msgstr "짬뽕"
+
+#: .\chatbot_app\services\chat_service.py:37
+msgid "짜글이"
+msgstr "짜글이"
+
+#: .\chatbot_app\services\chat_service.py:38
+msgid "김치찌개"
+msgstr "김치찌개"
+
+#: .\chatbot_app\services\chat_service.py:39
+msgid "된장찌개"
+msgstr "된장찌개"
+
+#: .\chatbot_app\services\chat_service.py:40
+msgid "부대찌개"
+msgstr "부대찌개"
+
+#: .\chatbot_app\services\chat_service.py:41
+msgid "국밥"
+msgstr "국밥"
+
+#: .\chatbot_app\services\chat_service.py:42
+msgid "갈비탕"
+msgstr "갈비탕"
+
+#: .\chatbot_app\services\chat_service.py:43
+msgid "설렁탕"
+msgstr "설렁탕"
+
+#: .\chatbot_app\services\chat_service.py:44
+msgid "육개장"
+msgstr "육개장"
+
+#: .\chatbot_app\services\chat_service.py:45
+msgid "감자탕"
+msgstr "감자탕"
+
+#: .\chatbot_app\services\chat_service.py:48
+msgid "과자"
+msgstr "과자"
+
+#: .\chatbot_app\services\chat_service.py:49
+msgid "비스킷"
+msgstr "비스킷"
+
+#: .\chatbot_app\services\chat_service.py:50
+msgid "감자칩"
+msgstr "감자칩"
+
+#: .\chatbot_app\services\chat_service.py:51
+msgid "팝콘"
+msgstr "팝콘"
+
+#: .\chatbot_app\services\chat_service.py:52
+msgid "새우깡"
+msgstr "새우깡"
+
+#: .\chatbot_app\services\chat_service.py:55
+msgid "고기"
+msgstr "고기"
+
+#: .\chatbot_app\services\chat_service.py:56
+msgid "삼겹살"
+msgstr "삼겹살"
+
+#: .\chatbot_app\services\chat_service.py:57
+msgid "소고기"
+msgstr "소고기"
+
+#: .\chatbot_app\services\chat_service.py:58
+msgid "돼지고기"
+msgstr "돼지고기"
+
+#: .\chatbot_app\services\chat_service.py:59
+msgid "스테이크"
+msgstr "스테이크"
+
+#: .\chatbot_app\services\chat_service.py:60
+msgid "갈비"
+msgstr "갈비"
+
+#: .\chatbot_app\services\chat_service.py:63
+msgid "꼬치"
+msgstr "꼬치"
+
+#: .\chatbot_app\services\chat_service.py:64
+msgid "닭꼬치"
+msgstr "닭꼬치"
+
+#: .\chatbot_app\services\chat_service.py:65
+msgid "염통꼬치"
+msgstr "염통꼬치"
+
+#: .\chatbot_app\services\chat_service.py:68
+msgid "덮밥"
+msgstr "덮밥"
+
+#: .\chatbot_app\services\chat_service.py:69
+msgid "제육덮밥"
+msgstr "제육덮밥"
+
+#: .\chatbot_app\services\chat_service.py:70
+msgid "오징어덮밥"
+msgstr "오징어덮밥"
+
+#: .\chatbot_app\services\chat_service.py:71
+msgid "카레덮밥"
+msgstr "카레덮밥"
+
+#: .\chatbot_app\services\chat_service.py:74
+msgid "빵"
+msgstr "빵"
+
+#: .\chatbot_app\services\chat_service.py:75
+msgid "케이크"
+msgstr "케이크"
+
+#: .\chatbot_app\services\chat_service.py:76
+msgid "도넛"
+msgstr "도넛"
+
+#: .\chatbot_app\services\chat_service.py:77
+msgid "베이글"
+msgstr "베이글"
+
+#: .\chatbot_app\services\chat_service.py:78
+msgid "크루아상"
+msgstr "크루아상"
+
+#: .\chatbot_app\services\chat_service.py:81
+msgid "생선"
+msgstr "생선"
+
+#: .\chatbot_app\services\chat_service.py:82
+msgid "고등어"
+msgstr "고등어"
+
+#: .\chatbot_app\services\chat_service.py:83
+msgid "갈치"
+msgstr "갈치"
+
+#: .\chatbot_app\services\chat_service.py:84
+msgid "연어"
+msgstr "연어"
+
+#: .\chatbot_app\services\chat_service.py:85
+msgid "회"
+msgstr "회"
+
+#: .\chatbot_app\services\chat_service.py:89
+msgid "사용자 메시지에서 음식 언급을 감지하고 세션에 저장합니다."
+msgstr "사용자 메시지에서 음식 언급을 감지하고 세션에 저장합니다."
+
+#: .\chatbot_app\services\chat_service.py:116
+msgid "사용자 메시지를 처리하고 AI 응답을 생성하는 전체 프로세스를 조율합니다."
+msgstr ""
+"사용자 메시지를 처리하고 AI 응답을 생성하는 전체 프로세스를 조율합니다."
+
+#: .\chatbot_app\services\chat_service.py:217
+msgid "오브젝트 상호작용 시 AI의 동적 독백을 생성합니다."
+msgstr "오브젝트 상호작용 시 AI의 동적 독백을 생성합니다."
+
+#: .\chatbot_app\services\chat_service.py:262
+msgid "현재 시간 및 마지막 대화와의 시간 간격에 대한 컨텍스트를 생성합니다."
+msgstr "현재 시간 및 마지막 대화와의 시간 간격에 대한 컨텍스트를 생성합니다."
+
+#: .\chatbot_app\services\chat_service.py:287
+msgid ""
+"RL 에이전트가 선택한 컨텍스트 목록에 따라 필요한 사용자 기억 및 관련 정보를 "
+"수집합니다."
+msgstr ""
+"RL 에이전트가 선택한 컨텍스트 목록에 따라 필요한 사용자 기억 및 관련 정보를 "
+"수집합니다."
+
+#: .\chatbot_app\services\chat_service.py:386
+msgid "API 요청을 위한 메시지 리스트를 준비합니다."
+msgstr "API 요청을 위한 메시지 리스트를 준비합니다."
+
+#: .\chatbot_app\services\chat_service.py:396
+msgid "OpenAI API를 호출하고 응답 JSON을 반환합니다."
+msgstr "OpenAI API를 호출하고 응답 JSON을 반환합니다."
+
+#: .\chatbot_app\services\chat_service.py:410
+msgid "성공적인 LLM 응답을 처리하고 관련 데이터를 RDB와 벡터 DB에 저장합니다."
+msgstr "성공적인 LLM 응답을 처리하고 관련 데이터를 RDB와 벡터 DB에 저장합니다."
+
+#: .\chatbot_app\services\context_service.py:11
+msgid ""
+"사용자의 활동 기록을 분석하여 특정 카테고리에서 가장 자주 방문한 장소 목록을 "
+"반환합니다."
+msgstr ""
+"사용자의 활동 기록을 분석하여 특정 카테고리에서 가장 자주 방문한 장소 목록을 "
+"반환합니다."
+
+#: .\chatbot_app\services\context_service.py:23
+#, python-brace-format
+msgid "--- Could not get user place preferences due to an error: {error} ---"
+msgstr "--- Could not get user place preferences due to an error: {error} ---"
+
+#: .\chatbot_app\services\context_service.py:27
+msgid "사용자 메시지를 기반으로 활동 추천을 생성합니다. (활동 기록 기반)"
+msgstr "사용자 메시지를 기반으로 활동 추천을 생성합니다. (활동 기록 기반)"
+
+#: .\chatbot_app\services\context_service.py:29
+msgid "추천"
+msgstr "추천"
+
+#: .\chatbot_app\services\context_service.py:29
+msgid "갈만한"
+msgstr "갈만한"
+
+#: .\chatbot_app\services\context_service.py:33
+#: .\chatbot_app\services\context_service.py:37
+msgid "카페"
+msgstr "카페"
+
+#: .\chatbot_app\services\context_service.py:46
+#, python-brace-format
+msgid ""
+"이번 주에 {place}은(는) {visit_count}번이나 갔네. 오늘은 다른 곳에 가보는 건 "
+"어때? 예를 들면 새로운 동네 카페라던가."
+msgstr ""
+"이번 주에 {place}은(는) {visit_count}번이나 갔네. 오늘은 다른 곳에 가보는 건 "
+"어때? 예를 들면 새로운 동네 카페라던가."
+
+#: .\chatbot_app\services\context_service.py:47
+#, python-brace-format
+msgid ""
+"[시스템 정보: 사용자의 활동 기록을 바탕으로 다음 추천을 생성했어. 이 내용을 "
+"참고해서 자연스럽게 제안해봐: '{recommendation}']"
+msgstr ""
+"[시스템 정보: 사용자의 활동 기록을 바탕으로 다음 추천을 생성했어. 이 내용을 "
+"참고해서 자연스럽게 제안해봐: '{recommendation}']"
+
+#: .\chatbot_app\services\context_service.py:52
+msgid ""
+"사용자 메시지의 키워드를 바탕으로 UserActivity를 검색하여 컨텍스트를 생성합니"
+"다.\n"
+"    KoNLPy 대신 간단한 문자열 분리 로직을 사용합니다."
+msgstr ""
+"사용자 메시지의 키워드를 바탕으로 UserActivity를 검색하여 컨텍스트를 생성합니"
+"다.\n"
+"    KoNLPy 대신 간단한 문자열 분리 로직을 사용합니다."
+
+#: .\chatbot_app\services\context_service.py:86
+#, python-brace-format
+msgid "'{activity_date}'의 기억(장소: {place}), "
+msgstr "'{activity_date}'의 기억(장소: {place}), "
+
+#: .\chatbot_app\services\context_service.py:86
+#: .\chatbot_app\services\context_service.py:88
+#: .\chatbot_app\services\context_service.py:90
+msgid "N/A"
+msgstr "N/A"
+
+#: .\chatbot_app\services\context_service.py:88
+#, python-brace-format
+msgid "'날짜 미상'의 기억(장소: {place}, "
+msgstr "'날짜 미상'의 기억(장소: {place}, "
+
+#: .\chatbot_app\services\context_service.py:90
+#, python-brace-format
+msgid "동행: {companion}, 메모: {memo})"
+msgstr "동행: {companion}, 메모: {memo})"
+
+#: .\chatbot_app\services\context_service.py:93
+msgid "[관련 기억 검색 결과:] "
+msgstr "[관련 기억 검색 결과:] "
+
+#: .\chatbot_app\services\context_service.py:97
+#, python-brace-format
+msgid "--- Could not perform activity search due to an error: {error} ---"
+msgstr "--- Could not perform activity search due to an error: {error} ---"
+
+#: .\chatbot_app\services\emoticon_service.py:6
+msgid ""
+"사용자 메시지에서 이모티콘 태그를 파싱하여 LLM이 이해할 수 있는 텍스트로 변환"
+"합니다.\n"
+"\n"
+"    Args:\n"
+"        user_message_text (str): 사용자가 입력한 원본 메시지.\n"
+"\n"
+"    Returns:\n"
+"        str: 이모티콘이 텍스트로 변환되었거나, 변환이 필요 없는 경우 원본 메"
+"시지."
+msgstr ""
+"사용자 메시지에서 이모티콘 태그를 파싱하여 LLM이 이해할 수 있는 텍스트로 변환"
+"합니다.\n"
+"\n"
+"    Args:\n"
+"        user_message_text (str): 사용자가 입력한 원본 메시지.\n"
+"\n"
+"    Returns:\n"
+"        str: 이모티콘이 텍스트로 변환되었거나, 변환이 필요 없는 경우 원본 메"
+"시지."
+
+#: .\chatbot_app\services\emotion_service.py:8
+msgid ""
+"Hugging Face의 사전 훈련된 모델을 사용하여 감정 분석을 수행하는 클래스.\n"
+"    모델 로딩은 리소스가 많이 소모되므로, 클래스 인스턴스 생성 시 한 번만 수"
+"행됩니다."
+msgstr ""
+"Hugging Face의 사전 훈련된 모델을 사용하여 감정 분석을 수행하는 클래스.\n"
+"    모델 로딩은 리소스가 많이 소모되므로, 클래스 인스턴스 생성 시 한 번만 수"
+"행됩니다."
+
+#: .\chatbot_app\services\emotion_service.py:13
+msgid "--- EmotionAnalyzer model loaded successfully. ---"
+msgstr "--- EmotionAnalyzer model loaded successfully. ---"
+
+#: .\chatbot_app\services\emotion_service.py:15
+#, python-brace-format
+msgid "--- Failed to load EmotionAnalyzer model: {error} ---"
+msgstr "--- Failed to load EmotionAnalyzer model: {error} ---"
+
+#: .\chatbot_app\services\emotion_service.py:18
+msgid "주어진 텍스트의 감정을 분석하고, 모든 감정 레이블과 점수를 반환합니다."
+msgstr "주어진 텍스트의 감정을 분석하고, 모든 감정 레이블과 점수를 반환합니다."
+
+#: .\chatbot_app\services\emotion_service.py:27
+#, python-brace-format
+msgid "--- Emotion analysis failed for text '{text}': {error} ---"
+msgstr "--- Emotion analysis failed for text '{text}': {error} ---"
+
+#: .\chatbot_app\services\emotion_service.py:34
+msgid ""
+"AI의 메시지를 분석하여 모델이 예측한 최종 감정 라벨(문자열)을 반환합니다."
+msgstr ""
+"AI의 메시지를 분석하여 모델이 예측한 최종 감정 라벨(문자열)을 반환합니다."
+
+#: .\chatbot_app\services\emotion_service.py:35
+#: .\chatbot_app\templates\chat.html:164
+#: .\chatbot_app\templates\chat_history.html:99
+#: .\chatbot_app\templates\quiz.html:386 .\chatbot_app\views\chatWithAi.py:74
+msgid "중립"
+msgstr "중립"
+
+#: .\chatbot_app\services\emotion_service.py:56
+#, python-brace-format
+msgid ""
+"\n"
+"--- Emotion Analysis for [{speaker}] ---"
+msgstr ""
+"\n"
+"--- Emotion Analysis for [{speaker}] ---"
+
+#: .\chatbot_app\services\emotion_service.py:57
+#, python-brace-format
+msgid "Message: {text}"
+msgstr "Message: {text}"
+
+#: .\chatbot_app\services\emotion_service.py:58
+#, python-brace-format
+msgid "Top Emotion ID: {top_label_int} -> Final Label: {final_label}"
+msgstr "Top Emotion ID: {top_label_int} -> Final Label: {final_label}"
+
+#: .\chatbot_app\services\emotion_service.py:59
+msgid "---------------------------------"
+msgstr "---------------------------------"
+
+#: .\chatbot_app\services\emotion_service.py:64
+#, python-brace-format
+msgid "--- Emotion Service Error during processing: {error} ---"
+msgstr "--- Emotion Service Error during processing: {error} ---"
+
+#: .\chatbot_app\services\finetuning_service.py:7
+msgid "대화 턴을 파인튜닝을 위한 JSONL 파일에 추가합니다."
+msgstr "대화 턴을 파인튜닝을 위한 JSONL 파일에 추가합니다."
+
+#: .\chatbot_app\services\finetuning_service.py:24
+#, python-brace-format
+msgid "--- Could not write to fine-tuning log: {error} ---"
+msgstr "--- Could not write to fine-tuning log: {error} ---"
+
+#: .\chatbot_app\services\finetuning_service.py:27
+msgid "데이터를 익명화한 후 파인튜닝을 위해 기록합니다."
+msgstr "데이터를 익명화한 후 파인튜닝을 위해 기록합니다."
+
+#: .\chatbot_app\services\finetuning_service.py:37
+#, python-brace-format
+msgid "--- 로깅을 위한 선호 이름 검색 중 오류 발생: {error} ---"
+msgstr "--- 로깅을 위한 선호 이름 검색 중 오류 발생: {error} ---"
+
+#: .\chatbot_app\services\finetuning_service.py:46
+#: .\chatbot_app\services\finetuning_service.py:47
+#: .\chatbot_app\services\finetuning_service.py:48
+msgid "사용자님"
+msgstr "사용자님"
+
+#: .\chatbot_app\services\finetuning_service.py:46
+#: .\chatbot_app\services\finetuning_service.py:47
+#: .\chatbot_app\services\finetuning_service.py:48
+msgid "사용자"
+msgstr "사용자"
+
+#: .\chatbot_app\services\finetuning_service.py:60
+#, python-brace-format
+msgid "--- 로깅을 위한 제3자 이름 대체 중 오류 발생: {error} ---"
+msgstr "--- 로깅을 위한 제3자 이름 대체 중 오류 발생: {error} ---"
+
+#: .\chatbot_app\services\friend_message_service.py:12
+msgid ""
+"여러 친구 메시지를 한 번의 API 호출로 수신자의 챗봇 페르소나에 맞게 조정합니"
+"다."
+msgstr ""
+"여러 친구 메시지를 한 번의 API 호출로 수신자의 챗봇 페르소나에 맞게 조정합니"
+"다."
+
+#: .\chatbot_app\services\friend_message_service.py:127
+msgid "친구의 메시지를 수신자 챗봇의 상세 페르소나에 맞게 조정합니다."
+msgstr "친구의 메시지를 수신자 챗봇의 상세 페르소나에 맞게 조정합니다."
+
+#: .\chatbot_app\services\schedule_service.py:11
+msgid "지정된 사용자와 날짜에 대한 모든 일정을 가져옵니다."
+msgstr "지정된 사용자와 날짜에 대한 모든 일정을 가져옵니다."
+
+#: .\chatbot_app\services\schedule_service.py:15
+msgid "새로운 일정 항목을 생성합니다."
+msgstr "새로운 일정 항목을 생성합니다."
+
+#: .\chatbot_app\services\schedule_service.py:25
+msgid "지정된 ID의 일정 항목을 업데이트합니다."
+msgstr "지정된 ID의 일정 항목을 업데이트합니다."
+
+#: .\chatbot_app\services\schedule_service.py:36
+msgid "지정된 ID의 일정 항목을 삭제합니다."
+msgstr "지정된 ID의 일정 항목을 삭제합니다."
+
+#: .\chatbot_app\templates\ai_status.html:8
+#, python-format
+msgid "%(chatbot_name)s의 상태"
+msgstr "%(chatbot_name)s의 상태"
+
+#: .\chatbot_app\templates\ai_status.html:199
+#: .\chatbot_app\templates\chat.html:81
+#: .\chatbot_app\templates\chat_history.html:54
+#: .\chatbot_app\templates\edit_profile.html:159
+#: .\chatbot_app\templates\friend_management.html:70
+#: .\chatbot_app\templates\narrative_setup.html:67
+#: .\chatbot_app\templates\quiz.html:254
+#: .\chatbot_app\templates\quiz_history.html:133
+#: .\chatbot_app\templates\room.html:35
+msgid "BGM OFF"
+msgstr "BGM OFF"
+
+#: .\chatbot_app\templates\ai_status.html:202
+msgid "프로필 수정"
+msgstr "프로필 수정"
+
+#: .\chatbot_app\templates\ai_status.html:203
+#, python-format
+msgid "%(chatbot_name)s의 현재 상태"
+msgstr "%(chatbot_name)s의 현재 상태"
+
+#: .\chatbot_app\templates\ai_status.html:206
+msgid "호감도"
+msgstr "호감도"
+
+#: .\chatbot_app\templates\ai_status.html:208
+#, python-format
+msgid "현재 호감도 점수: <strong>%(affinity_score)s점</strong>"
+msgstr "현재 호감도 점수: <strong>%(affinity_score)s점</strong>"
+
+#: .\chatbot_app\templates\ai_status.html:211
+msgid "아직은 츤데레 모드! 좀 더 친해져야겠어."
+msgstr "아직은 츤데레 모드! 좀 더 친해져야겠어."
+
+#: .\chatbot_app\templates\ai_status.html:213
+msgid "장난꾸러기 모드! 가끔 짓궂은 장난을 칠 거야."
+msgstr "장난꾸러기 모드! 가끔 짓궂은 장난을 칠 거야."
+
+#: .\chatbot_app\templates\ai_status.html:215
+msgid "이제는 다정한 친구! 더 많은 이야기를 나눌 수 있을 거야."
+msgstr "이제는 다정한 친구! 더 많은 이야기를 나눌 수 있을 거야."
+
+#: .\chatbot_app\templates\ai_status.html:221
+msgid "기억하는 사실"
+msgstr "기억하는 사실"
+
+#: .\chatbot_app\templates\ai_status.html:224
+#: .\chatbot_app\templates\ai_status.html:235
+msgid "이전"
+msgstr "이전"
+
+#: .\chatbot_app\templates\ai_status.html:226
+#: .\chatbot_app\templates\ai_status.html:237
+msgid "다음"
+msgstr "다음"
+
+#: .\chatbot_app\templates\ai_status.html:228
+msgid ""
+"아직 사용자에 대해 기억하는 사실이 없어. 대화를 통해 더 많은 것을 알려줘!"
+msgstr ""
+"아직 사용자에 대해 기억하는 사실이 없어. 대화를 통해 더 많은 것을 알려줘!"
+
+#: .\chatbot_app\templates\ai_status.html:232
+msgid "인간관계"
+msgstr "인간관계"
+
+#: .\chatbot_app\templates\ai_status.html:239
+msgid "아직 사용자의 인간관계에 대한 정보가 없어."
+msgstr "아직 사용자의 인간관계에 대한 정보가 없어."
+
+#: .\chatbot_app\templates\ai_status.html:242
+#: .\chatbot_app\templates\edit_profile.html:209
+#: .\chatbot_app\templates\includes\top_menu.html:20
+msgid "방으로 돌아가기"
+msgstr "방으로 돌아가기"
+
+#: .\chatbot_app\templates\ai_status.html:250
+msgid ""
+"<strong>관계 유형:</strong> <span id=\"modal-relationship-type\"></span>"
+msgstr ""
+"<strong>관계 유형:</strong> <span id=\"modal-relationship-type\"></span>"
+
+#: .\chatbot_app\templates\ai_status.html:251
+msgid "<strong>포지션:</strong> <span id=\"modal-position\"></span>"
+msgstr "<strong>포지션:</strong> <span id=\"modal-position\"></span>"
+
+#: .\chatbot_app\templates\ai_status.html:252
+msgid "<strong>특징:</strong> <span id=\"modal-traits\"></span>"
+msgstr "<strong>특징:</strong> <span id=\"modal-traits\"></span>"
+
+#: .\chatbot_app\templates\ai_status.html:253
+msgid "수정"
+msgstr "수정"
+
+#: .\chatbot_app\templates\ai_status.html:254
+msgid "삭제"
+msgstr "삭제"
+
+#: .\chatbot_app\templates\bgm\bgm_player.html:7
+msgid "BGM Player"
+msgstr "BGM Player"
+
+#: .\chatbot_app\templates\chat.html:8
+msgid "AI 비서와의 대화"
+msgstr "AI 비서와의 대화"
+
+#: .\chatbot_app\templates\chat.html:87 .\chatbot_app\templates\quiz.html:272
+msgid "AI 비서"
+msgstr "AI 비서"
+
+#: .\chatbot_app\templates\chat.html:95
+#: .\chatbot_app\templates\chat_history.html:70
+msgid "... (삐빅) ... 흥, 드디어 왔네. 뭘 시킬 셈이야?"
+msgstr "... (삐빅) ... 흥, 드디어 왔네. 뭘 시킬 셈이야?"
+
+#: .\chatbot_app\templates\chat.html:106
+msgid "이미지 지우기"
+msgstr "이미지 지우기"
+
+#: .\chatbot_app\templates\chat.html:111
+msgid "이모티콘 지우기"
+msgstr "이모티콘 지우기"
+
+#: .\chatbot_app\templates\chat.html:121
+msgid "쪽지 보내기"
+msgstr "쪽지 보내기"
+
+#: .\chatbot_app\templates\chat.html:122
+msgid "읽지 않은 쪽지"
+msgstr "읽지 않은 쪽지"
+
+#: .\chatbot_app\templates\chat.html:125
+msgid "이미지 첨부"
+msgstr "이미지 첨부"
+
+#: .\chatbot_app\templates\chat.html:126
+msgid "이모티콘 선택"
+msgstr "이모티콘 선택"
+
+#: .\chatbot_app\templates\chat.html:127
+msgid "메시지를 입력하세요..."
+msgstr "메시지를 입력하세요..."
+
+#: .\chatbot_app\templates\chat.html:129
+msgid "친구 선택"
+msgstr "친구 선택"
+
+#: .\chatbot_app\templates\chat.html:131
+msgid "친구에게 쪽지를 보내세요..."
+msgstr "친구에게 쪽지를 보내세요..."
+
+#: .\chatbot_app\templates\chat.html:132
+#: .\chatbot_app\templates\narrative_setup.html:115
+msgid "전송"
+msgstr "전송"
+
+#: .\chatbot_app\templates\chat.html:133
+msgid "쪽지 전송"
+msgstr "쪽지 전송"
+
+#: .\chatbot_app\templates\chat.html:136
+msgid "위치 정보 사용"
+msgstr "위치 정보 사용"
+
+#: .\chatbot_app\templates\chat.html:157
+#: .\chatbot_app\templates\chat_history.html:92
+#: .\chatbot_app\templates\quiz.html:379
+msgid "생각"
+msgstr "생각"
+
+#: .\chatbot_app\templates\chat.html:158
+#: .\chatbot_app\templates\chat_history.html:93
+#: .\chatbot_app\templates\quiz.html:380
+msgid "행복"
+msgstr "행복"
+
+#: .\chatbot_app\templates\chat.html:159
+#: .\chatbot_app\templates\chat_history.html:94
+#: .\chatbot_app\templates\quiz.html:381
+msgid "슬픔"
+msgstr "슬픔"
+
+#: .\chatbot_app\templates\chat.html:160
+#: .\chatbot_app\templates\chat_history.html:95
+#: .\chatbot_app\templates\quiz.html:382
+msgid "분노"
+msgstr "분노"
+
+#: .\chatbot_app\templates\chat.html:161
+#: .\chatbot_app\templates\chat_history.html:96
+#: .\chatbot_app\templates\quiz.html:383
+msgid "놀람"
+msgstr "놀람"
+
+#: .\chatbot_app\templates\chat.html:162
+#: .\chatbot_app\templates\chat_history.html:97
+#: .\chatbot_app\templates\quiz.html:384
+msgid "공포"
+msgstr "공포"
+
+#: .\chatbot_app\templates\chat.html:163
+#: .\chatbot_app\templates\chat_history.html:98
+#: .\chatbot_app\templates\quiz.html:385
+msgid "혐오"
+msgstr "혐오"
+
+#: .\chatbot_app\templates\chat_history.html:8
+msgid "츤데레 AI 비서"
+msgstr "츤데레 AI 비서"
+
+#: .\chatbot_app\templates\chat_history.html:64
+msgid "User image"
+msgstr "User image"
+
+#: .\chatbot_app\templates\edit_profile.html:5
+#: .\chatbot_app\templates\edit_profile.html:170
+msgid "프로필 편집"
+msgstr "프로필 편집"
+
+#: .\chatbot_app\templates\edit_profile.html:183
+msgid "현재 프로필 사진"
+msgstr "현재 프로필 사진"
+
+#: .\chatbot_app\templates\edit_profile.html:185
+msgid "기본 프로필 사진"
+msgstr "기본 프로필 사진"
+
+#: .\chatbot_app\templates\edit_profile.html:191
+#: .\chatbot_app\templates\friend_management.html:133
+msgid "프로필 사진"
+msgstr "프로필 사진"
+
+#: .\chatbot_app\templates\edit_profile.html:195
+msgid "상태 메시지"
+msgstr "상태 메시지"
+
+#: .\chatbot_app\templates\edit_profile.html:199
+msgid "챗봇 이름"
+msgstr "챗봇 이름"
+
+#: .\chatbot_app\templates\edit_profile.html:203
+msgid "페르소나 설정"
+msgstr "페르소나 설정"
+
+#: .\chatbot_app\templates\edit_profile.html:207
+msgid "저장"
+msgstr "저장"
+
+#: .\chatbot_app\templates\friend_management.html:8
+msgid "✨ 친구 관리 센터 | NeoVerse"
+msgstr "✨ 친구 관리 센터 | NeoVerse"
+
+#: .\chatbot_app\templates\friend_management.html:87
+msgid "🎮 친구 관리 센터"
+msgstr "🎮 친구 관리 센터"
+
+#: .\chatbot_app\templates\friend_management.html:89
+msgid "← 방으로 돌아가기"
+msgstr "← 방으로 돌아가기"
+
+#: .\chatbot_app\templates\friend_management.html:94
+msgid "🔍 친구 찾기"
+msgstr "🔍 친구 찾기"
+
+#: .\chatbot_app\templates\friend_management.html:95
+msgid "💌 받은 요청"
+msgstr "💌 받은 요청"
+
+#: .\chatbot_app\templates\friend_management.html:96
+msgid "🤝 내 친구"
+msgstr "🤝 내 친구"
+
+#: .\chatbot_app\templates\friend_management.html:100
+msgid "🔍 친구 찾기 및 신청"
+msgstr "🔍 친구 찾기 및 신청"
+
+#: .\chatbot_app\templates\friend_management.html:102
+msgid "친구의 고유 ID 또는 사용자 이름 입력..."
+msgstr "친구의 고유 ID 또는 사용자 이름 입력..."
+
+#: .\chatbot_app\templates\friend_management.html:104
+msgid "검색"
+msgstr "검색"
+
+#: .\chatbot_app\templates\friend_management.html:107
+msgid "요청 보내기"
+msgstr "요청 보내기"
+
+#: .\chatbot_app\templates\friend_management.html:115
+msgid "💌 받은 친구 요청"
+msgstr "💌 받은 친구 요청"
+
+#: .\chatbot_app\templates\friend_management.html:117
+msgid "받은 친구 요청이 없습니다."
+msgstr "받은 친구 요청이 없습니다."
+
+#: .\chatbot_app\templates\friend_management.html:122
+msgid "🤝 내 친구 목록"
+msgstr "🤝 내 친구 목록"
+
+#: .\chatbot_app\templates\friend_management.html:124
+msgid "현재 등록된 친구가 없습니다."
+msgstr "현재 등록된 친구가 없습니다."
+
+#: .\chatbot_app\templates\includes\top_menu.html:4
+msgid "님, 환영합니다."
+msgstr "님, 환영합니다."
+
+#: .\chatbot_app\templates\includes\top_menu.html:22
+msgid "친구 관리"
+msgstr "친구 관리"
+
+#: .\chatbot_app\templates\includes\top_menu.html:23
+#, python-format
+msgid "%(chatbot_name)s 상태"
+msgstr "%(chatbot_name)s 상태"
+
+#: .\chatbot_app\templates\includes\top_menu.html:24
+msgid "로그아웃"
+msgstr "로그아웃"
+
+#: .\chatbot_app\templates\login.html:7
+msgid "아이 - 로그인"
+msgstr "아이 - 로그인"
+
+#: .\chatbot_app\templates\login.html:55
+msgid "'아이'와 대화하기"
+msgstr "'아이'와 대화하기"
+
+#: .\chatbot_app\templates\login.html:59
+msgid "로그인"
+msgstr "로그인"
+
+#: .\chatbot_app\templates\login.html:61
+msgid "계정이 없으신가요? 회원가입"
+msgstr "계정이 없으신가요? 회원가입"
+
+#: .\chatbot_app\templates\narrative_setup.html:8
+msgid "새로운 시작"
+msgstr "새로운 시작"
+
+#: .\chatbot_app\templates\narrative_setup.html:113
+msgid "답변을 입력하세요..."
+msgstr "답변을 입력하세요..."
+
+#: .\chatbot_app\templates\narrative_setup.html:117
+msgid "Enter"
+msgstr "Enter"
+
+#: .\chatbot_app\templates\opening.html:8 .\chatbot_app\templates\start.html:8
+msgid "오프닝"
+msgstr "오프닝"
+
+#: .\chatbot_app\templates\opening.html:80
+#: .\chatbot_app\templates\start.html:80
+msgid "PRESS START"
+msgstr "PRESS START"
+
+#: .\chatbot_app\templates\quiz.html:8 .\chatbot_app\templates\quiz.html:279
+#: .\chatbot_app\templates\quiz.html:331
+msgid "퀴즈 모드"
+msgstr "퀴즈 모드"
+
+#: .\chatbot_app\templates\quiz.html:280
+#, python-format
+msgid "문제 %(current_question_number)s / %(total_questions)s"
+msgstr "문제 %(current_question_number)s / %(total_questions)s"
+
+#: .\chatbot_app\templates\quiz.html:286
+msgid "정답입니다!"
+msgstr "정답입니다!"
+
+#: .\chatbot_app\templates\quiz.html:288
+#, fuzzy, python-format
+#| msgid ""
+#| "\n"
+#| "                                오답입니다. 정답은 "
+#| "\\'%(correct_answer)s\\' 입니다.\n"
+#| "                                "
+msgid ""
+"\n"
+"                                오답입니다. 정답은 '%(correct_answer)s' 입니"
+"다.\n"
+"                                "
+msgstr ""
+"\n"
+"                                오답입니다. 정답은 \\'%(correct_answer)s\\' "
+"입니다.\n"
+"                                "
+
+#: .\chatbot_app\templates\quiz.html:297
+msgid "다음 문제"
+msgstr "다음 문제"
+
+#: .\chatbot_app\templates\quiz.html:298 .\chatbot_app\templates\quiz.html:315
+msgid "처음으로 돌아가기"
+msgstr "처음으로 돌아가기"
+
+#: .\chatbot_app\templates\quiz.html:314
+msgid "정답 제출"
+msgstr "정답 제출"
+
+#: .\chatbot_app\templates\quiz.html:321
+msgid "퀴즈 결과"
+msgstr "퀴즈 결과"
+
+#: .\chatbot_app\templates\quiz.html:323
+#, python-format
+msgid "최종 점수: %(final_score)s / %(total_questions)s"
+msgstr "최종 점수: %(final_score)s / %(total_questions)s"
+
+#: .\chatbot_app\templates\quiz.html:324
+msgid "수고하셨습니다!"
+msgstr "수고하셨습니다!"
+
+#: .\chatbot_app\templates\quiz.html:326
+msgid "다시 퀴즈 시작"
+msgstr "다시 퀴즈 시작"
+
+#: .\chatbot_app\templates\quiz.html:327 .\chatbot_app\templates\quiz.html:357
+msgid "퀴즈 기록 보기"
+msgstr "퀴즈 기록 보기"
+
+#: .\chatbot_app\templates\quiz.html:335
+msgid "장르:"
+msgstr "장르:"
+
+#: .\chatbot_app\templates\quiz.html:346
+msgid "문제 수:"
+msgstr "문제 수:"
+
+#: .\chatbot_app\templates\quiz.html:348
+msgid "10개"
+msgstr "10개"
+
+#: .\chatbot_app\templates\quiz.html:349
+msgid "20개"
+msgstr "20개"
+
+#: .\chatbot_app\templates\quiz.html:350
+msgid "30개"
+msgstr "30개"
+
+#: .\chatbot_app\templates\quiz.html:351
+msgid "40개"
+msgstr "40개"
+
+#: .\chatbot_app\templates\quiz.html:352
+msgid "50개"
+msgstr "50개"
+
+#: .\chatbot_app\templates\quiz.html:356
+msgid "퀴즈 시작"
+msgstr "퀴즈 시작"
+
+#: .\chatbot_app\templates\quiz.html:387
+msgid "정답"
+msgstr "정답"
+
+#: .\chatbot_app\templates\quiz.html:388
+msgid "오답"
+msgstr "오답"
+
+#: .\chatbot_app\templates\quiz_history.html:8
+msgid "퀴즈 기록"
+msgstr "퀴즈 기록"
+
+#: .\chatbot_app\templates\quiz_history.html:149
+msgid "나의 퀴즈 기록"
+msgstr "나의 퀴즈 기록"
+
+#: .\chatbot_app\templates\quiz_history.html:155
+msgid "장르"
+msgstr "장르"
+
+#: .\chatbot_app\templates\quiz_history.html:156
+msgid "문제 수"
+msgstr "문제 수"
+
+#: .\chatbot_app\templates\quiz_history.html:157
+msgid "점수"
+msgstr "점수"
+
+#: .\chatbot_app\templates\quiz_history.html:158
+msgid "완료일"
+msgstr "완료일"
+
+#: .\chatbot_app\templates\quiz_history.html:173
+msgid "아직 퀴즈 기록이 없습니다."
+msgstr "아직 퀴즈 기록이 없습니다."
+
+#: .\chatbot_app\templates\quiz_history.html:177
+msgid "퀴즈 모드로 돌아가기"
+msgstr "퀴즈 모드로 돌아가기"
+
+#: .\chatbot_app\templates\room.html:8
+msgid "AI 비서의 방"
+msgstr "AI 비서의 방"
+
+#: .\chatbot_app\templates\room.html:41
+msgid "냉장고 확인하기 (Enter)"
+msgstr "냉장고 확인하기 (Enter)"
+
+#: .\chatbot_app\templates\room.html:41
+msgid "Refrigerator"
+msgstr "Refrigerator"
+
+#: .\chatbot_app\templates\room.html:42
+msgid "Lamp"
+msgstr "Lamp"
+
+#: .\chatbot_app\templates\room.html:43
+msgid "Robot Vacuum"
+msgstr "Robot Vacuum"
+
+#: .\chatbot_app\templates\room.html:44
+msgid "푹신한 소파에 앉아 휴식하기 (Enter)"
+msgstr "푹신한 소파에 앉아 휴식하기 (Enter)"
+
+#: .\chatbot_app\templates\room.html:44
+msgid "Sofa"
+msgstr "Sofa"
+
+#: .\chatbot_app\templates\room.html:45
+msgid "Wardrobe"
+msgstr "Wardrobe"
+
+#: .\chatbot_app\templates\room.html:46
+msgid "일정 확인 및 추가하기 (Enter)"
+msgstr "일정 확인 및 추가하기 (Enter)"
+
+#: .\chatbot_app\templates\room.html:46
+msgid "Books and Desk"
+msgstr "Books and Desk"
+
+#: .\chatbot_app\templates\room.html:47
+msgid "침대에 누워 쉬기 (Enter)"
+msgstr "침대에 누워 쉬기 (Enter)"
+
+#: .\chatbot_app\templates\room.html:47
+msgid "Bed"
+msgstr "Bed"
+
+#: .\chatbot_app\templates\room.html:48
+msgid "컴퓨터를 사용해 채팅하기 (Enter)"
+msgstr "컴퓨터를 사용해 채팅하기 (Enter)"
+
+#: .\chatbot_app\templates\room.html:48
+msgid "Computer"
+msgstr "Computer"
+
+#: .\chatbot_app\templates\room.html:49
+msgid "TV를 켜서 대화하기 (Enter)"
+msgstr "TV를 켜서 대화하기 (Enter)"
+
+#: .\chatbot_app\templates\room.html:49
+msgid "TV"
+msgstr "TV"
+
+#: .\chatbot_app\templates\room.html:50
+msgid "Tea Table"
+msgstr "Tea Table"
+
+#: .\chatbot_app\templates\room.html:54
+msgid "Flower Pot"
+msgstr "Flower Pot"
+
+#: .\chatbot_app\templates\room.html:74
+msgid "Player"
+msgstr "Player"
+
+#: .\chatbot_app\templates\room.html:97
+msgid "오늘의 일과"
+msgstr "오늘의 일과"
+
+#: .\chatbot_app\templates\room.html:104
+msgid "새 일정을 입력하세요."
+msgstr "새 일정을 입력하세요."
+
+#: .\chatbot_app\templates\room.html:106
+msgid "일정 추가"
+msgstr "일정 추가"
+
+#: .\chatbot_app\templates\room.html:115
+msgid "냉장고"
+msgstr "냉장고"
+
+#: .\chatbot_app\templates\signup.html:7
+msgid "아이 - 회원가입"
+msgstr "아이 - 회원가입"
+
+#: .\chatbot_app\templates\signup.html:55
+msgid "새로운 계정 만들기"
+msgstr "새로운 계정 만들기"
+
+#: .\chatbot_app\templates\signup.html:59
+msgid "회원가입"
+msgstr "회원가입"
+
+#: .\chatbot_app\templates\signup.html:61
+msgid "이미 계정이 있으신가요? 로그인"
+msgstr "이미 계정이 있으신가요? 로그인"
+
+#: .\chatbot_app\views\auth.py:7
+msgid ""
+"사용자 회원가입을 처리하고, 성공 시 자동으로 로그인하여 랜딩 페이지로 이동시"
+"킵니다."
+msgstr ""
+"사용자 회원가입을 처리하고, 성공 시 자동으로 로그인하여 랜딩 페이지로 이동시"
+"킵니다."
+
+#: .\chatbot_app\views\auth.py:19
+msgid "사용자 로그인을 처리하고, 성공 시 랜딩 페이지로 이동시킵니다."
+msgstr "사용자 로그인을 처리하고, 성공 시 랜딩 페이지로 이동시킵니다."
+
+#: .\chatbot_app\views\auth.py:34
+msgid "사용자를 로그아웃시키고 로그인 페이지로 이동시킵니다."
+msgstr "사용자를 로그아웃시키고 로그인 페이지로 이동시킵니다."
+
+#: .\chatbot_app\views\chatWithAi.py:45
+#, python-brace-format
+msgid "--- [PPO] 암시적 보상 계산 중 오류: {error} ---"
+msgstr "--- [PPO] 암시적 보상 계산 중 오류: {error} ---"
+
+#: .\chatbot_app\views\chatWithAi.py:48
+msgid "죄송합니다. API 응답을 가져오는 데 실패했습니다."
+msgstr "죄송합니다. API 응답을 가져오는 데 실패했습니다."
+
+#: .\chatbot_app\views\chatWithAi.py:73
+#, python-brace-format
+msgid ""
+"예상치 못한 오류: {error}\n"
+"\n"
+"{traceback}"
+msgstr ""
+"예상치 못한 오류: {error}\n"
+"\n"
+"{traceback}"
+
+#: .\chatbot_app\views\chatWithAi.py:91
+#, python-brace-format
+msgid "--- [PPO] Trajectory가 {length}에 도달하여 학습을 시작합니다. ---"
+msgstr "--- [PPO] Trajectory가 {length}에 도달하여 학습을 시작합니다. ---"
+
+#: .\chatbot_app\views\chatWithAi.py:95
+#, python-brace-format
+msgid "--- [PPO] 정기 학습 중 오류 발생: {error} ---"
+msgstr "--- [PPO] 정기 학습 중 오류 발생: {error} ---"
+
+#: .\chatbot_app\views\chatWithAi.py:117 .\chatbot_app\views\main.py:269
+msgid "Invalid request"
+msgstr "Invalid request"
+
+#: .\chatbot_app\views\chatWithAi.py:122
+msgid "사용자의 명시적 피드백을 받아 PPO 에이전트의 학습을 즉시 트리거합니다."
+msgstr "사용자의 명시적 피드백을 받아 PPO 에이전트의 학습을 즉시 트리거합니다."
+
+#: .\chatbot_app\views\chatWithAi.py:129
+msgid "학습할 데이터가 없습니다."
+msgstr "학습할 데이터가 없습니다."
+
+#: .\chatbot_app\views\chatWithAi.py:136
+#, python-brace-format
+msgid ""
+"--- [PPO] 명시적 보상({explicit_reward})으로 즉시 학습을 시작합니다. ---"
+msgstr ""
+"--- [PPO] 명시적 보상({explicit_reward})으로 즉시 학습을 시작합니다. ---"
+
+#: .\chatbot_app\views\chatWithAi.py:142
+msgid "Feedback recorded and learned"
+msgstr "Feedback recorded and learned"
+
+#: .\chatbot_app\views\chatWithAi.py:144
+#, python-brace-format
+msgid "Invalid request data: {error}"
+msgstr "Invalid request data: {error}"
+
+#: .\chatbot_app\views\friend.py:17
+msgid "현재 사용자에게 읽지 않은 쪽지가 있는지 확인합니다."
+msgstr "현재 사용자에게 읽지 않은 쪽지가 있는지 확인합니다."
+
+#: .\chatbot_app\views\friend.py:36
+msgid "메시지 처리에 실패했습니다."
+msgstr "메시지 처리에 실패했습니다."
+
+#: .\chatbot_app\views\friend.py:48 .\chatbot_app\views\friend.py:54
+msgid "-"
+msgstr "-"
+
+#: .\chatbot_app\views\friend.py:49
+#, python-brace-format
+msgid "[디버그] 메시지 처리 정보 (ID: {message_id})"
+msgstr "[디버그] 메시지 처리 정보 (ID: {message_id})"
+
+#: .\chatbot_app\views\friend.py:50
+#, python-brace-format
+msgid "  - 수신자 페르소나: {persona}"
+msgstr "  - 수신자 페르소나: {persona}"
+
+#: .\chatbot_app\views\friend.py:51
+#, python-brace-format
+msgid "  - 원본 메시지: {content}"
+msgstr "  - 원본 메시지: {content}"
+
+#: .\chatbot_app\views\friend.py:52
+#, python-brace-format
+msgid "  - LLM 생성 설명: {explanation}"
+msgstr "  - LLM 생성 설명: {explanation}"
+
+#: .\chatbot_app\views\friend.py:52
+msgid "설명 없음."
+msgstr "설명 없음."
+
+#: .\chatbot_app\views\friend.py:53
+#, python-brace-format
+msgid "  - 최종 가공 메시지: {answer}"
+msgstr "  - 최종 가공 메시지: {answer}"
+
+#: .\chatbot_app\views\friend.py:53
+msgid "오류"
+msgstr "오류"
+
+#: .\chatbot_app\views\friend.py:58
+msgid "오류: 메시지 내용을 처리할 수 없습니다."
+msgstr "오류: 메시지 내용을 처리할 수 없습니다."
+
+#: .\chatbot_app\views\friend.py:77
+msgid ""
+"현재 사용자의 친구 목록과 받은 요청 목록을 JSON 형태로 반환합니다.\n"
+"    (friend_management.js의 loadFriendData()가 호출하는 함수)"
+msgstr ""
+"현재 사용자의 친구 목록과 받은 요청 목록을 JSON 형태로 반환합니다.\n"
+"    (friend_management.js의 loadFriendData()가 호출하는 함수)"
+
+#: .\chatbot_app\views\friend.py:104 .\chatbot_app\views\friend.py:113
+#: .\chatbot_app\views\friend.py:136 .\chatbot_app\views\friend.py:145
+msgid "나이"
+msgstr "나이"
+
+#: .\chatbot_app\views\friend.py:104 .\chatbot_app\views\friend.py:114
+#: .\chatbot_app\views\friend.py:136 .\chatbot_app\views\friend.py:146
+msgid "mbti"
+msgstr "mbti"
+
+#: .\chatbot_app\views\friend.py:104 .\chatbot_app\views\friend.py:115
+#: .\chatbot_app\views\friend.py:136 .\chatbot_app\views\friend.py:147
+msgid "성별"
+msgstr "성별"
+
+#: .\chatbot_app\views\friend.py:165
+msgid "사용자 이름을 입력해 주세요."
+msgstr "사용자 이름을 입력해 주세요."
+
+#: .\chatbot_app\views\friend.py:173
+#, python-brace-format
+msgid "사용자 \"{target_username}\"를 찾을 수 없습니다."
+msgstr "사용자 \"{target_username}\"를 찾을 수 없습니다."
+
+#: .\chatbot_app\views\friend.py:176
+msgid "자기 자신에게 친구 신청을 할 수 없습니다."
+msgstr "자기 자신에게 친구 신청을 할 수 없습니다."
+
+#: .\chatbot_app\views\friend.py:185
+#, python-brace-format
+msgid "\"{to_user_username}\"님은 이미 친구입니다."
+msgstr "\"{to_user_username}\"님은 이미 친구입니다."
+
+#: .\chatbot_app\views\friend.py:188
+msgid "이미 친구 요청을 보낸 상태입니다."
+msgstr "이미 친구 요청을 보낸 상태입니다."
+
+#: .\chatbot_app\views\friend.py:190
+#, python-brace-format
+msgid ""
+"\"{to_user_username}\"님의 친구 요청이 도착해 있습니다. 받은 요청 목록에서 수"
+"락해 주세요."
+msgstr ""
+"\"{to_user_username}\"님의 친구 요청이 도착해 있습니다. 받은 요청 목록에서 수"
+"락해 주세요."
+
+#: .\chatbot_app\views\friend.py:200
+#, python-brace-format
+msgid "\"{to_user_username}\"님에게 친구 요청을 보냈습니다."
+msgstr "\"{to_user_username}\"님에게 친구 요청을 보냈습니다."
+
+#: .\chatbot_app\views\friend.py:202
+msgid "친구 요청 처리 중 알 수 없는 오류가 발생했습니다."
+msgstr "친구 요청 처리 중 알 수 없는 오류가 발생했습니다."
+
+#: .\chatbot_app\views\friend.py:204 .\chatbot_app\views\friend.py:231
+#: .\chatbot_app\views\friend.py:256 .\chatbot_app\views\friend.py:279
+#: .\chatbot_app\views\friend.py:346 .\chatbot_app\views\friend.py:391
+msgid "잘못된 접근입니다."
+msgstr "잘못된 접근입니다."
+
+#: .\chatbot_app\views\friend.py:216 .\chatbot_app\views\friend.py:243
+msgid "권한이 없습니다. 이 요청은 당신에게 온 것이 아닙니다."
+msgstr "권한이 없습니다. 이 요청은 당신에게 온 것이 아닙니다."
+
+#: .\chatbot_app\views\friend.py:219 .\chatbot_app\views\friend.py:246
+msgid "이미 처리되었거나 유효하지 않은 요청입니다."
+msgstr "이미 처리되었거나 유효하지 않은 요청입니다."
+
+#: .\chatbot_app\views\friend.py:226
+#, python-brace-format
+msgid ""
+"\"{sender_username}\"님과 친구가 되었습니다! 이제 쪽지를 주고받을 수 있습니"
+"다."
+msgstr ""
+"\"{sender_username}\"님과 친구가 되었습니다! 이제 쪽지를 주고받을 수 있습니"
+"다."
+
+#: .\chatbot_app\views\friend.py:229
+#, python-brace-format
+msgid "친구 요청 처리 중 오류가 발생했습니다: {error}"
+msgstr "친구 요청 처리 중 오류가 발생했습니다: {error}"
+
+#: .\chatbot_app\views\friend.py:251
+#, python-brace-format
+msgid "\"{sender_username}\"님의 친구 요청을 거절했습니다."
+msgstr "\"{sender_username}\"님의 친구 요청을 거절했습니다."
+
+#: .\chatbot_app\views\friend.py:254
+#, python-brace-format
+msgid "친구 요청 거절 중 오류가 발생했습니다: {error}"
+msgstr "친구 요청 거절 중 오류가 발생했습니다: {error}"
+
+#: .\chatbot_app\views\friend.py:270
+msgid "권한이 없습니다. 이 친구 관계를 삭제할 수 없습니다."
+msgstr "권한이 없습니다. 이 친구 관계를 삭제할 수 없습니다."
+
+#: .\chatbot_app\views\friend.py:275
+msgid "친구 관계가 삭제되었습니다."
+msgstr "친구 관계가 삭제되었습니다."
+
+#: .\chatbot_app\views\friend.py:277
+msgid "친구 삭제 처리 중 오류가 발생했습니다."
+msgstr "친구 삭제 처리 중 오류가 발생했습니다."
+
+#: .\chatbot_app\views\friend.py:358
+msgid "수신자 이름과 메시지 내용을 모두 입력해 주세요."
+msgstr "수신자 이름과 메시지 내용을 모두 입력해 주세요."
+
+#: .\chatbot_app\views\friend.py:365
+#, python-brace-format
+msgid "사용자 \"{receiver_username}\"를 찾을 수 없습니다."
+msgstr "사용자 \"{receiver_username}\"를 찾을 수 없습니다."
+
+#: .\chatbot_app\views\friend.py:372
+#, python-brace-format
+msgid "\"{receiver_username}\"님은 당신의 친구가 아닙니다."
+msgstr "\"{receiver_username}\"님은 당신의 친구가 아닙니다."
+
+#: .\chatbot_app\views\friend.py:387
+#, python-brace-format
+msgid "\"{receiver_username}\"님에게 쪽지를 보냈습니다."
+msgstr "\"{receiver_username}\"님에게 쪽지를 보냈습니다."
+
+#: .\chatbot_app\views\friend.py:389
+#, python-brace-format
+msgid "쪽지 전송 중 오류가 발생했습니다: {error}"
+msgstr "쪽지 전송 중 오류가 발생했습니다: {error}"
+
+#: .\chatbot_app\views\friend.py:420
+msgid "읽지 않은 쪽지가 없습니다."
+msgstr "읽지 않은 쪽지가 없습니다."
+
+#: .\chatbot_app\views\friend.py:424
+msgid "친구 관리 페이지 (friend_management.html)를 렌더링합니다."
+msgstr "친구 관리 페이지 (friend_management.html)를 렌더링합니다."
+
+#: .\chatbot_app\views\main.py:17
+msgid "사용자의 온보딩 완료 여부에 따라 적절한 페이지로 리디렉션합니다."
+msgstr "사용자의 온보딩 완료 여부에 따라 적절한 페이지로 리디렉션합니다."
+
+#: .\chatbot_app\views\main.py:27
+msgid ""
+"새로운 대화형 온보딩 페이지를 렌더링하고, 사용자 정보 제출을 처리합니다."
+msgstr ""
+"새로운 대화형 온보딩 페이지를 렌더링하고, 사용자 정보 제출을 처리합니다."
+
+#: .\chatbot_app\views\main.py:55
+#, python-brace-format
+msgid "{fact_type} 저장 완료"
+msgstr "{fact_type} 저장 완료"
+
+#: .\chatbot_app\views\main.py:61
+msgid "온보딩 완료"
+msgstr "온보딩 완료"
+
+#: .\chatbot_app\views\main.py:63
+msgid "데이터가 누락되었습니다."
+msgstr "데이터가 누락되었습니다."
+
+#: .\chatbot_app\views\main.py:73
+msgid "캐릭터가 있는 방 페이지를 렌더링합니다."
+msgstr "캐릭터가 있는 방 페이지를 렌더링합니다."
+
+#: .\chatbot_app\views\main.py:84
+msgid "채팅 기록 페이지를 렌더링합니다. (페이지네이션 적용)"
+msgstr "채팅 기록 페이지를 렌더링합니다. (페이지네이션 적용)"
+
+#: .\chatbot_app\views\main.py:114
+msgid "이전 채팅 기록을 추가로 불러옵니다."
+msgstr "이전 채팅 기록을 추가로 불러옵니다."
+
+#: .\chatbot_app\views\main.py:143
+msgid "게임 스타일의 채팅 페이지를 렌더링합니다."
+msgstr "게임 스타일의 채팅 페이지를 렌더링합니다."
+
+#: .\chatbot_app\views\main.py:173
+msgid "AI의 상태(기억, 호감도 등)를 보여주는 페이지를 렌더링합니다."
+msgstr "AI의 상태(기억, 호감도 등)를 보여주는 페이지를 렌더링합니다."
+
+#: .\chatbot_app\views\main.py:206
+msgid "오프닝 비디오를 재생하는 페이지를 렌더링합니다."
+msgstr "오프닝 비디오를 재생하는 페이지를 렌더링합니다."
+
+#: .\chatbot_app\views\main.py:213
+msgid "읽지 않은 능동 메시지가 있는지 확인하고, 없으면 생성을 시도합니다."
+msgstr "읽지 않은 능동 메시지가 있는지 확인하고, 없으면 생성을 시도합니다."
+
+#: .\chatbot_app\views\main.py:227
+msgid "읽지 않은 능동 메시지를 가져오고, '읽음' 처리(삭제)합니다."
+msgstr "읽지 않은 능동 메시지를 가져오고, '읽음' 처리(삭제)합니다."
+
+#: .\chatbot_app\views\main.py:249
+msgid "로그인 후 게임 시작 화면을 렌더링합니다."
+msgstr "로그인 후 게임 시작 화면을 렌더링합니다."
+
+#: .\chatbot_app\views\main.py:262
+msgid "Target not provided"
+msgstr "Target not provided"
+
+#: .\chatbot_app\views\main.py:273
+msgid "세션에 저장된 음식 목록을 반환합니다."
+msgstr "세션에 저장된 음식 목록을 반환합니다."
+
+#: .\chatbot_app\views\main.py:279
+msgid "세션에서 특정 음식을 제거합니다."
+msgstr "세션에서 특정 음식을 제거합니다."
+
+#: .\chatbot_app\views\main.py:286
+msgid "Food name not provided"
+msgstr "Food name not provided"
+
+#: .\chatbot_app\views\main.py:295
+#, python-brace-format
+msgid "{food_name} consumed."
+msgstr "{food_name} consumed."
+
+#: .\chatbot_app\views\main.py:298
+msgid "Invalid JSON"
+msgstr "Invalid JSON"
+
+#: .\chatbot_app\views\main.py:300
+msgid "Invalid request method"
+msgstr "Invalid request method"
+
+#: .\chatbot_app\views\main.py:303
+msgid "Renders the BGM player HTML for the iframe."
+msgstr "Renders the BGM player HTML for the iframe."
+
+#: .\chatbot_app\views\profile.py:13
+msgid "프로필이 성공적으로 업데이트되었습니다."
+msgstr "프로필이 성공적으로 업데이트되었습니다."
+
+#: .\chatbot_app\views\profile.py:16
+msgid "프로필 업데이트 중 오류가 발생했습니다."
+msgstr "프로필 업데이트 중 오류가 발생했습니다."
+
+#: .\chatbot_app\views\quiz.py:9
+msgid "사용자의 퀴즈 기록을 표시합니다."
+msgstr "사용자의 퀴즈 기록을 표시합니다."
+
+#: .\chatbot_app\views\quiz.py:15
+msgid "퀴즈 모드 설정 페이지를 렌더링합니다."
+msgstr "퀴즈 모드 설정 페이지를 렌더링합니다."
+
+#: .\chatbot_app\views\quiz.py:20
+msgid "퀴즈 시작 요청을 처리하고 퀴즈 페이지로 리디렉션합니다."
+msgstr "퀴즈 시작 요청을 처리하고 퀴즈 페이지로 리디렉션합니다."
+
+#: .\chatbot_app\views\quiz.py:33
+msgid "현재 퀴즈 질문을 표시하고, 답변을 처리하며, 퀴즈 흐름을 관리합니다."
+msgstr "현재 퀴즈 질문을 표시하고, 답변을 처리하며, 퀴즈 흐름을 관리합니다."
+
+#: .\chatbot_app\views\schedule.py:12
+msgid ""
+"GET: 오늘 날짜의 모든 일정을 조회합니다.\n"
+"    POST: 일정 항목을 생성, 업데이트 또는 삭제합니다."
+msgstr ""
+"GET: 오늘 날짜의 모든 일정을 조회합니다.\n"
+"    POST: 일정 항목을 생성, 업데이트 또는 삭제합니다."
+
+#: .\chatbot_app\views\schedule.py:40
+msgid "잘못된 시간 형식입니다. HH:MM 형식으로 입력해주세요."
+msgstr "잘못된 시간 형식입니다. HH:MM 형식으로 입력해주세요."
+
+#: .\chatbot_app\views\schedule.py:44
+msgid "일정이 생성되었습니다."
+msgstr "일정이 생성되었습니다."
+
+#: .\chatbot_app\views\schedule.py:47
+msgid "업데이트할 일정의 ID가 필요합니다."
+msgstr "업데이트할 일정의 ID가 필요합니다."
+
+#: .\chatbot_app\views\schedule.py:50
+msgid "일정이 업데이트되었습니다."
+msgstr "일정이 업데이트되었습니다."
+
+#: .\chatbot_app\views\schedule.py:52 .\chatbot_app\views\schedule.py:59
+msgid "일정을 찾을 수 없습니다."
+msgstr "일정을 찾을 수 없습니다."
+
+#: .\chatbot_app\views\schedule.py:55
+msgid "삭제할 일정의 ID가 필요합니다."
+msgstr "삭제할 일정의 ID가 필요합니다."
+
+#: .\chatbot_app\views\schedule.py:57
+msgid "일정이 삭제되었습니다."
+msgstr "일정이 삭제되었습니다."
+
+#: .\chatbot_app\views\schedule.py:61
+msgid "알 수 없는 액션입니다."
+msgstr "알 수 없는 액션입니다."
+
+#: .\chatbot_app\views\schedule.py:64
+msgid "잘못된 요청입니다."
+msgstr "잘못된 요청입니다."
+
+#: .\templates\base.html:8
+msgid "My Django App"
+msgstr "My Django App"
+
+#~ msgid "affinity_score"
+#~ msgstr "affinity_score"
+
+#~ msgid "message"
+#~ msgstr "message"
+
+#~ msgid "is_user"
+#~ msgstr "is_user"
+
+#~ msgid "timestamp"
+#~ msgstr "timestamp"
+
+#~ msgid "fact_type"
+#~ msgstr "fact_type"
+
+#~ msgid "content"
+#~ msgstr "content"
+
+#~ msgid "created_at"
+#~ msgstr "created_at"
+
+#~ msgid "activity_date"
+#~ msgstr "activity_date"
+
+#~ msgid "place"
+#~ msgstr "place"
+
+#~ msgid "companion"
+#~ msgstr "companion"
+
+#~ msgid "memo"
+#~ msgstr "memo"
+
+#~ msgid "period_type"
+#~ msgstr "period_type"
+
+#~ msgid "period_start_date"
+#~ msgstr "period_start_date"
+
+#~ msgid "count"
+#~ msgstr "count"
+
+#~ msgid "name"
+#~ msgstr "name"
+
+#~ msgid "relationship_type"
+#~ msgstr "relationship_type"
+
+#~ msgid "position"
+#~ msgstr "position"
+
+#~ msgid "disambiguator"
+#~ msgstr "disambiguator"
+
+#~ msgid "traits"
+#~ msgstr "traits"
+
+#~ msgid "date"
+#~ msgstr "date"
+
+#~ msgid "schedule_time"
+#~ msgstr "schedule_time"
+
+#~ msgid "updated_at"
+#~ msgstr "updated_at"
+
+#~ msgid "message__message"
+#~ msgstr "message__message"
+
+#~ msgid "status"
+#~ msgstr "status"
+
+#~ msgid "is_read"
+#~ msgstr "is_read"
+
+#~ msgid "message_content"
+#~ msgstr "message_content"
+
+#~ msgid "opening"
+#~ msgstr "opening"
+
+#~ msgid "room"
+#~ msgstr "room"
+
+#~ msgid "start"
+#~ msgstr "start"
+
+#~ msgid "chat_history"
+#~ msgstr "chat_history"
+
+#~ msgid "chat"
+#~ msgstr "chat"
+
+#~ msgid "landing"
+#~ msgstr "landing"
+
+#~ msgid "narrative_setup"
+#~ msgstr "narrative_setup"
+
+#~ msgid "chat_response"
+#~ msgstr "chat_response"
+
+#~ msgid "record_feedback"
+#~ msgstr "record_feedback"
+
+#~ msgid "load_more_messages"
+#~ msgstr "load_more_messages"
+
+#~ msgid "signup"
+#~ msgstr "signup"
+
+#~ msgid "login"
+#~ msgstr "login"
+
+#~ msgid "logout"
+#~ msgstr "logout"
+
+#~ msgid "ai_status"
+#~ msgstr "ai_status"
+
+#~ msgid "edit_profile"
+#~ msgstr "edit_profile"
+
+#~ msgid "quiz_mode"
+#~ msgstr "quiz_mode"
+
+#~ msgid "start_quiz"
+#~ msgstr "start_quiz"
+
+#~ msgid "quiz_question"
+#~ msgstr "quiz_question"
+
+#~ msgid "quiz_history"
+#~ msgstr "quiz_history"
+
+#~ msgid "quiz"
+#~ msgstr "quiz"
+
+#~ msgid "schedule"
+#~ msgstr "schedule"
+
+#~ msgid "get_proactive_message"
+#~ msgstr "get_proactive_message"
+
+#~ msgid "check_notification"
+#~ msgstr "check_notification"
+
+#~ msgid "get_and_clear_pending_message"
+#~ msgstr "get_and_clear_pending_message"
+
+#~ msgid "get_interaction_dialog"
+#~ msgstr "get_interaction_dialog"
+
+#~ msgid "refrigerator_contents"
+#~ msgstr "refrigerator_contents"
+
+#~ msgid "consume_food"
+#~ msgstr "consume_food"
+
+#~ msgid "friend_management"
+#~ msgstr "friend_management"
+
+#~ msgid "api_friend_list"
+#~ msgstr "api_friend_list"
+
+#~ msgid "send_friend_request"
+#~ msgstr "send_friend_request"
+
+#~ msgid "accept_friend_request"
+#~ msgstr "accept_friend_request"
+
+#~ msgid "reject_friend_request"
+#~ msgstr "reject_friend_request"
+
+#~ msgid "delete_friend"
+#~ msgstr "delete_friend"
+
+#~ msgid "search_users"
+#~ msgstr "search_users"
+
+#~ msgid "send_friend_message"
+#~ msgstr "send_friend_message"
+
+#~ msgid "check_unread_friend_messages"
+#~ msgstr "check_unread_friend_messages"
+
+#~ msgid "get_and_mark_read_friend_message"
+#~ msgstr "get_and_mark_read_friend_message"
+
+#~ msgid "get_processed_unread_friend_message"
+#~ msgstr "get_processed_unread_friend_message"
+
+#~ msgid "bgm_player"
+#~ msgstr "bgm_player"

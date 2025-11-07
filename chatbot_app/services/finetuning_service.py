@@ -1,11 +1,10 @@
 import json
+from django.utils.translation import gettext_lazy as _
 from ..models import UserAttribute, UserRelationship
 from .prompt_service import build_persona_system_prompt
 
 def log_for_finetuning(system_prompt, user_message, assistant_message, filename="finetuning_dataset.jsonl"):
-    """
-    대화 턴을 파인튜닝을 위한 JSONL 파일에 추가합니다.
-    """
+    """%s""" % _("대화 턴을 파인튜닝을 위한 JSONL 파일에 추가합니다.")
     try:
         # OpenAI의 파인튜닝 형식에 맞는 데이터 구조
         training_example = {
@@ -22,12 +21,10 @@ def log_for_finetuning(system_prompt, user_message, assistant_message, filename=
 
     except Exception as e:
         # 메인 애플리케이션을 중단시키지 않고 콘솔에 오류를 기록합니다.
-        print(f"--- Could not write to fine-tuning log: {e} ---")
+        print(_("--- Could not write to fine-tuning log: {error} ---").format(error=e))
 
 def anonymize_and_log_finetuning_data(request, user_message_text, bot_message_text, explanation):
-    """
-    데이터를 익명화한 후 파인튜닝을 위해 기록합니다.
-    """
+    """%s""" % _("데이터를 익명화한 후 파인튜닝을 위해 기록합니다.")
     user = request.user
     finetuning_system_prompt = build_persona_system_prompt(user)
     
@@ -37,7 +34,7 @@ def anonymize_and_log_finetuning_data(request, user_message_text, bot_message_te
         if preferred_name_obj and preferred_name_obj.content:
             names_to_replace.add(preferred_name_obj.content)
     except Exception as e:
-        print(f"--- 로깅을 위한 선호 이름 검색 중 오류 발생: {e} ---")
+        print(_("--- 로깅을 위한 선호 이름 검색 중 오류 발생: {error} ---").format(error=e))
         pass
 
     generic_finetuning_prompt = finetuning_system_prompt
@@ -46,9 +43,9 @@ def anonymize_and_log_finetuning_data(request, user_message_text, bot_message_te
 
     for name in names_to_replace:
         if name:
-            generic_finetuning_prompt = generic_finetuning_prompt.replace(f"{name}님", '사용자님').replace(name, '사용자')
-            generic_bot_message = generic_bot_message.replace(f"{name}님", '사용자님').replace(name, '사용자')
-            generic_explanation = generic_explanation.replace(f"{name}님", '사용자님').replace(name, '사용자')
+            generic_finetuning_prompt = generic_finetuning_prompt.replace(f"{name}님", str(_('사용자님'))).replace(name, str(_('사용자')))
+            generic_bot_message = generic_bot_message.replace(f"{name}님", str(_('사용자님'))).replace(name, str(_('사용자')))
+            generic_explanation = generic_explanation.replace(f"{name}님", str(_('사용자님'))).replace(name, str(_('사용자')))
 
     try:
         relationships = UserRelationship.objects.filter(user=user)
@@ -60,7 +57,7 @@ def anonymize_and_log_finetuning_data(request, user_message_text, bot_message_te
                     generic_bot_message = generic_bot_message.replace(rel.name, placeholder)
                     generic_explanation = generic_explanation.replace(rel.name, placeholder) # 설명도 익명화
     except Exception as e:
-        print(f"--- 로깅을 위한 제3자 이름 대체 중 오류 발생: {e} ---")
+        print(_("--- 로깅을 위한 제3자 이름 대체 중 오류 발생: {error} ---").format(error=e))
         pass
 
     # 어시스턴트의 최종 콘텐츠를 JSON 형식으로 구성

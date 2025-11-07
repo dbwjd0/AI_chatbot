@@ -1,22 +1,23 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import gettext_lazy as _
 from ..models import QuizResult
 from ..services import quiz_service
 
 @login_required
 def quiz_history_view(request):
-    """사용자의 퀴즈 기록을 표시합니다."""
+    """%s""" % _("사용자의 퀴즈 기록을 표시합니다.")
     quiz_results = QuizResult.objects.filter(user=request.user).order_by('-date_completed')
     return render(request, 'quiz_history.html', {'quiz_results': quiz_results})
 
 @login_required
 def quiz_mode_view(request):
-    """퀴즈 모드 설정 페이지를 렌더링합니다."""
+    """%s""" % _("퀴즈 모드 설정 페이지를 렌더링합니다.")
     return render(request, 'quiz.html')
 
 @login_required
 def start_quiz_view(request):
-    """퀴즈 시작 요청을 처리하고 퀴즈 페이지로 리디렉션합니다."""
+    """%s""" % _("퀴즈 시작 요청을 처리하고 퀴즈 페이지로 리디렉션합니다.")
     if request.method == 'POST':
         genre = request.POST.get('genre')
         difficulty = request.POST.get('difficulty')
@@ -29,7 +30,7 @@ def start_quiz_view(request):
 
 @login_required
 def quiz_question_view(request):
-    """현재 퀴즈 질문을 표시하고, 답변을 처리하며, 퀴즈 흐름을 관리합니다."""
+    """%s""" % _("현재 퀴즈 질문을 표시하고, 답변을 처리하며, 퀴즈 흐름을 관리합니다.")
     context = {}
     
     if request.method == 'POST':
@@ -41,7 +42,11 @@ def quiz_question_view(request):
             # After processing answer, redirect to show feedback for the current question
             return redirect('quiz_question')
         elif action == 'next_question':
-            # Advance to the next question
+            # Check if quiz is already finished before advancing
+            if quiz_service.is_quiz_finished(request.session):
+                # If already finished, just redirect to show results
+                return redirect('quiz_question')
+            
             quiz_service.advance_question(request.session)
             # Clear feedback from session as we are moving to next question
             request.session.pop('quiz_feedback', None)

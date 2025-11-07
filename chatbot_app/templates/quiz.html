@@ -1,10 +1,14 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>퀴즈 모드</title>
+    <title>{% trans "퀴즈 모드" %}</title>
+    <script>
+        function gettext(text) { return text; }
+    </script>
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <style>
         #toggle-bgm-btn {
@@ -247,7 +251,7 @@
     </style>
 </head>
 <body {% if quiz_feedback %}data-character-emotion="{{ quiz_feedback.character_emotion }}"{% endif %}>
-    <button id="toggle-bgm-btn">BGM OFF</button>
+    <button id="toggle-bgm-btn">{% trans "BGM OFF" %}</button>
     <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
 
     <!-- 게임 페이지용 BGM (login.html 제외) -->
@@ -265,31 +269,33 @@
     {% include 'includes/top_menu.html' with show_room_link=True %}
     <div class="quiz-layout-wrapper">
         <div class="character-container">
-            <img id="chatbot-character" src="{% static 'img/quiz_girl.png' %}" alt="AI 비서">
+            <img id="chatbot-character" src="{% static 'img/quiz_girl.png' %}" alt="{% trans "AI 비서" %}">
             <div id="ai-emoticon-bubble" class="ai-emoticon-bubble" style="display: none;">
                 <img id="ai-emoticon-img" src="" alt="AI Emoticon">
             </div>
         </div>
         <div class="quiz-container">
-            {% if quiz_active %}
-                <h1>퀴즈 모드</h1>
-                <p>문제 {{ current_question_number }} / {{ total_questions }}</p>
+            {% if question %}
+                <h1>{% trans "퀴즈 모드" %}</h1>
+                <p>{% blocktrans %}문제 {{ current_question_number }} / {{ total_questions }}{% endblocktrans %}</p>
                 <div class="question-box">
                     <p>{{ question }}</p>
                     {% if quiz_feedback %}
                         <div class="quiz-feedback {% if quiz_feedback.is_correct %}correct{% else %}incorrect{% endif %}">
                             {% if quiz_feedback.is_correct %}
-                                정답입니다!
+                                {% trans "정답입니다!" %}
                             {% else %}
-                                오답입니다. 정답은 '{{ quiz_feedback.correct_answer }}' 입니다.
+                                {% blocktrans with correct_answer=quiz_feedback.correct_answer %}
+                                오답입니다. 정답은 '{{ correct_answer }}' 입니다.
+                                {% endblocktrans %}
                             {% endif %}
                         </div>
                         <form action="{% url 'quiz_question' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="next_question">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                                <button type="submit" class="btn btn-primary">다음 문제</button>
-                                <a href="{% url 'quiz_mode' %}" class="btn btn-secondary">처음으로 돌아가기</a>
+                                <button type="submit" class="btn btn-primary">{% trans "다음 문제" %}</button>
+                                <a href="{% url 'quiz_mode' %}" class="btn btn-secondary">{% trans "처음으로 돌아가기" %}</a>
                             </div>
                         </form>
                     {% else %}
@@ -305,49 +311,50 @@
                                 {% endfor %}
                             </div>
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                                <button type="submit" class="btn btn-primary">정답 제출</button>
-                                <a href="{% url 'quiz_mode' %}" class="btn btn-secondary">처음으로 돌아가기</a>
+                                <button type="submit" class="btn btn-primary">{% trans "정답 제출" %}</button>
+                                <a href="{% url 'quiz_mode' %}" class="btn btn-secondary">{% trans "처음으로 돌아가기" %}</a>
                             </div>
-                        </form>                    {% endif %}
+                        </form>
+                    {% endif %}
                 </div>
             {% elif quiz_finished %}
-                <h1>퀴즈 결과</h1>
+                <h1>{% trans "퀴즈 결과" %}</h1>
                 <div class="quiz-results">
-                    <h2>최종 점수: {{ final_score }} / {{ total_questions }}</h2>
-                    <p>수고하셨습니다!</p>
+                    <h2>{% blocktrans %}최종 점수: {{ final_score }} / {{ total_questions }}{% endblocktrans %}</h2>
+                    <p>{% trans "수고하셨습니다!" %}</p>
                     <div class="quiz-buttons-container" style="text-align: right;">
-                    <a href="{% url 'quiz_mode' %}" class="btn btn-primary">다시 퀴즈 시작</a>
-                    <a href="{% url 'quiz_history' %}" class="btn btn-secondary">퀴즈 기록 보기</a>
-                </div>
+                    <a href="{% url 'quiz_mode' %}" class="btn btn-primary">{% trans "다시 퀴즈 시작" %}</a>
+                                            <a href="{% url 'quiz_history' %}" class="btn btn-secondary">{% trans "퀴즈 기록 보기" %}</a>
+                    </div>
                 </div>
             {% else %}
-                <h1>퀴즈 모드</h1>
+                <h1>{% trans "퀴즈 모드" %}</h1>
                 <form action="{% url 'start_quiz' %}" method="post">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label for="genre">장르:</label>
+                        <label for="genre">{% trans "장르:" %}</label>
                         <select name="genre" id="genre" class="form-control">
-                            <option value="all">랜덤</option>
-                            <option value="korean_history">한국사</option>
-                            <option value="world_history">세계사</option>
-                            <option value="science">과학</option>
-                            <option value="literature">문학</option>
-                            <option value="general_knowledge">상식</option>
+                            <option value="all">{% trans "랜덤" %}</option>
+                            <option value="korean_history">{% trans "한국사" %}</option>
+                            <option value="world_history">{% trans "세계사" %}</option>
+                            <option value="science">{% trans "과학" %}</option>
+                            <option value="literature">{% trans "문학" %}</option>
+                            <option value="general_knowledge">{% trans "상식" %}</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="num_questions">문제 수:</label>
+                        <label for="num_questions">{% trans "문제 수:" %}</label>
                         <select name="num_questions" id="num_questions" class="form-control">
-                            <option value="10">10개</option>
-                            <option value="20">20개</option>
-                            <option value="30">30개</option>
-                            <option value="40">40개</option>
-                            <option value="50">50개</option>
+                            <option value="10">{% blocktrans %}10개{% endblocktrans %}</option>
+                            <option value="20">{% blocktrans %}20개{% endblocktrans %}</option>
+                            <option value="30">{% blocktrans %}30개{% endblocktrans %}</option>
+                            <option value="40">{% blocktrans %}40개{% endblocktrans %}</option>
+                            <option value="50">{% blocktrans %}50개{% endblocktrans %}</option>
                         </select>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                        <button type="submit" class="btn btn-primary">퀴즈 시작</button>
-                        <a href="{% url 'quiz_history' %}" class="btn btn-secondary">퀴즈 기록 보기</a>
+                        <button type="submit" class="btn btn-primary">{% trans "퀴즈 시작" %}</button>
+                    <a href="{% url 'quiz_history' %}" class="btn btn-secondary">{% trans "퀴즈 기록 보기" %}</a>
                     </div>
                 </form>
             {% endif %}
@@ -367,6 +374,18 @@
             'default': "{% static 'img/char_default.png' %}",
             '정답': "{% static 'img/Thumbs Up.png' %}", // Custom for quiz
             '오답': "{% static 'img/Thumbs Down.png' %}"   // Custom for quiz
+        };
+        const TRANSLATED_EMOTIONS = {
+            '생각': '{% trans "생각" %}',
+            '행복': '{% trans "행복" %}',
+            '슬픔': '{% trans "슬픔" %}',
+            '분노': '{% trans "분노" %}',
+            '놀람': '{% trans "놀람" %}',
+            '공포': '{% trans "공포" %}',
+            '혐오': '{% trans "혐오" %}',
+            '중립': '{% trans "중립" %}',
+            '정답': '{% trans "정답" %}',
+            '오답': '{% trans "오답" %}',
         };
 
         function updateCharacterEmotion(emotion) {
@@ -388,4 +407,5 @@
             }
         });
     </script>
+    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 </body>

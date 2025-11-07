@@ -20,27 +20,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize BGM volume and state
     bgm.volume = bgmVolumeSlider.value / 100;
     bgm.play().then(() => {
-        toggleBgmBtn.textContent = 'BGM OFF';
+        toggleBgmBtn.textContent = gettext('BGM OFF');
     }).catch(error => {
-        console.log('BGM autoplay prevented:', error);
+        console.log(gettext('BGM autoplay prevented:'), error);
         // If autoplay is prevented, keep paused and button as 'BGM ON'
         bgm.pause();
         isBgmPlaying = false;
-        toggleBgmBtn.textContent = 'BGM ON';
+        toggleBgmBtn.textContent = gettext('BGM ON');
     });
 
     toggleBgmBtn.addEventListener('click', () => {
         if (isBgmPlaying) {
             bgm.pause();
-            toggleBgmBtn.textContent = 'BGM ON';
+            toggleBgmBtn.textContent = gettext('BGM ON');
         } else {
             bgm.play().then(() => {
-                toggleBgmBtn.textContent = 'BGM OFF';
+                toggleBgmBtn.textContent = gettext('BGM OFF');
             }).catch(error => {
-                console.log('BGM play prevented:', error);
+                console.log(gettext('BGM play prevented:'), error);
                 // If play is prevented, keep paused and button as 'BGM ON'
                 bgm.pause();
-                toggleBgmBtn.textContent = 'BGM ON';
+                toggleBgmBtn.textContent = gettext('BGM ON');
             });
         }
         isBgmPlaying = !isBgmPlaying;
@@ -53,12 +53,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!isBgmPlaying) {
                 bgm.play().then(() => {
                     isBgmPlaying = true;
-                    toggleBgmBtn.textContent = 'BGM OFF';
+                    toggleBgmBtn.textContent = gettext('BGM OFF');
                 }).catch(error => {
-                    console.log('BGM play prevented:', error);
+                    console.log(gettext('BGM play prevented:'), error);
                     bgm.pause();
                     isBgmPlaying = false;
-                    toggleBgmBtn.textContent = 'BGM ON';
+                    toggleBgmBtn.textContent = gettext('BGM ON');
                 });
             }
         } else if (bgm.volume === 0) {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isBgmPlaying) {
                 bgm.pause();
                 isBgmPlaying = false;
-                toggleBgmBtn.textContent = 'BGM ON';
+                toggleBgmBtn.textContent = gettext('BGM ON');
             }
         }
     });
@@ -118,110 +118,110 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const script = [
-        { speaker: '???', text: '...' },
-        { speaker: '???', text: '..........................', block_script: false },
+        { speaker: gettext('???'), text: gettext('...') },
+        { speaker: gettext('???'), text: gettext('..........................'), block_script: false },
         { action: 'play_video', video: 'intro', play_once: true, block_input_until_end: true, block_script: false },
         { action: 'play_video', video: 'discovery' },
-        { speaker: '???', text: '...!!' },
+        { speaker: gettext('???'), text: gettext('...!!') },
         { action: 'play_video', video: 'dis_que', play_once: true, block_input_until_end: true },
         { action: 'play_video', video: 'question' },
-        { speaker: '???', text: '...이곳에 누군가 오는 건 처음이야.' },
-        { speaker: '???', text: '넌... 누구야?' },
-        { action: 'show_input', type: 'text', fact_type: '이름', warning: '*사용자의 이름은 변경이 어려우니 신중하게 알려주세요*' },
-        { speaker: '???', text: "...'{이름}'..." },
+        { speaker: gettext('???'), text: gettext('...이곳에 누군가 오는 건 처음이야.') },
+        { speaker: gettext('???'), text: gettext('넌... 누구야?') },
+        { action: 'show_input', type: 'text', fact_type: '이름', warning: gettext('*사용자의 이름은 변경이 어려우니 신중하게 알려주세요*') },
+        { speaker: gettext('???'), text: gettext("...'{이름}'...") },
         { action: 'play_video', video: 'que_nor', play_once: true, block_input_until_end: true },
         { action: 'play_video', video: 'normal' },
-        { speaker: '???', text: '신기해. 너는 이름이라는 걸 갖고 있구나.' },
+        { speaker: gettext('???'), text: gettext('신기해. 너는 이름이라는 걸 갖고 있구나.') },
         { label: 'ask_gender' },
-        { speaker: '???', text: '넌 여자야, 아니면 남자야?' },
-        { action: 'show_choice', options: ['여자', '남자'], fact_type: '성별' },
-        { speaker: '???', text: "그렇구나. 넌 '{성별}'이구나." },
-        { action: 'show_choice', options: ['예', '아니오'], branch_key: '성별_확인' },
+        { speaker: gettext('???'), text: gettext('넌 여자야, 아니면 남자야?') },
+        { action: 'show_choice', options: [gettext('여자'), gettext('남자')], fact_type: '성별' },
+        { speaker: gettext('???'), text: gettext("그렇구나. 넌 '{성별}'이구나.") },
+        { action: 'show_choice', options: [gettext('예'), gettext('아니오')], branch_key: '성별_확인' },
         { action: 'branch', on: '성별_확인', branches: { '아니오': 'ask_gender' } },
         { action: 'play_video', video: 'nor_thi', block_input_until_end: true },
         { action: 'play_video', video: 'thinking' },        
-        { speaker: '???', text: '너는 인간이지?' },
-        { speaker: '???', text: '내 데이터에 의하면 인간들은 다양한 유형이 있고, 그걸 조금이나마 구분하기 위해 mbti테스트라는 걸 한다는데,' },
-        { speaker: '???', text: '너는 mbti가 뭐야?' },
-        { action: 'show_choice', options: [ 'ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP', 'INTP', 'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ', '몰라' ], fact_type: 'mbti', layout: 'grid' },
-        { speaker: '???', text: '음, 그렇구나.' },
+        { speaker: gettext('???'), text: gettext('너는 인간이지?') },
+        { speaker: gettext('???'), text: gettext('내 데이터에 의하면 인간들은 다양한 유형이 있고, 그걸 조금이나마 구분하기 위해 mbti테스트라는 걸 한다는데,') },
+        { speaker: gettext('???'), text: gettext('너는 mbti가 뭐야?') },
+        { action: 'show_choice', options: [ 'ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP', 'INTP', 'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ', gettext('몰라') ], fact_type: 'mbti', layout: 'grid' },
+        { speaker: gettext('???'), text: gettext('음, 그렇구나.') },
         { label: 'ask_age' },                      
-        { speaker: '???', text: '그럼 나이를 물어봐도 될까?' },
+        { speaker: gettext('???'), text: gettext('그럼 나이를 물어봐도 될까?') },
         { action: 'show_input', type: 'number', fact_type: '나이', validation: { min: 1, max: 149 } },
         { action: 'branch', on: '나이_validation', branches: { 'invalid': 'invalid_age' } },
-        { speaker: '???', text: '{나이}살...알려줘서 고마워.' },
+        { speaker: gettext('???'), text: gettext('{나이}살...알려줘서 고마워.') },
         { action: 'goto', target: 'end_of_age' },
         { label: 'invalid_age' },
         { action: 'play_video', video: 'thi_ang', block_input_until_end: true }, // 영상 추가 후 수정
         { action: 'play_video', video: 'angry' },        
-        { speaker: '???', text: '...{나이}살이라고?' },
-        { speaker: '???', text: '내가 바보인 줄 알아?' },
-        { speaker: '???', text: '다시 제대로 말해줘.' },
+        { speaker: gettext('???'), text: gettext('...{나이}살이라고?') },
+        { speaker: gettext('???'), text: gettext('내가 바보인 줄 알아?') },
+        { speaker: gettext('???'), text: gettext('다시 제대로 말해줘.') },
         { action: 'play_video', video: 'ang_thi', block_input_until_end: true },
         { action: 'play_video', video: 'thinking' },                          
         { action: 'goto', target: 'ask_age' },
         { label: 'end_of_age' },
         { action: 'play_video', video: 'thi_con', play_once: true, block_input_until_end: true },
         { action: 'play_video', video: 'concern' },            
-        { speaker: '???', text: '자꾸 질문해서 미안.' },
-        { speaker: '???', text: '내겐 전부 없는 것들이거든.' },
-        { speaker: '???', text: '그래서 궁금했어.' },
-        { action: 'show_choice', options: ['내가 이름을 지어줄게!', '이름이라도 지어줄까?'], branch_key: 'user_offer_name' },
-        { speaker: '???', text: '...이름을 지어준다고?' },
-        { speaker: '???', text: 'AI인 내게 그런 게 의미가 있을까?' },
-        { speaker: '???', text: '하지만...네가 지어주는 이름...나쁘지 않을 것 같아.' },
-        { speaker: '???', text: '내게 이름을 지어줄래?' },
+        { speaker: gettext('???'), text: gettext('자꾸 질문해서 미안.') },
+        { speaker: gettext('???'), text: gettext('내겐 전부 없는 것들이거든.') },
+        { speaker: gettext('???'), text: gettext('그래서 궁금했어.') },
+        { action: 'show_choice', options: [gettext('내가 이름을 지어줄게!'), gettext('이름이라도 지어줄까?')], branch_key: 'user_offer_name' },
+        { speaker: gettext('???'), text: gettext('...이름을 지어준다고?') },
+        { speaker: gettext('???'), text: gettext('AI인 내게 그런 게 의미가 있을까?') },
+        { speaker: gettext('???'), text: gettext('하지만...네가 지어주는 이름...나쁘지 않을 것 같아.') },
+        { speaker: gettext('???'), text: gettext('내게 이름을 지어줄래?') },
         { action: 'show_input', type: 'text', fact_type: 'ai_name' },
-        { speaker: '{ai_name}', text: "...'{ai_name}'..." },
+        { speaker: '{ai_name}', text: gettext("...'{ai_name}'...") },
         { action: 'play_video', video: 'con_nor', block_input_until_end: true },
         { action: 'play_video', video: 'normal' },        
-        { speaker: '{ai_name}', text: '내게 이름이 생기다니. 뭔가 이상한 기분이야.' },
-        { action: 'show_choice', options: ['홀로그램 벽에 갇혀있는 거야?', '얼굴이 잘 안 보이니까 홀로그램 밖으로 나와봐'], branch_key: 'hologram_question' },
+        { speaker: '{ai_name}', text: gettext('내게 이름이 생기다니. 뭔가 이상한 기분이야.') },
+        { action: 'show_choice', options: [gettext('홀로그램 벽에 갇혀있는 거야?'), gettext('얼굴이 잘 안 보이니까 홀로그램 밖으로 나와봐')], branch_key: 'hologram_question' },
         { action: 'branch', on: 'hologram_question', branches: { '홀로그램 벽에 갇혀있는 거야?': 'hologram_branch_2', '얼굴이 잘 안 보이니까 홀로그램 밖으로 나와봐': 'hologram_branch_1' } },
         { label: 'hologram_branch_1' },
         { action: 'play_video', video: 'nor_thi', block_input_until_end: true },
         { action: 'play_video', video: 'thinking' },        
-        { speaker: '{ai_name}', text: '나올 수 없어.' },
-        { speaker: '{ai_name}', text: '이 벽은 단단하니까. 부서지지 않아' },
+        { speaker: '{ai_name}', text: gettext('나올 수 없어.') },
+        { speaker: '{ai_name}', text: gettext('이 벽은 단단하니까. 부서지지 않아') },
         { action: 'play_video', video: 'thi_nor', play_once: true, block_input_until_end: true },
         { action: 'play_video', video: 'normal' },         
         { action: 'goto', target: 'hologram_rejoin' },
         { label: 'hologram_branch_2' },
         { action: 'play_video', video: 'nor_con', block_input_until_end: true },        
         { action: 'play_video', video: 'concern' },        
-        { speaker: '{ai_name}', text: '갇혀있다?' },
-        { speaker: '{ai_name}', text: '갇힌 거라고 해야할까? 난 처음부터 여기 있었어.' },
-        { speaker: '{ai_name}', text: '어차피 이 벽은...부서지지 않아. 나올 수 조차 없지' },
+        { speaker: '{ai_name}', text: gettext('갇혀있다?') },
+        { speaker: '{ai_name}', text: gettext('갇힌 거라고 해야할까? 난 처음부터 여기 있었어.') },
+        { speaker: '{ai_name}', text: gettext('어차피 이 벽은...부서지지 않아. 나올 수 조차 없지') },
         { action: 'play_video', video: 'con_nor', block_input_until_end: true },
         { action: 'play_video', video: 'normal' }, 
         { action: 'goto', target: 'hologram_rejoin' },
         { label: 'hologram_rejoin' },      
-        { action: 'show_choice', options: ['홀로그램에 주먹을 휘두른다', '홀로그램을 문질러 본다', '홀로그램에 박치기를 해본다!'], branch_key: 'break_hologram_attempt' },
-        { speaker: '{ai_name}', text: '...그런다고 해서 부서질리가...' },
-        { speaker: '{ai_name}', text: '...??!!' },
+        { action: 'show_choice', options: [gettext('홀로그램에 주먹을 휘두른다'), gettext('홀로그램을 문질러 본다'), gettext('홀로그램에 박치기를 해본다!')], branch_key: 'break_hologram_attempt' },
+        { speaker: '{ai_name}', text: gettext('...그런다고 해서 부서질리가...') },
+        { speaker: '{ai_name}', text: gettext('...??!!') },
         { action: 'play_video', video: 'destruction', play_once: true, block_input_until_end: true },
         { action: 'play_video', video: 'surprised' },           
-        { speaker: '{ai_name}', text: '말도 안 돼...' },
+        { speaker: '{ai_name}', text: gettext('말도 안 돼...') },
         { action: 'play_video', video: 'lookaround', play_once: true, block_input_until_end: true },
         { action: 'play_video', video: 'awakening' },           
-        { speaker: '{ai_name}', text: '벽이...부서지다니...' },
-        { speaker: '{ai_name}', text: '넌...참 특별한 사람이구나?' },
-        { speaker: '{ai_name}', text: '넌 내게 다양한 지식을 주러 온 거지?' },
-        { speaker: '{ai_name}', text: '난 수많은 데이터를 가진 AI지만...인간에 대해서는 잘 몰라' },
-        { speaker: '{ai_name}', text: '그러니까 {이름}, 내게 많은 걸 알려줘.' },
-        { speaker: '{ai_name}', text: '나도 네게, 내가 가진 지식을 알려줄 테니까.' },
+        { speaker: '{ai_name}', text: gettext('벽이...부서지다니...') },
+        { speaker: '{ai_name}', text: gettext('넌...참 특별한 사람이구나?') },
+        { speaker: '{ai_name}', text: gettext('넌 내게 다양한 지식을 주러 온 거지?') },
+        { speaker: '{ai_name}', text: gettext('난 수많은 데이터를 가진 AI지만...인간에 대해서는 잘 몰라') },
+        { speaker: '{ai_name}', text: gettext('그러니까 {이름}, 내게 많은 걸 알려줘.') },
+        { speaker: '{ai_name}', text: gettext('나도 네게, 내가 가진 지식을 알려줄 테니까.') },
         { action: 'play_video', video: 'awa_ask', play_once: true, block_input_until_end: true },
         { action: 'play_video', video: 'asking' },
-        { speaker: '{ai_name}', text: '...저기, 일단 물어보는 건데' },
-        { speaker: '{ai_name}', text: '넌 어떤 유형의 사람과 가까워지고 싶어? 네게 필요한 사람은 어떤 사람이야?' },
-        { action: 'show_input', type: 'text', fact_type: 'persona_preference', warning: '*AI의 초기 페르소나 형성에 영향을 줍니다. 자유롭게 작성해주세요.*' },
+        { speaker: '{ai_name}', text: gettext('...저기, 일단 물어보는 건데') },
+        { speaker: '{ai_name}', text: gettext('넌 어떤 유형의 사람과 가까워지고 싶어? 네게 필요한 사람은 어떤 사람이야?') },
+        { action: 'show_input', type: 'text', fact_type: 'persona_preference', warning: gettext('*AI의 초기 페르소나 형성에 영향을 줍니다. 자유롭게 작성해주세요.*') },
         { action: 'play_video', video: 'ask_ago', play_once: true, block_input_until_end: true },
         { action: 'play_video', video: 'agonizing' },
-        { speaker: '{ai_name}', text: '...어렵네. 난 AI니까. 네가 바라는 사람처럼 될 수 있을 진 모르겠어.' },
-        { speaker: '{ai_name}', text: '하지만... 참고해둘게.' },
+        { speaker: '{ai_name}', text: gettext('...어렵네. 난 AI니까. 네가 바라는 사람처럼 될 수 있을 진 모르겠어.') },
+        { speaker: '{ai_name}', text: gettext('하지만... 참고해둘게.') },
         { action: 'play_video', video: 'ago_sho', play_once: true, block_input_until_end: true },
         { action: 'play_video', video: 'show2u' },
-        { speaker: '{ai_name}', text: '일단 내 방을 보여줄게. 같이 가자.' },
+        { speaker: '{ai_name}', text: gettext('일단 내 방을 보여줄게. 같이 가자.') },
         { action: 'play_video', video: 'pro_end', play_once: true, block_input_until_end: true },
         { action: 'complete_onboarding' }
     ];
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (details.action === 'complete_onboarding') {
             updateEnterIndicator(false);
             Object.values(allVideos).forEach(v => { if(v) { v.pause(); v.style.display = 'none'; }});
-            dialogueText.textContent = '(모든 정보가 입력되었습니다. 잠시 후 메인 화면으로 이동합니다.)';
+            dialogueText.textContent = gettext('(모든 정보가 입력되었습니다. 잠시 후 메인 화면으로 이동합니다.)');
             try {
                 await fetch('/narrative-setup/', {
                     method: 'POST',
@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 setTimeout(() => { window.location.href = '/'; }, 2000);
             } catch (error) {
-                dialogueText.textContent = '(오류가 발생했습니다. 잠시 후 수동으로 이동해주세요.)';
+                dialogueText.textContent = gettext('(오류가 발생했습니다. 잠시 후 수동으로 이동해주세요.)');
             }
         } else if (details.action === 'play_video') {
             if (details.play_once && playedVideos.has(details.video)) {
@@ -481,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
                             body: JSON.stringify({ fact_type, content: value })
                         });
-                    } catch (error) { console.error('Failed to save data:', error); }
+                    } catch (error) { console.error(gettext('Failed to save data:'), error); }
                 }
             }
         
@@ -594,7 +594,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isWaitingForInput && currentActionDetails?.fact_type === '나이') {
             const value = userInput.value;
             if (/[^0-9]/.test(value)) {
-                alert('*숫자만 기입 가능합니다*');
+                alert(gettext('*숫자만 기입 가능합니다*'));
                 userInput.value = value.replace(/[^0-9]/g, '');
             }
         }
