@@ -107,7 +107,7 @@
                     <tr>
                         <td>{{ attr.fact_type }}</td>
                         <td>{{ attr.content }}</td>
-                        <td><a href="{% url 'delete_user_attribute' attr.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('{% trans "정말로 삭제하시겠습니까?" %}');">{% trans "삭제" %}</a></td>
+                        <td><a href="{% url 'delete_user_attribute' attr.pk %}" class="btn btn-danger btn-sm" onclick="return confirm(MSG_CONFIRM_DELETE);">{% trans "삭제" %}</a></td>
                     </tr>
                 {% empty %}
                     <tr><td colspan="3">{% trans "저장된 속성 정보가 없습니다." %}</td></tr>
@@ -131,7 +131,7 @@
                     <tr>
                         <td>{{ act.activity_date }}</td>
                         <td>{{ act.memo }}</td>
-                        <td><a href="{% url 'delete_user_activity' act.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('{% trans "정말로 삭제하시겠습니까?" %}');">{% trans "삭제" %}</a></td>
+                        <td><a href="{% url 'delete_user_activity' act.pk %}" class="btn btn-danger btn-sm" onclick="return confirm(MSG_CONFIRM_DELETE);">{% trans "삭제" %}</a></td>
                     </tr>
                 {% empty %}
                     <tr><td colspan="3">{% trans "저장된 활동 정보가 없습니다." %}</td></tr>
@@ -155,7 +155,7 @@
                     <tr>
                         <td>{{ rel.name }}</td>
                         <td>{{ rel.relationship_type }}</td>
-                        <td><a href="{% url 'delete_user_relationship' rel.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('{% trans "정말로 삭제하시겠습니까?" %}');">{% trans "삭제" %}</a></td>
+                        <td><a href="{% url 'delete_user_relationship' rel.pk %}" class="btn btn-danger btn-sm" onclick="return confirm(MSG_CONFIRM_DELETE);">{% trans "삭제" %}</a></td>
                     </tr>
                 {% empty %}
                     <tr><td colspan="3">{% trans "저장된 인간관계 정보가 없습니다." %}</td></tr>
@@ -179,7 +179,7 @@
                     <tr>
                         <td>{{ sch.date }}</td>
                         <td>{{ sch.content }}</td>
-                        <td><a href="{% url 'delete_user_schedule' sch.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('{% trans "정말로 삭제하시겠습니까?" %}');">{% trans "삭제" %}</a></td>
+                        <td><a href="{% url 'delete_user_schedule' sch.pk %}" class="btn btn-danger btn-sm" onclick="return confirm(MSG_CONFIRM_DELETE);">{% trans "삭제" %}</a></td>
                     </tr>
                 {% empty %}
                     <tr><td colspan="3">{% trans "저장된 일정 정보가 없습니다." %}</td></tr>
@@ -190,4 +190,12 @@
 
     <a href="{% url 'ai_status' %}" class="back-link">{% trans "돌아가기" %}</a>
 </div>
+
+{% load i18n %}
+{% trans "정말로 삭제하시겠습니까?" as CONFIRM_DELETE %}
+
+<script>
+  const MSG_CONFIRM_DELETE = "{{ CONFIRM_DELETE|escapejs }}";
+</script>
+
 {% endblock %}
