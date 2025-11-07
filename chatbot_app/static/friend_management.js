@@ -1,7 +1,7 @@
 // static/friend_management.js
 
 document.addEventListener('DOMContentLoaded', function () {
-    console.log("friend_management.js loaded and DOMContentLoaded fired.");
+    console.log(gettext("friend_management.js loaded and DOMContentLoaded fired."));
 
     // CSRF 토큰을 쿠키에서 가져오는 함수 (Django 표준 방식)
     function getCookie(name) {
@@ -36,13 +36,13 @@ document.addEventListener('DOMContentLoaded', function () {
     searchBtn.addEventListener('click', function() {
         const query = searchInput.value.trim();
         if (!query) {
-            searchMessage.textContent = "검색할 사용자 이름을 입력하세요.";
+            searchMessage.textContent = gettext("검색할 사용자 이름을 입력하세요.");
             searchMessage.style.color = 'red';
             searchResultsDiv.innerHTML = '';
             return;
         }
 
-        searchMessage.textContent = "사용자 검색 중...";
+        searchMessage.textContent = gettext("사용자 검색 중...");
         searchMessage.style.color = 'orange';
         searchResultsDiv.innerHTML = '';
 
@@ -56,20 +56,20 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             if (data.status === 'success') {
                 if (data.users.length > 0) {
-                    searchMessage.textContent = `${data.users.length}명의 사용자를 찾았습니다.`;
+                    searchMessage.textContent = gettext(`${data.users.length}명의 사용자를 찾았습니다.`);
                     searchMessage.style.color = 'green';
                     data.users.forEach(user => {
                         const li = document.createElement('li');
                         li.classList.add('user-item');
                         let actionButton = '';
                         if (user.is_friend) {
-                            actionButton = '<span class="info-text">친구</span>';
+                            actionButton = `<span class="info-text">${gettext('친구')}</span>`;
                         } else if (user.has_pending_request_from_me) {
-                            actionButton = '<span class="info-text">요청 보냄</span>';
+                            actionButton = `<span class="info-text">${gettext('요청 보냄')}</span>`;
                         } else if (user.has_pending_request_to_me) {
-                            actionButton = '<span class="info-text">요청 받음</span>';
+                            actionButton = `<span class="info-text">${gettext('요청 받음')}</span>`;
                         } else {
-                            actionButton = `<button class="action-btn primary-btn send-request-search-btn" data-username="${user.username}">요청 보내기</button>`;
+                            actionButton = `<button class="action-btn primary-btn send-request-search-btn" data-username="${user.username}">${gettext('요청 보내기')}</button>`;
                         }
                         li.innerHTML = `
                             <span class="user-name">${user.username}</span>
@@ -84,24 +84,24 @@ document.addEventListener('DOMContentLoaded', function () {
                         });
                     });
                 } else {
-                    searchMessage.textContent = "검색 결과가 없습니다.";
+                    searchMessage.textContent = gettext("검색 결과가 없습니다.");
                     searchMessage.style.color = 'orange';
                 }
             } else {
-                searchMessage.textContent = `오류: ${data.message}`;
+                searchMessage.textContent = gettext(`오류: ${data.message}`);
                 searchMessage.style.color = 'red';
             }
         })
         .catch(error => {
-            console.error('사용자 검색 오류:', error);
-            searchMessage.textContent = '서버 통신 오류가 발생했습니다.';
+            console.error(gettext('사용자 검색 오류:'), error);
+            searchMessage.textContent = gettext('서버 통신 오류가 발생했습니다.');
             searchMessage.style.color = 'red';
         });
     });
 
     // 검색 결과에서 친구 요청 보내기
     function sendFriendRequestFromSearch(targetUsername) {
-        searchMessage.textContent = "요청 보내는 중...";
+        searchMessage.textContent = gettext("요청 보내는 중...");
         searchMessage.style.color = 'orange';
 
         const formData = new FormData();
@@ -123,13 +123,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 searchBtn.click(); 
                 loadFriendData(); // 친구 목록 및 요청 목록 새로고침
             } else {
-                searchMessage.textContent = `오류: ${data.message}`;
+                searchMessage.textContent = gettext(`오류: ${data.message}`);
                 searchMessage.style.color = 'red';
             }
         })
         .catch(error => {
-            console.error('친구 요청 오류:', error);
-            searchMessage.textContent = '서버 통신 오류가 발생했습니다.';
+            console.error(gettext('친구 요청 오류:'), error);
+            searchMessage.textContent = gettext('서버 통신 오류가 발생했습니다.');
             searchMessage.style.color = 'red';
         });
     }
@@ -140,12 +140,12 @@ document.addEventListener('DOMContentLoaded', function () {
     sendRequestBtn.addEventListener('click', function() {
         const targetUsername = searchInput.value.trim();
         if (!targetUsername) {
-            searchMessage.textContent = "사용자 이름을 입력하세요.";
+            searchMessage.textContent = gettext("사용자 이름을 입력하세요.");
             searchMessage.style.color = 'red';
             return;
         }
 
-        searchMessage.textContent = "요청 보내는 중...";
+        searchMessage.textContent = gettext("요청 보내는 중...");
         searchMessage.style.color = 'orange';
 
         const formData = new FormData();
@@ -166,13 +166,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 searchInput.value = ''; // 성공 시 입력 필드 초기화
                 loadFriendData(); // 친구 목록 및 요청 목록 새로고침
             } else {
-                searchMessage.textContent = `오류: ${data.message}`;
+                searchMessage.textContent = gettext(`오류: ${data.message}`);
                 searchMessage.style.color = 'red';
             }
         })
         .catch(error => {
-            console.error('친구 요청 오류:', error);
-            searchMessage.textContent = '서버 통신 오류가 발생했습니다.';
+            console.error(gettext('친구 요청 오류:'), error);
+            searchMessage.textContent = gettext('서버 통신 오류가 발생했습니다.');
             searchMessage.style.color = 'red';
         });
     });
@@ -194,14 +194,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 loadFriendData(); 
             } else {
                 // alert() 대신에 UI에 메시지를 표시하는 것이 더 좋습니다.
-                console.error(`요청 수락 실패: ${data.message}`);
+                console.error(gettext(`요청 수락 실패: ${data.message}`));
                 // 여기서는 간단히 alert을 사용하여 사용자에게 피드백을 줍니다.
-                alert(`요청 수락 실패: ${data.message}`); 
+                alert(gettext(`요청 수락 실패: ${data.message}`)); 
             }
         })
         .catch(error => {
-            console.error('친구 요청 수락 오류:', error);
-            alert('요청 수락 중 서버 통신 오류가 발생했습니다.');
+            console.error(gettext('친구 요청 수락 오류:'), error);
+            alert(gettext('요청 수락 중 서버 통신 오류가 발생했습니다.'));
         });
     };
 
@@ -220,13 +220,13 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.status === 'success' || data.status === 'info') {
                 loadFriendData(); 
             } else {
-                console.error(`요청 거절 실패: ${data.message}`);
-                alert(`요청 거절 실패: ${data.message}`); 
+                console.error(gettext(`요청 거절 실패: ${data.message}`));
+                alert(gettext(`요청 거절 실패: ${data.message}`)); 
             }
         })
         .catch(error => {
-            console.error('친구 요청 거절 오류:', error);
-            alert('요청 거절 중 서버 통신 오류가 발생했습니다.');
+            console.error(gettext('친구 요청 거절 오류:'), error);
+            alert(gettext('요청 거절 중 서버 통신 오류가 발생했습니다.'));
         });
     };
 
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 2.2. 친구 삭제 처리
     // ----------------------------------------------------
     const handleDeleteFriend = (friendshipId) => {
-        if (!confirm('정말로 이 친구를 삭제하시겠습니까?')) {
+        if (!confirm(gettext('정말로 이 친구를 삭제하시겠습니까?'))) {
             return;
         }
         fetch(`/friends/delete/${friendshipId}/`, {
@@ -248,13 +248,13 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.status === 'success') {
                 loadFriendData();
             } else {
-                console.error(`친구 삭제 실패: ${data.message}`);
-                alert(`친구 삭제 실패: ${data.message}`);
+                console.error(gettext(`친구 삭제 실패: ${data.message}`));
+                alert(gettext(`친구 삭제 실패: ${data.message}`));
             }
         })
         .catch(error => {
-            console.error('친구 삭제 오류:', error);
-            alert('친구 삭제 중 서버 통신 오류가 발생했습니다.');
+            console.error(gettext('친구 삭제 오류:'), error);
+            alert(gettext('친구 삭제 중 서버 통신 오류가 발생했습니다.'));
         });
     };
 
@@ -262,8 +262,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // 3. 친구 목록 및 요청 목록 로드
     // ----------------------------------------------------
     function loadFriendData() {
-        pendingList.innerHTML = '<li>데이터 로딩 중...</li>';
-        acceptedList.innerHTML = '<li>데이터 로딩 중...</li>';
+        pendingList.innerHTML = '<li>' + gettext('데이터 로딩 중...') + '</li>';
+        acceptedList.innerHTML = '<li>' + gettext('데이터 로딩 중...') + '</li>';
         
         fetch('/api/friends/') // 🌟 수정된 URL 사용 🌟
         .then(response => response.json())
@@ -313,10 +313,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                 data-age="${req.age}"
                                 data-mbti="${req.mbti}"
                                 data-gender="${req.gender}">
-                                프로필 보기
+                                ${gettext('프로필 보기')}
                             </button>
-                            <button class="action-btn accept-btn" data-request-id="${req.id}"><span class="emoji">✅</span> 수락</button>
-                            <button class="action-btn reject-btn" data-request-id="${req.id}"><span class="emoji">✖️</span> 거절</button>
+                            <button class="action-btn accept-btn" data-request-id="${req.id}"><span class="emoji">✅</span> ${gettext('수락')}</button>
+                            <button class="action-btn reject-btn" data-request-id="${req.id}"><span class="emoji">✖️</span> ${gettext('거절')}</button>
                         </div>
                     `;
                     pendingList.appendChild(li);
@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                 });
             } else {
-                pendingList.innerHTML = '<li>받은 친구 요청이 없습니다.</li>';
+                pendingList.innerHTML = '<li>' + gettext('받은 친구 요청이 없습니다.') + '</li>';
             }
 
             // 현재 친구 목록 렌더링
@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 data-age="${friend.age}"
                                 data-mbti="${friend.mbti}"
                                 data-gender="${friend.gender}">
-                                프로필 보기
+                                ${gettext('프로필 보기')}
                             </button>
                             <button class="action-btn secondary-btn delete-btn" data-friendship-id="${friend.id}"><span class="emoji">❌</span></button>
                         </div>
@@ -365,7 +365,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                 });
             } else {
-                acceptedList.innerHTML = '<li>현재 등록된 친구가 없습니다.</li>';
+                acceptedList.innerHTML = '<li>' + gettext('현재 등록된 친구가 없습니다.') + '</li>';
             }
 
             // 동적으로 생성된 '프로필 보기' 버튼에 이벤트 리스너 할당
@@ -379,15 +379,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     const mbti = this.dataset.mbti;
                     const gender = this.dataset.gender;
                     
-                    document.getElementById('modal-username').textContent = `닉네임: ${username}`; // 닉네임 표시
+                    document.getElementById('modal-username').textContent = gettext(`닉네임: ${username}`); // 닉네임 표시
                     document.getElementById('modal-profile-pic').src = profilePic;
                     
                     let profileDetails = ``;
-                    if (chatbotName) profileDetails += `챗봇 이름: ${chatbotName}<br>`;
-                    if (age) profileDetails += `나이: ${age}<br>`;
-                    if (mbti) profileDetails += `MBTI: ${mbti}<br>`;
-                    if (gender) profileDetails += `성별: ${gender}<br>`;
-                    if (statusMessage) profileDetails += `상태 메시지: ${statusMessage}<br>`;
+                    if (chatbotName) profileDetails += gettext(`챗봇 이름: ${chatbotName}<br>`);
+                    if (age) profileDetails += gettext(`나이: ${age}<br>`);
+                    if (mbti) profileDetails += gettext(`MBTI: ${mbti}<br>`);
+                    if (gender) profileDetails += gettext(`성별: ${gender}<br>`);
+                    if (statusMessage) profileDetails += gettext(`상태 메시지: ${statusMessage}<br>`);
 
                     document.getElementById('modal-profile-details').innerHTML = profileDetails; // 새로운 요소에 상세 정보 표시
                     document.getElementById('friend-profile-modal').style.display = 'flex'; // flex로 변경하여 중앙 정렬
@@ -395,9 +395,9 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         })
         .catch(error => {
-            console.error('친구 데이터 로드 오류:', error);
-            pendingList.innerHTML = '<li>친구 데이터를 불러오는 데 실패했습니다.</li>';
-            acceptedList.innerHTML = '<li>친구 데이터를 불러오는 데 실패했습니다.</li>';
+            console.error(gettext('친구 데이터 로드 오류:'), error);
+            pendingList.innerHTML = '<li>' + gettext('친구 데이터를 불러오는 데 실패했습니다.') + '</li>';
+            acceptedList.innerHTML = '<li>' + gettext('친구 데이터를 불러오는 데 실패했습니다.') + '</li>';
         });
     }
 

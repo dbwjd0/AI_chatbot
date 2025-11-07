@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function isValidGender(value) {
         const lowerValue = value.trim().toLowerCase();
-        return lowerValue.includes('남자') || lowerValue.includes('여자');
+        return lowerValue.includes(gettext('남자')) || lowerValue.includes(gettext('여자'));
     }
 
     function isValidAge(value) {
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!isValid) {
             event.preventDefault(); // 유효성 검사에 실패한 경우에만 기본 동작 방지
             characterImage.src = ANGRY_IMAGE_SRC;
-            questionText.textContent = '뭐야?? 제대로 알려줘!!!';
+            questionText.textContent = gettext('뭐야?? 제대로 알려줘!!!');
             answerInput.value = ''; // 입력 필드 지우기
             answerInput.disabled = true; // 입력 비활성화
             setupForm.querySelector('button[type="submit"]').disabled = true; // 제출 버튼 비활성화

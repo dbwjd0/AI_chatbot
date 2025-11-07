@@ -1,6 +1,8 @@
 import random
 from ..models import QuizResult
 from ..quiz_data import QUIZ_QUESTIONS
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as gt
 
 # ID로 질문을 빠르게 찾기 위한 딕셔너리 (메모리에 미리 생성)
 QUIZ_QUESTIONS_BY_ID = {q['id']: q for q in QUIZ_QUESTIONS}
@@ -76,7 +78,7 @@ def process_answer(session, user_answer):
         'is_correct': is_correct,
         'correct_answer': correct_answer,
         'user_answer': user_answer,
-        'character_emotion': '정답' if is_correct else '오답',
+        'character_emotion': gt('정답') if is_correct else gt('오답'),
     }
 
 def get_feedback(session): # Renamed from get_feedback_and_advance

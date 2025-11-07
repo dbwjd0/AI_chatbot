@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dialogBox = document.getElementById('dialog-box');
     const dialogSpeaker = document.getElementById('dialog-speaker');
     const dialogText = document.getElementById('dialog-text');
-    const chatbotName = document.querySelector('.container').dataset.chatbotName || '아이';
+    const chatbotName = document.querySelector('.container').dataset.chatbotName || gettext('아이');
 
     const refrigeratorModal = document.getElementById('refrigerator-modal');
     const refrigeratorCloseButton = refrigeratorModal.querySelector('.close-button');
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 처리 중 말풍선 초기화 ---
     processingBubble = document.createElement('div');
     processingBubble.id = 'processing-bubble';
-    processingBubble.textContent = '.'; // 초기 텍스트
+    processingBubble.textContent = gettext('.'); // 초기 텍스트
     room.appendChild(processingBubble);
 
     const obstacles = document.querySelectorAll('.furniture-object');
@@ -285,9 +285,9 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => {
             stopProcessingAnimation(); // 로딩 인디케이터 중지
-            console.error('Error fetching interaction dialog:', error);
+            console.error(gettext('Error fetching interaction dialog:'), error);
             // 에러 발생 시 기본 대사 출력
-            showDialog(`[${chatbotName}]`, '...');
+            showDialog(`[${chatbotName}]`, gettext('...'));
         });
     }
 
@@ -355,18 +355,13 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedConfirmationOption = 'yes';
 
         dialogSpeaker.textContent = `[${chatbotName}]`;
-        dialogText.textContent = '맛있는 냄새가 나는데, 냉장고를 열어볼까?';
-
-        const options = document.createElement('div');
-        options.className = 'dialog-options';
-
         const yesButton = document.createElement('button');
         yesButton.id = 'confirm-yes';
-        yesButton.textContent = '예';
+        yesButton.textContent = gettext('예');
 
         const noButton = document.createElement('button');
         noButton.id = 'confirm-no';
-        noButton.textContent = '아니요';
+        noButton.textContent = gettext('아니요');
 
         options.appendChild(yesButton);
         options.appendChild(noButton);
@@ -396,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 isDialogActive = true; // Prevent player movement
             })
             .catch(error => {
-                console.error('Error fetching refrigerator contents:', error);
+                console.error(gettext('Error fetching refrigerator contents:'), error);
             });
     }
 
@@ -405,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
         itemsContainer.innerHTML = ''; // 기존 아이템 삭제
 
         if (foods.length === 0) {
-            itemsContainer.innerHTML = '<p>냉장고가 비어있습니다.</p>';
+            itemsContainer.innerHTML = '<p>' + gettext('냉장고가 비어있습니다.') + '</p>';
             return;
         }
 
@@ -435,7 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             body: JSON.stringify({ food_name: foodName })
         })
-        .catch(error => console.error('Error consuming food:', error));
+        .catch(error => console.error(gettext('Error consuming food:'), error));
         
         const originalAnimation = playerImage.src; // 현재 애니메이션 저장
         isDialogActive = true; // 먹는 동안 움직임 방지
@@ -484,19 +479,19 @@ document.addEventListener('DOMContentLoaded', () => {
         isConfirmationActive = true;
         selectedConfirmationOption = 'yes';
 
-        dialogSpeaker.textContent = '[시스템]';
-        dialogText.textContent = '퀴즈 방으로 이동할까?';
+        dialogSpeaker.textContent = gettext('[시스템]');
+        dialogText.textContent = gettext('퀴즈 방으로 이동할까?');
 
         const options = document.createElement('div');
         options.className = 'dialog-options';
 
         const yesButton = document.createElement('button');
         yesButton.id = 'confirm-yes';
-        yesButton.textContent = '예';
+        yesButton.textContent = gettext('예');
 
         const noButton = document.createElement('button');
         noButton.id = 'confirm-no';
-        noButton.textContent = '아니요';
+        noButton.textContent = gettext('아니요');
 
         options.appendChild(yesButton);
         options.appendChild(noButton);
@@ -799,7 +794,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             })
             .catch(error => {
-                console.error('Error checking for proactive messages:', error);
+                console.error(gettext('Error checking for proactive messages:'), error);
                 notificationBubble.style.display = 'none';
             });
     }
@@ -830,13 +825,13 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 renderSchedules(data.schedules);
             })
-            .catch(error => console.error('스케줄 불러오기 오류:', error));
+            .catch(error => console.error(gettext('스케줄 불러오기 오류:'), error));
     };
 
     const renderSchedules = (schedules) => {
         scheduleListContainer.innerHTML = ''; // Clear existing list
         if (schedules.length === 0) {
-            scheduleListContainer.innerHTML = '<p>오늘의 일정이 없습니다. 새로운 일정을 추가해보세요!</p>';
+            scheduleListContainer.innerHTML = '<p>' + gettext('오늘의 일정이 없습니다. 새로운 일정을 추가해보세요!') + '</p>';
             return;
         }
 
@@ -845,11 +840,11 @@ document.addEventListener('DOMContentLoaded', () => {
             scheduleItem.className = 'schedule-item';
             scheduleItem.dataset.id = schedule.id;
             scheduleItem.innerHTML = `
-                <span class="schedule-time">${schedule.schedule_time || '시간 미지정'}</span>
+                <span class="schedule-time">${schedule.schedule_time ? new Date('1970-01-01T' + schedule.schedule_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : gettext('시간 미지정')}</span>
                 <span class="schedule-content">${schedule.content}</span>
                 <div class="schedule-actions">
-                    <button class="edit-schedule-btn" data-id="${schedule.id}">수정</button>
-                    <button class="delete-schedule-btn" data-id="${schedule.id}">삭제</button>
+                    <button class="edit-schedule-btn" data-id="${schedule.id}">${gettext('수정')}</button>
+                    <button class="delete-schedule-btn" data-id="${schedule.id}">${gettext('삭제')}</button>
                 </div>
             `;
             scheduleListContainer.appendChild(scheduleItem);
@@ -863,7 +858,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (scheduleToEdit) {
                     newScheduleTimeInput.value = scheduleToEdit.schedule_time || '09:00';
                     newScheduleTextarea.value = scheduleToEdit.content;
-                    addScheduleBtn.textContent = '일정 업데이트';
+                    addScheduleBtn.textContent = gettext('일정 업데이트');
                     editingScheduleId = id;
                 }
             });
@@ -872,7 +867,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scheduleListContainer.querySelectorAll('.delete-schedule-btn').forEach(button => {
             button.addEventListener('click', (event) => {
                 const id = parseInt(event.target.dataset.id);
-                if (confirm('정말로 이 일정을 삭제하시겠습니까?')) {
+                if (confirm(gettext('정말로 이 일정을 삭제하시겠습니까?'))) {
                     deleteSchedule(id);
                 }
             });
@@ -887,7 +882,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Reset new schedule input fields
         newScheduleTimeInput.value = '09:00';
         newScheduleTextarea.value = '';
-        addScheduleBtn.textContent = '일정 추가';
+        addScheduleBtn.textContent = gettext('일정 추가');
         editingScheduleId = null;
     };
 
@@ -902,7 +897,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const csrftoken = getCookie('csrftoken');
 
         if (!content) {
-            alert('일정 내용을 입력해주세요.');
+            alert(gettext('일정 내용을 입력해주세요.'));
             return;
         }
 
@@ -926,14 +921,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert(data.message);
                 newScheduleTextarea.value = '';
                 newScheduleTimeInput.value = '09:00';
-                addScheduleBtn.textContent = '일정 추가';
+                addScheduleBtn.textContent = gettext('일정 추가');
                 editingScheduleId = null;
                 fetchAndRenderSchedules(); // Re-fetch and render schedules
             } else {
-                alert('작업에 실패했습니다: ' + data.message);
+                alert(gettext('작업에 실패했습니다: ') + data.message);
             }d
         })
-        .catch(error => console.error('스케줄 저장 오류:', error));
+        .catch(error => console.error(gettext('스케줄 저장 오류:'), error));
     };
 
     const deleteSchedule = (id) => {
@@ -949,10 +944,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert(data.message);
                 fetchAndRenderSchedules(); // 스케줄 다시 불러와 렌더링
             } else {
-                alert('삭제에 실패했습니다: ' + data.message);
+                alert(gettext('삭제에 실패했습니다: ') + data.message);
             }
         })
-        .catch(error => console.error('스케줄 삭제 오류:', error));
+        .catch(error => console.error(gettext('스케줄 삭제 오류:'), error));
     };
 
     closeButton.addEventListener('click', closeModal);

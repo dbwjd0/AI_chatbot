@@ -1,11 +1,16 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>새로운 시작</title>
+    <title>{% trans "새로운 시작" %}</title>
     <link rel="stylesheet" href="{% static 'narrative_setup.css' %}">
+    <script>
+        function gettext(text) { return text; }
+    </script>
+    <script src="/jsi18n/"></script>
     <style>
         #enter-indicator {
             position: absolute;
@@ -59,7 +64,7 @@
     </style>
 </head>
 <body>
-    <button id="toggle-bgm-btn">BGM OFF</button>
+    <button id="toggle-bgm-btn">{% trans "BGM OFF" %}</button>
     <input type="range" id="bgm-volume-slider" min="0" max="100" value="100">
 
     <audio id="narrative-bgm" loop>
@@ -105,11 +110,11 @@
         <div id="choice-container"></div> <!-- 선택지 컨테이너 추가 -->
         <div class="input-area">
             <span class="input-prefix"></span>
-            <input type="text" id="user-input" placeholder="답변을 입력하세요...">
+            <input type="text" id="user-input" placeholder="{% trans "답변을 입력하세요..." %}">
             <span class="input-suffix"></span>
-            <button id="send-button">전송</button>
+            <button id="send-button">{% trans "전송" %}</button>
         </div>
-        <div id="enter-indicator">Enter</div>
+        <div id="enter-indicator">{% trans "Enter" %}</div>
     </div>
 
     <script src="{% static 'narrative_setup.js' %}"></script>

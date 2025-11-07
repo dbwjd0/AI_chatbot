@@ -3,6 +3,9 @@ import json
 import base64
 from openai import OpenAI
 
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as gt
+
 class ImageCaptioningService:
     _instance = None
     _client = None
