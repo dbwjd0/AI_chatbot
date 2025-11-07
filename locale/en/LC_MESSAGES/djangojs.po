@@ -111,6 +111,14 @@ msgstr "An error occurred while sending the message."
 msgid "Error checking unread messages:"
 msgstr "Error checking unread messages:"
 
+#: chatbot_app/static/chat.js:539
+msgid "어디보자... 새로운 쪽지가 와있는지 확인해볼게..."
+msgstr "Let's see... I'll check if there's a new message..."
+
+#: chatbot_app/static/chat.js:556
+msgid "님이 보낸 쪽지"
+msgstr "Message from you"
+
 #: .\chatbot_app\static\chat.js:559
 msgid "새로운 쪽지가 없는 것 같아."
 msgstr "It seems like there are no new messages."

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-07 10:08+0900\n"
+"POT-Creation-Date: 2025-11-07 12:28+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -620,8 +620,8 @@ msgid ""
 "[시스템 정보: 사용자의 활동 기록을 바탕으로 다음 추천을 생성했어. 이 내용을 "
 "참고해서 자연스럽게 제안해봐: '{recommendation}']"
 msgstr ""
-"[システム情報: ユーザーの活動記録に基づいて次の提案を生成したよ。この内容を"
-"参考にして自然に提案してみて: '{recommendation}']"
+"[システム情報: ユーザーの活動記録に基づいて次の提案を生成したよ。この内容を参"
+"考にして自然に提案してみて: '{recommendation}']"
 
 #: chatbot_app/services/context_service.py:52
 #, fuzzy
@@ -1244,13 +1244,6 @@ msgstr "種類"
 msgid "내용"
 msgstr "内容"
 
-#: chatbot_app/templates/personal_info.html:110
-#: chatbot_app/templates/personal_info.html:134
-#: chatbot_app/templates/personal_info.html:158
-#: chatbot_app/templates/personal_info.html:182
-msgid "정말로 삭제하시겠습니까?"
-msgstr "本当に削除しますか？"
-
 #: chatbot_app/templates/personal_info.html:113
 msgid "저장된 속성 정보가 없습니다."
 msgstr "保存された属性情報はありません。"
@@ -1291,6 +1284,10 @@ msgstr "保存されたスケジュール情報はありません。"
 #: chatbot_app/templates/personal_info.html:191
 msgid "돌아가기"
 msgstr "戻る"
+
+#: chatbot_app/templates/personal_info.html:195
+msgid "정말로 삭제하시겠습니까?"
+msgstr "本当に削除しますか？"
 
 #: chatbot_app/templates/quiz.html:8 chatbot_app/templates/quiz.html:279
 #: chatbot_app/templates/quiz.html:331
