@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-07 10:08+0900\n"
+"POT-Creation-Date: 2025-11-07 12:28+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1210,7 +1210,8 @@ msgstr "Personal Information"
 
 #: chatbot_app/templates/personal_info.html:87
 msgid "대화에서 추출된 나의 정보를 확인하고 관리할 수 있습니다."
-msgstr "You can review and manage the information extracted from your conversations."
+msgstr ""
+"You can review and manage the information extracted from your conversations."
 
 #: chatbot_app/templates/personal_info.html:96
 msgid "속성"
@@ -1225,13 +1226,6 @@ msgstr "Type"
 #: chatbot_app/templates/personal_info.html:173
 msgid "내용"
 msgstr "Content"
-
-#: chatbot_app/templates/personal_info.html:110
-#: chatbot_app/templates/personal_info.html:134
-#: chatbot_app/templates/personal_info.html:158
-#: chatbot_app/templates/personal_info.html:182
-msgid "정말로 삭제하시겠습니까?"
-msgstr "Are you sure you want to delete this?"
 
 #: chatbot_app/templates/personal_info.html:113
 msgid "저장된 속성 정보가 없습니다."
@@ -1250,15 +1244,13 @@ msgstr "Date"
 msgid "저장된 활동 정보가 없습니다."
 msgstr "No saved activity information."
 
-#: chatbot_app/templates/personal_info.html:144
-msgid "관계"
-msgstr "Relationships"
-
 #: chatbot_app/templates/personal_info.html:148
 msgid "이름"
 msgstr "Name"
 
-
+#: chatbot_app/templates/personal_info.html:149
+msgid "관계"
+msgstr "Relationships"
 
 #: chatbot_app/templates/personal_info.html:161
 msgid "저장된 인간관계 정보가 없습니다."
@@ -1276,6 +1268,10 @@ msgstr "No saved schedule information."
 msgid "돌아가기"
 msgstr "Return to Room"
 
+#: chatbot_app/templates/personal_info.html:195
+msgid "정말로 삭제하시겠습니까?"
+msgstr "Are you sure you want to delete this?"
+
 #: chatbot_app/templates/quiz.html:8 chatbot_app/templates/quiz.html:279
 #: chatbot_app/templates/quiz.html:331
 msgid "퀴즈 모드"
@@ -1291,13 +1287,16 @@ msgid "정답입니다!"
 msgstr "Correct!"
 
 #: chatbot_app/templates/quiz.html:288
+#, python-format
 msgid ""
 "\n"
-"                                오답입니다. 정답은 '%(correct_answer)s' 입니다.\n"
+"                                오답입니다. 정답은 '%(correct_answer)s' 입니"
+"다.\n"
 "                                "
 msgstr ""
 "\n"
-"                                Incorrect. The correct answer is '%(correct_answer)s'.\n"
+"                                Incorrect. The correct answer is "
+"'%(correct_answer)s'.\n"
 "                                "
 
 #: chatbot_app/templates/quiz.html:297
@@ -1816,7 +1815,6 @@ msgid "캐릭터가 있는 방 페이지를 렌더링합니다."
 msgstr "Renders the room page with the character."
 
 #: chatbot_app/views/main.py:85
-
 msgid "채팅 기록 페이지를 렌더링합니다. (페이지네이션 및 번역 적용)"
 msgstr "Renders the chat history page. (Pagination applied)"
 

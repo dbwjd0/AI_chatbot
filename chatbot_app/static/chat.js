@@ -537,7 +537,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // 2. API 호출 전에 즉시 사용자에게 상태를 알립니다.
-            queueAiMessage("어디보자... 새로운 쪽지가 와있는지 확인해볼게...");
+            queueAiMessage(gettext("어디보자... 새로운 쪽지가 와있는지 확인해볼게..."));
             // 쪽지 버튼을 즉시 숨겨 중복 클릭을 방지합니다.
             unreadMessagesButton.style.display = 'none';
             unreadMessagesButton.querySelector('.unread-indicator').textContent = '0';
@@ -552,7 +552,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     // 받아온 메시지들을 순서대로 대화 큐에 추가합니다.
                     data.messages.forEach(msg => {
 
-                        const formattedMessage = gettext(`[${msg.sender}님이 보낸 쪽지] ${msg.content}`);
+                        const translatedSenderPart = gettext('님이 보낸 쪽지');
+                        const formattedMessage = `[${msg.sender}${translatedSenderPart}] ${msg.content}`;
 
                         queueAiMessage(formattedMessage);
                     });
