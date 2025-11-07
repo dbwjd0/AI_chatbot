@@ -110,10 +110,26 @@ def friend_list_view(request):
         chatbot_name = friend_profile.chatbot_name if friend_profile else ''
 
         # 친구의 UserAttribute 정보 가져오기
-        friend_attributes = {
+        # 필터링은 항상 원본 한국어 키로 수행
+        friend_attributes_raw = {
             attr.fact_type: attr.content
-            for attr in UserAttribute.objects.filter(user=friend_user, fact_type__in=[_('나이'), _('mbti'), _('성별')])
+            for attr in UserAttribute.objects.filter(user=friend_user, fact_type__in=['나이', 'mbti', '성별'])
         }
+
+        user_language = get_language()
+        
+        # 가져온 속성 값들을 현재 언어에 맞춰 번역
+        translated_age = friend_attributes_raw.get('나이', '')
+        translated_mbti = friend_attributes_raw.get('mbti', '')
+        translated_gender = friend_attributes_raw.get('성별', '')
+
+        if user_language != 'ko':
+            if translated_age:
+                translated_age = lang_util.translate_from_korean(translated_age, target_lang=user_language)
+            if translated_mbti:
+                translated_mbti = lang_util.translate_from_korean(translated_mbti, target_lang=user_language)
+            if translated_gender:
+                translated_gender = lang_util.translate_from_korean(translated_gender, target_lang=user_language)
 
         accepted_friends_list.append({
             'id': friendship.id,
@@ -121,9 +137,9 @@ def friend_list_view(request):
             'profile_picture_url': profile_picture_url,
             'status_message': status_message,
             'chatbot_name': chatbot_name,
-            'age': friend_attributes.get(_('나이'), ''),
-            'mbti': friend_attributes.get(_('mbti'), ''),
-            'gender': friend_attributes.get(_('성별'), ''),
+            'age': translated_age,
+            'mbti': translated_mbti,
+            'gender': translated_gender,
         })
 
     # 1.2. 받은 친구 요청 목록 (to_user=나 AND status=PENDING) 검색
@@ -142,10 +158,24 @@ def friend_list_view(request):
         chatbot_name = sender_profile.chatbot_name if sender_profile else ''
 
         # 요청을 보낸 사용자의 UserAttribute 정보 가져오기
-        sender_attributes = {
+        # 필터링은 항상 원본 한국어 키로 수행
+        sender_attributes_raw = {
             attr.fact_type: attr.content
-            for attr in UserAttribute.objects.filter(user=sender_user, fact_type__in=[_('나이'), _('mbti'), _('성별')])
+            for attr in UserAttribute.objects.filter(user=sender_user, fact_type__in=['나이', 'mbti', '성별'])
         }
+
+        # 가져온 속성 값들을 현재 언어에 맞춰 번역
+        translated_sender_age = sender_attributes_raw.get('나이', '')
+        translated_sender_mbti = sender_attributes_raw.get('mbti', '')
+        translated_sender_gender = sender_attributes_raw.get('성별', '')
+
+        if user_language != 'ko':
+            if translated_sender_age:
+                translated_sender_age = lang_util.translate_from_korean(translated_sender_age, target_lang=user_language)
+            if translated_sender_mbti:
+                translated_sender_mbti = lang_util.translate_from_korean(translated_sender_mbti, target_lang=user_language)
+            if translated_sender_gender:
+                translated_sender_gender = lang_util.translate_from_korean(translated_sender_gender, target_lang=user_language)
 
         pending_requests_list.append({
             'id': request_obj.id,
@@ -153,9 +183,9 @@ def friend_list_view(request):
             'profile_picture_url': profile_picture_url,
             'status_message': status_message,
             'chatbot_name': chatbot_name,
-            'age': sender_attributes.get(_('나이'), ''),
-            'mbti': sender_attributes.get(_('mbti'), ''),
-            'gender': sender_attributes.get(_('성별'), ''),
+            'age': translated_sender_age,
+            'mbti': translated_sender_mbti,
+            'gender': translated_sender_gender,
         })
 
     return JsonResponse({

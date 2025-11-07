@@ -379,15 +379,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     const mbti = this.dataset.mbti;
                     const gender = this.dataset.gender;
                     
-                    document.getElementById('modal-username').textContent = gettext(`닉네임: ${username}`); // 닉네임 표시
+                    document.getElementById('modal-username').textContent = `${gettext('닉네임')}: ${username}`;
                     document.getElementById('modal-profile-pic').src = profilePic;
                     
                     let profileDetails = ``;
-                    if (chatbotName) profileDetails += gettext(`챗봇 이름: ${chatbotName}<br>`);
-                    if (age) profileDetails += gettext(`나이: ${age}<br>`);
-                    if (mbti) profileDetails += gettext(`MBTI: ${mbti}<br>`);
-                    if (gender) profileDetails += gettext(`성별: ${gender}<br>`);
-                    if (statusMessage) profileDetails += gettext(`상태 메시지: ${statusMessage}<br>`);
+                    if (chatbotName) profileDetails += `${gettext('챗봇 이름')}: ${chatbotName}<br>`;
+                    if (age) profileDetails += `${gettext('나이')}: ${age}<br>`;
+                    if (mbti) profileDetails += `${gettext('MBTI')}: ${mbti}<br>`;
+                    if (gender) profileDetails += `${gettext('성별')}: ${gender}<br>`;
+                    if (statusMessage) profileDetails += `${gettext('상태 메시지')}: ${statusMessage}<br>`;
 
                     document.getElementById('modal-profile-details').innerHTML = profileDetails; // 새로운 요소에 상세 정보 표시
                     document.getElementById('friend-profile-modal').style.display = 'flex'; // flex로 변경하여 중앙 정렬
