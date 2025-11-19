@@ -355,6 +355,11 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedConfirmationOption = 'yes';
 
         dialogSpeaker.textContent = `[${chatbotName}]`;
+        dialogText.textContent = '맛있는 냄새가 나는데, 냉장고를 열어볼까?';
+
+        const options = document.createElement('div');
+        options.className = 'dialog-options';
+
         const yesButton = document.createElement('button');
         yesButton.id = 'confirm-yes';
         yesButton.textContent = gettext('예');

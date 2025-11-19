@@ -6,7 +6,7 @@ from django.utils import timezone
 import re
 import json # json 모듈 임포트
 from django.db.models import Q
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 from django.utils.translation import get_language
 from ..models import UserProfile, ChatMessage, UserAttribute, UserRelationship, PendingProactiveMessage, QuizResult, UserFriendship, FriendMessage # FriendMessage 모델 추가
 from chatbot_app.services.proactive_service import generate_proactive_message
@@ -369,7 +369,7 @@ def consume_food_view(request):
             food_name = data.get('food_name')
 
             if not food_name:
-                return JsonResponse({'status': 'error', 'message': _('Food name not provided')}, status=400)
+                return JsonResponse({'status': 'error', 'message': 'Food name not provided'}, status=400)
 
             eaten_foods = request.session.get('eaten_foods', [])
             
@@ -378,13 +378,13 @@ def consume_food_view(request):
             
             request.session['eaten_foods'] = foods_to_keep
             
-            return JsonResponse({'status': 'success', 'message': _('{food_name} consumed.').format(food_name=food_name)})
+            return JsonResponse({'status': 'success', 'message': '{food_name} consumed.'.format(food_name=food_name)})
 
         except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': _('Invalid JSON')}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
     
-    return JsonResponse({'status': 'error', 'message': _('Invalid request method')}, status=405)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
 def bgm_player_view(request):
-    """%s""" % _("Renders the BGM player HTML for the iframe.")
+    """%s""" % "Renders the BGM player HTML for the iframe."
     return render(request, 'bgm/bgm_player.html')

@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 from django.utils.translation import get_language
 from ..services import chat_service, emotion_service, finetuning_service, rl_agent_service, lang_util
 from ..models import UserProfile
@@ -129,7 +129,7 @@ def chat_response(request):
             'state_vector': trajectory[-1]['state'] if trajectory else None,
         })
 
-    return JsonResponse({'error': _('Invalid request')}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 @login_required
 @require_POST
