@@ -1,10 +1,11 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>츤데레 AI 비서</title>
+    <title>{% trans "츤데레 AI 비서" %}</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <style>
         #toggle-bgm-btn {
@@ -50,7 +51,7 @@
     </style>
 </head>
 <body>
-    <button id="toggle-bgm-btn">BGM OFF</button>
+    <button id="toggle-bgm-btn">{% trans "BGM OFF" %}</button>
     <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
     <div class="container">
     {% include 'includes/top_menu.html' with show_room_link=True %}
@@ -60,13 +61,13 @@
                     {% for message in chat_messages %}
                         <div class="message {% if message.is_user %}user-message{% else %}bot-message{% endif %}">
                             {% if message.image %}
-                                <img src="{{ message.image.url }}" alt="User image" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 5px;">
+                                <img src="{{ message.image.url }}" alt="{% trans "User image" %}" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 5px;">
                             {% endif %}
                             <p>{{ message.message }}</p>
                         </div>
                     {% empty %}
                         <div class="message bot-message">
-                            <p>... (삐빅) ... 흥, 드디어 왔네. 뭘 시킬 셈이야?</p>
+                            <p>{% trans "... (삐빅) ... 흥, 드디어 왔네. 뭘 시킬 셈이야?" %}</p>
                         </div>
                     {% endfor %}
                 </div>
@@ -87,6 +88,16 @@
             '중립': "{% static 'img/char_default.png' %}",
             'default': "{% static 'img/char_default.png' %}" // 기본값
         };
+        const TRANSLATED_EMOTIONS = {
+            '생각': '{% trans "생각" %}',
+            '행복': '{% trans "행복" %}',
+            '슬픔': '{% trans "슬픔" %}',
+            '분노': '{% trans "분노" %}',
+            '놀람': '{% trans "놀람" %}',
+            '공포': '{% trans "공포" %}',
+            '혐오': '{% trans "혐오" %}',
+            '중립': '{% trans "중립" %}',
+        };
     </script>
     <script src="{% static 'chat_history.js' %}"></script>
 
@@ -96,5 +107,6 @@
     </audio>
 
     <script src="{% static 'bgm.js' %}"></script>
+    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 </body>
 </html>

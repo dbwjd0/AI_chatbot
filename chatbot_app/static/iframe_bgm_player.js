@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Attempt to play BGM
     // Autoplay policies might prevent this, so we'll rely on parent window to initiate play
     bgm.play().catch(error => {
-        console.log("BGM autoplay in iframe failed:", error);
+        console.log(gettext("BGM autoplay in iframe failed:"), error);
         // If autoplay fails, try to play when parent sends a 'play' message
     });
 
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         switch (message.command) {
             case 'play':
-                bgm.play().catch(error => console.log("Play command failed:", error));
+                bgm.play().catch(error => console.log(gettext("Play command failed:"), error));
                 break;
             case 'pause':
                 bgm.pause();
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (message.value) {
                     bgm.src = message.value;
                     bgm.load();
-                    bgm.play().catch(error => console.log("Load track and play failed:", error));
+                    bgm.play().catch(error => console.log(gettext("Load track and play failed:"), error));
                 }
                 break;
         }

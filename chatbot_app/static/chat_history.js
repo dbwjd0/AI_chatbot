@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            let formattedDate = `[${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일]`;
+            let formattedDate = gettext(`[${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일]`);
 
             if (lastDate !== formattedDate) {
                 const separatorDiv = document.createElement('div');
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 hasNextPage = data.has_next_page;
             } catch (error) {
-                console.error('Error loading more messages:', error);
+                console.error(gettext('Error loading more messages:'), error);
             }
             isLoading = false;
         }

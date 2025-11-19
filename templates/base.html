@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -22,5 +23,6 @@
     <iframe id="bgm-iframe" src="{% url 'bgm_player' %}" style="display:none;" allow="autoplay"></iframe>
     <script src="{% static 'main_bgm_controller.js' %}"></script>
     {% block extra_js %}{% endblock %}
+    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 </body>
 </html>

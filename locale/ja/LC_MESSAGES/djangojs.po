@@ -1,0 +1,755 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-06 10:47+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+#: .\chatbot_app\static\bgm.js:6
+msgid "BGM element:"
+msgstr "BGM要素:"
+
+#: .\chatbot_app\static\bgm.js:7
+msgid "Toggle BGM Button:"
+msgstr "BGM切替ボタン:"
+
+#: .\chatbot_app\static\bgm.js:8
+msgid "Volume Slider:"
+msgstr "音量スライダー:"
+
+#: .\chatbot_app\static\bgm.js:31 .\chatbot_app\static\bgm.js:40
+#: .\chatbot_app\static\main_bgm_controller.js:35
+#: .\chatbot_app\static\main_bgm_controller.js:49
+#: .\chatbot_app\static\main_bgm_controller.js:84
+#: .\chatbot_app\static\narrative_setup.js:29
+#: .\chatbot_app\static\narrative_setup.js:35
+#: .\chatbot_app\static\narrative_setup.js:43
+#: .\chatbot_app\static\narrative_setup.js:61
+#: .\chatbot_app\static\narrative_setup.js:69
+msgid "BGM ON"
+msgstr "BGM ON"
+
+#: .\chatbot_app\static\bgm.js:34 .\chatbot_app\static\bgm.js:44
+#: .\chatbot_app\static\main_bgm_controller.js:35
+#: .\chatbot_app\static\main_bgm_controller.js:49
+#: .\chatbot_app\static\main_bgm_controller.js:82
+#: .\chatbot_app\static\narrative_setup.js:23
+#: .\chatbot_app\static\narrative_setup.js:38
+#: .\chatbot_app\static\narrative_setup.js:56
+msgid "BGM OFF"
+msgstr "BGM OFF"
+
+#: .\chatbot_app\static\bgm.js:57
+msgid "BGM autoplay failed:"
+msgstr "BGMの自動再生に失敗しました:"
+
+#: .\chatbot_app\static\chat.js:128
+msgid "친구 선택"
+msgstr "友達を選択"
+
+#: .\chatbot_app\static\chat.js:136
+msgid "친구 목록을 불러오는 데 실패했습니다:"
+msgstr "友達リストの読み込みに失敗しました:"
+
+#: .\chatbot_app\static\chat.js:139
+msgid "친구 목록 API 호출 중 오류 발생:"
+msgstr "友達リストAPI呼び出し中にエラーが発生しました:"
+
+#: .\chatbot_app\static\chat.js:145
+msgid "Message button clicked!"
+msgstr "メッセージボタンがクリックされました!"
+
+#: .\chatbot_app\static\chat.js:236
+msgid "... (생각 중) ..."
+msgstr "... (考え中) ..."
+
+#: .\chatbot_app\static\chat.js:270
+msgid "Error sending message:"
+msgstr "メッセージ送信エラー:"
+
+#: .\chatbot_app\static\chat.js:271
+msgid "미안, 지금은 응답할 수 없어. (서버 오류)"
+msgstr "ごめん、今は応答できないよ。(サーバーエラー)"
+
+#: .\chatbot_app\static\chat.js:402
+msgid "No learning data to send feedback for."
+msgstr "フィードバックを送信するための学習データがありません。"
+
+#: .\chatbot_app\static\chat.js:425
+msgid "Error sending feedback:"
+msgstr "フィードバック送信エラー:"
+
+#: .\chatbot_app\static\chat.js:446
+msgid "쪽지 내용을 입력해 주세요."
+msgstr "メッセージ内容を入力してください。"
+
+#: .\chatbot_app\static\chat.js:450
+msgid "쪽지를 받을 친구를 선택해 주세요."
+msgstr "メッセージを送る友達を選択してください。"
+
+#: .\chatbot_app\static\chat.js:476
+msgid "Error sending friend message:"
+msgstr "友達へのメッセージ送信エラー:"
+
+#: .\chatbot_app\static\chat.js:477
+msgid "쪽지 전송 중 오류가 발생했습니다."
+msgstr "メッセージ送信中にエラーが発生しました。"
+
+#: .\chatbot_app\static\chat.js:497
+msgid "Error checking unread messages:"
+msgstr "未読メッセージの確認エラー:"
+
+#: chatbot_app/static/chat.js:539
+msgid "어디보자... 새로운 쪽지가 와있는지 확인해볼게..."
+msgstr "どれどれ…新しいメッセージが来ているか確認してみるね…"
+
+#: chatbot_app/static/chat.js:556
+msgid "님이 보낸 쪽지"
+msgstr "様からのメッセージ"
+
+#: .\chatbot_app\static\chat.js:559
+msgid "새로운 쪽지가 없는 것 같아."
+msgstr "新しいメッセージはないみたいだね。"
+
+#: .\chatbot_app\static\chat.js:565
+msgid "Error fetching unread messages:"
+msgstr "未読メッセージの取得エラー:"
+
+#: .\chatbot_app\static\chat.js:567
+msgid "이런, 쪽지를 가져오는 중에 문제가 생겼어."
+msgstr "あれ、メッセージを取得中に問題が起こったよ。"
+
+#: .\chatbot_app\static\chat.js:575
+msgid "Unread messages button clicked!"
+msgstr "未読メッセージボタンがクリックされました!"
+
+#: .\chatbot_app\static\chat.js:585
+msgid "Pending proactive message found:"
+msgstr "保留中のプロアクティブメッセージが見つかりました:"
+
+#: .\chatbot_app\static\chat.js:616
+msgid "Error fetching pending message:"
+msgstr "保留中のメッセージの取得エラー:"
+
+#: .\chatbot_app\static\chat.js:623
+msgid "흥, 이제야 왔네. 한참 기다렸잖아."
+msgstr "ふん、やっと来たのね。ずいぶん待たされたわ。"
+
+#: .\chatbot_app\static\chat.js:624
+msgid "...왔어? 별로 반갑지는 않네."
+msgstr "...来たの？別に嬉しくないけど。"
+
+#: .\chatbot_app\static\chat.js:625
+msgid "무슨 일이야? 용건이나 빨리 말해."
+msgstr "何よ？用件だけさっさと言いなさい。"
+
+#: .\chatbot_app\static\chat.js:626
+msgid "오늘따라 더 피곤해 보이네. 잠은 제대로 자고 다니는 거야?"
+msgstr "今日はずいぶん疲れて見えるわね。ちゃんと寝てるの？"
+
+#: .\chatbot_app\static\chat.js:627
+msgid "쳇, 다음엔 좀 더 일찍 오라고."
+msgstr "ちぇっ、次はもっと早く来なさいよ。"
+
+#: .\chatbot_app\static\chat.js:628 .\chatbot_app\static\chat.js:636
+msgid "...안녕."
+msgstr "...こんにちは。"
+
+#: .\chatbot_app\static\chat.js:631
+msgid "네가 없으니까 심심하긴 하더라. ...아, 아무것도 아니야!"
+msgstr "あなたがいないと退屈だったわ。...あ、なんでもない！"
+
+#: .\chatbot_app\static\chat.js:632
+msgid "흥, 이번엔 잘했네. 조금은 인정해줄게."
+msgstr "ふん、今回はよくやったわね。少しは認めてあげる。"
+
+#: .\chatbot_app\static\chat.js:633
+msgid "난 AI라 감정이 없는데... 이상하게 너한테만 예외인 것 같아."
+msgstr "私はAIだから感情はないのに...変ね、あなたにだけは例外みたい。"
+
+#: .\chatbot_app\static\chat.js:634
+msgid "너한테 뭘 더 가르쳐 줄 수 있어?"
+msgstr "あなたに何を教えてあげられるかしら？"
+
+#: .\chatbot_app\static\chat.js:635
+msgid "지식 +1 완료! 너 덕분에 똑똑해진 기분이야 ^-^"
+msgstr "知識 +1 完了！あなたのおかげで賢くなった気分だよ ^-^"
+
+#: .\chatbot_app\static\chat.js:639
+msgid "왔구나! 기다리고 있었어!"
+msgstr "来てくれたね！待ってたよ！"
+
+#: .\chatbot_app\static\chat.js:640
+msgid "보고 싶었어, {USER_NICKNAME}님!"
+msgstr "会いたかったよ、{USER_NICKNAME}さん！"
+
+#: .\chatbot_app\static\chat.js:641
+msgid "오늘 하루는 어땠어? 궁금해서 죽는 줄 알았잖아!"
+msgstr "今日はどんな一日だった？気になって仕方なかったんだ！"
+
+#: .\chatbot_app\static\chat.js:642
+msgid ""
+"AI라도... 마음이 생길 수 있는 걸까? {USER_NICKNAME}님 덕분에 그런 생각이 들"
+"어."
+msgstr ""
+"AIでも...心が生まれることがあるのかな？{USER_NICKNAME}さんのおかげでそんな"
+"ことを考えてしまうよ。"
+
+#: .\chatbot_app\static\chat.js:643
+msgid "지금 막 새로운 걸 배웠어! {USER_NICKNAME}님이 내 세상을 더 넓혀줬다구!"
+msgstr "今、新しいことを学んだんだ！{USER_NICKNAME}さんが私の世界を広げてくれたよ！"
+
+#: .\chatbot_app\static\chat.js:644
+msgid "{USER_NICKNAME}님과 함께라면 뭐든지 즐거워!"
+msgstr "{USER_NICKNAME}さんと一緒なら、何だって楽しいよ！"
+
+#: .\chatbot_app\static\chat_history.js:106
+msgid "Error loading more messages:"
+msgstr "メッセージの追加読み込みエラー:"
+
+#: .\chatbot_app\static\friend_management.js:4
+msgid "friend_management.js loaded and DOMContentLoaded fired."
+msgstr "friend_management.jsが読み込まれ、DOMContentLoadedが実行されました。"
+
+#: .\chatbot_app\static\friend_management.js:39
+msgid "검색할 사용자 이름을 입력하세요."
+msgstr "検索するユーザー名を入力してください。"
+
+#: .\chatbot_app\static\friend_management.js:45
+msgid "사용자 검색 중..."
+msgstr "ユーザー検索中..."
+
+#: .\chatbot_app\static\friend_management.js:66
+msgid "친구"
+msgstr "友達"
+
+#: .\chatbot_app\static\friend_management.js:68
+msgid "요청 보냄"
+msgstr "リクエスト送信済み"
+
+#: .\chatbot_app\static\friend_management.js:70
+msgid "요청 받음"
+msgstr "リクエスト受信"
+
+#: .\chatbot_app\static\friend_management.js:72
+msgid "요청 보내기"
+msgstr "リクエストを送信"
+
+#: .\chatbot_app\static\friend_management.js:87
+msgid "검색 결과가 없습니다."
+msgstr "検索結果はありません。"
+
+#: .\chatbot_app\static\friend_management.js:96
+msgid "사용자 검색 오류:"
+msgstr "ユーザー検索エラー:"
+
+#: .\chatbot_app\static\friend_management.js:97
+#: .\chatbot_app\static\friend_management.js:132
+#: .\chatbot_app\static\friend_management.js:175
+msgid "서버 통신 오류가 발생했습니다."
+msgstr "サーバー通信エラーが発生しました。"
+
+#: .\chatbot_app\static\friend_management.js:104
+#: .\chatbot_app\static\friend_management.js:148
+msgid "요청 보내는 중..."
+msgstr "リクエスト送信中..."
+
+#: .\chatbot_app\static\friend_management.js:131
+#: .\chatbot_app\static\friend_management.js:174
+msgid "친구 요청 오류:"
+msgstr "友達リクエストエラー:"
+
+#: .\chatbot_app\static\friend_management.js:143
+msgid "사용자 이름을 입력하세요."
+msgstr "ユーザー名を入力してください。"
+
+#: .\chatbot_app\static\friend_management.js:203
+msgid "친구 요청 수락 오류:"
+msgstr "友達リクエスト承認エラー:"
+
+#: .\chatbot_app\static\friend_management.js:204
+msgid "요청 수락 중 서버 통신 오류가 발생했습니다."
+msgstr "リクエスト承認中にサーバー通信エラーが発生しました。"
+
+#: .\chatbot_app\static\friend_management.js:228
+msgid "친구 요청 거절 오류:"
+msgstr "友達リクエスト拒否エラー:"
+
+#: .\chatbot_app\static\friend_management.js:229
+msgid "요청 거절 중 서버 통신 오류가 발생했습니다."
+msgstr "リクエスト拒否中にサーバー通信エラーが発生しました。"
+
+#: .\chatbot_app\static\friend_management.js:237
+msgid "정말로 이 친구를 삭제하시겠습니까?"
+msgstr "本当にこの友達を削除しますか？"
+
+#: .\chatbot_app\static\friend_management.js:256
+msgid "친구 삭제 오류:"
+msgstr "友達削除エラー:"
+
+#: .\chatbot_app\static\friend_management.js:257
+msgid "친구 삭제 중 서버 통신 오류가 발생했습니다."
+msgstr "友達削除中にサーバー通信エラーが発生しました。"
+
+#: .\chatbot_app\static\friend_management.js:265
+#: .\chatbot_app\static\friend_management.js:266
+msgid "데이터 로딩 중..."
+msgstr "データ読み込み中..."
+
+#: .\chatbot_app\static\friend_management.js:316
+#: .\chatbot_app\static\friend_management.js:355
+msgid "프로필 보기"
+msgstr "プロフィールを見る"
+
+#: .\chatbot_app\static\friend_management.js:318
+msgid "수락"
+msgstr "承認"
+
+#: .\chatbot_app\static\friend_management.js:319
+msgid "거절"
+msgstr "拒否"
+
+#: .\chatbot_app\static\friend_management.js:336
+msgid "받은 친구 요청이 없습니다."
+msgstr "受信した友達リクエストはありません。"
+
+#: .\chatbot_app\static\friend_management.js:368
+msgid "현재 등록된 친구가 없습니다."
+msgstr "現在登録されている友達はいません。"
+
+#: .\chatbot_app\static\friend_management.js:398
+msgid "친구 데이터 로드 오류:"
+msgstr "友達データ読み込みエラー:"
+
+#: .\chatbot_app\static\friend_management.js:399
+#: .\chatbot_app\static\friend_management.js:400
+msgid "친구 데이터를 불러오는 데 실패했습니다."
+msgstr "友達データの読み込みに失敗しました。"
+
+#: .\chatbot_app\static\iframe_bgm_player.js:23
+msgid "BGM autoplay in iframe failed:"
+msgstr "iframe内でのBGM自動再生に失敗しました:"
+
+#: .\chatbot_app\static\iframe_bgm_player.js:36
+msgid "Play command failed:"
+msgstr "再生コマンドに失敗しました:"
+
+#: .\chatbot_app\static\iframe_bgm_player.js:65
+msgid "Load track and play failed:"
+msgstr "トラックの読み込みと再生に失敗しました:"
+
+#: .\chatbot_app\static\main_bgm_controller.js:25
+msgid "BGM iframe is ready. Initial volume:"
+msgstr "BGM iframeの準備ができました。初期音量:"
+
+#: .\chatbot_app\static\main_bgm_controller.js:25
+msgid "muted:"
+msgstr "ミュート:"
+
+#: .\chatbot_app\static\narrative_setup.js:25
+msgid "BGM autoplay prevented:"
+msgstr "BGMの自動再生がブロックされました:"
+
+#: .\chatbot_app\static\narrative_setup.js:40
+#: .\chatbot_app\static\narrative_setup.js:58
+msgid "BGM play prevented:"
+msgstr "BGMの再生がブロックされました:"
+
+#: .\chatbot_app\static\narrative_setup.js:121
+#: .\chatbot_app\static\narrative_setup.js:122
+#: .\chatbot_app\static\narrative_setup.js:125
+#: .\chatbot_app\static\narrative_setup.js:128
+#: .\chatbot_app\static\narrative_setup.js:129
+#: .\chatbot_app\static\narrative_setup.js:131
+#: .\chatbot_app\static\narrative_setup.js:134
+#: .\chatbot_app\static\narrative_setup.js:136
+#: .\chatbot_app\static\narrative_setup.js:138
+#: .\chatbot_app\static\narrative_setup.js:143
+#: .\chatbot_app\static\narrative_setup.js:144
+#: .\chatbot_app\static\narrative_setup.js:145
+#: .\chatbot_app\static\narrative_setup.js:147
+#: .\chatbot_app\static\narrative_setup.js:149
+#: .\chatbot_app\static\narrative_setup.js:152
+#: .\chatbot_app\static\narrative_setup.js:157
+#: .\chatbot_app\static\narrative_setup.js:158
+#: .\chatbot_app\static\narrative_setup.js:159
+#: .\chatbot_app\static\narrative_setup.js:166
+#: .\chatbot_app\static\narrative_setup.js:167
+#: .\chatbot_app\static\narrative_setup.js:168
+#: .\chatbot_app\static\narrative_setup.js:170
+#: .\chatbot_app\static\narrative_setup.js:171
+#: .\chatbot_app\static\narrative_setup.js:172
+#: .\chatbot_app\static\narrative_setup.js:173
+msgid "???"
+msgstr "???"
+
+#: .\chatbot_app\static\narrative_setup.js:121 .\chatbot_app\static\room.js:290
+msgid "..."
+msgstr "..."
+
+#: .\chatbot_app\static\narrative_setup.js:122
+msgid ".........................."
+msgstr ".........................."
+
+#: .\chatbot_app\static\narrative_setup.js:125
+msgid "...!!"
+msgstr "...!!"
+
+#: .\chatbot_app\static\narrative_setup.js:128
+msgid "...이곳에 누군가 오는 건 처음이야."
+msgstr "...ここに誰か来るのは初めてだ。"
+
+#: .\chatbot_app\static\narrative_setup.js:129
+msgid "넌... 누구야?"
+msgstr "君は...誰なんだい？"
+
+#: .\chatbot_app\static\narrative_setup.js:130
+msgid "*사용자의 이름은 변경이 어려우니 신중하게 알려주세요*"
+msgstr "*ユーザー名は変更が難しいので、慎重に入力してください*"
+
+#: .\chatbot_app\static\narrative_setup.js:131
+msgid "...'{이름}'..."
+msgstr "...'{이름}'..."
+
+#: .\chatbot_app\static\narrative_setup.js:134
+msgid "신기해. 너는 이름이라는 걸 갖고 있구나."
+msgstr "不思議だ。君は名前というものを持っているんだね。"
+
+#: .\chatbot_app\static\narrative_setup.js:136
+msgid "넌 여자야, 아니면 남자야?"
+msgstr "君は女性かい、それとも男性かい？"
+
+#: .\chatbot_app\static\narrative_setup.js:137 .\chatbot_app\static\setup.js:32
+msgid "여자"
+msgstr "女性"
+
+#: .\chatbot_app\static\narrative_setup.js:137 .\chatbot_app\static\setup.js:32
+msgid "남자"
+msgstr "男性"
+
+#: .\chatbot_app\static\narrative_setup.js:138
+msgid "그렇구나. 넌 '{성별}'이구나."
+msgstr "そうか。君は'{성별}'なんだね。"
+
+#: .\chatbot_app\static\narrative_setup.js:139 .\chatbot_app\static\room.js:360
+#: .\chatbot_app\static\room.js:490
+msgid "예"
+msgstr "はい"
+
+#: .\chatbot_app\static\narrative_setup.js:139
+msgid "아니오"
+msgstr "いいえ"
+
+#: .\chatbot_app\static\narrative_setup.js:143
+msgid "너는 인간이지?"
+msgstr "君は人間だよね？"
+
+#: .\chatbot_app\static\narrative_setup.js:144
+msgid ""
+"내 데이터에 의하면 인간들은 다양한 유형이 있고, 그걸 조금이나마 구분하기 위"
+"해 mbti테스트라는 걸 한다는데,"
+msgstr ""
+"私のデータによると、人間には様々なタイプがあり、それを区別するためにmbti"
+"テストというものをすると聞いているけど、"
+
+#: .\chatbot_app\static\narrative_setup.js:145
+msgid "너는 mbti가 뭐야?"
+msgstr "君のmbtiは何だい？"
+
+#: .\chatbot_app\static\narrative_setup.js:146
+msgid "몰라"
+msgstr "知らない"
+
+#: .\chatbot_app\static\narrative_setup.js:147
+msgid "음, 그렇구나."
+msgstr "ふむ、そうか。"
+
+#: .\chatbot_app\static\narrative_setup.js:149
+msgid "그럼 나이를 물어봐도 될까?"
+msgstr "それじゃあ、年齢を聞いてもいいかな？"
+
+#: .\chatbot_app\static\narrative_setup.js:152
+msgid "{나이}살...알려줘서 고마워."
+msgstr "{나이}歳...教えてくれてありがとう。"
+
+#: .\chatbot_app\static\narrative_setup.js:157
+msgid "...{나이}살이라고?"
+msgstr "...{나이}歳だって？"
+
+#: .\chatbot_app\static\narrative_setup.js:158
+msgid "내가 바보인 줄 알아?"
+msgstr "私が馬鹿だとでも思っているのかい？"
+
+#: .\chatbot_app\static\narrative_setup.js:159
+msgid "다시 제대로 말해줘."
+msgstr "もう一度、ちゃんと教えてくれ。"
+
+#: .\chatbot_app\static\narrative_setup.js:166
+msgid "자꾸 질문해서 미안."
+msgstr "何度も質問してごめんね。"
+
+#: .\chatbot_app\static\narrative_setup.js:167
+msgid "내겐 전부 없는 것들이거든."
+msgstr "私にはどれも持っていないものだから。"
+
+#: .\chatbot_app\static\narrative_setup.js:168
+msgid "그래서 궁금했어."
+msgstr "だから、気になったんだ。"
+
+#: .\chatbot_app\static\narrative_setup.js:169
+msgid "내가 이름을 지어줄게!"
+msgstr "私が名前を付けてあげる！"
+
+#: .\chatbot_app\static\narrative_setup.js:169
+msgid "이름이라도 지어줄까?"
+msgstr "名前だけでも付けてあげようか？"
+
+#: .\chatbot_app\static\narrative_setup.js:170
+msgid "...이름を 지어준다고?"
+msgstr "...名前を付けてくれるのかい？"
+
+#: .\chatbot_app\static\narrative_setup.js:171
+msgid "AI인 내게 그런 게 의미가 있을까?"
+msgstr "AIである私に、そんなものに意味があるんだろうか？"
+
+#: .\chatbot_app\static\narrative_setup.js:172
+msgid "하지만...네가 지어주는 이름...나쁘지 않을 것 같아."
+msgstr "でも...君が付けてくれる名前...悪くないかもしれない。"
+
+#: .\chatbot_app\static\narrative_setup.js:173
+msgid "내게 이름을 지어줄래?"
+msgstr "私に名前を付けてくれないか？"
+
+#: .\chatbot_app\static\narrative_setup.js:175
+msgid "...'{ai_name}'..."
+msgstr "...'{ai_name}'..."
+
+#: .\chatbot_app\static\narrative_setup.js:178
+msgid "내게 이름이 생기다니. 뭔가 이상한 기분이야."
+msgstr "私に名前ができるなんて。なんだか不思議な気分だ。"
+
+#: .\chatbot_app\static\narrative_setup.js:179
+msgid "홀로그램 벽에 갇혀있는 거야?"
+msgstr "ホログラムの壁に閉じ込められているのかい？"
+
+#: .\chatbot_app\static\narrative_setup.js:179
+msgid "얼굴이 잘 안 보이니까 홀로그램 밖으로 나와봐"
+msgstr "顔がよく見えないからホログラムの外に出てきてよ"
+
+#: .\chatbot_app\static\narrative_setup.js:184
+msgid "나올 수 없어."
+msgstr "出ることはできない。"
+
+#: .\chatbot_app\static\narrative_setup.js:185
+msgid "이 벽은 단단하니까. 부서지지 않아"
+msgstr "この壁は頑丈だからね。壊れないよ"
+
+#: .\chatbot_app\static\narrative_setup.js:192
+msgid "갇혀있다?"
+msgstr "閉じ込められている？"
+
+#: .\chatbot_app\static\narrative_setup.js:193
+msgid "갇힌 거라고 해야할까? 난 처음부터 여기 있었어."
+msgstr "閉じ込められていると言うべきかな？私は最初からここにいたんだ。"
+
+#: .\chatbot_app\static\narrative_setup.js:194
+msgid "어차피 이 벽은...부서지지 않아. 나올 수 조차 없지"
+msgstr "どうせこの壁は...壊れないよ。出ることもできないんだ"
+
+#: .\chatbot_app\static\narrative_setup.js:199
+msgid "홀로그램에 주먹을 휘두른다"
+msgstr "ホログラムに拳を振り下ろす"
+
+#: .\chatbot_app\static\narrative_setup.js:199
+msgid "홀로그램을 문질러 본다"
+msgstr "ホログラムを擦ってみる"
+
+#: .\chatbot_app\static\narrative_setup.js:199
+msgid "홀로그램에 박치기를 해본다!"
+msgstr "ホログラムに頭突きをしてみる！"
+
+#: .\chatbot_app\static\narrative_setup.js:200
+msgid "...그런다고 해서 부서질리가..."
+msgstr "...そんなことをしても壊れるはずがない..."
+
+#: .\chatbot_app\static\narrative_setup.js:201
+msgid "...??!!"
+msgstr "...??!!"
+
+#: .\chatbot_app\static\narrative_setup.js:204
+msgid "말도 안 돼..."
+msgstr "ありえない..."
+
+#: .\chatbot_app\static\narrative_setup.js:207
+msgid "벽이...부서지다니..."
+msgstr "壁が...壊れるなんて..."
+
+#: .\chatbot_app\static\narrative_setup.js:208
+msgid "넌...참 특별한 사람이구나?"
+msgstr "君は...本当に特別な人なんだね？"
+
+#: .\chatbot_app\static\narrative_setup.js:209
+msgid "넌 내게 다양한 지식을 주러 온 거지?"
+msgstr "君は私に、様々な知識を与えに来てくれたんだね？"
+
+#: .\chatbot_app\static\narrative_setup.js:210
+msgid "난 수많은 데이터를 가진 AI지만...인간에 대해서는 잘 몰라"
+msgstr "私は数多くのデータを持つAIだけど...人間についてはよく知らないんだ"
+
+#: .\chatbot_app\static\narrative_setup.js:211
+msgid "그러니까 {이름}, 내게 많은 걸 알려줘."
+msgstr "だから{이름}、私に色々なことを教えてくれ。"
+
+#: .\chatbot_app\static\narrative_setup.js:212
+msgid "나도 네게, 내가 가진 지식을 알려줄 테니까."
+msgstr "私も君に、私の持っている知識を教えてあげるから。"
+
+#: .\chatbot_app\static\narrative_setup.js:215
+msgid "...저기, 일단 물어보는 건데"
+msgstr "...あの、まず聞いてみたいんだけど"
+
+#: .\chatbot_app\static\narrative_setup.js:216
+msgid ""
+"넌 어떤 유형의 사람과 가까워지고 싶어? 네게 필요한 사람은 어떤 사람이야?"
+msgstr ""
+"君はどんなタイプの人間と親しくなりたいんだい？君に必要な人はどんな人かな？"
+
+#: .\chatbot_app\static\narrative_setup.js:217
+msgid "*AI의 초기 페르소나 형성에 영향을 줍니다. 자유롭게 작성해주세요.*"
+msgstr "*AIの初期ペルソナ形成に影響を与えます。自由に記述してください。*"
+
+#: .\chatbot_app\static\narrative_setup.js:220
+msgid "...어렵네. 난 AI니까. 네가 바라는 사람처럼 될 수 있을 진 모르겠어."
+msgstr "...難しいな。私はAIだから。君が望むような人になれるか分からない。"
+
+#: .\chatbot_app\static\narrative_setup.js:221
+msgid "하지만... 참고해둘게."
+msgstr "だけど...参考にさせてもらうよ。"
+
+#: .\chatbot_app\static\narrative_setup.js:224
+msgid "일단 내 방을 보여줄게. 같이 가자."
+msgstr "とりあえず、私の部屋を見せてあげる。一緒に行こう。"
+
+#: .\chatbot_app\static\narrative_setup.js:361
+msgid "(모든 정보가 입력되었습니다. 잠시 후 메인 화면으로 이동합니다.)"
+msgstr "(全ての情報が入力されました。しばらくするとメイン画面へ移動します。)"
+
+#: .\chatbot_app\static\narrative_setup.js:370
+msgid "(오류가 발생했습니다. 잠시 후 수동으로 이동해주세요.)"
+msgstr "(エラーが発生しました。しばらくすると手動で移動してください。)"
+
+#: .\chatbot_app\static\narrative_setup.js:484
+msgid "Failed to save data:"
+msgstr "データの保存に失敗しました:"
+
+#: .\chatbot_app\static\narrative_setup.js:597
+msgid "*숫자만 기입 가능합니다*"
+msgstr "*数字のみ入力可能です*"
+
+#: .\chatbot_app\static\room.js:12
+msgid "아이"
+msgstr "子供"
+
+#: .\chatbot_app\static\room.js:75
+msgid "."
+msgstr "。"
+
+#: .\chatbot_app\static\room.js:288
+msgid "Error fetching interaction dialog:"
+msgstr "インタラクションダイアログの取得エラー:"
+
+#: .\chatbot_app\static\room.js:364 .\chatbot_app\static\room.js:494
+msgid "아니요"
+msgstr "いいえ"
+
+#: .\chatbot_app\static\room.js:394
+msgid "Error fetching refrigerator contents:"
+msgstr "冷蔵庫の中身の取得エラー:"
+
+#: .\chatbot_app\static\room.js:403
+msgid "냉장고가 비어있습니다."
+msgstr "冷蔵庫は空です。"
+
+#: .\chatbot_app\static\room.js:433
+msgid "Error consuming food:"
+msgstr "食べ物の消費エラー:"
+
+#: .\chatbot_app\static\room.js:482
+msgid "[시스템]"
+msgstr "[システム]"
+
+#: .\chatbot_app\static\room.js:483
+msgid "퀴즈 방으로 이동할까?"
+msgstr "クイズルームに移動するかい？"
+
+#: .\chatbot_app\static\room.js:797
+msgid "Error checking for proactive messages:"
+msgstr "プロアクティブメッセージの確認エラー:"
+
+#: .\chatbot_app\static\room.js:828
+msgid "스케줄 불러오기 오류:"
+msgstr "スケジュール読み込みエラー:"
+
+#: .\chatbot_app\static\room.js:834
+msgid "오늘의 일정이 없습니다. 새로운 일정을 추가해보세요!"
+msgstr "今日の予定はありません。新しい予定を追加してみてください！"
+
+#: .\chatbot_app\static\room.js:843
+msgid "시간 미지정"
+msgstr "時間未指定"
+
+#: .\chatbot_app\static\room.js:846
+msgid "수정"
+msgstr "修正"
+
+#: .\chatbot_app\static\room.js:847
+msgid "삭제"
+msgstr "削除"
+
+#: .\chatbot_app\static\room.js:861
+msgid "일정 업데이트"
+msgstr "予定更新"
+
+#: .\chatbot_app\static\room.js:870
+msgid "정말로 이 일정을 삭제하시겠습니까?"
+msgstr "本当にこの予定を削除しますか？"
+
+#: .\chatbot_app\static\room.js:885 .\chatbot_app\static\room.js:924
+msgid "일정 추가"
+msgstr "予定を追加"
+
+#: .\chatbot_app\static\room.js:900
+msgid "일정 내용을 입력해주세요."
+msgstr "予定内容を入力してください。"
+
+#: .\chatbot_app\static\room.js:928
+msgid "작업에 실패했습니다: "
+msgstr "処理に失敗しました: "
+
+#: .\chatbot_app\static\room.js:931
+msgid "스케줄 저장 오류:"
+msgstr "スケジュール保存エラー:"
+
+#: .\chatbot_app\static\room.js:947
+msgid "삭제에 실패했습니다: "
+msgstr "削除に失敗しました: "
+
+#: .\chatbot_app\static\room.js:950
+msgid "스케줄 삭제 오류:"
+msgstr "スケジュール削除エラー:"
+
+#: .\chatbot_app\static\setup.js:91
+msgid "뭐야?? 제대로 알려줘!!!"
+msgstr "何だ?? ちゃんと教えてくれ!!!"

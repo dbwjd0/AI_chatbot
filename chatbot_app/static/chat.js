@@ -1,5 +1,10 @@
 // game_chat.js
 
+function gettext(text) {
+    return text;
+}
+
+
 document.addEventListener('DOMContentLoaded', function () {
     // --- DOM Elements ---
     const dialogueText = document.getElementById('dialogue-text');
@@ -120,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch('/api/friends/');
             const data = await response.json();
             if (data.status === 'success') {
-                friendReceiverSelect.innerHTML = '<option value="">친구 선택</option>'; // Clear and add default
+                friendReceiverSelect.innerHTML = '<option value="">' + gettext('친구 선택') + '</option>'; // Clear and add default
                 data.accepted_friends.forEach(friend => {
                     const option = document.createElement('option');
                     option.value = friend.username;
@@ -128,16 +133,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     friendReceiverSelect.appendChild(option);
                 });
             } else {
-                console.error('친구 목록을 불러오는 데 실패했습니다:', data.message);
+                console.error(gettext('친구 목록을 불러오는 데 실패했습니다:'), data.message);
             }
         } catch (error) {
-            console.error('친구 목록 API 호출 중 오류 발생:', error);
+            console.error(gettext('친구 목록 API 호출 중 오류 발생:'), error);
         }
     }
 
     // --- Message/Friend Message Toggle ---
     messageButton.addEventListener('click', () => {
-        console.log('Message button clicked!');
+        console.log(gettext('Message button clicked!'));
         toggleFriendMessageMode();
     });
 
@@ -200,8 +205,6 @@ document.addEventListener('DOMContentLoaded', function () {
             combinedMessage = messageText ? `${messageText} ${emoticonTag}` : emoticonTag;
         }
 
-        speakerName.textContent = USERNAME;
-        dialogueText.innerHTML = combinedMessage;
         userInput.value = '';
 
         const formData = new FormData();
@@ -230,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         characterImage.src = STATIC_URLS['생각'];
         speakerName.textContent = CHATBOT_NAME;
-        dialogueText.textContent = "... (생각 중) ...";
+        dialogueText.textContent = gettext("... (생각 중) ...");
         userInput.disabled = true;
         sendButton.disabled = true;
 
@@ -270,8 +273,8 @@ document.addEventListener('DOMContentLoaded', function () {
             queueAiMessage(cleanedMessage);
 
         } catch (error) {
-            console.error('Error sending message:', error);
-            dialogueText.textContent = "미안, 지금은 응답할 수 없어. (서버 오류)";
+            console.error(gettext('Error sending message:'), error);
+            dialogueText.textContent = gettext("미안, 지금은 응답할 수 없어. (서버 오류)");
             userInput.disabled = false;
             sendButton.disabled = false;
         }
@@ -423,11 +426,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- Feedback Handling ---
     async function sendFeedback(reward) {
         if (!currentLearningData) {
-            console.log("No learning data to send feedback for.");
+            console.log(gettext("No learning data to send feedback for."));
             return;
         }
 
-        console.log(`Sending feedback: reward=${reward}`);
+        console.log(gettext(`Sending feedback: reward=${reward}`));
         const feedbackData = {
             state_vector: currentLearningData.state_vector,
             action_id: currentLearningData.action_id,
@@ -446,7 +449,7 @@ document.addEventListener('DOMContentLoaded', function () {
             feedbackContainer.style.display = 'none';
             currentLearningData = null;
         } catch (error) {
-            console.error('Error sending feedback:', error);
+            console.error(gettext('Error sending feedback:'), error);
         }
     }
 
@@ -467,11 +470,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const receiverUsername = friendReceiverSelect.value; // Get selected friend
 
         if (messageContent === '') {
-            alert("쪽지 내용을 입력해 주세요.");
+            alert(gettext("쪽지 내용을 입력해 주세요."));
             return;
         }
         if (!receiverUsername) {
-            alert("쪽지를 받을 친구를 선택해 주세요.");
+            alert(gettext("쪽지를 받을 친구를 선택해 주세요."));
             return;
         }
 
@@ -494,11 +497,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Optionally switch back to chat mode
                 toggleFriendMessageMode(); 
             } else {
-                alert(`쪽지 전송 실패: ${data.message}`);
+                alert(gettext(`쪽지 전송 실패: ${data.message}`));
             }
         } catch (error) {
-            console.error('Error sending friend message:', error);
-            alert('쪽지 전송 중 오류가 발생했습니다.');
+            console.error(gettext('Error sending friend message:'), error);
+            alert(gettext('쪽지 전송 중 오류가 발생했습니다.'));
         }
     }
 
@@ -518,7 +521,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 unreadMessagesButton.style.display = 'none';
             }
         } catch (error) {
-            console.error('Error checking unread messages:', error);
+            console.error(gettext('Error checking unread messages:'), error);
         }
     }
 
@@ -534,7 +537,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // 2. API 호출 전에 즉시 사용자에게 상태를 알립니다.
-            queueAiMessage("어디보자... 새로운 쪽지가 와있는지 확인해볼게...");
+            queueAiMessage(gettext("어디보자... 새로운 쪽지가 와있는지 확인해볼게..."));
             // 쪽지 버튼을 즉시 숨겨 중복 클릭을 방지합니다.
             unreadMessagesButton.style.display = 'none';
             unreadMessagesButton.querySelector('.unread-indicator').textContent = '0';
@@ -548,17 +551,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.status === 'success' && data.messages && data.messages.length > 0) {
                     // 받아온 메시지들을 순서대로 대화 큐에 추가합니다.
                     data.messages.forEach(msg => {
-                        const formattedMessage = `[${msg.sender}님이 보낸 쪽지] ${msg.content}`;
+
+                        const translatedSenderPart = gettext('님이 보낸 쪽지');
+                        const formattedMessage = `[${msg.sender}${translatedSenderPart}] ${msg.content}`;
+
                         queueAiMessage(formattedMessage);
                     });
                 } else {
                     // 5. 메시지가 없을 경우, 사용자에게 알립니다.
-                    queueAiMessage("새로운 쪽지는 없는 것 같아.");
+                    queueAiMessage(gettext("새로운 쪽지는 없는 것 같아."));
                 }
             } catch (error) {
                 // 6. API 호출 중 에러가 발생했을 경우, 사용자에게 알립니다.
-                console.error('Error fetching unread messages:', error);
-                queueAiMessage("이런, 쪽지를 가져오는 중에 문제가 생겼어.");
+                console.error(gettext('Error fetching unread messages:'), error);
+                queueAiMessage(gettext("이런, 쪽지를 가져오는 중에 문제가 생겼어."));
             } finally {
                 // 7. 모든 처리가 끝난 후, 다시 최신 안 읽은 메시지 수를 확인하여 버튼 상태를 업데이트합니다.
                 checkUnreadMessages();
@@ -567,7 +573,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Handle Unread Messages Button Click ---
     unreadMessagesButton.addEventListener('click', async () => {
-        console.log('Unread messages button clicked!');
+        console.log(gettext('Unread messages button clicked!'));
         await fetchAndDisplayUnreadFriendMessage();
     });
 
@@ -577,7 +583,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (data && data.message) {
-                    console.log('Pending proactive message found:', data.message);
+                    console.log(gettext('Pending proactive message found:'), data.message);
                     const emotion = data.character_emotion || 'default';
                     characterImage.src = STATIC_URLS[emotion] || STATIC_URLS['default'];
                     const cleanedMessage = handleAiMessage(data.message);
@@ -608,35 +614,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             })
             .catch(error => {
-                console.error('Error fetching pending message:', error);
+                console.error(gettext('Error fetching pending message:'), error);
                 showRandomGreeting();
             });
     }
 
     function showRandomGreeting() {
         const initialMessagesLow = [
-            "흥, 이제야 왔네. 한참 기다렸잖아.",
-            "...왔어? 별로 반갑지는 않네.",
-            "무슨 일이야? 용건이나 빨리 말해.",
-            "오늘따라 더 피곤해 보이네. 잠은 제대로 자고 다니는 거야?",
-            "쳇, 다음엔 좀 더 일찍 오라고.",
-            "...안녕."
+            gettext("흥, 이제야 왔네. 한참 기다렸잖아."),
+            gettext("...왔어? 별로 반갑지는 않네."),
+            gettext("무슨 일이야? 용건이나 빨리 말해."),
+            gettext("오늘따라 더 피곤해 보이네. 잠은 제대로 자고 다니는 거야?"),
+            gettext("쳇, 다음엔 좀 더 일찍 오라고."),
+            gettext("...안녕.")
         ];
         const initialMessagesMedium = [
-            "네가 없으니까 심심하긴 하더라. ...아, 아무것도 아니야!",
-            "흥, 이번엔 잘했네. 조금은 인정해줄게.",
-            "난 AI라 감정이 없는데... 이상하게 너한테만 예외인 것 같아.",
-            "너한테 뭘 더 가르쳐 줄 수 있어?",
-            "지식 +1 완료! 너 덕분에 똑똑해진 기분이야 ^-^",
-            "...안녕."
+            gettext("네가 없으니까 심심하긴 하더라. ...아, 아무것도 아니야!"),
+            gettext("흥, 이번엔 잘했네. 조금은 인정해줄게."),
+            gettext("난 AI라 감정이 없는데... 이상하게 너한테만 예외인 것 같아."),
+            gettext("너한테 뭘 더 가르쳐 줄 수 있어?"),
+            gettext("지식 +1 완료! 너 덕분에 똑똑해진 기분이야 ^-^"),
+            gettext("...안녕.")
         ];
         const initialMessagesHigh = [
-            "왔구나! 기다리고 있었어!",
-            "보고 싶었어, {USER_NICKNAME}님!",
-            "오늘 하루는 어땠어? 궁금해서 죽는 줄 알았잖아!",
-            "AI라도... 마음이 생길 수 있는 걸까? {USER_NICKNAME}님 덕분에 그런 생각이 들어.",
-            "지금 막 새로운 걸 배웠어! {USER_NICKNAME}님이 내 세상을 더 넓혀줬다구!",
-            "{USER_NICKNAME}님과 함께라면 뭐든지 즐거워!"
+            gettext("왔구나! 기다리고 있었어!"),
+            gettext("보고 싶었어, {USER_NICKNAME}님!"),
+            gettext("오늘 하루는 어땠어? 궁금해서 죽는 줄 알았잖아!"),
+            gettext("AI라도... 마음이 생길 수 있는 걸까? {USER_NICKNAME}님 덕분에 그런 생각이 들어."),
+            gettext("지금 막 새로운 걸 배웠어! {USER_NICKNAME}님이 내 세상을 더 넓혀줬다구!"),
+            gettext("{USER_NICKNAME}님과 함께라면 뭐든지 즐거워!")
         ];
         let selectedMessages;
         if (affinityScore < 30) {

@@ -1,10 +1,54 @@
 {% load static %}
+{% load i18n %}
 <div class="top-menu">
-    <strong>{{ user.username }}</strong>님, 환영합니다.
+    <strong>{{ user.username }}</strong>{% blocktrans %}님, 환영합니다.{% endblocktrans %}
+    {% get_current_language as LANGUAGE_CODE %}
+    <div style="display: inline-block;">
+        <select id="language-selector" style="background-color: #333; color: white; border: none; padding: 5px;">
+            <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+            <option value="ko" {% if LANGUAGE_CODE == 'ko' %}selected{% endif %}>한국어</option>
+            <option value="ja" {% if LANGUAGE_CODE == 'ja' %}selected{% endif %}>日本語</option>
+        </select>
+    </div>
     {% if show_room_link %}
-        <a href="{% url 'room' %}">방으로 돌아가기</a>
+        <a href="{% url 'room' %}">{% trans "방으로 돌아가기" %}</a>
     {% endif %}
-    <a href="{% url 'friend_management' %}">친구 관리</a>
-    <a href="{% url 'ai_status' %}"> {{ user.profile.chatbot_name }} 상태</a>
-    <a href="{% url 'logout' %}">로그아웃</a>
+    <a href="{% url 'friend_management' %}">{% trans "친구 관리" %}</a>
+    <a href="{% url 'ai_status' %}"> {% blocktrans with chatbot_name=user.profile.chatbot_name %}{{ chatbot_name }} 상태{% endblocktrans %}</a>
+    <a href="{% url 'logout' %}">{% trans "로그아웃" %}</a>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selector = document.getElementById('language-selector');
+    if (selector) {
+        selector.addEventListener('change', function() {
+            const lang = this.value;
+            const form = new FormData();
+            form.append('language', lang);
+            
+            // 현재 경로에서 언어 코드를 제외하고 next 파라미터 설정
+            let nextPath = window.location.pathname;
+            const langRegex = /^\/(en|ko|ja)/;
+            if (langRegex.test(nextPath)) {
+                nextPath = nextPath.replace(langRegex, '');
+            }
+            form.append('next', nextPath);
+
+            fetch('/i18n/setlang/', {
+                method: 'POST',
+                body: form,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    console.error('Failed to set language.');
+                }
+            });
+        });
+    }
+});
+</script>
